@@ -1,0 +1,1 @@
+diff -i -w -b -B -p %1 \temp\admin\hl\%1

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+TEMP1=/tmp/tmp.1.$$
+TEMP2=/tmp/tmp.2.$$
+
+
+nm -g $1 -D | grep T | grep -v __ | grep -v gmsg | grep -v PM_ | grep -v ^_ | cut -f3 -d" " | grep -v __ | sort > $TEMP1
+cat ~alfred/sdk2.0/SDK/SourceCode/new_admin/hl/linkfunc.cpp | grep LINK_ENT | cut -f2 -d"(" | cut -f1 -d"," | tr -d " " > $TEMP2
+
+fgrep -f $TEMP2 $TEMP1 -v | awk '{print "LINK_ENTITY_TO_FUNC("$1",\""$1"\",other_"$1");"}'
+
+rm $TEMP1 $TEMP2
+

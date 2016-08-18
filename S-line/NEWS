@@ -1,0 +1,65 @@
+22.08.2004 2.50.60
+
+    Changes/Additions:
+
+     * Added a 64bit Linux version for AMD64. The 64bit version uses 64bit script
+       binaries which are not compatible with 32bit script binaries. They have
+       the file extension .amx64. To compile for Linux 64bit, a new compiler is
+       used: sc64. The compile and compile_all scripts have optional -32 and -64
+       switches to explicitely choose the compiler (for cross-compiling).
+     * Revised Windows installer install_admin.vbs to properly detect new Steam
+       accounts and have a more consistent user interface. Works with CS:CZ
+       Retail version. A missing listenserver.cfg is now automatically created by
+       the installer.
+       The uninstaller has been updated accordingly.
+     * Added cvar_exists() scripting function to check if a cvar exists or not.
+       The function returns 1 if a cvar exists, 0 if not. (Patch 908067 by Kevin
+       Masterson.
+     * Added get_timer() scripting function. It returns a value describing the 
+       status of the timer index passed in.
+     * Added valid_mapex() scripting function. It allows the valid map check to 
+       bypass the map.ini check and just check for the existance of the map.
+     * Admin Mod is now unloadable at any time. It is still only loadable on
+       server start, though. 
+     * Allow the use of the loopback IP 127.0.0.1 in the users.ini file. Improves
+       listenserver support.
+     * Added format directives 'l' and 'h' for snprintf() to specify long or
+       short values. Useful on AMD64 systems. See a Linux man page or MSDN help 
+       page for a description.
+     * Revised plugin_CS:
+       + Added possibility to delete previously saved map and server default 
+         restrictions. Command-syntax is admin_restrict delete map/default 
+       + Added console/screenmessage when saving/deleting default restrictions.  
+         Before you couldn't see that anything happened at all.  
+       + Added a submenu to the restrictionmenu "Restrictions defaults" wich can 
+         save, delete and apply the map and server default restrictions.  
+       + Fixed a bug where admin_restrict listed the longer list of items/weapons 
+         (restricted or available) instead of the shorter one.  
+       + Improved version detection, using the new cvar_exists() function.
+       + Implemented team- and playerspecific restrictions.
+
+
+    New CVARs:
+
+     * mysql_port to set the port of the MySQL server if it differs from
+       the default port. (Patch #888683, by Indan Zupancic)
+
+
+    Bug Fixes:
+
+     * Fixed some issues in listenserver user detection.
+     * Fixed an exploit in admin_passwd.
+     * Fixed an exploit on servers with amv_private_server set. Users could join
+       a server under their registered name and then change their nickname to an
+       unregistered name without getting kicked.
+     * Fixed rare crashes due to NULL pointer access when starting plugins.
+     * Fixed the server crashing instead of exiting cleanly when Admin Mod calls
+       exit during startup, e.g. because the scripting engine could not be loaded.
+
+
+    Coding:
+
+     * Fixed issue with differing crypt() prototypes (crypt.h) on different Linux
+       systems.
+     * Compiles cleanly with gcc3 now.
+

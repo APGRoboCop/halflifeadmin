@@ -1,0 +1,100 @@
+05.10.2003 2.50.58
+
+    Changes/Additions:
+
+     * Reserved nicknames, reserved slots and private servers work correctly
+       with Steam servers. This means full Steam support now.
+     * Fixed the problem of admins losing access rights upon mapchange.
+     * The plugin_info() function is no longer triggered in plugins before the
+       plugin_connect() function is called for a connecting player.
+     * Added support for #include directive to .ini config files which will 
+       include another config file. The filename must be enclosed in double 
+       quotes ("") or angular brackets (<>). When using #include "file" the 
+       file is searched relative to the directory that the including file is in. 
+       When using #include <file> the file is searched relative to the MOD 
+       directory (e.g.  cstrike). The former version is probably easier for
+       most users.
+     * Added support for loading plugins from a directory either by specifying a
+       directory name in the plugins.ini file or by using a directory name in
+       admin_plugin_file. All files that end in .amx are loaded from the
+       directory in alphabetical order. To prevent a file from loading, simply
+       add .noload to the end of the filename.
+     * A PostgreSQL version of Admin Mod is now available, donated by Idy and
+       AKP.
+     * Allow for no plugins being loaded. A warning will still be written to the
+       logs in case this wasn't what the admin intended.
+     * Added admin_cmd as a shorter version of admin_command. Both can be used.
+     * Made admin_version directly accessible from the server console.
+     * CS timelimit reporting is now accurate under Windows, too, for CS 1.6.
+       This does not work with CS 1.5, where timelimit may still be off under
+       Windows.
+     * Changed selfmessage() message buffer size to LARGE_BUF_SIZE.
+     * Reformatted userlist() output, added access right and immunity status.
+     * Changed plugin_CS to work with CS 1.6. Weapon restriction function has
+       been changed considerably. Settings can be made permanent from the
+       console, admin_restrict can be used with weapon names.
+
+
+    New CVARS:
+
+     * Read-only cvar ami_sv_maxplayers: contains the server's original
+       maxplayers value. Can be used by third party server browsers.
+     * PostgreSQL version:
+       pgsql_database
+       pgsql_dbtable_ips
+       pgsql_dbtable_models
+       pgsql_dbtable_plugins
+       pgsql_dbtable_users
+       pgsql_dbtable_tags
+       pgsql_dbtable_words
+       pgsql_host
+       pgsql_port
+       pgsql_pass
+       pgsql_user
+       pgsql_preload 
+       pgsql_users_sql
+       pgsql_tags_sql
+       The pgsql_port cvar specifyies the port of the PostgreSQL server. For a
+       local server using Unix Domain Sockets instead of TCP/IP the local UDS
+       file is used, e.g. pgsql ".s.PGSQL.5432" with pgsql_host "/tmp". All
+       other cvars work like their MySQL counterparts.
+
+
+    Bug Fixes:
+    
+     * Fixed admin_tsay and admin_csay commands so that say text doesn't have to
+       be enclosed in quotes.
+     * Another fix to the strbreak() scripting function.
+     * Fixed docpath and Specify() bugs in Win32 installer.
+     * Do not run plugin_info() for a kicked player.
+     * Fixed bug with CS timelimit not working correctly with Linux server.
+     * Fixed Linux version of Small compiler to handle DOS files and work when
+       no PWD envvar is set.
+     * Fixed exploit which would allow players to switch their name to a
+       reserved IP and gain access rights associated with that IP.
+     * Fixed free/reserved slot reporting to be more robust. 
+     * Fixed exploit in plugin_antiflood.
+     * Have "" be accepted as "undefined" in adminmod.cfg for all file and
+       string cvars.
+     * Fixed reject and kick messages to work with old and new clients.
+
+
+    Coding:
+
+     * VerifyUserAuth() gets called in any case in AddUserAuth(), no matter if
+       mapchange, reconnect or new connet.
+     * INFO_KEYVAL_SIZE replaces BUF_SIZE for get_/set_serverinfo().
+     * Removed HAS_SNPRINTF macros. Everybody has snprintf().
+     * Changed the semnatics of auth_struct::head() to return the *current*
+       head. Get the next head position with get_head() instead.
+     * Changed IsComment() to is_comment(). Overloaded to check for // instead
+       for /.
+     * Added various utility functions to check and get a cvar value for cvars
+       holding string values or filenames/paths: cvar_string_value_is_set(),
+       cvar_string_is_set(), cvar_file_value_is_set(), cvar_file_is_set()
+       get_cvar_string_value(), get_cvar_file_value(). 
+     * Added filesystem node abstraction AmFSNode and AmDir.
+
+
+
+

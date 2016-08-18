@@ -1,0 +1,1 @@
+objMM/amlibc.o objMM/amlibc.dep : amlibc.c apsymbols.h amlibc.h

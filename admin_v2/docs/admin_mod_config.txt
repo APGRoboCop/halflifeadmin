@@ -1,0 +1,260 @@
+Admin Mod Configuration
+
+
+                                                     CONFIGURE
+
+                        ------------------------------------------------------------------
+
+
+            [ server.cfg ][ users.ini ][ nicks.ini ][ ips.ini ][ make_pass ][ models.ini ][ maps.ini ]
+
+
+
+                       Intro
+                       Configuring Half-Life Admin Mod isn't difficult nor teadious, it
+                       just requires some understanding of whats going on. It actually
+                       should take you less than ten minutes to get it up and running after
+                       you read this. I will address each file you need to configure
+                       seperately. Hopefully this will ease up on the confusion. First, put
+                       ALL config files you create in the same directory as the mod you are
+                       playing admin mod with (i.e cstrike/ for counter-strike). Heres a
+                       quick description of what each of the admin mod files are for:
+
+
+
+                              users.ini
+                                         The users.ini file is used to specify who
+                                         will have special rights on your server (by
+                                         name) and what commands do they have
+                                         permissions to use.
+
+
+
+                              nicks.ini
+                                         The nicks.ini file is basically used for
+                                         name reservation. It prevents players from
+                                         using the specified names unless they set
+                                         the correct password. It makes sense to add
+                                         all the player names that are in the
+                                         users.ini to this file also. It's  like
+                                         added protection. Just make sure that you
+                                         set the same password for the corresponding
+                                         name or problems will arise.
+
+
+
+                              ips.ini
+                                         The ips.ini file is used for slot
+                                         reservation on your server based on ip
+                                         address. All you have to do is specify the
+                                         ip's of the people that can use one of your
+                                         reserved slots.
+
+
+
+                              models.ini
+                                         The models.ini file is basically used for
+                                         model reservation. It prevents players from
+                                         using the specified model unless they set
+                                         the correct password. It lets you protect
+                                         your clans model from other unauthorised
+                                         players using it.
+
+
+
+                              maps.ini
+                                         The maps.ini file is used to control which
+                                         maps users can vote for. It has the same
+                                         format at the mapcycle.txt file.
+
+                       There is also an admin.ini file but it is usually not needed (read,
+                       DON'T have it)
+                       If you are using a non-supported mod or auto detection fails, email
+                       me
+
+
+
+    susers.ini
+    erver.cfg
+    [ sample ]
+    Here is a list of what variables go in your server.cfg and what they do:
+    The easiest way to edit your server.cfg is to just copy the text from this sample server.cfg and just
+    change the values.
+
+
+
+                              variable                                 description
+
+               users_file "users.ini"                 defines the name of the file where the users
+                                                                     info is stored
+
+               ips_file "ips.ini"                    defines the name of the file where the list of
+                                                                reserved ip's are stored
+
+               nicks_file "nicks.ini"                  defines the name of the file where the nick
+                                                               reservation info is stored
+
+               maps_file "maps.ini"                    defines the name of the file where the maps
+                                                         users are allowed to vote for is stored
+               vote_freq_map 240                         defines how often a map vote can happen
+               vote_freq_kick 300                        defines how often a kick vote can occur
+
+               map_ratio 0.5                           defines the ratio of players that must vote
+                                                              yes for a map change to occur
+
+               kick_ratio 0.7                          defines the ratio of players that must vote
+                                                               YES for a user to be kicked
+                                                      the message displayed when a player is kicked
+               nicks_kick_msg "msg"                     because their password doesn't match the
+                                                             password for that reserved nick
+                                                      sets the access level for everyone that joins
+               default_access 1                          the server (1 gives admin_vote_map and
+                                                              admin_vote_kick to everyone)
+
+               reserve_slots 2                        keep a minimum of 2 slots free for people who
+                                                                  have reserved access
+                                                        the info field name to use for the player
+               password_field "admin_pw"              password (users must enter their password by
+                                                           typing setinfo admin_pw <password>)
+
+               admin_debug                               print out debug info, use if you have a
+                                                                         problem
+
+               alarm_time seconds                     The time between displaying alarm_message to
+                                                                      all players.
+               alarm_message "message"                   The message to display to all players.
+                                                      (LINUX only) Whether to use regex expression
+               use_regex "message"                     when matching user/model names. 1 = on, 0 =
+                                                                          off.
+
+               models_file "models.ini"              defines the name of the file where the list of
+                                                               model passwords is stored
+                                                        the info field name to use for the models
+               models_password_field "model_pw"      password (users must enter their pasword for a
+                                                      model by typing setinfo model_pw <password>)
+                                                      the message displayed when a player is kicked
+               models_kick_msg "msg"                 because their model password doesn't match the
+                                                             password from the models.ini.
+
+
+
+    Notes
+     - If vote_freq is not defined voting will be disabled.
+     - If map_ratio is not defined map voting is disabled.
+     - If kick_ratio is not defined kicking will be disabled.
+     - If models_file is not defined model passwording will be disabled.
+     - If nicks_file is not defined nick reservation will be disabled.
+     - If maps_file is not defined then users can vote for any map inthe mapcycle.txt file.
+
+
+
+  users.ini
+  [ sample ]
+  The users.ini file is where you will store all of the player names, passwords, and access levels of the
+  players that you want to have privileges on your server. The format of the users.ini like this:
+                                             username:password:access
+
+  Where:
+   - username : is just the players name exactly how it is when they play the game. If you want to use a
+  colon(":") in the players name then backslash it, like this. [CLA]\:Jodie, this will add user [CLA]:Jodie.
+   - password : is the password you want the client to have. For Win32 passwords are plain text (i.e. butthead)
+  and for linux, passwords need to be crypted using make_pass included with the tgz file.
+   - access : is just the number  you get when you add up all the numbers that correspond to the commands that
+  you want to give this user. (see sample users.ini for examples)
+
+                   access                            commands that can be used
+                all players    admin_help,admin_userlist,admin_version,admin_timeleft
+                     1         admin_vote_kick,admin_vote_map
+                     2         admin_map, admin_timelimit, admin_fraglimit
+                     4         admin_prematch,admin_reload
+                     8         admin_pause,admin_unpause
+                     16        admin_pass,admin_nopass
+                     32        admin_teamplay,admin_friendlyfire
+                     64        admin_say
+                    128        admin_kick
+                    256        admin_ban,admin_unban
+                    512        admin_cfg,admin_status
+                    1024
+                    2048
+                    4096
+                    8192
+                   16384
+                   32768       let this user use a reserve spot
+
+
+
+
+
+  nicks.ini
+  [ sample ]
+  The nicks.ini file is simple, all you have to put in it is a list of players and passwords of those who don't
+  want others using their names. The basic concept is "I password protected my name". Thats all, its not that
+  hard. Here is the format of the nicks.ini:
+                                                 username:password
+
+  Where username and password are the same as in the users.ini.
+
+  It is a good idea to reserve nicks for all players that are in the users.ini, it just prevents confusion.
+
+
+
+ ips.ini
+ [ sample ]
+ The ips.ini file is very simple also, it just specifies what ip addresses have access to take up one of the
+ reserved slots. IP address are define in the IP_ADDRESS/NETMASK format (i.e 192.168.1.0/255.255.255.0 to match
+ 192.168.1.0-255)
+
+
+
+   models.ini                                                                                                  [
+   sample ]
+   The models.ini file is simple, all you have to put in it is a list of models and passwords of those who don't
+   want others using their models. The basic concept is "I password protected my model". Thats all, its not that
+   hard. Here is the format of the models.ini:
+                                                model_name:password
+
+   Where model_name is the name of the model to protect (i.e "sas" ) and password is the password to protect
+   that model (same as users.ini).
+
+   You can use this function to reserve your clans models only for use by clan members on your server.
+
+
+
+    maps.ini                                                                                                  [
+    sample ]
+    This file contains a list of maps that players are allowed to vote for. Here is the format of the maps.ini:
+                                                     map_name
+
+    Where map_name is the name of the map which users can vote for with admin_vote_maps (i.e "2fort" )
+
+    You can use this function to restrict which maps users can vote for on your server. This is so you can have
+    special maps which cannot be accessed through voting.
+
+
+
+                       make_pass  [ Linux Only ]
+                       For all you penguins...
+
+                       make_pass is just a perl script that uses libcrypt to generate
+                       encrypted passwords. If you are using linux then I shouldn't even
+                       explain to you how to use it, but I will just in case you're new to
+                       it or something like that. Here is the format of the make_pass
+                       command:
+
+                                       make_pass [-n] <username> <password>
+
+                       Where:
+                        - -n : with this flag the output is read to be pasted into any of
+                       the ini files
+                        - <username> : is the players name when they are playing the game
+                        - <password> : is the desired password in plain text
+
+                       For example, if I want a user name Jodie with password bob, this is
+                       how I do it. Cd in to your hlds_l directory then type: make_pass
+                       Jodie bob at prompt. It should output jog2guNs5Pi3w. so there is
+                       your password, just use that in the users.ini and the nicks.ini.
+                       Just remember that the client still has to type in the plain text
+                       password, not the encrypted one.
+
+
+

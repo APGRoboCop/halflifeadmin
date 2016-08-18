@@ -1,0 +1,99 @@
+Outstanding items
+-----------------------
+
+CURRENT UNSOLVED ISSUES:
+mysql access in small
+put info about adding clan tag protection in FAQ
+make the docs obvious about how setinfo works
+models not reporting right? (http://www.cfgn.net/vbulletin/showthread.php?postid=27824#post27824)
+
+
+ISSUES TO DOUBLE CHECK OR GET MORE DATA:
+vote overflow message  http://www.cfgn.net/vbulletin/showthread.php?postid=53146#post53146  (new timer system should fix it ...)
+large names not being recognised? (could not repeat problem)
+public_slots misreporting before the first client connects (is this a problem?, also should be fixed now)
+multiple matches cause a kick? (couldn't replicate for users.ini, will happen in MYSQL)
+ping kick not working? (couldn't replicate. Wait for more reports I spose)
+
+
+
+WISH LIST ITEMS:
+let ini files be got via http (this ain't as easy as it sounds)
+tk stuff (via usermsg.cpp idea)
+reserving for spectators
+gui config tool  (karel is doing this)
+band via ip addr
+centersay() location option
+make swear word detect replace swear words (i.e f*ck with love ...)
+
+
+
+Completed
+-----------
+scripting (DONE 16/7/00)
+option for encrypting or not (plaintext linux passwords) (DONE 15/7/00)
+fix admin_ban (probably fixed 15/7/00)
+fix firearms support for new stuff ( DONE 13/7/00)
+case insensitive name ( DONE 15/7/000)
+make alarm messages stay longer (DONE 16/7/00)
+free reserve_slots based on worst ping (DONE 17/7/00)
+install scripts (DONE 16/7/00)
+changelevel() drops people? (NOPE, it doesn't!)
+add user param to auth() (FIXED 27/8/00)
+timeleft() output (FIXED 27/8/00)
+ban() buggered ( FIXED (hopefully) 27/8/00)
+make global vars work in timer calls (FIXED 27/8/00)
+getvar() that returns a string (ADDED getstrvar() 27/8/00)
+fix default_access for votes ( FIXED 27/8/00)
+vote_freq problem (FIXED 27/8/00)
+made admin mod add every 10 mins, not 5 :) (27/8/00)
+log who starts a vote (in script) (DONE 8/10/2000)
+fix two : 's in users file i.e ( [:BT:] ) (DONE 8/10/2000)
+fix vote crash (DONE 8/10/2000)
+fix kick! (get_username fails with a userid above 9?) (DONE 8/10/2000)
+remove passwords from log output (DONE 8/10/2000)
+get a users wonid from the script (DONE 8/10/2000)
+make changelevel work with mapcyclefile trick (so scoreboard shows) (DONEish 8/10/2000)
+	(added writefile and resetfile functions so its possible)
+	(http://server.counter-strike.net/cgi-bin/postings.cgi?action=reply&forum=Admin+Mod&number=12&topic=000355.cgi&TopicSubject=Score+List)
+reserve_type 1, name of kicked person when done via ip (DONE 8/10/2000)
+fix vote bug (DONE 21/10/00)
+add client_connect() callback for when clients join the server  (DONE 21/10/00) 
+add user param to access() (DONE 21/10/00)
+fix security hole (DONE 21/10/00)
+do something with the new nick system (DONE 28/10/2000)
+add new cvar that is 0/1 based on if public slots are available on the server 
+   (http://server.counter-strike.net/ubb/Forum12/HTML/000504.htm) (DONE 28/10/2000)
+flood protection for say (do this in the scripting engine :)
+fix % bug (DONE 5/11/2000)
+playing sound to user (DONE 5/11/2000)
+reserve slots via wonid  (DONE 5/11/2000)  (users.ini now accepts username or wonid) 
+stop the crashes when script_file is not defined (exit more nicely) (DONE 9/11/2000)
+FLF problems? (http://www.cfgn.net/vbulletin/showthread.php?postid=17867#post17867) ( all entities weren't exported, fgrep was being bad, fixed now) (DONE 3/12/00)
+mysql and new auth system (updated code to work with new system) (DONE 3/12/00)
+redo pw crypting scheme (http://www.cfgn.net/vbulletin/showthread.php?threadid=978) (DONE 3/12/00)
+mysql support in win32 (DONE 3/12/00)
+make a listmaps() command (DONE 3/12/00, list_maps() func in small)
+admin_ban is only perm bans? (script problem!) (NOT DOING, scripting issue)
+1.x version update (DONE 3/12/00)
+needing to have 16384 access level (DONE 3/12/00)
+add setinfo() callback into script (DONE 4/12/00)
+fixes messageex() print postitions (redid small enum fields :) (DONE 5/12/00)
+messageex() and print_chat not working? (couldn't not replicate, prolly jags say() bug ;) ) ( DONE 7/12/00, bad struct defn)
+setinfo reading/writing from scripts (use setinfo to set arbitary cvars on the server ) ( DONE 8/12/00) 
+escape name passed to MyuSQL (for ' char ...) (DONE 17/1/01)
+make a "team" page with me,jag,fah,will, [who]them? and everyone I have forgotten :) (DONE)
+up the password timeout (now 3 hours)(DONE 3/2/01)
+make noclip and god mode damn obvious it is being run (all clients get a msg bout it) (DONE 3/2/01)
+map voting in w2k not working? (more than 4-5 players in server then it stops?) (New timer system) (DONE 3/2/01)
+update to latest small engine (DONE 4/2/01)
+pipe redirection to let people enter admin commands via server console (admin_command ) (DONE 4/2/01) 
+make admin mod commands appear on the server console (DONE 4/2/01)
+remove extra newline on logging exec functions (DONE 4/2/01)
+add more file funcs :http://www.cfgn.net/vbulletin/showthread.php?postid=33155#post33155 (DONE 4/2/01)
+credit "NIAFC-T" <t@niafc.de> for updated readfile function (DONE 4/2/01)
+msg about execclient() to all users? ( was bug in jags script I think) (IS jags script)
+reserve_type 1 no longer working? (a users file misconfig I think) (got a patch for this)
+HBP kick method (via script?) (ping_kick does this)
+checking for changed files, i.e model cheats (can't do, each mod needs to implement) (PunkBuster does this, www.punkbuster.com)
+

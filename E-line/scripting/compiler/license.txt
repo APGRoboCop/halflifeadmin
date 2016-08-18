@@ -1,0 +1,44 @@
+The software toolkit "Small", the compiler, the abstract machine and the
+documentation, are copyright (c) 1997-2002 by ITB CompuPhase. The Intel
+assembler implementation of the abstract machine and the just-in-time compiler
+(specifically the files AMXEXEC.ASM, JITR.ASM and JITS.ASM) are copyright
+(c) 1998-2001 Marc Peter.
+
+Permission is hereby granted, without written agreement and without paid
+license or royalty fees, to use, copy, modify, and distribute this software
+and its documentation for any purpose, subject to the following conditions:
+
+1. The above copyright notice and this permission notice shall appear in all
+   copies or substantial portions of the source code of this software. No
+   notice or acknowledgement is required in binary distributions of this
+   software.
+
+2. The origin of this software must not be misrepresented; you may not
+   claim that you wrote the original software, for example.
+
+3. Modifications of this software that do not originate from ITB CompuPhase
+   must be explicitly mentioned in a README file or another appropriate
+   place. Altered copies of this software must not be misrepresented as being
+   the original software.
+
+4. The name "Small" may and should be used to designate the language, its
+   compiler and the abstract machine implemented in this software and
+   described in the Small manual, even if the software is embedded in any
+   other system, as long as its syntax and semantics remain unchanged.
+
+The use of this software as a subsystem of a larger software product is
+explicitly allowed, regardless of whether that larger product is proprietary,
+gratis or commercially available. If you use this software in a product, an
+acknowledgment in the product's documentation would be appreciated but is not
+required.
+
+ITB CompuPhase specifically disclaims any warranties, including, but not
+limited to, the implied warranties of merchantability and fitness for a
+particular purpose. The software is provided on an "as is" basis, and
+ITB CompuPhase has no obligation to provide maintenance, support, updates,
+enhancements or modifications.
+
+ITB CompuPhase cannot be held liable for any damage or loss of profits that
+results from the use of the software (or part thereof), or from the inability
+to use it.
+

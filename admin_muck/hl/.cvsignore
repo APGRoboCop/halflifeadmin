@@ -1,0 +1,17 @@
+obj                
+objMM
+*.opt
+*.ncb
+AMX32M.LIB
+mp.plg
+Release
+Debug
+ReleaseMM
+DebugMM
+*.obj
+*.sbr
+*.aps
+MYSQL
+MySQL_MM
+Debug_MySQL_MM
+

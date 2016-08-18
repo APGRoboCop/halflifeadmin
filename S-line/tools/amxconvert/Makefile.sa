@@ -1,0 +1,28 @@
+
+FLAGS = -DLINUX
+
+OBJS = osdep.o amxconv_l.o amxconv.o main_sa.o 
+
+ifdef DEBUG
+	CFLAGS = -g -ggdb
+else
+	CFLAGS = -O3
+endif
+
+CFLAGS += -I../../commonlib/include -fPIC
+CXXFLAGS = $(CFLAGS)
+
+LFLAGS = -L../../commonlib -lamcommon -fPIC
+
+.cc.o:
+	$(CXX) -Wall $(CXXFLAGS) $(FLAGS) -o $@ -c $< 
+
+.cpp.o:
+	$(CXX) -Wall $(CXXFLAGS) $(FLAGS) -o $@ -c $< 
+
+amxconvert: $(OBJS)
+	$(CXX) -Wall -o $@ $(OBJS) $(LFLAGS) 
+
+clean:
+	rm -f *.o *~ amxconvert
+

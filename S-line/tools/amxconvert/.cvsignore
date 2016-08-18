@@ -1,0 +1,12 @@
+Debug
+Release
+*.ncb
+*.plg
+*.opt
+moc_*
+amxconverterdialogbase.cpp
+amxconverterdialogbase.h
+amxconvert
+amxconv
+*.amx
+

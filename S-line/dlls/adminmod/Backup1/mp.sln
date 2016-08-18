@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp", "mp.vcxproj", "{5E77A8C0-CC22-459C-99AF-773FB84EA362}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beta MM|x86 = Beta MM|x86
+		Debug MM|x86 = Debug MM|x86
+		Debug MySQL MM|x86 = Debug MySQL MM|x86
+		Debug|x86 = Debug|x86
+		MySQL Beta MM|x86 = MySQL Beta MM|x86
+		MySQL MM|x86 = MySQL MM|x86
+		MYSQL|x86 = MYSQL|x86
+		PgSQL Beta MM|x86 = PgSQL Beta MM|x86
+		PgSQL MM|x86 = PgSQL MM|x86
+		Profile|x86 = Profile|x86
+		Release MM|x86 = Release MM|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Beta MM|x86.ActiveCfg = Beta MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Beta MM|x86.Build.0 = Beta MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Debug MM|x86.ActiveCfg = Debug MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Debug MM|x86.Build.0 = Debug MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Debug MySQL MM|x86.ActiveCfg = Debug MySQL MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Debug MySQL MM|x86.Build.0 = Debug MySQL MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Debug|x86.ActiveCfg = Debug|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Debug|x86.Build.0 = Debug|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.MySQL Beta MM|x86.ActiveCfg = MySQL Beta MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.MySQL Beta MM|x86.Build.0 = MySQL Beta MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.MySQL MM|x86.ActiveCfg = MySQL MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.MySQL MM|x86.Build.0 = MySQL MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.MYSQL|x86.ActiveCfg = MYSQL|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.MYSQL|x86.Build.0 = MYSQL|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.PgSQL Beta MM|x86.ActiveCfg = PgSQL Beta MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.PgSQL Beta MM|x86.Build.0 = PgSQL Beta MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.PgSQL MM|x86.ActiveCfg = PgSQL MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.PgSQL MM|x86.Build.0 = PgSQL MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Profile|x86.ActiveCfg = Profile|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Profile|x86.Build.0 = Profile|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Release MM|x86.ActiveCfg = Release MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Release MM|x86.Build.0 = Release MM|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Release|x86.ActiveCfg = Release|Win32
+		{5E77A8C0-CC22-459C-99AF-773FB84EA362}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

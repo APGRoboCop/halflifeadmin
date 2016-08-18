@@ -1,0 +1,27 @@
+Admin mod
+-----------
+
+By Alfred Reynolds and botman
+
+
+Compiling
+_____________
+
+Requirements:
+
+halflife sdk installed.
+
+
+Win32: just open the mp.dsw file and compile it. Trust me, you know more
+about how win32 does its thng than I do. If anyone wants to make a proper
+project, I will add it :)
+
+Linux: just type "make".
+
+
+-------------------------------
+
+Problems?
+go to http://halflifeadmin.sourceforge.net
+
+You can submit bugs,comments or grab the latest version from there.

@@ -1,0 +1,45 @@
+#! /bin/sh
+
+sed=`(echo "sed" | sed -e 's/sed/des/') 2> /dev/null`
+if [ x"$sed" != 'xdes' ] ; then
+	echo ""
+	echo "I could not find the program 'sed' on your system."
+	echo "This program is needed for 'compile' to work and it"
+	echo "should be installed by default on every Unix system."
+	echo "Please install the program 'sed' before continuing."
+	echo ""
+	exit
+fi
+
+
+bindir=../binaries
+compdir=../compiler
+incdir=../include
+
+if [ ! -x ${compdir}/sc ] ; then
+	echo ""
+	echo "I could not find the Small compiler 'sc' in the"
+	echo "directory $compdir. It is either missing or not"
+	echo "executable. Exiting."
+	echo ""
+	exit
+fi
+
+if [ ! -d ${bindir} ] ; then
+    mkdir $bindir ;
+fi
+
+resall=0
+
+for file in `ls -1 *.sma` ; do
+    amx=`echo $file | sed 's/\.sma/.amx/'`
+    ${compdir}/sc  '-;+' -i${incdir} -o${bindir}/$amx $file ;
+    res=$?
+ 
+    if [ $res -gt 1 ] ; then
+        echo "No binary created."
+        \rm -f ${bindir}/$amx
+		resall=1
+    fi
+done
+exit $resall

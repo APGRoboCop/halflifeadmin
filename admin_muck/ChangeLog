@@ -1,0 +1,20 @@
+28.03.01 FZ
+admin_commands:
+	(o) noclip and godmode return a message either saying 'enabled' or 'disbaled'
+	(o) file functions return 0 for an error or failure. writefile() lineendings corrected. fileexists() does not need file_access_read set.
+	(o) consgreet does not print the filename if it decides that it should look for a file but doesn't find it.
+	(o) playerinfo() returns the Team info for Counter-Strike with model lookup
+	(o) getteamcount() return the team count for Counter-Strike, either using model lookup or using CS internal functions.
+
+h_export.cpp:
+	attaches to CS internal functions to access Team Count information for CS. Only avaliable without metamod
+
+util.cpp:
+	new function get_player_team() added to lookup the team for a given player.
+
+users.cpp:
+	(o) pass_compare() checks for NULL pointers and saves an array and a function call
+	(o) AddUserAuth() allows for reconnects after disconnects. admin_reconnect_timeout specifies the allowed timeframe for reconnects without resetting the password first. On the Inet the WONID is used for an additional check. For LANs nothing approriate is available at the moment. The additional ID is saved in ulAuthID.
+	(o) IsNameReserved() now checks permission correctly. Debug message added.
+	(o) ParseUser() allows for emtpy passwords and colons in the username.
+

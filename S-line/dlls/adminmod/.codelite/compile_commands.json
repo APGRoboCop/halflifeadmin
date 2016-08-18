@@ -1,0 +1,77 @@
+[{
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/admin_commands.cpp.o -MF./ReleaseMM/obj/admin_commands.cpp.o.d -MM admin_commands.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\admin_commands.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/gcc.exe -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/amlibc.c.o -MF./ReleaseMM/obj/amlibc.c.o.d -MM amlibc.c",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\amlibc.c"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/AmFSNode.cpp.o -MF./ReleaseMM/obj/AmFSNode.cpp.o.d -MM AmFSNode.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\AmFSNode.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/admin_mod.cpp.o -MF./ReleaseMM/obj/admin_mod.cpp.o.d -MM admin_mod.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\admin_mod.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/amutil.cpp.o -MF./ReleaseMM/obj/amutil.cpp.o.d -MM amutil.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\amutil.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/amxconv_l.cpp.o -MF./ReleaseMM/obj/amxconv_l.cpp.o.d -MM ../../tools/amxconvert/amxconv_l.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\..\\..\\tools\\amxconvert\\amxconv_l.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/authid.cpp.o -MF./ReleaseMM/obj/authid.cpp.o.d -MM authid.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\authid.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/cbase.cpp.o -MF./ReleaseMM/obj/cbase.cpp.o.d -MM cbase.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\cbase.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/CLinkList.cpp.o -MF./ReleaseMM/obj/CLinkList.cpp.o.d -MM CLinkList.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\CLinkList.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/CPlugin.cpp.o -MF./ReleaseMM/obj/CPlugin.cpp.o.d -MM CPlugin.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\CPlugin.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/dll.cpp.o -MF./ReleaseMM/obj/dll.cpp.o.d -MM dll.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\dll.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/h_export.cpp.o -MF./ReleaseMM/obj/h_export.cpp.o.d -MM h_export.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\h_export.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/gcc.exe -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/regex.c.o -MF./ReleaseMM/obj/regex.c.o.d -MM regex.c",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\regex.c"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert -MG -MP -MT./ReleaseMM/obj/statics.cpp.o -MF./ReleaseMM/obj/statics.cpp.o.d -MM statics.cpp",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\statics.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -c C:/Users/Ryan/Dropbox/src/halflifeadmin/S-line/dlls/adminmod/admin_commands.cpp -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -o ./ReleaseMM/obj/admin_commands.cpp.o -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\admin_commands.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -c C:/Users/Ryan/Dropbox/src/halflifeadmin/S-line/dlls/adminmod/admin_mod.cpp -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -o ./ReleaseMM/obj/admin_mod.cpp.o -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\admin_mod.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -c C:/Users/Ryan/Dropbox/src/halflifeadmin/S-line/dlls/adminmod/AmFSNode.cpp -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -o ./ReleaseMM/obj/AmFSNode.cpp.o -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\AmFSNode.cpp"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/gcc.exe -c C:/Users/Ryan/Dropbox/src/halflifeadmin/S-line/dlls/adminmod/amlibc.c -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -o ./ReleaseMM/obj/amlibc.c.o -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\amlibc.c"
+ }, {
+  "directory": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod",
+  "command": "C:/TDM-GCC-32/bin/g++.exe -c C:/Users/Ryan/Dropbox/src/halflifeadmin/S-line/dlls/adminmod/amutil.cpp -g -Wall -O2 -DNDEBUG -DWIN32 -D_WINDOWS -DVALVE_DLL -DHAVE_CONFIG_H -DUSE_METAMOD -o ./ReleaseMM/obj/amutil.cpp.o -I. -I..\\..\\commonlib\\include -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\engine -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\common -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\pm_shared -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\dlls -I..\\..\\..\\..\\hlsdk-2.3-p3-am\\public -I..\\..\\..\\..\\metamod-p-37\\metamod -I..\\amxdll -I..\\..\\tools\\amxconvert",
+  "file": "C:\\Users\\Ryan\\Dropbox\\src\\halflifeadmin\\S-line\\dlls\\adminmod\\amutil.cpp"
+ }]

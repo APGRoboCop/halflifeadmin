@@ -1,0 +1,53 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+my $password = 0;
+my $nickName = 0;
+my $numArgs = 0;
+my $access = 0;
+my $arg1;
+my $arg2;
+my $arg3;
+my $encrypted = "";
+
+
+$numArgs++ if ( $arg1 = shift );
+$numArgs++ if ( $arg2 = shift );
+$numArgs++ if ( $arg3 = shift );
+
+if ( $numArgs == 0 ) {
+  print "Usage: \n";
+  print "\n";
+  print "make_pass <password>    \n";
+  print "          encrypts <password>\n";
+  print "make_pass <username> <password> \n";
+  print "          prints users.ini entry with <username> and encrypted <password>\n";
+  print "make_pass <username> <password> <access>\n";
+  print "          prints users.ini entry with <username>, encrypted <password> and \n";
+  print "          <access> number\n";
+  print "\n";
+  exit 0;
+}  # if
+
+if ( $numArgs == 1 ) {
+  $password = $arg1;
+} else{
+  $nickName = $arg1;
+  $password = $arg2;
+  $access = $arg3 if ( $arg3 );
+}  # if-else
+
+
+$encrypted = crypt( $password,(join '', ('.', '/', 0..9, 'A'..'Z', 'a'..'z')[rand 64, rand 64]));
+
+
+if ($access) {
+  print "$nickName:$encrypted:$access\n";
+} elsif ( $nickName ) {
+  print "$nickName:$encrypted\n";
+} else {
+  print "The users password is:$encrypted\n";
+}
+
+exit 0;

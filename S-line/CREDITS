@@ -1,0 +1,22 @@
+This is a list of people that have added code to this project:
+
+ - Alfred Reynolds <alfred@mazuma.net.au>, most of it
+ - Rod May <me@rod.net>, ip and reserve_slot stuff
+ - Kemal Hadimli <disq@sanane.com>, mysql stuff
+ - Leon Hartwig <hartwig@valvesoftware.com>, various bits
+ - Valve Software, halflife ;)
+ - Thiadmer Riemersma, the Small engine
+ - Jason <jason@ertp.com> for getting me to include a scripting engine 
+ - Botman, for writing the loader code and comming up with the ENTITY workaround
+ - M.R. van Schouwen, a couple bug fixes 
+ - Rod May, ip and reserve_slot stuff 
+ - Kemal Hadimli, mysql stuff 
+ - [WHO]Them, for scripting goodness 
+ - Nathan O'Sullivan, scripting functions 
+ - Jaguar, scripting functions and patches 
+ - NIAFC-T, For some C code for scripting commands. 
+ - Jon Paul Nollmann, for giving me the goods for the 2.50 MySQL loadtable code
+ - David Mart, VBS installer
+ - Luke Sankey, compile batch files for Windows
+ - Paul Hickman, bug fixes
+ 

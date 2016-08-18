@@ -1,0 +1,9 @@
+Amxdll.aps
+AMX16.DEF
+amxcons.opt
+*.ncb
+Release
+Debug
+*.plg
+*.obj
+*.gz

@@ -1,0 +1,8 @@
+sc.exe
+Debug
+Release
+Debug_sc64
+Release_sc64
+*.ncb
+*.plg
+*.opt

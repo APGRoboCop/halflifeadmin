@@ -1,0 +1,58 @@
+#! /bin/sh
+
+sed=`(echo "sed" | sed -e 's/sed/des/') 2> /dev/null`
+if [ x"$sed" != 'xdes' ] ; then
+	echo ""
+	echo "I could not find the program 'sed' on your system."
+	echo "This program is needed for 'compile' to work and it"
+	echo "should be installed by default on every Unix system."
+	echo "Please install the program 'sed' before continuing."
+	echo ""
+	exit
+fi
+
+if [ x"$1" = 'x' ] ; then
+	echo ""
+	echo "Usage: ./compile <script name>"
+	echo " e.g.: ./compile plugin_base.sma"
+	echo ""
+	exit
+fi
+
+if [ ! -f $1 ] ; then
+	echo ""
+	echo "The script '$1' does not exist."
+	echo "Please provide a valid script file."
+	echo ""
+	exit
+fi
+
+
+bindir=../binaries
+incdir=../include
+compdir=../compiler
+
+
+if [ ! -x ${compdir}/sc ] ; then
+	echo ""
+	echo "I could not find the Small compiler 'sc' in the"
+    echo "directory $compdir. It is either missing or not"
+    echo "executable. Exiting." 
+	echo ""
+	exit
+fi
+
+
+if [ ! -d ${bindir} ] ; then
+    mkdir $bindir ;
+fi
+
+amx=`echo $1 | sed 's/\.sma/.amx/'`
+
+${compdir}/sc '-;+' -i${incdir} -o${bindir}/$amx $1
+res=$?
+ 
+if [ $res -gt 1 ] ; then
+    echo "No binary created."
+    \rm -f ${bindir}/$amx
+fi

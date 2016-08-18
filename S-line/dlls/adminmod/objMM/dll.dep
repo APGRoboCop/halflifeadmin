@@ -1,0 +1,26 @@
+objMM/dll.o objMM/dll.dep : dll.cpp apsymbols.h version.h amutil.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/cvardef.h extdll.h \
+  ../../../halflifeadmin/includes/vector.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/const.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/in_buttons.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/progdefs.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/edict.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/eiface.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/archtypes.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/custom.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/crc.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/Sequence.h \
+  ../../../halflifeadmin/includes/cdll_dll.h util.h \
+  ../../../halflifeadmin/includes/activity.h \
+  ../../../halflifeadmin/includes/enginecallback.h \
+  ../../tools/amxconvert/osdep.h \
+  ../../../halflifeadmin/includes/saverestore.h \
+  ../../../halflifeadmin/includes/cbase.h \
+  ../../../halflifeadmin/includes/schedule.h \
+  ../../../halflifeadmin/includes/monsterevent.h \
+  ../../../halflifeadmin/includes/basemonster.h \
+  ../../../halflifeadmin/includes/gamerules.h \
+  ../../../halflifeadmin/includes/maprules.h \
+  ../../../halflifeadmin/includes/player.h ../amxdll/amx.h \
+  ../amxdll/sclinux.h timer.h users.h constants.h authid.h CPlugin.h \
+  CLinkList.cpp CLinkList.h

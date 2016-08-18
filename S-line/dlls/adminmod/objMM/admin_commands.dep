@@ -1,0 +1,16 @@
+objMM/admin_commands.o objMM/admin_commands.dep : admin_commands.cpp apsymbols.h regex.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/dlls/extdll.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/dlls/vector.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/const.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/in_buttons.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/progdefs.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/edict.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/eiface.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/archtypes.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/custom.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/crc.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/common/cvardef.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/engine/Sequence.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/dlls/cdll_dll.h users.h \
+  constants.h authid.h CPlugin.h ../amxdll/amx.h ../amxdll/sclinux.h \
+  CLinkList.cpp CLinkList.h amutil.h amlibc.h statics.h

@@ -1,0 +1,103 @@
+26.05.2001:
+	-- admin_map stores the mp_timelimit. This is useful for people
+	who don't have mp_timelimit set in their server.cfg.
+
+28.05.2001:
+	Added KillGlow() function to turn off glow when admin_fun is set
+	to 0.
+
+02.06.2001:
+	I try to sum up all changes since the 2.50 release here:
+
+	Fixed various typos.
+
+	plugin_CS:
+	----------
+
+	The restrict message is lowercase to make it narrower.
+
+	plugin_TFC:
+	-----------
+
+	Fixed a bug using admin_tfc_balance instead of the correct cvar
+	name admin_balance_teams.
+
+	plugin_base:
+	------------
+
+	admin_hostname uses the whole name, not only the first word.
+
+	admin_map and admin_vote_map store the mp_timelimit before they
+	set it to 1. It is restored after the mapchange.
+
+	admin_pass will echo the current password if none is supplied.
+
+	admin_vsay checks if a vote is allowed.
+
+	plugin_hlds_mapvote:
+	--------------------
+
+	ACCESS_CONTROL_VOTE replaces ACCESS_ALL for admin_cancelvote,
+	admin_denyvote and admin_startvote. 
+
+	Fixed an echoing message and the extend vote
+
+	plugin_message:
+	---------------
+
+	Setting admin_connect_msg to "0" will not display a connect
+	message, although the timer is run.
+
+	Setting admin_repeat_msg to "0" will not display a repeat message
+	but the timer is not killed if it was started. It will continue to
+	run and setting admin_repeat_msg to a different value will again
+	display that string.
+
+	The repeat message frequqency can be set with
+	admin_repeat_freq. The units are seconds. The minimum value is 15
+	seconds. Setting it to 0 will not start the timer. The timer
+	cannot be started by setting it to a different value during a
+	map. It will only be started at a mapchange.
+
+	plugin_retribution:
+	-------------------
+
+	admin_slay uses the new slay() function and is thus independant
+	from the setting of allow_execclient. It will only issue the
+	message and the thunderclap noise if the target was really
+	slayn. It respects admin_quiet.
+
+	The same is true for admin_slay_team.
+
+
+	admin.inc:
+	----------
+
+	Added rainbow() function.
+	Added slay() function.
+	
+	Overriding admin_quiet will not print the admins name.
+
+
+08.06.2001:
+	Moved access level for _execclient, _execall and _execteam to
+	65536. 
+
+	Increased pause between easteregg triggers to eight minutes to
+	make it less annoying.
+
+
+16.06.2001:
+	Updated the compilation .bat files to match the ones from the
+	release so that they work under Win95. They have been adjusted to
+	the local directory structure.
+
+	Make the mp_timelimit storing in plugin_base more efficient. Well,
+	I'm not even sure it worked before.
+
+	Added the plugin_exec() native function definition to admin.inc
+
+18.06.2001:
+	Updated admin_messagemode to use the plugin_exec() function on
+	admin_* commands.
+

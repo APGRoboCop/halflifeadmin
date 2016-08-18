@@ -1,0 +1,47 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "adminmod", "adminmod.vcproj", "{F42502E0-FAA4-44E9-9E1D-36BF75635D13}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DEDB5C6A-5ECF-46C2-8807-7A6988C21F13} = {DEDB5C6A-5ECF-46C2-8807-7A6988C21F13}
+		{23F79DFC-02A5-46CB-9ADC-318EE996F6CD} = {23F79DFC-02A5-46CB-9ADC-318EE996F6CD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "amxdll", "..\..\amxdll\msvc71\amxdll.vcproj", "{25645A7D-C2D7-4204-97F4-928E98A5708E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\..\..\lib\commonlib\msvc71\commonlib.vcproj", "{23F79DFC-02A5-46CB-9ADC-318EE996F6CD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XMLMarkup", "..\..\..\lib\xmlmarkup\msvc71\XMLMarkup.vcproj", "{DEDB5C6A-5ECF-46C2-8807-7A6988C21F13}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{F42502E0-FAA4-44E9-9E1D-36BF75635D13}.Debug.ActiveCfg = Debug|Win32
+		{F42502E0-FAA4-44E9-9E1D-36BF75635D13}.Debug.Build.0 = Debug|Win32
+		{F42502E0-FAA4-44E9-9E1D-36BF75635D13}.Release.ActiveCfg = Release|Win32
+		{F42502E0-FAA4-44E9-9E1D-36BF75635D13}.Release.Build.0 = Release|Win32
+		{25645A7D-C2D7-4204-97F4-928E98A5708E}.Debug.ActiveCfg = Debug|Win32
+		{25645A7D-C2D7-4204-97F4-928E98A5708E}.Debug.Build.0 = Debug|Win32
+		{25645A7D-C2D7-4204-97F4-928E98A5708E}.Release.ActiveCfg = Release|Win32
+		{25645A7D-C2D7-4204-97F4-928E98A5708E}.Release.Build.0 = Release|Win32
+		{23F79DFC-02A5-46CB-9ADC-318EE996F6CD}.Debug.ActiveCfg = Debug|Win32
+		{23F79DFC-02A5-46CB-9ADC-318EE996F6CD}.Debug.Build.0 = Debug|Win32
+		{23F79DFC-02A5-46CB-9ADC-318EE996F6CD}.Release.ActiveCfg = Release|Win32
+		{23F79DFC-02A5-46CB-9ADC-318EE996F6CD}.Release.Build.0 = Release|Win32
+		{DEDB5C6A-5ECF-46C2-8807-7A6988C21F13}.Debug.ActiveCfg = Debug|Win32
+		{DEDB5C6A-5ECF-46C2-8807-7A6988C21F13}.Debug.Build.0 = Debug|Win32
+		{DEDB5C6A-5ECF-46C2-8807-7A6988C21F13}.Release.ActiveCfg = Release|Win32
+		{DEDB5C6A-5ECF-46C2-8807-7A6988C21F13}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

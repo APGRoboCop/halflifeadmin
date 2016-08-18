@@ -1,0 +1,22 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+my $pass;
+my $nick_format=0;
+
+if ($#ARGV != 1 && $#ARGV != 2) {
+	print "make_pass [-n] <username> <password>\n";
+	exit(1);
+}
+if ($ARGV[0] eq "-n") { $nick_format = 1; shift; }
+
+$pass=crypt($ARGV[1], $ARGV[0]);
+
+if ($nick_format) {
+	print "$ARGV[0]:$pass\n";
+} else {
+	print "The users password is:$pass\n";
+}
+
+exit 0;
