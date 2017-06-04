@@ -62,7 +62,7 @@ extern DLL_GLOBAL edict_t* pAdminEnt;
 extern DLL_GLOBAL mapcycle_t mapcycle;
 extern DLL_GLOBAL timer_struct timers[NUM_TIMERS];
 
-LINK_ENTITY_TO_CLASS(adminmod_timer, CTimer);
+LINK_ENTITY_TO_CLASS(adminmod_timer, CTimer); // Fix needed? [APG]RoboCop[CL]
 
 // Adds a new timer event
 int CTimer::AddTimer(AMX* amx, int iWait, int iRepeat, char* sFunction, char* sParam, edict_t* pEntity)
@@ -212,7 +212,7 @@ BOOL CTimer::StartVote(AMX* amx,
         // If it is a valid player and no bot when bot_protection is turned on.
         if(IsPlayerValid(pPlayer) &&
             !((GETPLAYERWONID(pPlayer->edict()) == 0) && ptAM_botProtection && ((int)ptAM_botProtection->value == 1))) {
-            // ShowMenu_Large (ENT(pPlayer->pev), iBits, MENU_SHOW, sText); -- Old and outdated ? [APG]RoboCop[CL]
+            ShowMenu_Large (ENT(pPlayer->pev), iBits, MENU_SHOW, sText); // Old and outdated ? [APG]RoboCop[CL]
             // Initialize to no vote
             m_iPlayerVotes[i] = 0;
         }

@@ -147,7 +147,8 @@ typedef int BOOL;
 #endif
 /* END LINUX COMPILE */
 
-// Header file containing definition of globalvars_t and entvars_t // Conflicting with HLSDK 2015? [APG]RoboCop[CL]
+// Conflicting with HLSDK 2015? [APG]RoboCop[CL]
+// Header file containing definition of globalvars_t and entvars_t 
 typedef int func_t;   //
 typedef int string_t; // from engine's pr_comp.h;
 typedef float vec_t;  // needed before including progdefs.h

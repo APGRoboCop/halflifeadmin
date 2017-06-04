@@ -12,7 +12,7 @@ MODNAME=amx
 ARCH=admin
 
 #make sure this is the correct compiler for your system
-CC=gcc
+CC=gcc-4.8
 
 OBJDIR=obj
 
@@ -25,15 +25,16 @@ BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
 # -malign-functions=2 -Wall
 
 # full debug flags
- CFLAGS=$(BASE_CFLAGS) -g -ggdb  -Wall -Wconversion
+# CFLAGS=$(BASE_CFLAGS) -g -ggdb  -Wall -Wconversion
 
 #small optimization flags
-# CFLAGS=$(BASE_CFLAGS) -O2 -m486
+CFLAGS=$(BASE_CFLAGS) -mtune=i686 -march=pentium4 -mmmx -msse -msse2 \
+	-O2 -m32 -mfpmath=sse -finline-functions -pipe
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \
-  -fomit-frame-pointer -fexpensive-optimizations -malign-loops=2 \
-  -malign-jumps=2 -malign-functions=2
+#  -fomit-frame-pointer -fexpensive-optimizations -malign-loops=2 \
+#  -malign-jumps=2 -malign-functions=2
 
 #use these when debugging 
 #CFLAGS+=  -ggdb
@@ -47,7 +48,7 @@ ifeq "$(MARCH)" "x86_64"
 endif
 
 #INCLUDEDIRS=-I../linux -I.
-INCLUDEDIRS=
+INCLUDEDIRS= -I.
 
 
 OBJADD=   

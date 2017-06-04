@@ -10,7 +10,8 @@ objMM/cbase.o objMM/cbase.dep : cbase.cpp apsymbols.h extdll.h \
   ../../../../hlsdk-2.3-p4/multiplayer/common/crc.h \
   ../../../../hlsdk-2.3-p4/multiplayer/common/cvardef.h \
   ../../../../hlsdk-2.3-p4/multiplayer/engine/Sequence.h \
-  ../../../../hlsdk-2.3-p4/multiplayer/dlls/cdll_dll.h util.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/dlls/cdll_dll.h \
+  ../../../../hlsdk-2.3-p4/multiplayer/dlls/util.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/activity.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/enginecallback.h \
   ../../../../hlsdk-2.3-p4/multiplayer/common/event_flags.h \
@@ -24,7 +25,7 @@ objMM/cbase.o objMM/cbase.dep : cbase.cpp apsymbols.h extdll.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/maprules.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/player.h \
   ../../../../hlsdk-2.3-p4/multiplayer/pm_shared/pm_materials.h \
-  ../amxdll/amx.h ../amxdll/sclinux.h timer.h \
+  ../amxdll/amx.h ../amxdll/sclinux.h timer.h util.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/client.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/decals.h \
   ../../../../hlsdk-2.3-p4/multiplayer/dlls/game.h

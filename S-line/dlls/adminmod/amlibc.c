@@ -126,6 +126,11 @@ int am_tolower(int ch)
         ch += 'a' - 'A';
     return ch;
 }
+// Fix for am_memccmp? [APG]RoboCop[CL]
+int am_memccmp(const void * s1, const void * s2, int c, size_t n)
+{
+	return 0;
+}
 
 uint64_t am_strtoui64(const char* nptr, char** endptr, int base)
 {

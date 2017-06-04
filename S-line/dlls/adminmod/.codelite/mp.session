@@ -5,7 +5,7 @@
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
       <wxString Value="E:\Dropbox\src\halflifeadmin\S-line\dlls\adminmod\extdll.h" Name="FileName"/>
-      <int Value="244" Name="FirstVisibleLine"/>
+      <int Value="73" Name="FirstVisibleLine"/>
       <int Value="74" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>

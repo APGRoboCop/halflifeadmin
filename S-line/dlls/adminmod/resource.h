@@ -54,7 +54,7 @@
 #endif
 
 // DLL version information
-#define AM_VERSION 2.50.61-beta1
-#define RC_VERSION "2.50.61-b1"
-#define RC_VERS_DWORD 2,50,61,b1
-#define COPYRIGHT_YEAR "2016"
+#define AM_VERSION "2.50.61"
+#define RC_VERSION "2.50.61"
+#define RC_VERS_DWORD "2,50,61,00"
+#define COPYRIGHT_YEAR "2017"

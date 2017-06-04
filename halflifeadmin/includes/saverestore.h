@@ -27,7 +27,7 @@ public:
 
 	int			EntityIndex( entvars_t *pevLookup );
 	int			EntityIndex( edict_t *pentLookup );
-//	int			EntityIndex( EOFFSET eoLookup ); // Not required? [APG]RoboCop[CL]
+	int			EntityIndex( EOFFSET eoLookup );
 	int			EntityIndex( CBaseEntity *pEntity );
 
 	int			EntityFlags( int entityIndex, int flags ) { return EntityFlagsSet( entityIndex, 0 ); }

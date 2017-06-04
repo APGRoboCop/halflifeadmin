@@ -314,7 +314,7 @@ public:
 
 	virtual BOOL FBecomeProne( void ) {return FALSE;};
 	edict_t *edict() { return ENT( pev ); };
-//	EOFFSET eoffset( ) { return OFFSET( pev ); };
+	EOFFSET eoffset( ) { return OFFSET( pev ); };
 	int	  entindex( ) { return ENTINDEX( edict() ); };
 
 	virtual Vector Center( ) { return (pev->absmax + pev->absmin) * 0.5; }; // center point of entity

@@ -266,6 +266,7 @@ public:
     {
         return FALSE;
     }
+	// Create Definition not found? [APG]RoboCop[CL]
     static CBaseEntity*
     Create(char* szName, const Vector& vecOrigin, const Vector& vecAngles, edict_t* pentOwner = NULL);
     void MakeDormant(void){};

@@ -41,6 +41,6 @@
 # the current dll version.
 #
 
-VERSION=2.50.61-beta1
-MSFVERSION=2,50,60,00
+VERSION=2.50.61
+MSFVERSION=2,50,61,00
 

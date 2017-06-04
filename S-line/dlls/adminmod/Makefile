@@ -68,7 +68,7 @@ endif
 
 
 # The default target to build
-DEFTARGET= metamod
+DEFTARGET= Ometamod
 
 # The version number 
 include Version.mk
@@ -133,9 +133,9 @@ ifeq "$(USER)" "flori"
 endif
 
 #make sure this is the correct compiler for your system
-CC=gcc
-#CXX=g++-4.8
-CXX=clang
+CC=gcc-4.8
+CXX=g++-4.8
+#CXX=clang
 
 # !! If you only want to compile and go you shouldn't need to edit anything below this line !!
 ###############################################################################################
@@ -148,7 +148,7 @@ CXX=clang
 OPT=dbg
 SQL=no
 MM=mm
-REL=alpha1
+REL=beta1
 
 default: $(DEFTARGET)
 
@@ -203,7 +203,7 @@ OstandalonePgSQL:
 omm: Ometamod
 
 Ometamod:
-	$(MAKE) am_metamod MM=mm SQL=$(SQL) OPT=opt
+	$(MAKE) am_metamod MM=mm SQL=$(SQL) OPT=opt REL=apg
 
 ommms: OmetamodMySQL
 
@@ -281,9 +281,9 @@ else
 	BETA = -DBETA=\"$(REL)\"
 endif
 
-BASE_CFLAGS=	-include apsymbols.h -march=i686 -ferror-limit=0 \
-		-Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp \
-		-DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
+BASE_CFLAGS=-include apsymbols.h -Dstricmp=strcasecmp -D_strnicmp=strncasecmp \
+	-Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
+	
 XTFLAGS= -DTZONE=\"$(TZONE)\"
 
 ifneq "$(VERSION)" ""
@@ -314,8 +314,8 @@ endif
 
 GCCMAJ = $(shell gcc -dumpversion | sed -e 's/\.[0-9][0-9]*\.[0-9]//')
 
-
-CFWARN = -Wall
+#CFWARN = -Wall
+CFWARN = -w
 
 ifeq "$(GCCMAJ)" "2"
 	CFWARN += -Wbad-function-cast -Wmissing-declarations -Wnested-externs
@@ -326,7 +326,7 @@ ifeq "$(ARCH)" "x86_64"
     # K8 targets only available from gcc 3.4 on.
 	CFOPT =
 else
-	CFOPT = -march=i686 -fpermissive
+	CFOPT = -march=pentium4
 endif
 
 # debug build (WONT WORK WITH omit-frame-pointer !!!!!)
@@ -335,14 +335,10 @@ CFDBG= -g -ggdb
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization 
-CFOPT += -O2 -msse2 -fexpensive-optimizations 
+CFOPT += -mtune=i686 -march=pentium4 -mmmx -msse -msse2 \
+	-O2 -m32 -mfpmath=sse -finline-functions -pipe
 
-ifeq "$(GCCMAJ)" "3"
-    CFOPT += -falign-loops=2 -falign-jumps=2 -falign-functions=2
-else
-	CFOPT += -malign-loops=2 -malign-jumps=2 -malign-functions=2
-endif
-
+CFOPT += -falign-loops=2 -falign-jumps=2 -falign-functions=2
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
 
@@ -366,10 +362,8 @@ SHLIBLDFLAGS=-shared -nodefaultlibs -lc -lgcc
 
 OBJDIR= obj$(ARCHD)
 
-
-INCLUDEDIRS=	-I. -I../amxdll -I../../tools/amxconvert -I../../commonlib/include \
-		-I../../../halflifeadmin/includes -I../../../halflifeadmin/halflifeadmin_sdk2.0 -I$(METASRC) -I$(METADIR)/metamod \
-		-I$(SDKSRC)/engine -I$(SDKSRC)/common -I$(SDKSRC)/pm_shared -I$(SDKSRC)/dlls -I$(SDKSRC)/public
+INCLUDEDIRS=-I../amxdll -I../../tools/amxconvert -I../../commonlib/include -I$(METASRC) \
+	-I$(SDKSRC)/engine -I$(SDKSRC)/common -I$(SDKSRC)/pm_shared -I$(SDKSRC)/dlls 
 
 ifeq "$(MM)" "mm"
 	XTFLAGS+= -DUSE_METAMOD
@@ -401,7 +395,7 @@ endif
 
 #
 # Adminmod source files
-#
+# mutil.cpp required? [APG]RoboCop[CL]
 CPPSRC = \
 dll.cpp h_export.cpp util.cpp \
 admin_commands.cpp users.cpp cbase.cpp timer.cpp \

@@ -340,6 +340,9 @@ typedef char boolean;
 #define false 0
 #define true 1
 
+// This is a seperate function so that we can force an
+// alloca cleanup afterwards - [APG]RoboCop[CL]
+
 static int re_match_2_internal();
 
 /* These are the command codes that appear in compiled regular
@@ -5194,3 +5197,25 @@ void regfree(preg) regex_t* preg;
 }
 
 #endif /* not emacs  */
+
+//Fix for those undeclared below? //[APG]RoboCop[CL]
+/*char * malloc()
+{
+	return NULL;
+}
+
+char * realloc()
+{
+	return NULL;
+}
+
+char * alloca()
+{
+	return NULL;
+}
+
+int re_match_2_internal()
+{
+	return 0;
+}
+*/

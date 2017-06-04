@@ -89,12 +89,14 @@ DLL_GLOBAL float* g_pflTimeLimit = NULL;
 
 // this structure contains a list of supported mods and their dlls names
 // To add support for another mod add an entry here, and add all the
-// exported entities to link_func.cpp + Added Support for Wizard Wars, Wanted!, TS, NS, BB, BG, ZP, ESF and HL1
+// exported entities to link_func.cpp + Added Support for Wizard Wars, Wanted!, TS, NS, BB, BG, ZP, ESF and Sven v5
 // 1st/2nd Party Mods for SteamPipe - [APG]RoboCop[CL]
 
 #ifndef USE_METAMOD
 mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/dlls/cs.so" },
-    { "czero", "czero\\dlls\\mp.dll", "cstrike/dlls/cs.so" }, { "valve", "valve\\dlls\\hl.dll", "valve/dlls/hl.so" },
+    { "czero", "czero\\dlls\\mp.dll", "cstrike/dlls/cs.so" },
+	{ "valve", "valve\\dlls\\hl.dll", "valve/dlls/hl.so" },
+	{ "dmc", "dmc\\dlls\\dmc.dll", "dmc/dlls/dmc.so" },
     { "bg", "bg\\dlls\\bg.dll", "ts/dlls/bg_i386.so" },
     { "ts", "ts\\dlls\\mp.dll", "ts/dlls/ts_i386.so", "ts/dlls/ts_i686.so" },
     { "ns", "ns\\dlls\\ns.dll", "ns/dlls/ns_i386.so" }, { "zp", "zp\\dlls\\mp.dll", "zp/dlls/hl_i386.so" },
@@ -107,20 +109,21 @@ mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/
     { "firearms", "firearms\\dlls\\firearms.dll", "firearms/dlls/fa_i386.so" },
     { "goldeneye", "goldeneye\\dlls\\mp.dll", "goldeneye/dlls/golden_i386.so" },
     { "oz", "oz\\dlls\\mp.dll", "Oz/dlls/mp_i386.so" },
-	{ "svencoop", "svencoop\\dlls\\hl.dll", "svencoop/dlls/hl_i386.so", "svencoop/dlls/hl.so" },
+	{ "svencoop", "svencoop\\dlls\\server.dll", "svencoop/dlls/server.so" },
     { "si", "si\\dlls\\si.dll", "si/dlls/si_i386.so" },
     { "frontline", "frontline\\dlls\\frontline.dll", "frontline/dlls/front_i386.so" },
     { "arg", "arg\\dlls\\hl.dll", "arg/dlls/arg_i386.so" },
     { "gangstawars", "gangstawars\\dlls\\hl.dll", "gangstawars/dlls/gansta_i386.so" },
     { "wizardwars", "wizardwars\\dlls\\wizardwars.dll", "wizardwars/dlls/wizardwars_i386.so" },
-	{ "wizwars", "wizwars\\dlls\\mp_i386.so", "wizwars/dlls/hl.dll" },
+	{ "wizwars", "wizwars/dlls/hl.dll", "wizwars\\dlls\\mp_i386.so" },
     { "swarm", "swarm\\dlls\\swarm.dll", "swarm/dlls/swarm_i386.so" },
     { "gearbox", "gearbox\\dlls\\opfor.dll", "gearbox/dlls/opfor.so" },
-    { "dod", "dod\\dlls\\hl.dll", "dod/dlls/dod.so" },
+    { "dod", "dod\\dlls\\hl.dll", "dod/dlls/dod.so", "dod/dlls/dod_i386.so" },
     { "ricochet", "ricochet\\dlls\\mp.dll", "ricochet/dlls/ricochet.so" },
     { "wasteland", "wasteland\\dlls\\hl.dll", "wasteland/dlls/whl_linux.so" },
     { "wantedsp", "wantedsp\\dlls\\wanted.dll", "wantedsp/dlls/wanted.so" },
-    { "esf_openbeta", "esf_openbeta\\dlls\\hl.dll" }, { "esf", "esf\\dlls\\hl.dll", "esf/dlls/hl_i386.so" },
+    { "esf_openbeta", "esf_openbeta\\dlls\\hl.dll" },
+	{ "esf", "esf\\dlls\\hl.dll", "esf/dlls/hl_i386.so" },
 	
 	/*	{"action",            "ahl"MODARCH".so",          "ahl.dll",           "Action Half-Life"},
 	{"ag",                "ag"MODARCH".so",           "ag.dll",            "Adrenaline Gamer Steam"},
@@ -466,9 +469,9 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 
     if(strcasecmp(mod_name, "cstrike") == 0) {
 #ifdef _WIN32
-        snprintf(dll_name, 2048, "%s\\dlls\\mp.dll", game_dir);
+        snprintf(dll_name, 2048, "%s\\dlls\\%s.dll", game_dir);
 #else
-        snprintf(dll_name, 2048, "%s/dlls/cs.so", game_dir);
+        snprintf(dll_name, 2048, "%s/dlls/%s.so", game_dir);
 #endif
     } // if
 
