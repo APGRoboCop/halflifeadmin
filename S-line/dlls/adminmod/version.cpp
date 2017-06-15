@@ -23,13 +23,13 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *   In addition, as a special exception, the author gives permission to
- *   link the code of this program with the Half-Life Game Engine ("HL
- *   Engine") and Modified Game Libraries ("MODs") developed by VALVe,
- *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox
- *   Software ("Gearbox").  You must obey the GNU General Public License
- *   in all respects for all of the code used other than the HL Engine and
- *   MODs from Valve or Gearbox. If you modify this file, you may extend
- *   this exception to your version of the file, but you are not obligated
+ *   link the code of this program with the Half-Life Game Engine ("HL 
+ *   Engine") and Modified Game Libraries ("MODs") developed by VALVe, 
+ *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox 
+ *   Software ("Gearbox").  You must obey the GNU General Public License 
+ *   in all respects for all of the code used other than the HL Engine and 
+ *   MODs from Valve or Gearbox. If you modify this file, you may extend 
+ *   this exception to your version of the file, but you are not obligated 
  *   to do so.  If you do not wish to do so, delete this exception statement
  *   from your version.
  *
@@ -40,6 +40,7 @@
  *
  */
 
-char* COMPILE_DTTM = __DATE__ ", " __TIME__;
+
+char* COMPILE_DTTM = __DATE__", "__TIME__;
 
 char* COMPILE_DATE = __DATE__;

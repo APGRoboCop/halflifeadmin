@@ -16,7 +16,7 @@ CC=gcc-4.8
 
 OBJDIR=obj
 
-BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
+BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -Wall
 
 
 #safe optimization
@@ -28,8 +28,7 @@ BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
 # CFLAGS=$(BASE_CFLAGS) -g -ggdb  -Wall -Wconversion
 
 #small optimization flags
-CFLAGS=$(BASE_CFLAGS) -mtune=i686 -march=pentium4 -mmmx -msse -msse2 \
-	-O2 -m32 -mfpmath=sse -finline-functions -pipe
+CFLAGS=$(BASE_CFLAGS) -march=i686 -O2 -m32
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \

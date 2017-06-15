@@ -49,9 +49,9 @@
  *
  */
 #ifndef OPT_TYPE
-#if defined(_MSC_VER) && defined(_DEBUG)
+#if defined(_DEBUG)
 #define OPT_TYPE "debugging"
-#elif defined(_MSC_VER) && defined(_NDEBUG)
+#elif defined(_NDEBUG)
 #define OPT_TYPE "optimized"
 #else
 #define OPT_TYPE "default"

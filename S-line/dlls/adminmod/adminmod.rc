@@ -1,4 +1,43 @@
-// Microsoft Visual C++ generated resource script.
+//
+// ===========================================================================
+//
+// $Id: adminmod.rc,v 1.4 2003/09/11 19:27:43 darope Exp $
+//
+//
+// Copyright (c) 1999-2003 Alfred Reynolds, Florian Zschocke, Magua
+//
+//   This file is part of Admin Mod.
+//
+//   Admin Mod is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation; either version 2 of the License, or
+//   (at your option) any later version.
+//
+//   Admin Mod is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with Admin Mod; if not, write to the Free Software
+//   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+//   In addition, as a special exception, the author gives permission to
+//   link the code of this program with the Half-Life Game Engine ("HL 
+//   Engine") and Modified Game Libraries ("MODs") developed by VALVe, 
+//   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox 
+//   Software ("Gearbox").  You must obey the GNU General Public License 
+//   in all respects for all of the code used other than the HL Engine and 
+//   MODs from Valve or Gearbox. If you modify this file, you may extend 
+//   this exception to your version of the file, but you are not obligated 
+//   to do so.  If you do not wish to do so, delete this exception statement
+//   from your version.
+//
+// ===========================================================================
+//
+// Comments:
+//
+//Microsoft Developer Studio generated resource script.
 //
 #include "resource.h"
 
@@ -16,8 +55,10 @@
 // German (Germany) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 #pragma code_page(1252)
+#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -25,18 +66,18 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "\r\n"
     "\0"
@@ -52,9 +93,12 @@ END
 // English (Australia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 #pragma code_page(1252)
+#endif //_WIN32
 
+#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -66,8 +110,8 @@ VS_VERSION_INFO$(USE_METAMOD) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -82,18 +126,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61.0"
-            VALUE "InternalName", "admin_MM"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM.dll"
-            VALUE "PrivateBuild", "optimized; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61.0"
-            VALUE "SpecialBuild", "Metamod"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM.dll\0"
+            VALUE "PrivateBuild", "optimized; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "Metamod\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -109,8 +153,8 @@ VS_VERSION_INFO$(NO_METAMOD) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -125,18 +169,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod HLDS DLL"
-            VALUE "FileVersion", "2.50.61"
-            VALUE "InternalName", "admin_MM"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin.dll"
-            VALUE "PrivateBuild", "optimized; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61"
-            VALUE "SpecialBuild", "standalone"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod HLDS DLL\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin.dll\0"
+            VALUE "PrivateBuild", "optimized; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "standalone\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -152,8 +196,8 @@ VS_VERSION_INFO$(USE_METAMOD_DEBUG) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -168,18 +212,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61"
-            VALUE "InternalName", "admin_MM"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM.dll"
-            VALUE "PrivateBuild", "debugging; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61"
-            VALUE "SpecialBuild", "Metamod"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM.dll\0"
+            VALUE "PrivateBuild", "debugging; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "Metamod\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -195,8 +239,8 @@ VS_VERSION_INFO$(NO_METAMOD_DEBUG) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -211,18 +255,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod HLDS DLL"
-            VALUE "FileVersion", "2.50.61"
-            VALUE "InternalName", "admin_MM"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin.dll"
-            VALUE "PrivateBuild", "debugging; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61"
-            VALUE "SpecialBuild", "standanlone"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod HLDS DLL\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin.dll\0"
+            VALUE "PrivateBuild", "debugging; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "standanlone\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -238,8 +282,8 @@ VS_VERSION_INFO$(MYSQL) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -254,18 +298,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod HLDS DLL"
-            VALUE "FileVersion", "2.50.61"
-            VALUE "InternalName", "admin_MM (mysql)"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_mysql.dll"
-            VALUE "PrivateBuild", "optimized; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61"
-            VALUE "SpecialBuild", "mysql"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod HLDS DLL\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM (mysql)\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_mysql.dll\0"
+            VALUE "PrivateBuild", "optimized; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "mysql\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -281,8 +325,8 @@ VS_VERSION_INFO$(MYSQL_MM) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -297,18 +341,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61"
-            VALUE "InternalName", "admin_MM (mysql)"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM_mysql.dll"
-            VALUE "PrivateBuild", "optimized; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61"
-            VALUE "SpecialBuild", "Metamod MySQL"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM (mysql)\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM_mysql.dll\0"
+            VALUE "PrivateBuild", "optimized; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "Metamod MySQL\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -317,6 +361,7 @@ BEGIN
     END
 END
 #endif
+
 
 #if defined(APSTUDIO_INVOKED) || defined(PGSQL_MM)
 #if defined(APSTUDIO_INVOKED)
@@ -324,8 +369,8 @@ VS_VERSION_INFO$(PGSQL_MM) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -340,18 +385,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61"
-            VALUE "InternalName", "admin_MM (pgsql)"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM_pgsql.dll"
-            VALUE "PrivateBuild", "optimized; release"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61"
-            VALUE "SpecialBuild", "Metamod PostgreSQL"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "\0"
+            VALUE "InternalName", "admin_MM (pgsql)\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM_pgsql.dll\0"
+            VALUE "PrivateBuild", "optimized; release\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "\0"
+            VALUE "SpecialBuild", "Metamod PostgreSQL\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -361,14 +406,16 @@ BEGIN
 END
 #endif
 
+
+
 #if defined(APSTUDIO_INVOKED) || defined(USE_METAMOD_BETA)
 #if defined(APSTUDIO_INVOKED)
 VS_VERSION_INFO$(USE_METAMOD_BETA) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,61,0
- PRODUCTVERSION 2,50,61,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -383,18 +430,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61-beta"
-            VALUE "InternalName", "admin_MM"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM.dll"
-            VALUE "PrivateBuild", "optimized; beta"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61-beta"
-            VALUE "SpecialBuild", "Metamod"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "-beta\0"
+            VALUE "InternalName", "admin_MM\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM.dll\0"
+            VALUE "PrivateBuild", "optimized; beta\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "-beta\0"
+            VALUE "SpecialBuild", "Metamod\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -410,8 +457,8 @@ VS_VERSION_INFO$(MYSQL_MM_BETA) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,66,0
- PRODUCTVERSION 2,50,66,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -426,18 +473,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61-beta"
-            VALUE "InternalName", "admin_MM (mysql)"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM_mysql.dll"
-            VALUE "PrivateBuild", "optimized; beta"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61-beta"
-            VALUE "SpecialBuild", "Metamod MySQL"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "-beta\0"
+            VALUE "InternalName", "admin_MM (mysql)\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM_mysql.dll\0"
+            VALUE "PrivateBuild", "optimized; beta\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "-beta\0"
+            VALUE "SpecialBuild", "Metamod MySQL\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -453,8 +500,8 @@ VS_VERSION_INFO$(PGSQL_MM_BETA) VERSIONINFO
 #else
 VS_VERSION_INFO VERSIONINFO
 #endif
- FILEVERSION 2,50,66,0
- PRODUCTVERSION 2,50,66,0
+ FILEVERSION RC_VERS_DWORD
+ PRODUCTVERSION RC_VERS_DWORD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x29L
@@ -469,18 +516,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org"
-            VALUE "CompanyName", "Alfred Reynolds"
-            VALUE "FileDescription", "Admin Mod plugin to Metamod"
-            VALUE "FileVersion", "2.50.61-beta"
-            VALUE "InternalName", "admin_MM (pgsql)"
-            VALUE "LegalCopyright", "Copyright Â© 2001-2015 by Alfred Reynolds"
-            VALUE "LegalTrademarks", " "
-            VALUE "OriginalFilename", "admin_MM_pgsql.dll"
-            VALUE "PrivateBuild", "optimized; beta"
-            VALUE "ProductName", "Admin Mod"
-            VALUE "ProductVersion", "2.50.61-beta"
-            VALUE "SpecialBuild", "Metamod PostgreSQL"
+            VALUE "Comments", "Admin Mod provides improved administration for Half-Life servers. See http://www.adminmod.org\0"
+            VALUE "CompanyName", "Alfred Reynolds\0"
+            VALUE "FileDescription", "Admin Mod plugin to Metamod\0"
+            VALUE "FileVersion", RC_VERSION "-beta\0"
+            VALUE "InternalName", "admin_MM (pgsql)\0"
+            VALUE "LegalCopyright", "Copyright © 2001-" COPYRIGHT_YEAR " by Alfred Reynolds\0"
+            VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "admin_MM_pgsql.dll\0"
+            VALUE "PrivateBuild", "optimized; beta\0"
+            VALUE "ProductName", "Admin Mod\0"
+            VALUE "ProductVersion", RC_VERSION "-beta\0"
+            VALUE "SpecialBuild", "Metamod PostgreSQL\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -489,6 +536,9 @@ BEGIN
     END
 END
 #endif
+
+
+#endif    // !_MAC
 
 #endif    // English (Australia) resources
 /////////////////////////////////////////////////////////////////////////////

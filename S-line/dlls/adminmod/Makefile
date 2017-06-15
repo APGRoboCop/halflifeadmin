@@ -68,7 +68,7 @@ endif
 
 
 # The default target to build
-DEFTARGET= Ometamod
+DEFTARGET= metamod
 
 # The version number 
 include Version.mk
@@ -135,7 +135,8 @@ endif
 #make sure this is the correct compiler for your system
 CC=gcc-4.8
 CXX=g++-4.8
-#CXX=clang
+#CC=clang
+#CXX=clang++
 
 # !! If you only want to compile and go you shouldn't need to edit anything below this line !!
 ###############################################################################################
@@ -148,7 +149,7 @@ CXX=g++-4.8
 OPT=dbg
 SQL=no
 MM=mm
-REL=beta1
+REL=beta2
 
 default: $(DEFTARGET)
 
@@ -314,8 +315,8 @@ endif
 
 GCCMAJ = $(shell gcc -dumpversion | sed -e 's/\.[0-9][0-9]*\.[0-9]//')
 
-#CFWARN = -Wall
-CFWARN = -w
+CFWARN = -Wall
+#CFWARN = -w
 
 ifeq "$(GCCMAJ)" "2"
 	CFWARN += -Wbad-function-cast -Wmissing-declarations -Wnested-externs
@@ -324,9 +325,9 @@ endif
 
 ifeq "$(ARCH)" "x86_64"
     # K8 targets only available from gcc 3.4 on.
-	CFOPT =
+	CFOPT = -march=athlon64
 else
-	CFOPT = -march=pentium4
+	CFOPT = -march=i686 
 endif
 
 # debug build (WONT WORK WITH omit-frame-pointer !!!!!)
@@ -335,10 +336,9 @@ CFDBG= -g -ggdb
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization 
-CFOPT += -mtune=i686 -march=pentium4 -mmmx -msse -msse2 \
-	-O2 -m32 -mfpmath=sse -finline-functions -pipe
-
-CFOPT += -falign-loops=2 -falign-jumps=2 -falign-functions=2
+CFOPT = -m32 -march=i686 -mtune=generic \
+	-O2 -mfpmath=sse -mmmx -msse -msse2 \
+	-falign-loops=2 -falign-jumps=2 -falign-functions=2
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
 

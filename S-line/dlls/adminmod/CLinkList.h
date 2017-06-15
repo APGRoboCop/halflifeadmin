@@ -23,13 +23,13 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *   In addition, as a special exception, the author gives permission to
- *   link the code of this program with the Half-Life Game Engine ("HL
- *   Engine") and Modified Game Libraries ("MODs") developed by VALVe,
- *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox
- *   Software ("Gearbox").  You must obey the GNU General Public License
- *   in all respects for all of the code used other than the HL Engine and
- *   MODs from Valve or Gearbox. If you modify this file, you may extend
- *   this exception to your version of the file, but you are not obligated
+ *   link the code of this program with the Half-Life Game Engine ("HL 
+ *   Engine") and Modified Game Libraries ("MODs") developed by VALVe, 
+ *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox 
+ *   Software ("Gearbox").  You must obey the GNU General Public License 
+ *   in all respects for all of the code used other than the HL Engine and 
+ *   MODs from Valve or Gearbox. If you modify this file, you may extend 
+ *   this exception to your version of the file, but you are not obligated 
  *   to do so.  If you do not wish to do so, delete this exception statement
  *   from your version.
  *
@@ -41,62 +41,49 @@
  * comments needed here.  The CLinkList class holds a linked
  * list of CLinkItem classes, which contain void* data.  The
  * class is nice enough to delete() the void* data when the
- *links are destroyed.
+ *links are destroyed. 
  *
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 
-template <class T, bool isArray = false> class CLinkItem
-{
+template<class T, bool isArray = false> class CLinkItem {
 
-private:
-    CLinkItem<T, isArray>* m_pNext;
-    T* m_pData;
+private :
+	CLinkItem<T,isArray>* m_pNext;
+	T* m_pData;
 
 public:
-    CLinkItem()
-    {
-        m_pNext = 0;
-        m_pData = 0;
-    };
-    ~CLinkItem()
-    {
-        if(m_pData != 0) {
-            if(isArray) {
-                delete[] m_pData;
-            } else {
-                delete(m_pData);
-            }
-        }
-        m_pData = 0;
-    };
-    T* Data();
-    void SetData(T* pData);
-    CLinkItem<T, isArray>* NextLink();
-    void SetNextLink(CLinkItem<T, isArray>* pNextLink);
+	CLinkItem(){ m_pNext = 0; m_pData = 0;};
+	~CLinkItem(){
+       if (m_pData != 0) {
+         if ( isArray ) {
+           delete[] m_pData;
+		 } else {
+           delete(m_pData);
+		 }
+	   }
+       m_pData = 0; 
+	};
+	T* Data();
+	void SetData(T* pData);
+	CLinkItem<T,isArray>* NextLink();
+	void SetNextLink(CLinkItem<T,isArray>* pNextLink);
 };
 
-template <class T, bool isArray = false> class CLinkList
-{
+template<class T, bool isArray = false> class CLinkList {
 
 private:
-    CLinkItem<T, isArray>* m_pFirst;
+	CLinkItem<T,isArray>* m_pFirst;
 
 public:
-    CLinkList()
-    {
-        m_pFirst = 0;
-    };
-    ~CLinkList()
-    {
-        Init();
-    };
-    int AddLink(T* pData, CLinkItem<T, isArray>* pInsertBefore = NULL);
-    int Count();
-    int DeleteLink(CLinkItem<T, isArray>* pLink);
-    CLinkItem<T, isArray>* FindLink(T* pData);
-    CLinkItem<T, isArray>* FirstLink();
-    void Init();
+	CLinkList(){ m_pFirst = 0; };
+	~CLinkList(){ Init(); };
+	int AddLink(T* pData, CLinkItem<T,isArray>* pInsertBefore = NULL);
+	int Count();
+	int DeleteLink(CLinkItem<T,isArray>* pLink);
+	CLinkItem<T,isArray>* FindLink(T* pData);
+	CLinkItem<T,isArray>* FirstLink();
+	void Init();
 };

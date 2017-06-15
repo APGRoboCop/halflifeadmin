@@ -23,13 +23,13 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *   In addition, as a special exception, the author gives permission to
- *   link the code of this program with the Half-Life Game Engine ("HL
- *   Engine") and Modified Game Libraries ("MODs") developed by VALVe,
- *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox
- *   Software ("Gearbox").  You must obey the GNU General Public License
- *   in all respects for all of the code used other than the HL Engine and
- *   MODs from Valve or Gearbox. If you modify this file, you may extend
- *   this exception to your version of the file, but you are not obligated
+ *   link the code of this program with the Half-Life Game Engine ("HL 
+ *   Engine") and Modified Game Libraries ("MODs") developed by VALVe, 
+ *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox 
+ *   Software ("Gearbox").  You must obey the GNU General Public License 
+ *   in all respects for all of the code used other than the HL Engine and 
+ *   MODs from Valve or Gearbox. If you modify this file, you may extend 
+ *   this exception to your version of the file, but you are not obligated 
  *   to do so.  If you do not wish to do so, delete this exception statement
  *   from your version.
  *
@@ -39,7 +39,7 @@
  *
  * Most of the code below was taken from the diet libc. The diet libc is GPL
  * software, the copyright holder is Felix von Leitner.
- * http://www.fefe.de/dietlibc/
+ * http://www.fefe.de/dietlibc/ 
  *
  * The code was modified for Admin Mod needs.
  *
@@ -47,7 +47,7 @@
  *
  * Comments:
  *
- * Standard C library functions with changed behaviour for
+ * Standard C library functions with changed behaviour for 
  * programming convenience.
  *
  */
@@ -56,110 +56,107 @@
 #include <string.h> /* strlen() */
 #include "amlibc.h"
 
-void* am_memccpy(void* dst, const void* src, int c, size_t count)
+ 
+void *am_memccpy(void *dst, const void *src, int c, size_t count) 
 {
-    char* a = dst;
-    const char* b = src;
-    ++count;
-    while(--count) {
-        *a++ = *b;
-        if(*b == c) {
-            return (void*)a;
-        }
-        b++;
+  char *a = dst;
+  const char *b = src;
+  ++count;
+  while (--count)
+  {
+    *a++ = *b;
+    if (*b==c)
+    {
+      return (void *)a;
     }
-    return 0;
+    b++;
+  }
+  return 0;
+} 
+
+
+char *am_strncpy(char *dest, const char *src, size_t n) 
+{
+	if ( am_memccpy(dest,src,0,n) == 0 ) {
+		dest[n-1] = 0; // make sure the string is zero-terminated 
+	}  // if
+	return dest;
 }
 
-char* am_strncpy(char* dest, const char* src, size_t n)
-{
-    if(am_memccpy(dest, src, 0, n) == 0) {
-        dest[n - 1] = 0; // make sure the string is zero-terminated
-    }                    // if
-    return dest;
-}
 
-int am_strcasecmp(const char* s1, const char* s2)
+int  am_strcasecmp ( const char* s1, const char* s2 )
 {
-    register unsigned int x2;
-    register unsigned int x1;
+    register unsigned int  x2;
+    register unsigned int  x1;
 
-    while(1) {
-        x2 = *s2++ - 'A';
-        if(x2 < 26u)
-            x2 += 32;
-        x1 = *s1++ - 'A';
-        if(x1 < 26u)
-            x1 += 32;
-        if(x2 != x1)
+    while (1) {
+        x2 = *s2++ - 'A'; if (x2 < 26u) x2 += 32;
+        x1 = *s1++ - 'A'; if (x1 < 26u) x1 += 32;
+        if ( x2 != x1 )
             break;
-        if(x1 == (unsigned int)-'A')
+        if ( x1 == (unsigned int)-'A' )
             break;
     }
 
     return x1 - x2;
 }
 
-char* am_strcasestr(const char* haystack, const char* needle)
+
+
+char *am_strcasestr(const char *haystack, const char *needle) 
 {
 
-    size_t nl = strlen(needle);
-    size_t hl = strlen(haystack);
-    int i;
+  size_t nl = strlen( needle );
+  size_t hl = strlen( haystack );
+  int i;
 
-    if(nl > hl)
-        return 0;
+  if ( nl > hl ) return 0;
 
-    for(i = hl - nl + 1; i; --i) {
-        if(am_tolower(*haystack) == am_tolower(*needle) && !am_strcasecmp(haystack, needle))
-            return (char*)haystack;
+  for ( i = hl-nl+1; i; --i ) {
+    if ( am_tolower(*haystack) == am_tolower(*needle) && !am_strcasecmp(haystack,needle)) return (char*)haystack;
 
-        ++haystack;
+    ++haystack;
+  }
+
+  return 0;
+}
+
+
+int am_tolower(int ch) 
+{   
+	if ( (unsigned int)(ch - 'A') < 26u )
+		ch += 'a' - 'A';
+	return ch; 
+} 
+
+
+
+uint64_t am_strtoui64(const char *nptr, char **endptr, int base)
+{
+  uint64_t v=0;
+
+  while(isspace(*nptr)) ++nptr;
+
+  if (*nptr == '+') ++nptr;
+  if (!base) {
+    if (*nptr=='0') {
+      base=8;
+      if ((*(nptr+1)=='x')||(*(nptr+1)=='X')) {
+	nptr+=2;
+	base=16;
+      }
     }
-
-    return 0;
+    else
+      base=10;
+  }
+  while(*nptr) {
+    register unsigned char c=*nptr;
+    c=(c>='a'?c-'a'+10:c>='A'?c-'A'+10:c-'0');
+    if (c>=base) break;
+    v=v*base+c;
+    ++nptr;
+  }
+  if (endptr) *endptr=(char *)nptr;
+  return v;
 }
 
-int am_tolower(int ch)
-{
-    if((unsigned int)(ch - 'A') < 26u)
-        ch += 'a' - 'A';
-    return ch;
-}
-// Fix for am_memccmp? [APG]RoboCop[CL]
-int am_memccmp(const void * s1, const void * s2, int c, size_t n)
-{
-	return 0;
-}
-
-uint64_t am_strtoui64(const char* nptr, char** endptr, int base)
-{
-    uint64_t v = 0;
-
-    while(isspace(*nptr))
-        ++nptr;
-
-    if(*nptr == '+')
-        ++nptr;
-    if(!base) {
-        if(*nptr == '0') {
-            base = 8;
-            if((*(nptr + 1) == 'x') || (*(nptr + 1) == 'X')) {
-                nptr += 2;
-                base = 16;
-            }
-        } else
-            base = 10;
-    }
-    while(*nptr) {
-        register unsigned char c = *nptr;
-        c = (c >= 'a' ? c - 'a' + 10 : c >= 'A' ? c - 'A' + 10 : c - '0');
-        if(c >= base)
-            break;
-        v = v * base + c;
-        ++nptr;
-    }
-    if(endptr)
-        *endptr = (char*)nptr;
-    return v;
-}

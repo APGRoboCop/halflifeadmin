@@ -1,4 +1,4 @@
-CC      =gcc
+CC      =gcc-4.8
 CFLAGS	=-DLINUX -Wall
 LINK    =gcc
 LINKFLAGS=

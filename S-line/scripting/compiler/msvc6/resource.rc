@@ -28,8 +28,8 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,8,4,2
- PRODUCTVERSION 1,8,4,2
+ FILEVERSION 1,8,4,5
+ PRODUCTVERSION 1,8,4,5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -47,14 +47,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "ITB CompuPhase\0"
             VALUE "FileDescription", """Small"" language compiler\0"
-            VALUE "FileVersion", "1.8.4-02\0"
+            VALUE "FileVersion", "1.8.4-APG\0"
             VALUE "InternalName", "sc\0"
             VALUE "LegalCopyright", "Copyright © 1997-2003\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "sc.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", """Small"" software toolkit\0"
-            VALUE "ProductVersion", "1.8.4-02\0"
+            VALUE "ProductVersion", "1.8.4-APG\0"
             VALUE "SpecialBuild", "Admin Mod\0"
         END
     END

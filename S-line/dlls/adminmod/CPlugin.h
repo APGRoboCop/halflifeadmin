@@ -23,13 +23,13 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *   In addition, as a special exception, the author gives permission to
- *   link the code of this program with the Half-Life Game Engine ("HL
- *   Engine") and Modified Game Libraries ("MODs") developed by VALVe,
- *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox
- *   Software ("Gearbox").  You must obey the GNU General Public License
- *   in all respects for all of the code used other than the HL Engine and
- *   MODs from Valve or Gearbox. If you modify this file, you may extend
- *   this exception to your version of the file, but you are not obligated
+ *   link the code of this program with the Half-Life Game Engine ("HL 
+ *   Engine") and Modified Game Libraries ("MODs") developed by VALVe, 
+ *   L.L.C ("Valve") and Modified Game Libraries developed by Gearbox 
+ *   Software ("Gearbox").  You must obey the GNU General Public License 
+ *   in all respects for all of the code used other than the HL Engine and 
+ *   MODs from Valve or Gearbox. If you modify this file, you may extend 
+ *   this exception to your version of the file, but you are not obligated 
  *   to do so.  If you do not wish to do so, delete this exception statement
  *   from your version.
  *
@@ -40,7 +40,7 @@
  * A class for handling the plugins.  Each instance
  * of CPlugin represents one actual Small plugin; includes
  * the filename, an AMX virtual machine, a list of exported
- * commands, etc.
+ * commands, etc. 
  *
  */
 
@@ -57,11 +57,11 @@ const int ACCESS_RESERVE_NICK = 16384;
 const int ACCESS_RESERVE_SPOT = 32768;
 
 enum plugin_result {
-    PLUGIN_HANDLED = -1,  // Handled successfully.  Do not continue.
-    PLUGIN_ERROR = 0,     // Error.  Continue.
-    PLUGIN_CONTINUE = 1,  // Handled successfully.  Continue.
-    PLUGIN_NO_ACCESS = 2, // Invalid access.  Continue.
-    PLUGIN_INVAL_CMD = 3, // Invalid command, not implemented by plugin.
+	PLUGIN_HANDLED = -1,            // Handled successfully.  Do not continue.
+	PLUGIN_ERROR = 0,               // Error.  Continue.
+	PLUGIN_CONTINUE = 1,            // Handled successfully.  Continue.
+	PLUGIN_NO_ACCESS = 2,           // Invalid access.  Continue.
+	PLUGIN_INVAL_CMD = 3,           // Invalid command, not implemented by plugin.
 };
 
 #include <string.h>
@@ -70,88 +70,87 @@ enum plugin_result {
 #include "CLinkList.cpp"
 
 int GetUserAccess(edict_t* pEntity);
-void System_Response(char* str, edict_t*);
+void System_Response(char *str,edict_t *);
 
 /* Yeah, it's kludgy to redefine this stuff here, but I
 didn't feel like messing with users.h. */
 
 #ifdef _WIN32
-typedef int(FAR* AMXINIT)(AMX*, void*);
-typedef int(FAR* AMXREGISTER)(AMX*, AMX_NATIVE_INFO*, int);
-typedef int(FAR* AMXFINDPUBLIC)(AMX*, char*, int*);
-typedef int(FAR* AMXEXEC)(AMX*, cell*, int, int, ...);
-typedef int(FAR* AMXGETADDR)(AMX*, cell, cell**);
-typedef int(FAR* AMXSTRLEN)(cell*, int*);
-typedef int(FAR* AMXRAISEERROR)(AMX*, int);
-typedef int(FAR* AMXGETSTRING)(char*, cell*);
-typedef int(FAR* AMXSETSTRING)(cell*, char*, int);
+	typedef int (FAR *AMXINIT)(AMX *,void *);
+	typedef int (FAR *AMXREGISTER)(AMX *,AMX_NATIVE_INFO *,int);
+	typedef int (FAR *AMXFINDPUBLIC)(AMX *,char *,int *);
+	typedef int (FAR *AMXEXEC)(AMX *,cell *,int, int,...);
+	typedef int (FAR *AMXGETADDR)(AMX *,cell,cell **);
+	typedef int (FAR *AMXSTRLEN)(cell *,int *);
+	typedef int (FAR *AMXRAISEERROR)(AMX *,int);
+	typedef int (FAR *AMXGETSTRING)(char *,cell *);
+	typedef int (FAR *AMXSETSTRING)(cell *,char *,int);
 #else
-typedef int (*AMXINIT)(AMX*, void*);
-typedef int (*AMXREGISTER)(AMX*, AMX_NATIVE_INFO*, int);
-typedef int (*AMXFINDPUBLIC)(AMX*, char*, int*);
-typedef int (*AMXEXEC)(AMX*, cell*, int, int, ...);
-typedef int (*AMXGETADDR)(AMX*, cell, cell**);
-typedef int (*AMXSTRLEN)(cell*, int*);
-typedef int (*AMXRAISEERROR)(AMX*, int);
-typedef int (*AMXGETSTRING)(char*, cell*);
-typedef int (*AMXSETSTRING)(cell*, char*, int);
+	typedef int (*AMXINIT)(AMX *,void *);
+	typedef int (*AMXREGISTER)(AMX *,AMX_NATIVE_INFO *,int);
+	typedef int (*AMXFINDPUBLIC)(AMX *,char *,int *);
+	typedef int (*AMXEXEC)(AMX *,cell *,int, int,...);
+	typedef int (*AMXGETADDR)(AMX *,cell,cell **);
+	typedef int (*AMXSTRLEN)(cell *,int *);
+	typedef int (*AMXRAISEERROR)(AMX *,int);
+	typedef int (*AMXGETSTRING)(char *,cell *);
+	typedef int (*AMXSETSTRING)(cell *,char *,int);
 #endif
 
-void UTIL_LogPrintf(char* fmt, ...);
+void UTIL_LogPrintf( char *fmt, ... );
 
 typedef struct {
-    char sCmd[PLUGIN_CMD_SIZE];
-    int iAccess;
-    int iIndex;
+	char sCmd[PLUGIN_CMD_SIZE];
+	int iAccess;
+	int iIndex;
 } command_struct;
 
 typedef struct {
-    char sCmd[PLUGIN_CMD_SIZE];
-    char sHelp[PLUGIN_HELP_SIZE];
-    int iAccess;
+	char sCmd[PLUGIN_CMD_SIZE];
+	char sHelp[PLUGIN_HELP_SIZE];
+	int iAccess;
 } help_struct;
 
-class CPlugin
-{
+class CPlugin {
 
-private:
-    int m_iEventCommandIndex;
-    int m_iEventConnectIndex;
-    int m_iEventDisconnectIndex;
-    int m_iEventInfoIndex;
-    int m_iEventLogIndex;
-    int m_iInitIndex;
-    char m_sFile[BUF_SIZE];
-    char m_sName[BUF_SIZE];
-    char m_sDesc[BUF_SIZE];
-    char m_sVersion[BUF_SIZE];
-    AMX* m_pAmx;
-    void* m_pProgram;
-    CLinkList<command_struct>* m_pCommands;
+private :
+	int m_iEventCommandIndex;
+	int m_iEventConnectIndex;
+	int m_iEventDisconnectIndex;
+	int m_iEventInfoIndex;
+	int m_iEventLogIndex;
+	int m_iInitIndex;
+	char m_sFile[BUF_SIZE];
+	char m_sName[BUF_SIZE];
+	char m_sDesc[BUF_SIZE];
+	char m_sVersion[BUF_SIZE];
+	AMX* m_pAmx;
+	void* m_pProgram;
+	CLinkList<command_struct>* m_pCommands;
 
-    void Cleanup();
-    void InitValues();
-    int LoadFile(char* filename);
+	void Cleanup();
+	void InitValues();
+	int LoadFile(char* filename);
 
 public:
-    // CPlugin::CPlugin(); //is unnecessary and is considered an error by many compilers. [APG]RoboCop[CL]
-    // CPlugin::~CPlugin();
-
-    AMX* amx();
-    BOOL AddCommand(char* Cmd, char* Function, int iAccess);
-    BOOL CheckCommand(const char* Command, unsigned int& Access);
-    plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData);
-    plugin_result HandleConnect(edict_t* pEntity, char* sName, char* IPAddress);
-    plugin_result HandleDisconnect(edict_t* pEntity);
-    plugin_result HandleInfo(edict_t* pentity, char* sNewName);
-    plugin_result HandleLog(char* sLog);
-    BOOL LoadPlugin(char* filename);
-    plugin_result StartPlugin();
-    char* File();
-    char* Name();
-    void SetName(char* sName);
-    char* Desc();
-    void SetDesc(char* sDesc);
-    char* Version();
-    void SetVersion(char* sVersion);
+    CPlugin(); 
+    ~CPlugin(); //AdminMod 2.50.61 fix by Cavey
+	
+	AMX* amx();
+	BOOL AddCommand(char* Cmd, char* Function, int iAccess);
+	BOOL CheckCommand( const char* Command, unsigned int& Access );
+	plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData);
+	plugin_result HandleConnect(edict_t* pEntity, char* sName, char* IPAddress);
+	plugin_result HandleDisconnect(edict_t* pEntity);
+	plugin_result HandleInfo(edict_t* pentity, char* sNewName);
+	plugin_result HandleLog(char* sLog);
+	BOOL LoadPlugin(char* filename);
+	plugin_result StartPlugin();
+	char* File();
+	char* Name();
+	void SetName(char* sName);
+	char* Desc();
+	void SetDesc(char* sDesc);
+	char* Version();
+	void SetVersion(char* sVersion);
 };

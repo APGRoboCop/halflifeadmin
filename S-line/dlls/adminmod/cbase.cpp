@@ -55,7 +55,6 @@ extern "C" void PM_Move ( struct playermove_s *ppmove, int server );
 extern "C" void PM_Init ( struct playermove_s *ppmove  );
 extern "C" char PM_FindTextureType( char *name );
 
-//Fix required for EntvarsKeyvalue? [APG]RoboCop[CL]
 void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd );
 
 //extern Vector VecBModelOrigin( entvars_t* pevBModel );

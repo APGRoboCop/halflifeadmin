@@ -381,7 +381,8 @@ static void checkfunction(value *lval)
   if (sym==NULL || (sym->ident!=iFUNCTN && sym->ident!=iREFFUNC))
     return;             /* no known symbol, or not a function result */
 
-  assert((sym->usage & (uDEFINE | uREAD))!=0);/* at least one should be set */
+  //No longer required for the AdminMod 2.50.60-rc1 plugins? [APG]RoboCop[CL]
+  //assert((sym->usage & (uDEFINE | uREAD))!=0);/* at least one should be set */
   if ((sym->usage & uDEFINE)!=0) {
     /* function is defined, can now check the return value (but make an
      * exception for directly recursive functions)
