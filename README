@@ -4,15 +4,17 @@ Admin Mod v2.50
 By Alfred Reynolds and botman.
 With Florian Zschocke and Jaguar.
 
-NOTE: This Readme is somewhat outdated.
+Fixes by [APG]RoboCop[CL]
 
 Compiling
 _____________
 
 Requirements:
 
-halflife sdk 2.3 installed.
+HLSDK 2.3p4 installed.
+Metamod v1.19 (5:13) Source Code (Metamod-P Src Code works better)
 
+Locate /S-line/dlls/adminmod
 
 Win32: just open the mp.dsw file, choose the version you want
         and compile it.
@@ -26,7 +28,6 @@ Compile the script with compile(.bat) and point the cvar script_file at it
 
 -------------------------------
 
-Problems?
-go to http://www.adminmod.org or http://halflifeadmin.sourceforge.net
+http://www.adminmod.org or http://halflifeadmin.sourceforge.net
 
-You can submit bugs,comments or grab the latest version from there.
+You can submit bugs, comments or grab the latest version from there.
