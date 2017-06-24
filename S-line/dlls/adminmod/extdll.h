@@ -24,7 +24,7 @@
 #endif
 
 #ifdef BETA
-#  define BVERSION VERSION "_" BETA
+#  define BVERSION VERSION "-" BETA
 #else
 #  define BVERSION VERSION
 #endif

@@ -2942,10 +2942,10 @@ static cell slay(AMX *amx, cell *params) {
   }
   
  
-    // Fix by warhead -- [APG]RoboCop[CL]
+    // Fix by warhead - [APG]RoboCop[CL]
     CLIENT_COMMAND(pPlayer->edict(), "kill\n");
     util_kill_player(pPlayer);
-  //other_gFunctionTable.pfnClientKill( pPlayer->edict() );
+    //other_gFunctionTable.pfnClientKill( pPlayer->edict() );
   return 1;
 }
 

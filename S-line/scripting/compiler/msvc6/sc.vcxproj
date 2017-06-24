@@ -22,6 +22,7 @@
     <SccProjectName />
     <SccLocalPath />
     <ProjectGuid>{CF81CEE3-D3D6-40DB-B126-0CEBB244693E}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -153,6 +154,7 @@
       <PrecompiledHeaderOutputFile>.\Release\obj\sc.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release\obj\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\obj\</ProgramDataBaseFileName>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\sc.tlb</TypeLibraryName>
@@ -187,6 +189,7 @@
       <PrecompiledHeaderOutputFile>.\Release_sc64\obj\sc.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release_sc64\obj\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release_sc64\obj\</ProgramDataBaseFileName>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release_sc64\sc.tlb</TypeLibraryName>

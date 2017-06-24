@@ -92,8 +92,8 @@ extern char* COMPILE_DATE;
  */
 #define VDATE COMPILE_DATE
 #define VNAME "Admin Mod"
-#define VAUTHOR "Alfred Reynolds <alfred@valvesoftware.com>"
-#define VURL "http://www.adminmod.org/"
+#define VAUTHOR "Alfred Reynolds & RoboCop <robocop@lycos.co.uk>"
+#define VURL "www.adminmod.org"
 
 /*
 // Various strings for the Windows DLL Resources in res_meta.rc

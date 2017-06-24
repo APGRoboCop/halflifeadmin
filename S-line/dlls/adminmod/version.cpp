@@ -41,6 +41,6 @@
  */
 
 
-char* COMPILE_DTTM = __DATE__", "__TIME__;
+char* COMPILE_DTTM = __DATE__;
 
 char* COMPILE_DATE = __DATE__;

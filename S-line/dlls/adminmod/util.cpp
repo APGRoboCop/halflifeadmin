@@ -111,7 +111,6 @@ void System_Response(char *str,edict_t *pAdminEnt) {
 
 /*
   stop malformed names stuffing up checking
-
 */
 int make_friendly(char *name, BOOL check) {
 	int i; 
@@ -192,18 +191,13 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 // create a message from a template. Possible placeholders in the template are
 // %w: WONID of player entity 
 // %n: nickname of player entity
-
 int create_message( char* _pcTarget, size_t _iMaxLen, const char* _pcFormat, edict_t* _ptediEntity ) {
-
 	char* pcPos;
 	char* pcFormat;
-
 	pcFormat = new char[strlen(_pcFormat)+1];
 	if ( pcFormat == 0 ) return 0; // failed
-
 	memcpy( pcFormat, _pcFormat, strlen(_pcFormat)+1 );
 	pcPos = pcFormat;
-
 	while ( (pcPos = strchr(pcPos, '%')) != 0 ) {
 		pcPos++;
 		switch( *pcPos ) {
@@ -477,13 +471,12 @@ void UTIL_LogPrintfFNL( char *fmt, ... ) {
 }
 
 
-/* 
- * commented out in favour of ClientPrint loop over all players
- * until Valve has fixed the bot problems
+//  commented out in favour of ClientPrint loop over all players
+//  until Valve has fixed the bot problems -- Removed comments to check if it works on HLSDK 2.3-p4 - [APG]RoboCop[CL]
 void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 ) {
-  gmsgTextMsg = REG_USER_MSG( "TextMsg", -1 ); 
+  g_msgTextMsg = REG_USER_MSG( "TextMsg", -1 ); 
   
-  MESSAGE_BEGIN( MSG_ALL, gmsgTextMsg );
+  MESSAGE_BEGIN( MSG_ALL, g_msgTextMsg );
   WRITE_BYTE( msg_dest );
   WRITE_STRING( msg_name );
   
@@ -498,7 +491,6 @@ void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1
   
   MESSAGE_END();
 }
-*/
 
 CBaseEntity *UTIL_FindEntityByString( CBaseEntity *pStartEntity, const
 				      char *szKeyword, const char *szValue )
@@ -1052,8 +1044,8 @@ void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name,
 
 }
 
-
-void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 ) {
+// Possible crash for using commands and says on certain HL1 Mods like TFC and 3rd Party Mods? [APG]RoboCop[CL]
+/*void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 ) {
 	
   int			i;
   
@@ -1064,7 +1056,7 @@ void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1
       if ( pPlayer )
 		  ClientPrint( &(pPlayer->edict()->v), msg_dest, msg_name, param1, param2, param3, param4 );
     }
-}
+}*/
 
 
 void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name, 

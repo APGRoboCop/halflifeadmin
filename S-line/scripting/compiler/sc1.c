@@ -44,9 +44,9 @@
 
 #include "sc.h"
 #ifdef TARGET_64BIT
-#  define VERSION_STR "1.8.4-03 64bit"
+#  define VERSION_STR "1.8.4-APG 64bit"
 #else
-#  define VERSION_STR "1.8.4-03"
+#  define VERSION_STR "1.8.4-APG"
 #endif
 #define VERSION_INT 184
 

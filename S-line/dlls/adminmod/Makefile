@@ -149,7 +149,7 @@ CXX=g++-4.8
 OPT=dbg
 SQL=no
 MM=mm
-REL=beta2
+REL=beta3
 
 default: $(DEFTARGET)
 
@@ -336,8 +336,8 @@ CFDBG= -g -ggdb
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization 
-CFOPT = -m32 -march=i686 -mtune=generic \
-	-O2 -mfpmath=sse -mmmx -msse -msse2 \
+CFOPT = -O2 -m32 -march=i686 -mtune=generic \
+	-fomit-frame-pointer -mfpmath=sse -mmmx -msse -msse2 \
 	-falign-loops=2 -falign-jumps=2 -falign-functions=2
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
