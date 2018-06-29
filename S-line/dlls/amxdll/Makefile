@@ -16,7 +16,7 @@ CC=gcc-4.8
 
 OBJDIR=obj
 
-BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -Wall
+BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
 
 
 #safe optimization
@@ -28,12 +28,11 @@ BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -Wall
 # CFLAGS=$(BASE_CFLAGS) -g -ggdb  -Wall -Wconversion
 
 #small optimization flags
-CFLAGS=$(BASE_CFLAGS) -mtune=generic -march=i686 -O2 -m32 -mmmx -msse -msse2
+CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -msse -msse2 -mfpmath=sse
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \
-#  -fomit-frame-pointer -fexpensive-optimizations -malign-loops=2 \
-#  -malign-jumps=2 -malign-functions=2
+#  -malign-jumps=2 -malign-functions=2 -malign-loops=2 
 
 #use these when debugging 
 #CFLAGS+=  -ggdb
@@ -47,7 +46,7 @@ ifeq "$(MARCH)" "x86_64"
 endif
 
 #INCLUDEDIRS=-I../linux -I.
-INCLUDEDIRS= -I.
+INCLUDEDIRS=
 
 
 OBJADD=   

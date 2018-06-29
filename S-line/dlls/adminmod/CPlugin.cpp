@@ -74,7 +74,7 @@ CPlugin::CPlugin() {
 }
 
 // Destructor
-CPlugin::~CPlugin() {
+CPlugin::~CPlugin() { //Unstable that ~CPlugin is unwanted? [APG]RoboCop[CL]
 	Cleanup();
 }
 

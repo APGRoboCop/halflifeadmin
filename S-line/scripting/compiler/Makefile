@@ -1,6 +1,6 @@
 CC      =gcc-4.8
 CFLAGS	=-DLINUX -Wall
-LINK    =gcc
+LINK    =gcc-4.8
 LINKFLAGS=
 TARGET	=sc
 OBJDIR= obj
@@ -10,7 +10,7 @@ INCDIRS = -I $(AMXINCD)
 
 # debug mode
 #CFLAGS += -g -ggdb
-CFLAGS += -O2
+CFLAGS += -O2 -msse2
 
 ifeq "$(MARCH)" "x86_64"
 	CFLAGS += -DTARGET_64BIT

@@ -516,7 +516,7 @@ LINK_ENTITY_TO_FUNC(tf_weapon_tranq, "tf_weapon_tranq", other_tf_weapon_tranq);
 LINK_ENTITY_TO_FUNC(timer, "timer", other_timer);
 
 // entities for FireArms 2.6 - Added by Frank McNeil for MarineBot - [APG]RoboCop[CL]
-/*
+
 //ammo
 //LINK_ENTITY_TO_FUNC(ammo_ak47);
 LINK_ENTITY_TO_FUNC(ammo_ak74);
@@ -642,7 +642,7 @@ LINK_ENTITY_TO_FUNC(ammo_m112);
 // entities for FireArms 2.4
 LINK_ENTITY_TO_FUNC(ammo_mp5k);
 LINK_ENTITY_TO_FUNC(weapon_mp5k);
-*/
+
 
 // firearms 2.3 entities
 LINK_ENTITY_TO_FUNC(weapon_bizon, "weapon_bizon", other_weapon_bizon);
@@ -1266,7 +1266,7 @@ LINK_ENTITY_TO_FUNC(ammo_spring, "ammo_spring", other_ammo_spring);
 LINK_ENTITY_TO_FUNC(weapon_thompson, "weapon_thompson", other_weapon_thompson);
 LINK_ENTITY_TO_FUNC(ammo_thompson, "ammo_thompson", other_ammo_thompson);
 LINK_ENTITY_TO_FUNC(weapon_bar, "weapon_bar", other_weapon_bar);
-LINK_ENTITY_TO_FUNC(ammo_bar, "ammo_bar", other_ammo_bar);*/
+LINK_ENTITY_TO_FUNC(ammo_bar, "ammo_bar", other_ammo_bar);
 
 // Extra entities acquired from Metamod 1.20 linkgame.cpp - [APG]RoboCop[CL}
 LINK_ENTITY_TO_GAME(AngleIMatrix);
@@ -8443,3 +8443,4 @@ LINK_ENTITY_TO_GAME(zone_nodamage);
 
 LINK_ENTITY_TO_GAME(zone_shelter);
 
+*/

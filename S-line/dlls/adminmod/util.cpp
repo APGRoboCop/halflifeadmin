@@ -1350,7 +1350,8 @@ int get_player_team( CBaseEntity* poPlayer ) {
     if ( !strcmp(acModel, "sas") 
 	 || !strcmp(acModel, "gsg9" )
 	 || !strcmp(acModel, "gign")
-	 || !strcmp(acModel, "urban") ) {
+	 || !strcmp(acModel, "urban")
+	 || !strcmp(acModel, "spetsnaz") ) {
       return 2;
     }  // if
 
@@ -1358,7 +1359,8 @@ int get_player_team( CBaseEntity* poPlayer ) {
 	 || !strcmp(acModel, "leet")
 	 || !strcmp(acModel, "arab")
 	 || !strcmp(acModel, "guerilla")
-	 || !strcmp(acModel, "terror") ) {
+	 || !strcmp(acModel, "terror")
+	 || !strcmp(acModel, "militia")	 ) {
       return 1;
     }  // if
 

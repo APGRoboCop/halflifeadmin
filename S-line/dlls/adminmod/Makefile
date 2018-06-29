@@ -68,11 +68,10 @@ endif
 
 
 # The default target to build
-DEFTARGET= metamod
+DEFTARGET=Ometamod
 
 # The version number 
 include Version.mk
-
 
 # The source pathes to the SDK and metamod
 # These are the settings for a standard installation
@@ -102,7 +101,6 @@ PGSQLLIBDIR= /usr/lib/pgsql
 
 # The directory to test your dll in
 TESTDIR=""
-
 
 
 # Core team members:
@@ -149,7 +147,7 @@ CXX=g++-4.8
 OPT=dbg
 SQL=no
 MM=mm
-REL=beta3
+REL=beta5
 
 default: $(DEFTARGET)
 
@@ -204,7 +202,7 @@ OstandalonePgSQL:
 omm: Ometamod
 
 Ometamod:
-	$(MAKE) am_metamod MM=mm SQL=$(SQL) OPT=opt REL=apg
+	$(MAKE) am_metamod MM=mm SQL=$(SQL) OPT=opt REL=APG
 
 ommms: OmetamodMySQL
 
@@ -325,7 +323,7 @@ endif
 
 ifeq "$(ARCH)" "x86_64"
     # K8 targets only available from gcc 3.4 on.
-	CFOPT = -march=athlon64
+	CFOPT = -march=i686 
 else
 	CFOPT = -march=i686 
 endif
@@ -335,10 +333,9 @@ endif
 CFDBG= -g -ggdb
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
-#full optimization 
-CFOPT = -O2 -m32 -march=i686 -mtune=generic \
-	-fomit-frame-pointer -mfpmath=sse -mmmx -msse -msse2 \
-	-falign-loops=2 -falign-jumps=2 -falign-functions=2
+#full optimization // -O1 works best? [APG]RoboCop[CL]
+CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -msse -msse2 \
+	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
 
@@ -363,7 +360,7 @@ SHLIBLDFLAGS=-shared -nodefaultlibs -lc -lgcc
 OBJDIR= obj$(ARCHD)
 
 INCLUDEDIRS=-I../amxdll -I../../tools/amxconvert -I../../commonlib/include -I$(METASRC) \
-	-I$(SDKSRC)/engine -I$(SDKSRC)/common -I$(SDKSRC)/pm_shared -I$(SDKSRC)/dlls 
+	-I$(SDKSRC)/common -I$(SDKSRC)/engine -I$(SDKSRC)/pm_shared -I$(SDKSRC)/dlls 
 
 ifeq "$(MM)" "mm"
 	XTFLAGS+= -DUSE_METAMOD

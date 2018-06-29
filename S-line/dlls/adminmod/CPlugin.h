@@ -132,7 +132,7 @@ private :
 	void InitValues();
 	int LoadFile(char* filename);
 
-public:
+public:	//Unstable that ~CPlugin is unwanted? [APG]RoboCop[CL]
     CPlugin(); 
     ~CPlugin(); //AdminMod 2.50.61 fix by Cavey
 	

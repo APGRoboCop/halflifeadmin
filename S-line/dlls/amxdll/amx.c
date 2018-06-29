@@ -370,7 +370,7 @@ static int amx_BrowseRelocate(AMX *amx)
   debug= amx->debug(amx)==AMX_ERR_NONE;
   if (debug)
     amx->flags=AMX_FLAG_DEBUG | AMX_FLAG_BROWSE;
-
+// No longer required? [APG]RoboCop[CL]
   #if defined __GNUC__ || defined ASM32 || defined JIT
     amx_Exec(NULL, (cell *)&opcode_list, 0, 0);
   #endif
