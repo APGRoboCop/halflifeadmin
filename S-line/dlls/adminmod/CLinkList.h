@@ -45,8 +45,8 @@
  *
  */
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 template<class T, bool isArray = false> class CLinkItem {
 
@@ -57,7 +57,7 @@ private :
 public:
 	CLinkItem(){ m_pNext = 0; m_pData = 0;};
 	~CLinkItem(){
-       if (m_pData != 0) {
+       if (m_pData != NULL) {
          if ( isArray ) {
            delete[] m_pData;
 		 } else {

@@ -154,13 +154,12 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
   //-- load the AMX engine
   char script_dll[2048];
   const char* pcPlPath = GET_PLUGIN_PATH( PLID );
-  char* pcTmp;
 
-  
+
   memset( script_dll, 0, 2048 );
   snprintf( script_dll, sizeof(script_dll)-strlen(SCRIPT_DLL)-1,"%s", pcPlPath );
 
-  pcTmp = strrchr( script_dll, '/' );
+  char* pcTmp = strrchr(script_dll, '/');
   if ( pcTmp == NULL ) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (%s): incorrect engine path.\n",script_dll );
 	am_exit(1);
@@ -241,7 +240,6 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_GetString)\n");
     am_exit(1);
   }
-
 
 
 #ifdef EXTMM
@@ -496,7 +494,7 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax ) {
 }
 
 const char *GetGameDescription( void ) {
-  const char* pcDescription = 0;
+  const char* pcDescription = NULL;
   int iResult = AM_GetGameDescription( pcDescription );
 
 #ifdef USE_METAMOD
@@ -843,10 +841,10 @@ DLL_FUNCTIONS gFunctionTable =
     NULL,	// DispatchSave,		//pfnSave
     NULL,	// DispatchRestore,		//pfnRestore
     DispatchObjectCollsionBox,	// DispatchObjectCollsionBox,	//pfnAbsBox
-    
+
     NULL,	// SaveWriteFields,		//pfnSaveWriteFields
     NULL,	// SaveReadFields,		//pfnSaveReadFields
-    
+
     NULL,	// SaveGlobalState,		//pfnSaveGlobalState
     NULL,	// RestoreGlobalState,		//pfnRestoreGlobalState
     NULL,	// ResetGlobalState,		//pfnResetGlobalState
@@ -869,17 +867,17 @@ DLL_FUNCTIONS gFunctionTable =
     
     GetGameDescription,		//pfnGetGameDescription    Returns string describing current .dll game.
     NULL,	// PlayerCustomization,		//pfnPlayerCustomization   Notifies .dll of new customization for player.
-    
+
     NULL,	// SpectatorConnect,		//pfnSpectatorConnect      Called when spectator joins server
     NULL,	// SpectatorDisconnect,		//pfnSpectatorDisconnect   Called when spectator leaves the server
     NULL,	// SpectatorThink,		//pfnSpectatorThink        Called when spectator sends a command packet (usercmd_t)
-    
+
     NULL,	// Sys_Error,			//pfnSys_Error				Called when engine has encountered an error
-    
+
     NULL,	// PM_Move,			//pfnPM_Move
     NULL,	// PM_Init,			//pfnPM_Init				Server version of player movement initialization
     NULL,	// PM_FindTextureType,		//pfnPM_FindTextureType
-    
+
     NULL,	// SetupVisibility,		//pfnSetupVisibility        Set up PVS and PAS for networking for this client
     NULL,	// UpdateClientData,		//pfnUpdateClientData       Set up data sent only to specific client
     NULL,	// AddToFullPack,		//pfnAddToFullPack

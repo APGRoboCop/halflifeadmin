@@ -1,0 +1,1 @@
+objMM/authid.o objMM/authid.dep : authid.cpp apsymbols.h authid.h amlibc.h

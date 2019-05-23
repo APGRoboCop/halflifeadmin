@@ -77,11 +77,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="adminmod.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="AmFSNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>

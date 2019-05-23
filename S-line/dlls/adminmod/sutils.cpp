@@ -40,7 +40,7 @@
  */
 
 
-#include <string.h>
+#include <cstring>
 #include "statics.h"
 
 
@@ -49,8 +49,8 @@ apat* pat_search_key( apat* _pPatricia, char* _pcKey ) {
   apat *pThis, *pNext;
   size_t iKeySize = strlen( _pcKey );
 
-  if ( _pPatricia == 0 || _pcKey == 0 ) return 0;
-  if ( iKeySize > static_cast<size_t>(PAT_KEY_SIZE) ) return 0;
+  if ( _pPatricia == NULL || _pcKey == NULL ) return NULL;
+  if ( iKeySize > static_cast<size_t>(PAT_KEY_SIZE) ) return NULL;
 
 #if SAVEKEY
   static char pcKey[PAT_KEY_SIZE];
@@ -72,7 +72,7 @@ apat* pat_search_key( apat* _pPatricia, char* _pcKey ) {
     return pNext;
   }  // if
 
-  return 0;
+  return NULL;
 }  // search_key()
 
 #if SAVEKEY
@@ -92,10 +92,9 @@ const char* get_am_string( char* _pcDest, int _iMaxLen, char* _pucSrc, unsigned 
   static char acStaticBuf[STATSTRING_MAXSIZE];
   unsigned char stack[STACKSIZE];
   short c, top = 0;
-  int len;
-  char* pcDest = 0;
+  char* pcDest = NULL;
 
-  if ( _pcDest == 0 ) {
+  if ( _pcDest == NULL ) {
     _pcDest = acStaticBuf;
     _iMaxLen = STATSTRING_MAXSIZE;
     pcDest = acStaticBuf;
@@ -103,13 +102,13 @@ const char* get_am_string( char* _pcDest, int _iMaxLen, char* _pucSrc, unsigned 
     pcDest = _pcDest;
   }  // if-else
 
-  len = 1;              /* already 1 byte for '\0' */
+  int len = 1;              /* already 1 byte for '\0' */
   for (;;) {
 
     /* Pop byte from stack or read byte from the input string */
     if (top)
       c = stack[--top];
-    else if ((c = *(unsigned char *)_pucSrc++) == '\0')
+    else if ((c = *reinterpret_cast<unsigned char *>(_pucSrc++)) == '\0')
       break;
 
     /* Push pair on stack or output byte to the output string */

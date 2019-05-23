@@ -78,7 +78,7 @@ char *am_strcasestr(const char *haystack, const char *needle);
 
 int am_strcasecmp ( const char* s1, const char* s2 );
 
-void* am_memccpy(void *s1, const void *s2, int c, size_t n);
+void* am_memccpy(void * dst, const void * src, int c, size_t count);
 
 int am_tolower(int ch);
 

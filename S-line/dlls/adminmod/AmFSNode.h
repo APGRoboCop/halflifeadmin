@@ -62,7 +62,7 @@
 #endif
 
 #ifdef WIN32
-#  include <stdlib.h>
+#  include <cstdlib>
 #  include <io.h>
 #  define PATH_MAX _MAX_PATH
 #endif

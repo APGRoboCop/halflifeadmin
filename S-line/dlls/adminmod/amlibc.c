@@ -105,14 +105,13 @@ int  am_strcasecmp ( const char* s1, const char* s2 )
 
 char *am_strcasestr(const char *haystack, const char *needle) 
 {
-
-  size_t nl = strlen( needle );
-  size_t hl = strlen( haystack );
-  int i;
+	const size_t nl = strlen( needle );
+	const size_t hl = strlen( haystack );
 
   if ( nl > hl ) return 0;
 
-  for ( i = hl-nl+1; i; --i ) {
+	//for is only compatible with GCC C99 mode, use -std=c99 [APG]RoboCop[CL]
+  for ( int i = hl - nl + 1; i; --i ) {
     if ( am_tolower(*haystack) == am_tolower(*needle) && !am_strcasecmp(haystack,needle)) return (char*)haystack;
 
     ++haystack;

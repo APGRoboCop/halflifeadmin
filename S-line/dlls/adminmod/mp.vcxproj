@@ -58,73 +58,73 @@
     <SccProjectName>"$/SDKSrc/Public/dlls", NVGBAAAA</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
     <ProjectGuid>{8FB8EF82-7B05-4933-BE3B-59BF7E2808A1}</ProjectGuid>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MySQL Beta MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MySQL MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PgSQL MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MYSQL|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MySQL MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PgSQL Beta MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta MM|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -432,8 +432,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release MM|Win32'">
     <ClCompile>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
@@ -447,9 +445,8 @@
       <PrecompiledHeaderOutputFile>.\ReleaseMM\obj\mp.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\ReleaseMM\obj\</ObjectFileName>
       <ProgramDataBaseFileName>.\ReleaseMM\obj\</ProgramDataBaseFileName>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -864,35 +861,6 @@
     <ClCompile Include="users.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="version.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="adminmod.rc">
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">0x0c09</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NO_METAMOD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Beta MM|Win32'">0x0c09</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Beta MM|Win32'">USE_METAMOD_BETA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">0x0c09</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NO_METAMOD_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Release MM|Win32'">0x0c09</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release MM|Win32'">USE_METAMOD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Debug MM|Win32'">0x0c09</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug MM|Win32'">USE_METAMOD_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='PgSQL Beta MM|Win32'">0x0407</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='PgSQL Beta MM|Win32'">PGSQL_MM_BETA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='MySQL MM|Win32'">0x0407</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='MySQL MM|Win32'">MYSQL_MM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ResourceOutputFileName Condition="'$(Configuration)|$(Platform)'=='MySQL MM|Win32'">.\MySQL_MM/</ResourceOutputFileName>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='MYSQL|Win32'">0x0407</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='MYSQL|Win32'">MYSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='PgSQL MM|Win32'">0x0407</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='PgSQL MM|Win32'">PGSQL_MM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ResourceOutputFileName Condition="'$(Configuration)|$(Platform)'=='PgSQL MM|Win32'">.\PgSQL_MM/</ResourceOutputFileName>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Debug MySQL MM|Win32'">0x0407</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug MySQL MM|Win32'">MYSQL_MM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ResourceOutputFileName Condition="'$(Configuration)|$(Platform)'=='Debug MySQL MM|Win32'">.\MySQL_MM/</ResourceOutputFileName>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='MySQL Beta MM|Win32'">0x0407</Culture>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='MySQL Beta MM|Win32'">MYSQL_MM_BETA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmFSNode.h" />

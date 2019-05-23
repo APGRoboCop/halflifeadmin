@@ -6,6 +6,8 @@
  *  Version: $Id: amx.h,v 1.6 2004/08/02 17:54:13 darope Exp $
  */
 
+#ifndef AMX_H
+#define AMX_H
 #if defined LINUX
   #include "sclinux.h"
 #endif
@@ -314,3 +316,4 @@ int AMXAPI amx_StrLen(cell *cstring, int *length);
 #endif
 
 #endif /* __AMX_H */
+#endif // AMX_H

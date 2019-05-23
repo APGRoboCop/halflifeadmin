@@ -41,8 +41,8 @@
  */
 
 
-#include <stdlib.h>
-#include <errno.h>
+#include <cstdlib>
+#include <cerrno>
 #include "authid.h"
 #include "amlibc.h"
 
@@ -116,7 +116,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			return;
 		}  // if
 
-		char* pcEndptr = 0;
+		char* pcEndptr = NULL;
 		// parse first number
 		m_uiWonid = strtoul( const_cast<char*>(_pcID+6), &pcEndptr, 10 );
 
@@ -173,7 +173,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			return;
 		}  // if
 
-		char* pcEndptr = 0;
+		char* pcEndptr = NULL;
 		// parse first number
 		m_uiWonid = strtoul( const_cast<char*>(_pcID+6), &pcEndptr, 10 );
 
@@ -219,7 +219,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 	} else {
 
 		// it is a won id
-		char* pcEndptr = 0;
+		char* pcEndptr = NULL;
 		m_uiWonid = strtoul( _pcID, &pcEndptr, 10 );
 		//-- Check if the wonid string was valid.
 		//-- Skip following blanks.

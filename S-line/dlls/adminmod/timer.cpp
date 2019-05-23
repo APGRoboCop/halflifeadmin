@@ -96,10 +96,9 @@ int CTimer::AddTimer(AMX* amx, int iWait, int iRepeat, char* sFunction, char* sP
 void CTimer::CalcNextTimer() {
   int iCurrentTime = time(NULL);
   int iNextTime = iCurrentTime + 99999;
-  int i;
-  
+
   m_iNextTimer = INVALID_TIMER;
-  for(i = 0; i < NUM_TIMERS; i++) {
+  for(int i = 0; i < NUM_TIMERS; i++) {
     if ((timers[i].iWait > 0) && (timers[i].iStart > 0) && (timers[i].iStart + timers[i].iWait) < iNextTime) {
       iNextTime = timers[i].iStart + timers[i].iWait;
       m_iNextTimer = i;
@@ -164,19 +163,16 @@ void CTimer::SetPlayerVote(int iIndex, int iVote) {
 }
 
 BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char* sFunction, char* sParam, edict_t *pEntity) {
-  int i;
-  int iTimer;
-  int iDuration = (int)CVAR_GET_FLOAT("amv_vote_duration");
-  CBaseEntity* pPlayer;
-  
-  if (!VoteAllowed())
+	int iDuration = (int)CVAR_GET_FLOAT("amv_vote_duration");
+
+	if (!VoteAllowed())
     return FALSE;
 
-  // Set the vote duration in some sensible intervall.
+  // Set the vote duration in some sensible interval.
   if ( iDuration < 2 ) iDuration = 2;             // minimum 2 seconds
   else if ( iDuration > 1800 ) iDuration = 1800;  // maximum 30 minutes
   
-  iTimer = AddTimer(amx,iDuration,1,sFunction,sParam,pEntity);
+  int iTimer = AddTimer(amx, iDuration, 1, sFunction, sParam, pEntity);
   if (iTimer == INVALID_TIMER)
     return FALSE;
   
@@ -189,8 +185,10 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
   // Initialize the array to -1 (invalid vote)
   memset(m_iPlayerVotes,-1,(MAX_PLAYERS + 1) * sizeof(int));
   // Show the vote
-  for ( i = 1; i <= gpGlobals->maxClients; i++ ) { // send the vote to everyone
-    pPlayer = UTIL_PlayerByIndex(i);
+  for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+  {
+	  // send the vote to everyone
+    CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
 	// If it is a valid player and no bot when bot_protection is turned on.
     if ( IsPlayerValid(pPlayer) && !((GETPLAYERWONID(pPlayer->edict()) == 0) && ptAM_botProtection && ((int)ptAM_botProtection->value == 1)) ) {
       ShowMenu_Large (ENT(pPlayer->pev), iBits, MENU_SHOW, sText);
@@ -240,9 +238,8 @@ void CTimer::SetTimer(int amount) {
 }
 
 
-void CTimer::Think(void) { 
-  int iError;
-  int iIndex;
+void CTimer::Think(void) {
+	int iIndex;
   int iTimer = m_iNextTimer;
   cell iReturn;
   
@@ -256,7 +253,7 @@ void CTimer::Think(void) {
     if (strlen(timers[iTimer].sFunction) <= 0 ) {
       UTIL_LogPrintf( "[ADMIN] ERROR: Timer triggered, but function name is empty.\n");
     } else {
-      iError = amx_FindPublic(timers[iTimer].amx,timers[iTimer].sFunction,&iIndex);
+      int iError = amx_FindPublic(timers[iTimer].amx, timers[iTimer].sFunction, &iIndex);
       
       if (iError != AMX_ERR_NONE) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Timer triggered, but finding function name %s returned error %i\n",timers[iTimer].sFunction,iError);
@@ -265,15 +262,13 @@ void CTimer::Think(void) {
 	if (iTimer == m_iVote) {
 	  int iMaxPossibleVotes = 0;
 	  int iMaxVotes = 0;
-	  int iPlayer;
-	  int iVote;
 	  int iVotes[11] = {0};
 	  int iWinningVote = 0;
 	  
 	  DEBUG_LOG( 4, ("CTimer::Think: Vote ended.") );
 	  
-	  for (iPlayer = 0; iPlayer <= MAX_PLAYERS; iPlayer++) {
-	    iVote = m_iPlayerVotes[iPlayer];
+	  for (int iPlayer = 0; iPlayer <= MAX_PLAYERS; iPlayer++) {
+	    int iVote = m_iPlayerVotes[iPlayer];
 	    
 	    if (iVote >= 0)
 	      iMaxPossibleVotes++;
@@ -311,7 +306,7 @@ void CTimer::Think(void) {
 	  // We offset the timer index by one that we feed to the script
 	  // because we don't want to feed an index 0 timer (hard to
 	  // distinguish that from an error)
-	  if(timers[iTimer].pEntity!=NULL) {
+	  if(timers[iTimer].pEntity!= NULL) {
 	    iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, (cell)(iTimer + 1), (cell)(timers[iTimer].iRepeatCount),
                                                                    (cell)(STRING(timers[iTimer].pEntity->v.netname)), 
                                                                    (cell)(timers[iTimer].sParam));

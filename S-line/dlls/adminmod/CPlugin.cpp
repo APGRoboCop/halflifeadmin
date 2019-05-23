@@ -88,7 +88,6 @@ AMX* CPlugin::amx() {
 // it to be called only if the caller has access iAccess. 
 // Returns TRUE if successful, FALSE otherwise.
 BOOL CPlugin::AddCommand(char* sCmd, char* sFunction, int iAccess) {
-	int iError;
 	int iIndex;
 
 	// Verify that we're a loaded plugin
@@ -98,7 +97,7 @@ BOOL CPlugin::AddCommand(char* sCmd, char* sFunction, int iAccess) {
 	}
 
 	// Verify that the function exists
-	iError = amx_FindPublic(m_pAmx, sFunction, &iIndex);
+	int iError = amx_FindPublic(m_pAmx, sFunction, &iIndex);
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s wants to hook command '%s' to non-existant function '%s'\n",m_sFile,sCmd,sFunction);
 		return FALSE;
@@ -218,7 +217,8 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
 		char name[USERNAME_SIZE];
 		am_strncpy(name,STRING(pEntity->v.netname),USERNAME_SIZE);
 		make_friendly(name,TRUE);
-		iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, (cell)sCmd, (cell)sData, (cell)name, (cell)ENTINDEX(pEntity));
+		iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, (cell)sCmd, (cell)sData, (cell)name,
+		                  (cell)ENTINDEX(pEntity));
     }
     // Check for errors.
     if (iError != AMX_ERR_NONE) {
@@ -261,7 +261,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
     // valid access.
   } else if (pCmd->iAccess != ACCESS_ALL && pEntity != NULL) {
     if ((GetUserAccess(pEntity) & pCmd->iAccess) != pCmd->iAccess) {
-      char* sRejectMsg = (char*)CVAR_GET_STRING("admin_reject_msg");
+      char* sRejectMsg = const_cast<char*>(CVAR_GET_STRING("admin_reject_msg"));
       
       if (sRejectMsg == NULL || FStrEq(sRejectMsg,"0")) {
 		  CLIENT_PRINTF(pEntity, print_console, "You do not have access to this command.\n");
@@ -296,8 +296,6 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
 
 // Handles the connect event; calls plugin_connect, if this plugin implements it.
 plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddress) {
-	int iError;
-	int iIndex;
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
@@ -311,7 +309,7 @@ plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddr
 	}
 
 	// Make sure the entity's index is valid.
-	iIndex = ENTINDEX(pEntity);
+	int iIndex = ENTINDEX(pEntity);
 	if (!(iIndex >= 1 && iIndex <= INT_MAX_PLAYERS)) {
 		UTIL_LogPrintf("[ADMIN] WARNING: CPlugin::HandleConnect called with invalid index %i entity.\n", iIndex);
 		return PLUGIN_ERROR;
@@ -324,7 +322,7 @@ plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddr
 	// Otherwise, call the procedure.
 	// The implementation of plugin_connect is:
 	// plugin_connect(UserName[], IP[], UserIndex);
-	iError = amx_Exec(m_pAmx, &iResult, m_iEventConnectIndex, 3, (cell)sName, (cell)IPAddress, (cell)iIndex);
+	int iError = amx_Exec(m_pAmx, &iResult, m_iEventConnectIndex, 3, (cell)sName, (cell)IPAddress, (cell)iIndex);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_connect\n",m_sFile,iError);
@@ -335,8 +333,6 @@ plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddr
 
 // Handles the disconnect event; calls plugin_disconnect, if this plugin implements it.
 plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
-	int iError;
-	int iIndex;
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
@@ -350,7 +346,7 @@ plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
 	}
 
 	// Make sure the entity's index is valid.
-	iIndex = ENTINDEX(pEntity);
+	int iIndex = ENTINDEX(pEntity);
 	if (!(iIndex >= 1 && iIndex <= INT_MAX_PLAYERS)) {
 		UTIL_LogPrintf("[ADMIN] WARNING: CPlugin::HandleDisconnect called with invalid index %i entity.\n", iIndex);
 		return PLUGIN_ERROR;
@@ -363,7 +359,7 @@ plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_disconnect is:
 	// plugin_disconnect(UserName[], UserIndex);
-	iError = amx_Exec(m_pAmx, &iResult, m_iEventDisconnectIndex, 2, (cell)STRING(pEntity->v.netname), (cell)iIndex);
+	int iError = amx_Exec(m_pAmx, &iResult, m_iEventDisconnectIndex, 2, (cell)STRING(pEntity->v.netname), (cell)iIndex);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_disconnect\n",m_sFile,iError);
@@ -377,8 +373,6 @@ plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
 // that at this point, if the name has changed, STRING(pEntity->v.netname) will still
 // return the old name; thus, the new name gets passed in as a seperate procedure 
 plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
-	int iError;
-	int iIndex;
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
@@ -392,7 +386,7 @@ plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
 	}
 
 	// Make sure the entity's index is valid.
-	iIndex = ENTINDEX(pEntity);
+	int iIndex = ENTINDEX(pEntity);
 	if (!(iIndex >= 1 && iIndex <= INT_MAX_PLAYERS)) {
 		UTIL_LogPrintf("[ADMIN] WARNING: CPlugin::HandleInfo called with invalid index %i entity.\n", iIndex);
 		return PLUGIN_ERROR;
@@ -405,7 +399,8 @@ plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_info is:
 	// plugin_info(OldUserName[],NewUserName[],UserIndex);
-	iError = amx_Exec(m_pAmx, &iResult, m_iEventInfoIndex, 3, (cell)STRING(pEntity->v.netname), (cell)sNewName, (cell)iIndex);
+	int iError = amx_Exec(m_pAmx, &iResult, m_iEventInfoIndex, 3, (cell)STRING(pEntity->v.netname), (cell)sNewName,
+	                      (cell)iIndex);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_info\n",m_sFile,iError);
@@ -416,7 +411,6 @@ plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
 
 // Handles the log event; calls plugin_log, if this plugin implements it.
 plugin_result CPlugin::HandleLog(char* sLog) {
-	int iError;
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
@@ -432,7 +426,7 @@ plugin_result CPlugin::HandleLog(char* sLog) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_log is:
 	// plugin_log(Log[]);
-	iError = amx_Exec(m_pAmx, &iResult, m_iEventLogIndex, 1, (cell)sLog);
+	int iError = amx_Exec(m_pAmx, &iResult, m_iEventLogIndex, 1, (cell)sLog);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_log\n",m_sFile,iError);
@@ -464,8 +458,6 @@ void CPlugin::InitValues() {
 // that file into an AMX virtual machine.  Returns 1 if successful, 0 otherwise.
 int CPlugin::LoadFile(char* sFilename) {
 	bool bFileNeedsConv;
-	int iError;
-	int iFileType;
 	int iAMXsize;
 	FILE *fp;
 	AMX_LINUX_HEADER hdr;
@@ -482,7 +474,7 @@ int CPlugin::LoadFile(char* sFilename) {
 		// If we opened it, read the puppy in
 		fread(&hdr, sizeof hdr, 1, fp);
 		// check .amx file type
-		iFileType = check_header_type( hdr, iAMXsize );
+		int iFileType = check_header_type(hdr, iAMXsize);
 
 		if ( iFileType == INVAL_AMX_HDR ) {
 			// This is no valid AMX file
@@ -604,7 +596,7 @@ int CPlugin::LoadFile(char* sFilename) {
 			memset(m_pAmx, 0, sizeof(AMX));
 			// Now attempt to 'start' the file in the new AMX space
 			// Ignore error indicating that native functions aren't found. The admin functions get registered later.
-			iError = amx_Init(m_pAmx, m_pProgram);
+			int iError = amx_Init(m_pAmx, m_pProgram);
 			if ( iError != AMX_ERR_NONE && iError != AMX_ERR_NOTFOUND ) {
 				UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::LoadFile: Call to amx_Init on plugin '%s' returned error #%i.\n",sFilename, iError);
 				delete[] m_pProgram;

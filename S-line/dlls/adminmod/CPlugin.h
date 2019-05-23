@@ -64,7 +64,7 @@ enum plugin_result {
 	PLUGIN_INVAL_CMD = 3,           // Invalid command, not implemented by plugin.
 };
 
-#include <string.h>
+#include <cstring>
 #include "extdll.h"
 #include "amx.h"
 #include "CLinkList.cpp"

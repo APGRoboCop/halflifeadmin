@@ -42,7 +42,7 @@
  */
 
 
-#include <string.h>
+#include <cstring>
 
 #ifndef _WIN32
 #  include <regex.h>
@@ -141,8 +141,7 @@ static int m_iUserIndex = 1;
 
 const int c_iRecnctWindow = 30;
 
-extern enginefuncs_t  g_engfuncs;
-extern globalvars_t  *gpGlobals;
+
 DLL_GLOBAL BOOL  g_fInitialized;
 DLL_GLOBAL BOOL  g_fIPsLoaded;
 DLL_GLOBAL BOOL  g_fModelsLoaded;
@@ -173,13 +172,10 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
   int iBegin = 0;
   int iEnd = 0;
   int iLength;
-  int iPos;
-  char* sFile;
-  char* sLine;
   CLinkList<char,true>* pLineList = _pPreLineList;
 
   // Load the file up.
-  sFile = (char*)LOAD_FILE_FOR_ME(sFilename,&iLength);
+  char* sFile = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(sFilename, &iLength));
   
   // Check to make sure that we've actually got a file, and it's actually got data.
   if (!(sFile && iLength)) {
@@ -307,12 +303,12 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
 	// Make sure it's not a comment
       } else if (!is_comment(&sFile[iBegin])) {
 	// It passes.  Add it in.
-	sLine = new char[LINE_SIZE];
+	char* sLine = new char[LINE_SIZE];
 	strncpy(sLine, &sFile[iBegin], iEnd - iBegin);
 	// Don't forget to null-terminate.
 	sLine[iEnd - iBegin] = '\0';
 	// Strip off ending whitespace
-	iPos = strlen(sLine) - 1;
+	int iPos = strlen(sLine) - 1;
 	while (iPos > 0 && isspace(sLine[iPos]))
 	  iPos--;
 	if (iPos >= 0)
@@ -363,9 +359,8 @@ int GetFreeSlots(edict_t* pEntityIgnore) {
 		// by one for each slot actually taken already.
 	} else if (iResType == 2) {
 		iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
-		int i;
-		
-		for (i = 1; i <= gpGlobals->maxClients; i++) {
+
+		for (int i = 1; i <= gpGlobals->maxClients; i++) {
 			CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
 			if(IsPlayerValid(pPlayer) && pPlayer->edict() != pEntityIgnore) {
 				if (IsIPReserved(g_AuthArray[i].sIP) || (GetUserAccess(pPlayer->edict()) & ACCESS_RESERVE_SPOT) ) {
@@ -466,10 +461,8 @@ void InitAdminModData(BOOL fFull = FALSE, BOOL fRun = FALSE) {
 
 template<class T, bool isArray> void LoadFile(char* sType, CLinkList<T,isArray>* pList, char* sFileVar, PARSE_FILE fpParse) {
 	char* sFile = const_cast<char*>(get_cvar_file_value( sFileVar ));  // TODO: remove necessity for dirty const cast? 
-  CLinkItem<char,true>* pLine;
-  CLinkList<char,true>* pFile;
-  
-  if (pList == NULL) {
+
+	if (pList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: LoadFile for '%s' called with NULL linked list.\n", sType);
     return;
   }
@@ -498,10 +491,10 @@ template<class T, bool isArray> void LoadFile(char* sType, CLinkList<T,isArray>*
   }  // if-else
 
   // Get the file in linked-list format.
-  pFile = GetFile(sFile);
+  CLinkList<char, true>* pFile = GetFile(sFile);
   if (pFile != NULL) {
     // For every line in the file...
-    pLine = pFile->FirstLink();
+    CLinkItem<char, true>* pLine = pFile->FirstLink();
     while (pLine != NULL) {
       // Parse the line.
       fpParse(pLine->Data());
@@ -665,14 +658,13 @@ int match(const char *string, char *pattern) {
   } else if ((int)CVAR_GET_FLOAT("use_regex")==0)  {
     return (!stricmp(string, pattern));
     // Otherwise, do regex stuff.
-  } else { 
-    int    status;
-    regex_t    re;
+  } else {
+	  regex_t    re;
     
     if ( regcomp(&re, pattern, REG_EXTENDED|REG_NOSUB|REG_ICASE) != 0) {
       return(0);      // report error
     }
-    status = regexec(&re, string, (size_t) 0, NULL, 0);
+    int status = regexec(&re, string, (size_t)0, NULL, 0);
     regfree(&re);
     if (status != 0) {
       return(0);      // report error
@@ -716,7 +708,7 @@ const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 	case 2:
 		MD5_CTX md5Ctx;
 		MD5Init( &md5Ctx );
-		MD5Update( &md5Ctx, (const unsigned char*)_pcPassword, strlen(_pcPassword) );
+		MD5Update( &md5Ctx, reinterpret_cast<const unsigned char*>(_pcPassword), strlen(_pcPassword) );
 		MD5Final( &md5Ctx );
 		sprintmd5( acEncryptPw, md5Ctx.digest );
 		pcEncryptPw = acEncryptPw;
@@ -750,7 +742,7 @@ const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 // sPlayerPassword is the password the player has (via admin_password, or whatever).
 //
 int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
-	const char *sEncrypt = 0;
+	const char *sEncrypt = NULL;
 	
 	if ( sServerPassword == NULL || sPlayerPassword == NULL ) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: pass_compare called with NULL pointer\n" );
@@ -763,7 +755,7 @@ int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
 	// Encrypt the password 
 	sEncrypt = pass_encrypt( sPlayerPassword, sServerPassword );
 
-    if ( NULL == sEncrypt ) {
+    if (NULL == sEncrypt ) {
     	UTIL_LogPrintf ( "[ADMIN] ERROR: pass_compare: encryption returned an error\n" );
     	return 0;
     }
@@ -859,17 +851,14 @@ BOOL IsModelReserved(char* sModel) {
 // <model name>:<password>
 BOOL ParseModel(char* sLine) {
   char sDelimiter[] = ":";
-  char* sNameToken;
-  char* sPasswordToken;
-  model_struct* tModel;
-  
-  sNameToken = strtok(sLine,sDelimiter);
+
+  char* sNameToken = strtok(sLine, sDelimiter);
   if (sNameToken == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: No Model name found: '%s'\n", sLine);
   } else if ((int)strlen(sNameToken) > USERNAME_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: Model name too long: '%s'\n", sNameToken);
   } else {
-    sPasswordToken = strtok(NULL,sDelimiter);
+    char* sPasswordToken = strtok(NULL, sDelimiter);
     if (sPasswordToken == NULL) {
       UTIL_LogPrintf("[ADMIN] ERROR: No Model password found: '%s'\n", sLine);
     } else if ((int)strlen(sPasswordToken) > PASSWORD_SIZE) {
@@ -879,7 +868,7 @@ BOOL ParseModel(char* sLine) {
 			UTIL_LogPrintf("[ADMIN] ERROR: Model password too long.\n");
 		}  // if-else			
     } else {
-      tModel = new model_struct;
+      model_struct* tModel = new model_struct;
       if(tModel == NULL) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: ParseModel::'new' failed for tModel record.\n");
 	return FALSE;
@@ -989,13 +978,11 @@ void UnloadModels() {
  ***************************/
 // Given an IP string (xxx.xxx.xxx.xxx), returns it in unsigned long (32-bit) format.
 void IPStringToBits(char* sIP, ulong* lIP) {
-  int iShift;
-  ulong lByte;
-  char* sChar = sIP;
+	char* sChar = sIP;
   
   *lIP = 0x00000000;
-  for( iShift = 24; *sChar && iShift >= 0; iShift -= 8) {
-    lByte = atoi(sChar);
+  for( int iShift = 24; *sChar && iShift >= 0; iShift -= 8) {
+	  ulong lByte = atoi(sChar);
     if (lByte > 255) 
       lByte = 255;
     *lIP |= lByte << iShift;
@@ -1087,13 +1074,9 @@ BOOL IsIPReserved(char *sIP) {
 // FALSE otherwise. The format is:
 // <IP address - xxx.xxx.xxx.xxx>[/<mask - xxx.xxx.xxx.xxx>]
 BOOL ParseIP(char* sLine) {
-  int iHasMask;
-  char sDelimiter[] = "/";
-  char* sIPToken;
-  char* sMaskToken;
-  ip_struct* tIP;
-  
-  sIPToken = strtok(sLine,sDelimiter);
+	char sDelimiter[] = "/";
+
+	char* sIPToken = strtok(sLine, sDelimiter);
   if (sIPToken == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: No IP found: '%s'\n", sLine);
   } else if ((int)strlen(sIPToken) > IP_SIZE) {
@@ -1102,8 +1085,8 @@ BOOL ParseIP(char* sLine) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Invalid IP address: %s\n", sIPToken);
   } else {
     // It's allowable to not have a mask.
-    iHasMask = 0;
-    sMaskToken = strtok(NULL,sDelimiter);
+    int iHasMask = 0;
+    char* sMaskToken = strtok(NULL, sDelimiter);
     if (sMaskToken != NULL) {
       if ((int)strlen(sMaskToken) > IP_SIZE) {
 	UTIL_LogPrintf("[ADMIN] ERROR: IP mask too long: '%s'\n", sMaskToken);
@@ -1113,7 +1096,7 @@ BOOL ParseIP(char* sLine) {
 	iHasMask = 1;
       }
     }
-    tIP = new ip_struct;
+    ip_struct* tIP = new ip_struct;
     if(tIP == NULL) {
       UTIL_LogPrintf( "[ADMIN] ERROR: LoadIPs::'new' failed for tIP record.\n");
       return FALSE;
@@ -1224,7 +1207,7 @@ void UnloadIPs() {
 // users IP address in the auth struct.
 bool user_ip( int _iIndex, const char** const _pcIP, ulong* _plIP ) {
 
-	if ( g_AuthArray[_iIndex].sIP != 0 && g_AuthArray[_iIndex].sIP[0] != 0 ) {
+	if ( g_AuthArray[_iIndex].sIP != NULL && g_AuthArray[_iIndex].sIP[0] != 0 ) {
 
 		if ( _pcIP != NULL ) *_pcIP = g_AuthArray[_iIndex].sIP;
 
@@ -1249,10 +1232,7 @@ bool user_ip( int _iIndex, const char** const _pcIP, ulong* _plIP ) {
 // FALSE otherwise.  The format is:
 // <word>
 BOOL ParseWord(char* sLine) {
-  int i;
-  word_struct* tWord;
-
-  tWord = new word_struct;
+	word_struct* tWord = new word_struct;
   if(tWord == NULL) {
     UTIL_LogPrintf( "[ADMIN] ERROR: ParseWord::'new' failed for tWord record.\n");
     return FALSE;
@@ -1260,7 +1240,7 @@ BOOL ParseWord(char* sLine) {
   memset(tWord,0x0,sizeof(word_struct));
   strcpy(tWord->sWord,sLine);
 
-  for (i = 0; i < (int)strlen(tWord->sWord); i++)
+  for (int i = 0; i < (int)strlen(tWord->sWord); i++)
     tWord->sWord[i] = tolower(tWord->sWord[i]);
 
   m_pWordList->AddLink(tWord);
@@ -1352,7 +1332,7 @@ edict_t* get_player_edict( uint32_t _uiID, uidt _uidType ) {
     int i;
 	switch ( _uidType ) {
 	case uid_index:
-		if ( _uiID < 1 || _uiID > gpGlobals->maxClients ) return 0;
+		if ( _uiID < 1 || _uiID > gpGlobals->maxClients ) return NULL;
 		return g_AuthArray[_uiID].pPlayerEdict;
 		break;
 
@@ -1370,18 +1350,16 @@ edict_t* get_player_edict( uint32_t _uiID, uidt _uidType ) {
 
 	}  // switch
 
-	return 0;
+	return NULL;
 }  // get_player_edict()
 
 
 edict_t* get_player_edict( const AMAuthId& _oaiID, uidt _uidType ) {
-
-    int i;
-	for ( i = 1; i <= gpGlobals->maxClients; i++ ) {
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
 		if ( g_AuthArray[i].oaiAuthID == _oaiID ) return g_AuthArray[i].pPlayerEdict;
 	};
 
-	return 0;
+	return NULL;
 }  // get_player_edict()
 
 
@@ -1399,8 +1377,8 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
   AMAuthId oaiAuthID;
   int iReconnTime = 300;
   int iReconnectWindow = (int)CVAR_GET_FLOAT("amv_reconnect_time");
-  auth_struct* poPrevAuth = 0;
-  auth_struct* poPrevAuthBak = 0;
+  auth_struct* poPrevAuth = NULL;
+  auth_struct* poPrevAuthBak = NULL;
   time_t ttiNow = time(NULL);
 
   if ( iReconnectWindow > 90 ) iReconnectWindow = 90;
@@ -1426,7 +1404,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 				iIndex,
 				g_AuthArray[iIndex].iIndex,
 				g_AuthArray[iIndex].iSessionID,
-				(const char*)g_AuthArray[iIndex].oaiAuthID,
+				static_cast<const char*>(g_AuthArray[iIndex].oaiAuthID),
 				g_AuthArray[iIndex].iTime,
 				g_AuthArray[iIndex].sIP,
 				g_AuthArray[iIndex].iPort,
@@ -1436,7 +1414,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 				iIndex,
 				iIndex,
 				iSessionID,
-				(const char*)oaiAuthID,
+				static_cast<const char*>(oaiAuthID),
 				ttiNow,
 				sIP, 
 				sName) ); 
@@ -1501,7 +1479,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 
 		  // if there was none, check if we have a record with the same AuthID, 
 		  // IP:port and NAME in the AuthArray backup copy
-		  if ( poPrevAuth == 0 ) {
+		  if ( poPrevAuth == NULL ) {
 			  for ( int i = 0; i < g_AuthBak.SIZE; i++ ) {
 				  if ( g_AuthBak.Array[i].oaiAuthID == oaiAuthID
 					   //&& g_AuthBak.Array[i].iPort == iPort
@@ -1528,7 +1506,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 		}  // for
 
 		// again, if we didn't find it, check the backup copies
-		if ( poPrevAuth == 0 ) {
+		if ( poPrevAuth == NULL ) {
 			for ( int i = 0; i < g_AuthBak.SIZE; i++ ) {
 				if ( strcmp(sIP, g_AuthBak.Array[i].sIP) == 0
 				     &&  g_AuthBak.Array[i].iPort == iPort
@@ -1630,7 +1608,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 				iIndex,
 				g_AuthArray[iIndex].iIndex,
 				g_AuthArray[iIndex].iSessionID,
-				(const char*)g_AuthArray[iIndex].oaiAuthID,
+				static_cast<const char*>(g_AuthArray[iIndex].oaiAuthID),
 				g_AuthArray[iIndex].iTime,
 				g_AuthArray[iIndex].sIP,
 				g_AuthArray[iIndex].iPort,
@@ -1647,8 +1625,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 // ties, it is the person with the most access and the smallest user index
 // (ie, the one closest to the top of the list)
 int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
-  int i;
-  int iPlayerIndex = 0;
+	int iPlayerIndex = 0;
   int iIgnoreIndex = 0;
   int iHighlanderIndex = 0;
   int iMaxAccess = 0;
@@ -1664,7 +1641,7 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
     return 0;
   }
   // Otherwise, get the highest access with the smallest user index.
-  for(i = 1; i <= gpGlobals->maxClients; i++) {
+  for(int i = 1; i <= gpGlobals->maxClients; i++) {
 	  pPlayer = UTIL_PlayerByIndex( i );
     if ( i != iIgnoreIndex && g_AuthArray[i].iUserIndex != 0 && IsPlayerValid(pPlayer) ) {
 		// This person beats the current highlander if:
@@ -1708,9 +1685,7 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
 
 // Returns the access associated with an entity.
 int GetUserAccess(edict_t* pEntity) {
-  int iHighlanderIndex;
-  
-  // Console has complete access.
+	// Console has complete access.
   if (pEntity == NULL) {
     return -1;
   }
@@ -1722,9 +1697,10 @@ int GetUserAccess(edict_t* pEntity) {
   }
   // Check to see if we're in highlander mode.  If we are, anybody besides the
   // highlander should only get reserve-name, reserve-spot, immunity, and default access.
-  iHighlanderIndex = GetHighlanderIndex();
+  int iHighlanderIndex = GetHighlanderIndex();
   if (iHighlanderIndex != 0 && iHighlanderIndex != iIndex) {
-    return (g_AuthArray[iIndex].iAccess & (ACCESS_RESERVE_NICK | ACCESS_RESERVE_SPOT | ACCESS_IMMUNITY | (int)CVAR_GET_FLOAT("default_access")));
+    return (g_AuthArray[iIndex].iAccess & (ACCESS_RESERVE_NICK | ACCESS_RESERVE_SPOT | ACCESS_IMMUNITY | (int)
+	    CVAR_GET_FLOAT("default_access")));
     // Otherwise, return the person's access.
   } else {
 	// for a listenserver user we add reserved nick and slot access
@@ -1760,7 +1736,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
   user_struct *ptUser = NULL;
 
-  CLinkItem<user_struct>*  pUser=NULL;
+  CLinkItem<user_struct>*  pUser= NULL;
 
 #ifdef USE_MYSQL
 
@@ -2152,9 +2128,11 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
   // We got a match.
   if (pUser != NULL) {
     if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
-      UTIL_LogPrintf( "[ADMIN] DEBUG: Name '%s' / AUTHID '%s' matches user entry '%s'\n",sName,(const char*)oaiAuthID,ptUser->sUserName);
+      UTIL_LogPrintf("[ADMIN] DEBUG: Name '%s' / AUTHID '%s' matches user entry '%s'\n", sName,
+                     static_cast<const char*>(oaiAuthID),
+                     ptUser->sUserName);
     }
-	if ( ptUserRecord != 0 ) {
+	if ( ptUserRecord != NULL ) {
 		memcpy(ptUserRecord,ptUser,sizeof(user_struct));
 	}  // if
     return 1;
@@ -2180,8 +2158,8 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 
   memset( ptUserRecord, 0, sizeof(user_struct) );
 
-  if ( sName == 0 ) sName = "";
-  if ( sIP == 0 ) sIP = "0.0.0.0";
+  if ( sName == NULL ) sName = "";
+  if ( sIP == NULL ) sIP = "0.0.0.0";
 
   if (g_fUsersLoaded == FALSE)
     LoadUsers();
@@ -2523,16 +2501,13 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 // FALSE otherwise.  The format is:
 // <user name or WON ID>:<password>:<access>:
 BOOL ParseUser(char* pcLine) {
-  int iAccess;
-  int iNumColon = -2;
+	int iNumColon = -2;
   char* sAccessToken;
   char sDelimiter[] = ":";
-  char* sNameToken;
-  char* sPasswordToken;
+	char* sPasswordToken;
   char* pcDelim = NULL;
-  user_struct* tUser;
 
-  if ( pcLine == NULL ) return FALSE;
+	if ( pcLine == NULL ) return FALSE;
 
   int iLineLength = strlen(pcLine);
   char* sLine = new char[iLineLength+1];
@@ -2552,7 +2527,7 @@ BOOL ParseUser(char* pcLine) {
 	  return FALSE;
   }  // if
 
-  sNameToken = sLine;
+  char* sNameToken = sLine;
   pcDelim = strchr( sLine, ':' );
   // If we have an authid (steamid or valveid) in this entry we have a colon within the first column.
   // In that case we have to skip it and search for the next colon.
@@ -2591,8 +2566,8 @@ BOOL ParseUser(char* pcLine) {
 		  pcDelim = strchr( pcDelim, ':' );
 		  // If we have a authid in this entry we have a colon within the column.
 		  // In that case we have to skip it and search for the next colon.
-		  if ( NULL != pcDelim && AMAuthId::is_authid(sPasswordToken) ) pcDelim = strchr( (pcDelim+1), ':' );
-		  if ( NULL == pcDelim ) sPasswordToken = NULL;
+		  if (NULL != pcDelim && AMAuthId::is_authid(sPasswordToken) ) pcDelim = strchr( (pcDelim+1), ':' );
+		  if (NULL == pcDelim ) sPasswordToken = NULL;
 		  else {
 			  *pcDelim = 0;
 			  ++pcDelim;
@@ -2622,17 +2597,17 @@ BOOL ParseUser(char* pcLine) {
 				 UTIL_LogPrintf("[ADMIN] ERROR: User access too long: '%s'\n", sAccessToken);
 			  */
 		  } else {
-			  tUser = new user_struct;
+			  user_struct* tUser = new user_struct;
 			  if(tUser == NULL) {
 				  UTIL_LogPrintf( "[ADMIN] ERROR: ParseUser::'new' failed for tUser record.\n");
 				  delete[] sLine;
-				  sLine = 0;
+				  sLine = NULL;
 				  return FALSE;
 			  }
 			  memset(tUser,0x0,sizeof(user_struct));
 			  strcpy(tUser->sUserName,sNameToken);
 			  strcpy(tUser->sPassword,sPasswordToken);
-			  iAccess = atoi(sAccessToken);
+			  int iAccess = atoi(sAccessToken);
 			  tUser->iAccess = iAccess;
 			  tUser->iIndex = m_iUserIndex++;
 			  m_pUserList->AddLink(tUser);
@@ -2643,13 +2618,13 @@ BOOL ParseUser(char* pcLine) {
 				  DEBUG_LOG(1, ("User loaded: Index: %i, Name '%s', Password '********', Access '%i'",tUser->iIndex, tUser->sUserName, tUser->iAccess) );
 			  }
 			  delete[] sLine;
-			  sLine = 0;
+			  sLine = NULL;
 			  return TRUE;
 		  }
 	  }
   }
   delete[] sLine;
-  sLine = 0;
+  sLine = NULL;
   return FALSE;
 }
 
@@ -2754,7 +2729,7 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
   char sPassword[PASSWORD_SIZE];
   char* sPasswordField = const_cast<char*>(get_cvar_string_value( "password_field" ));
   char* infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(pEntity);
-  char* pcClientPwBufferCopy = 0;
+  char* pcClientPwBufferCopy = NULL;
   char szCommand[128];
   
   if (iIndex < 1 || iIndex > gpGlobals->maxClients) {
@@ -2858,7 +2833,7 @@ void UpdateUserAuth(edict_t* pEntity) {
 BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
   BOOL fResult = FALSE;
   int iIndex = ENTINDEX(pEntity);
-  const char* pcIP = 0;
+  const char* pcIP = NULL;
   user_struct tUser;
   
   // Make sure we have a valid index.
@@ -2867,7 +2842,7 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
     return FALSE;
   }
 
-  user_ip( iIndex, &pcIP, 0 );
+  user_ip( iIndex, &pcIP, NULL );
  
   DEBUG_DO(1, System_Response("[ADMIN] Checking password for user access...\n", pEntity); );
 
@@ -2910,8 +2885,7 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
 int AddSpawnEntity(const char* szClassname, CBaseEntity* pEntity) {
   spawn_struct* tSpawn = NULL;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
-  int iIdentity;
-  
+
   // Make a new link
   tSpawn = new spawn_struct;
   // Make sure the link is a valid address
@@ -2922,7 +2896,7 @@ int AddSpawnEntity(const char* szClassname, CBaseEntity* pEntity) {
   
   // Initialize the link's data
   memset(tSpawn, 0x0, sizeof(spawn_struct));
-  iIdentity = m_iSpawnIdentity++;
+  int iIdentity = m_iSpawnIdentity++;
   strcpy(tSpawn->szClassname, szClassname);
   tSpawn->iIdentity = iIdentity;
   tSpawn->pEntity = pEntity;
@@ -2961,8 +2935,7 @@ void InitSpawnEntityList() {
 // Lists the contents of the spawn linked list that match
 // szFindClassname (or all, if szFindClassname is NULL or empty)
 void ListSpawnEntities(edict_t* pMsg, char* szFindClassname) {
-  int iIdentity;
-  int iLength = strlen(szFindClassname);
+	int iLength = strlen(szFindClassname);
   char szClassname[BUF_SIZE];
   spawn_struct* tSpawn = NULL;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
@@ -2970,7 +2943,7 @@ void ListSpawnEntities(edict_t* pMsg, char* szFindClassname) {
   System_Response(UTIL_VarArgs("Identity            ClassName         \n"), pMsg);
   while(pLink != NULL) {
     tSpawn = pLink->Data();
-    iIdentity = tSpawn->iIdentity;
+    int iIdentity = tSpawn->iIdentity;
     strcpy(szClassname, tSpawn->szClassname);
     if(iLength==0 || strnicmp(szFindClassname, szClassname, iLength)==0) {
       System_Response(UTIL_VarArgs( "  <%d>              %s\n",iIdentity,szClassname), pMsg);
@@ -3040,10 +3013,8 @@ void DeleteSpawnEntityList( void )
 // Adds an entry to the help linked list.  Returns TRUE
 // if successful, FALSE otherwise.
 BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
-  int iCompare;
-  help_struct* tHelp;
-  CLinkItem<help_struct>* pLink;
-  CLinkItem<help_struct>* pOldLink = NULL;
+	help_struct* tHelp;
+	CLinkItem<help_struct>* pOldLink = NULL;
   
   // Make sure our help list is initialized
   if (m_pHelpList == NULL) {
@@ -3052,10 +3023,10 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
   }
   // Compare this entry to the entries we currently have; we want to
   // avoid duplicates.
-  pLink = m_pHelpList->FirstLink();
+  CLinkItem<help_struct>* pLink = m_pHelpList->FirstLink();
   while (pLink != NULL) {
     tHelp = pLink->Data();
-    iCompare = stricmp(sCmd, tHelp->sCmd);
+    int iCompare = stricmp(sCmd, tHelp->sCmd);
     // If iCompare < 0, then this entry belongs in front of the one
     // we're currently at, so we can break and insert it.
     if (iCompare < 0) {
@@ -3091,8 +3062,7 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
 
 // Finds a CPlugin object based on an AMX pointer.
 CPlugin* GetPlugin(AMX* amx) {
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
+	CPlugin* pPlugin;
   
   // Make sure our list is initialized.
   if (m_pPluginList == NULL) {
@@ -3100,10 +3070,10 @@ CPlugin* GetPlugin(AMX* amx) {
     return NULL;
   }
   // For each plugin, compare the AMX pointers.
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
     pPlugin = pLink->Data();
-    if ( NULL != pPlugin ) {
+    if (NULL != pPlugin ) {
       // We got a match?  Cool.
       if (amx == pPlugin->amx()) {
         break;
@@ -3129,9 +3099,7 @@ CPlugin* GetPlugin(AMX* amx) {
 int CheckCommand( edict_t* _pEntity, const char* _pcCommand, unsigned int& _uiAccess, BOOL _bCheckUserAcc, BOOL _bPrintOut ) {
 	int iResult = 0; // number of plugins that implement this command
 	unsigned int uiAccess = 0;
-	CLinkItem<CPlugin>* pLink;
-	CPlugin* pPlugin;
-  
+
 	if ( m_pPluginList == NULL ) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CheckCommand() called when plugin list not initialized.\n" );
 		return 0;
@@ -3140,9 +3108,9 @@ int CheckCommand( edict_t* _pEntity, const char* _pcCommand, unsigned int& _uiAc
 	// We return the lowest access value. Set returned _uiAccess to max pivot.
 	_uiAccess = ~0;
 
-	pLink = m_pPluginList->FirstLink();
+	CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
 	while ( pLink != NULL ) {
-		pPlugin = pLink->Data();
+		CPlugin* pPlugin = pLink->Data();
 		// ATTN: the next line would usually be placed at the end of the while-loop. 
 		// But since we don't need the pLink later anymore, we have it here to be able 
 		// to shortcut to the beginning of the while-loop further down. If the pLink
@@ -3174,16 +3142,14 @@ int CheckCommand( edict_t* _pEntity, const char* _pcCommand, unsigned int& _uiAc
 plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
   plugin_result iResult = PLUGIN_INVAL_CMD;
   plugin_result iReturn = PLUGIN_INVAL_CMD;
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
-  
+
   if (m_pPluginList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleCommand called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
-    pPlugin = pLink->Data();
+    CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleCommand(pEntity, sCmd, sData);
 	if ( iResult != PLUGIN_INVAL_CMD ) iReturn = iResult;
     if (iResult == PLUGIN_HANDLED) {
@@ -3199,16 +3165,14 @@ plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
 // any of them return PLUGIN_HANDLED.
 plugin_result HandleConnect(edict_t* pEntity, char* sName, char* sIPAddress) {
   plugin_result iResult = PLUGIN_CONTINUE;
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
-  
+
   if (m_pPluginList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleConnect called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
-    pPlugin = pLink->Data();
+    CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleConnect(pEntity, sName, sIPAddress);
     if (iResult == PLUGIN_HANDLED) {
       break;
@@ -3222,16 +3186,14 @@ plugin_result HandleConnect(edict_t* pEntity, char* sName, char* sIPAddress) {
 // any of them return PLUGIN_HANDLED.
 plugin_result HandleDisconnect(edict_t* pEntity) {
   plugin_result iResult = PLUGIN_CONTINUE;
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
-  
+
   if (m_pPluginList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleDisconnect called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
-    pPlugin = pLink->Data();
+    CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleDisconnect(pEntity);
     if (iResult == PLUGIN_HANDLED) {
       break;
@@ -3246,24 +3208,19 @@ plugin_result HandleDisconnect(edict_t* pEntity) {
 // want to start, and c) how much they want returned.
 // Then show it to them.
 plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
-  int iAccess;
-  int iCount = 0;
+	int iCount = 0;
   int iLength = 10;
   int iMaxCount = 0;
   int iStart = 1;
   char sDelimiter = ' ';
-  char* sColon;
-  char sCommand[COMMAND_SIZE];
+	char sCommand[COMMAND_SIZE];
   char* sFilter = NULL;
   char sFilterText[BUF_SIZE];
   char sHelp[BUF_SIZE];
   char sParam[BUF_SIZE];
-  char* sSpace;
-  char* sToken = NULL;
-  CLinkItem<help_struct>* pLink;
-  help_struct* tHelp;
+	char* sToken = NULL;
 
-  // Verify our list is initialized.
+	// Verify our list is initialized.
   if (m_pHelpList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleHelp called when help list not initialized.\n");
     return PLUGIN_ERROR;
@@ -3277,7 +3234,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   strncpy( pcData, sData, strlen(sData) );
 
   // Get the access of the user; this will determine what they can see.
-  iAccess = GetUserAccess(pEntity);
+  int iAccess = GetUserAccess(pEntity);
   DEBUG_LOG(3, ("HandleHelp: User Access: %d", iAccess) );
   // Tokenize the data.  This is kludgy, but the data format is:
   // [<search string>] [<start> [<length>]] 
@@ -3323,9 +3280,9 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   }
   
   // For each help entry...
-  pLink = m_pHelpList->FirstLink();
+  CLinkItem<help_struct>* pLink = m_pHelpList->FirstLink();
   while (pLink != NULL) {
-    tHelp = pLink->Data();
+    help_struct* tHelp = pLink->Data();
     // Make sure that they have access to this entry, and it matches the filter they give
     // (or they didn't give a filter).
     if (((iAccess & tHelp->iAccess) == tHelp->iAccess)
@@ -3343,8 +3300,8 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
 	  // Show the entry.
 	  if (iFormat == 1) {
 	    // We need to try to break apart the help entry into its various components
-	    sColon = strchr(tHelp->sHelp, ':');
-	    sSpace = strchr(tHelp->sHelp, ' ');
+	    char* sColon = strchr(tHelp->sHelp, ':');
+	    char* sSpace = strchr(tHelp->sHelp, ' ');
 	    if (sColon == NULL) {
 	      strcpy(sCommand, "Unknown/Bad Format");
 	      strcpy(sParam, "");
@@ -3419,16 +3376,14 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
 // any of them return PLUGIN_HANDLED.
 plugin_result HandleInfo(edict_t* pEntity, char* sNewName) {
   plugin_result iResult = PLUGIN_CONTINUE;
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
-  
+
   if (m_pPluginList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleInfo called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
-    pPlugin = pLink->Data();
+    CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleInfo(pEntity, sNewName);
     if (iResult == PLUGIN_HANDLED) {
       break;
@@ -3441,17 +3396,15 @@ plugin_result HandleInfo(edict_t* pEntity, char* sNewName) {
 // For each plugin, call it's HandleLog procedure.
 plugin_result HandleLog(char* sLog) {
   plugin_result iResult = PLUGIN_CONTINUE;
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
-  
-	// Unlike the other procs, this one will be called before initialization. 
+
+  // Unlike the other procs, this one will be called before initialization. 
 	// So don't display an error.
   if (m_pPluginList == NULL) {
     return iResult;
   }
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
-    pPlugin = pLink->Data();
+    CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleLog(sLog);
     if (iResult == PLUGIN_HANDLED) {
       break;
@@ -3467,9 +3420,7 @@ plugin_result HandleVersion(edict_t* pEntity) {
   char sName[BUF_SIZE];
   char sDesc[BUF_SIZE];
   char sVersion[BUF_SIZE];
-  CLinkItem<CPlugin>* pLink;
-  CPlugin* pPlugin;
-  
+
   // Make sure our plugin data is initialized.
   if (m_pPluginList == NULL) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleVersion called when plugin list not initialized.\n");
@@ -3483,9 +3434,9 @@ plugin_result HandleVersion(edict_t* pEntity) {
 	}  // if
 
   // Otherwise report the version for each plugin.
-  pLink = m_pPluginList->FirstLink();
+  CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != NULL) {
-    pPlugin = pLink->Data();
+    CPlugin* pPlugin = pLink->Data();
     strcpy(sName, pPlugin->Name());
     if (sName[0] == 0) {
       strcpy(sName, pPlugin->File());
@@ -3507,7 +3458,6 @@ plugin_result HandleVersion(edict_t* pEntity) {
 BOOL ParsePlugin( char* sLine ) {
   char sGameDir[PATH_MAX];
   char sPlugin[PATH_MAX];
-  CPlugin* pPlugin;
   AmFSNode oNode;
  
   (*g_engfuncs.pfnGetGameDir)(sGameDir);
@@ -3523,7 +3473,7 @@ BOOL ParsePlugin( char* sLine ) {
 	AmDir* poDir = oNode.get_directory_handle();
 	poDir->sort();
 	const char* pcNode;
-	while ( NULL != (pcNode = poDir->get_next_entry(oNode)) ) {
+	while (NULL != (pcNode = poDir->get_next_entry(oNode)) ) {
 		// Check if this is a file with ending '.amx' (or '.amx64' on 64bit)
 #ifdef __amd64__
 		const char* const pcAmxExt = ".amx64";
@@ -3544,7 +3494,7 @@ BOOL ParsePlugin( char* sLine ) {
   }
 
   DEBUG_LOG(1, ( "Found plugin '%s'\n",sPlugin) );
-  pPlugin = new CPlugin;
+  CPlugin* pPlugin = new CPlugin;
   // Attempt to load the plugin.
   if(pPlugin->LoadPlugin(sPlugin)) {
     m_pPluginList->AddLink(pPlugin);
@@ -3658,19 +3608,16 @@ void UnloadPlugins(void) {
  *
  ***************************/
 vault_struct* FindVaultData(char* sKey) {
-  CLinkItem<vault_struct>* pLink;
-  vault_struct* tVault;
-  
-  // Make sure the vault is loaded
+	// Make sure the vault is loaded
   if (g_fVaultLoaded == FALSE)
     LoadVault();
   
   if (m_pVaultList == NULL) 
     return NULL;
   
-  pLink = m_pVaultList->FirstLink();
+  CLinkItem<vault_struct>* pLink = m_pVaultList->FirstLink();
   while (pLink != NULL) {
-    tVault = pLink->Data();
+    vault_struct* tVault = pLink->Data();
     if (!stricmp(sKey, tVault->sKey)) {
       return tVault;
     }
@@ -3680,9 +3627,7 @@ vault_struct* FindVaultData(char* sKey) {
 }
 
 char* GetVaultData(char* sKey) {
-  vault_struct* tVault;
-  
-  tVault = FindVaultData(sKey);
+	vault_struct* tVault = FindVaultData(sKey);
   if (tVault == NULL) {
     return NULL;
   } else {
@@ -3695,9 +3640,8 @@ char* GetVaultData(char* sKey) {
 // <key> <data>
 BOOL ParseVault(char* sLine) {
   char sDelimiter[] = " ";
-  char* sKeyToken = 0;
-  char* sDataToken = 0;
-  vault_struct* tVault;
+  char* sKeyToken = NULL;
+  char* sDataToken = NULL;
   int iLineLen = strlen( sLine );
 
   sKeyToken = strtok(sLine,sDelimiter);
@@ -3719,7 +3663,7 @@ BOOL ParseVault(char* sLine) {
     } else if ((int)strlen(sDataToken) > BUF_SIZE) {
       UTIL_LogPrintf("[ADMIN] ERROR: Vault data too long: '%s'\n", sDataToken);
     } else {
-      tVault = new vault_struct;
+      vault_struct* tVault = new vault_struct;
       if(tVault == NULL) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: ParseVault::'new' failed for tVault record.\n");
 	return FALSE;
@@ -3764,30 +3708,26 @@ void UnloadVault(void) {
 
 
 void SaveVault() {
-  const char* sFile;
-  char sGameDir[2048];
+	char sGameDir[2048];
   char sVaultFile[LINE_SIZE];
-  FILE *pFile;
-  CLinkItem<vault_struct>* pLink;
-  vault_struct* tVault;
-  
-  if (m_pVaultList == NULL || !g_fVaultLoaded) 
+
+	if (m_pVaultList == NULL || !g_fVaultLoaded) 
     return;
   
-  sFile = get_cvar_file_value( "admin_vault_file" );
+  const char* sFile = get_cvar_file_value("admin_vault_file");
   if ( sFile == NULL ) return;
   
   (*g_engfuncs.pfnGetGameDir)(sGameDir);
   sprintf(sVaultFile,"%s/%s",sGameDir,sFile);
   FormatPath(sVaultFile);
   
-  pFile = fopen(sVaultFile,"w");
+  FILE* pFile = fopen(sVaultFile, "w");
   if (pFile == NULL) 
     return;
   
-  pLink = m_pVaultList->FirstLink();
+  CLinkItem<vault_struct>* pLink = m_pVaultList->FirstLink();
   while (pLink != NULL) {
-    tVault = pLink->Data();
+    vault_struct* tVault = pLink->Data();
     fprintf(pFile,"%s %s\n", tVault->sKey, tVault->sData);
     pLink = pLink->NextLink();
   }
@@ -3795,10 +3735,7 @@ void SaveVault() {
 }
 
 void SetVaultData(char* sKey, char* sData) {
-  CLinkItem<vault_struct>* pLink;
-  vault_struct* tVault;
-  
-  tVault = FindVaultData(sKey);
+	vault_struct* tVault = FindVaultData(sKey);
   if (tVault == NULL) {
     tVault = new vault_struct;
     if(tVault == NULL) {
@@ -3810,7 +3747,7 @@ void SetVaultData(char* sKey, char* sData) {
     m_pVaultList->AddLink(tVault);
   } else {
     if (sData == NULL || strlen(sData) == 0) {
-      pLink = m_pVaultList->FindLink(tVault);
+      CLinkItem<vault_struct>* pLink = m_pVaultList->FindLink(tVault);
       if (pLink != NULL) 
 	m_pVaultList->DeleteLink(pLink);
     } else {

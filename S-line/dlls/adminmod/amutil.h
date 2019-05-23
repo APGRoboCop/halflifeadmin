@@ -51,8 +51,8 @@
 
 
 #include <cvardef.h>
-#include <errno.h>
-#include <stdlib.h>                 // exit()
+#include <cerrno>
+#include <cstdlib>                 // exit()
 #ifndef _WIN32
 #  include <unistd.h>                 // _exit()
 #endif
@@ -105,7 +105,7 @@ inline void am_exit( int e )
 
 // stop malformed names stuffing up checking 
 //
-int make_friendly(char* string, bool check = false);
+int make_friendly(char* name, bool check = false);
 
 
 // convert a string to all-lower 
@@ -143,7 +143,7 @@ inline const char* escape_chars( const char* _pcString, char _cChar ) {
 #define SW_NOWRAP 0
 #define SW_WRAP 1
 #define SW_TRUNC 2
-int wrap_lines( char* String, int MaxLineLength, int WrapType );
+int wrap_lines( char* String, int _iLineLen, int _iWrap);
 
 
 void sprintmd5( char* _pcTarget, const unsigned char* _pucMD5Src );

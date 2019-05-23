@@ -28,7 +28,7 @@ BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
 # CFLAGS=$(BASE_CFLAGS) -g -ggdb  -Wall -Wconversion
 
 #small optimization flags
-CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -msse -msse2 -mfpmath=sse
+CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -msse -msse2 -mfpmath=sse -s -pipe
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \

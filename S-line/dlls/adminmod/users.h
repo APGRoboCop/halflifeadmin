@@ -212,7 +212,7 @@ BOOL RemoveSpawnEntity(int iIdentity);
 BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess = ACCESS_ALL);
 BOOL LoadPlugins();
 void UnloadPlugins( void );
-int CheckCommand( edict_t* Entity, const char* Command, unsigned int& Access, BOOL CeckUserAcc = FALSE, BOOL PrintOut = FALSE );
+int CheckCommand( edict_t* Entity, const char* Command, unsigned int& Access, BOOL _bCheckUserAcc = FALSE, BOOL PrintOut = FALSE );
 plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData);
 plugin_result HandleConnect(edict_t* pEntity, char* sName, char* IPAddress);
 plugin_result HandleDisconnect(edict_t* pEntity);
@@ -244,6 +244,6 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity);
 int pass_compare( const char* sServerPassword, const char* sPlayerPassword);
 
 
-bool user_ip( int userIndex, const char** const stringIP, ulong* uintIP = 0 );
+bool user_ip( int _iIndex, const char** const _pcIP, ulong* _plIP = NULL );
 edict_t* get_player_edict( uint32_t ID, uidt type = uid_none );
 edict_t* get_player_edict( const AMAuthId& ID, uidt type = uid_none );

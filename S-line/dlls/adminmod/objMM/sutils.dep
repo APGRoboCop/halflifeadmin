@@ -1,0 +1,1 @@
+objMM/sutils.o objMM/sutils.dep : sutils.cpp apsymbols.h statics.h

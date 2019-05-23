@@ -49,8 +49,8 @@
  *
  */
 
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <cctype>
 #include "amutil.h"
 
 
@@ -60,13 +60,12 @@
  */
 extern int g_NameCrashAction;
 int make_friendly(char *name, bool check) {
-	int i; 
 	int iLen = strlen(name);
 	
 	
 	if(check && (g_NameCrashAction > 0 ) && ( iLen<=0 )  ) return 2; // the name is zero length....  
 	
-	for(i=0; i < iLen; i++) {
+	for(int i = 0; i < iLen; i++) {
 		if (name[i]=='%') {
 			// replace '%' with ' ' like the engine
 			name[i] = ' ';
@@ -110,15 +109,15 @@ char* stristr( const char* haystack, const char* needle ) {
 
   int iLength = strlen( haystack );
   int iNeedleLen = strlen( needle );
-  char* pcBegin = 0;
+  char* pcBegin = NULL;
 
   int iH = 0;
   int iN = 0;
 
-  if ( iNeedleLen > iLength ) return 0;
+  if ( iNeedleLen > iLength ) return NULL;
 
   for ( int iStart = 0; iStart < iLength-iNeedleLen+1; iStart++ ) {
-    pcBegin = (char*)(haystack + iStart);
+    pcBegin = const_cast<char*>(haystack + iStart);
 
     iH = iStart;
     iN = 0;
@@ -132,10 +131,10 @@ char* stristr( const char* haystack, const char* needle ) {
     if ( iN == iNeedleLen ) return pcBegin;
 
     // no match
-    if ( iH == iLength ) return 0;
+    if ( iH == iLength ) return NULL;
   }  // for
 
-  return 0;
+  return NULL;
 
 }  // stristr()
 
@@ -167,7 +166,7 @@ void FormatLine(char* sLine) {
 // Formats a path so all the /s and \s are correct for that OS.
 //
 void FormatPath(char* sPath) {
-  while ( sPath != 0 && *sPath != '\0') {
+  while ( sPath != NULL && *sPath != '\0') {
 
 #ifdef WIN32
     if ( *sPath == '/' ) {
@@ -235,12 +234,10 @@ int wrap_lines( char* _pcString, int _iLineLen, int _iWrap ) {
 // Print a MD5 digest in ASCII representation into a char array
 //
 void sprintmd5( char* _pcTarget, const unsigned char* _pucMD5Src ) {
-    unsigned char i, num;
+	if ( _pcTarget == NULL || _pucMD5Src == NULL ) return;
  
-    if ( _pcTarget == NULL || _pucMD5Src == NULL ) return;
- 
-    for ( i = 0; i < 16; i++ ) {
-        num = _pucMD5Src[i] >> 4;
+    for ( unsigned char i = 0; i < 16; i++ ) {
+        unsigned char num = _pucMD5Src[i] >> 4;
         if ( num < 10 ) {
             *_pcTarget++ = num + '0';
         } else {

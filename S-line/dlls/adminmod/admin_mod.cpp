@@ -39,9 +39,10 @@
  *
  * The guts of Admin Mod
  *
- */   
+ */
 
-#include <string.h>
+//#include <string.h> //Deprecated [APG]RoboCop[CL]
+#include "cstring"
 
 #define QUEUEING_DEBUGF(s) 
 
@@ -323,7 +324,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
     if (pAdminEnt == NULL) {
       UTIL_LogPrintf("Laf. Why are you trying to enter a password?  You're at the console!\n");
     } else if ( CMD_ARGC() == 2) {
-      SetUserPassword(STRING(pEntity->v.netname),(char*)CMD_ARGV(1),pEntity);
+      SetUserPassword(STRING(pEntity->v.netname),const_cast<char*>(CMD_ARGV(1)),pEntity);
       VerifyUserAuth(STRING(pEntity->v.netname), pEntity);
     } else {
       CLIENT_PRINTF( pEntity, print_console,"Bad admin_password format, try: admin_password <password>\n");
@@ -384,12 +385,12 @@ int AM_ClientCommand( edict_t *pEntity ) {
        anything else means keep on truckin'. */
 	// This script is maybe considered a bug [APG]RoboCop[CL]
 	  DEBUG_LOG(4, ("'%s' - '%s'", pcmd, admin_command) );
-	  plugin_result tprResult = HandleCommand(pAdminEnt, (char*)pcmd, admin_command);
+	  plugin_result tprResult = HandleCommand(pAdminEnt, const_cast<char*>(pcmd), admin_command);
 	  if ( tprResult == PLUGIN_HANDLED || tprResult == PLUGIN_NO_ACCESS ) {
 		  return RESULT_HANDLED;
 	  }  // if
   } else {
-    char *program_file=(char *) CVAR_GET_STRING("script_file");
+    char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     
     if(program_file==NULL|| FStrEq(program_file,"0") || !g_fRunScripts) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");			
@@ -414,7 +415,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
   }
   
   if  (FStrEq( pcmd, "menuselect") && CMD_ARGC() >= 2) {
-    CTimer *pTimer = (CTimer *)GET_PRIVATE(pTimerEnt);
+    CTimer *pTimer = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
     if (pTimer->VoteInProgress()) {
       int iIndex;
       int iVote = atoi(CMD_ARGV(1));
@@ -690,10 +691,10 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
   if(g_fRunPlugins) {
     // We should never not pass this back to the engine,
     // so ignore the return value.
-    HandleConnect(pEntity, sName, (char*)pszAddress);
+    HandleConnect(pEntity, sName, const_cast<char*>(pszAddress));
   } else if (g_fRunScripts) {
     // now run the script
-    char *program_file=(char *) CVAR_GET_STRING("script_file");
+    char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     
     if(program_file==NULL|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");
@@ -855,7 +856,6 @@ void AM_ClientStart(edict_t *pEntity) {
   if ( pcOpt != 0 && (pcOpt == pcOptions || *(pcOpt-1) == ':') ) {
 	  g_NameCrashAction = atoi( pcOpt + 2 );
   }  // if
-
   pcOpt = strstr( pcOptions, "sp" );
   if ( pcOpt != 0 && (pcOpt == pcOptions || *(pcOpt-1) == ':') ) {
 	  g_SpectatorCheatAction = atoi( pcOpt + 2 );
@@ -910,7 +910,7 @@ void AM_ClientStart(edict_t *pEntity) {
     pTimerEnt->v.classname = MAKE_STRING("adminmod_timer");
 
 
-  CBaseEntity *pTimer = (CBaseEntity *)GET_PRIVATE(pTimerEnt);
+  CBaseEntity *pTimer = static_cast<CBaseEntity *>(GET_PRIVATE(pTimerEnt));
   if (pTimer) { // run the ptimer spawn
     pTimer->Spawn();   
   }
@@ -1120,11 +1120,12 @@ state, pEntity->v.netname) );
   retval = make_friendly( sName, TRUE );
   if ( retval == 2 ) {
     // the little brat tries to crash the clients
-    UTIL_LogPrintf("[ADMIN] Player '%s' <%s> tried to crash clients with bad name.\n",STRING(pEntity->v.netname), (const char*)oaiAuthID );
+    UTIL_LogPrintf("[ADMIN] Player '%s' <%s> tried to crash clients with bad name.\n",STRING(pEntity->v.netname),
+                   static_cast<const char*>(oaiAuthID));
     if ( g_NameCrashAction == 2 && static_cast<bool>(oaiAuthID) ) {
-      SERVER_COMMAND( UTIL_VarArgs("banid 1440 %s\n", (const char*)oaiAuthID) );
+      SERVER_COMMAND( UTIL_VarArgs("banid 1440 %s\n", static_cast<const char*>(oaiAuthID)) );
       SERVER_COMMAND( UTIL_VarArgs("writeid\n") );
-      UTIL_LogPrintf( "[ADMIN] Banned player with AuthID %s for 24h\n", (const char*)oaiAuthID );
+      UTIL_LogPrintf( "[ADMIN] Banned player with AuthID %s for 24h\n", static_cast<const char*>(oaiAuthID) );
     }  // if
     CLIENT_COMMAND ( pEntity, "quit\n" );
     return RESULT_HANDLED;
@@ -1137,7 +1138,6 @@ state, pEntity->v.netname) );
 
   if ( (!(int)CVAR_GET_FLOAT("sv_lan")) && AMAuthId::is_pending(pcAuthId) ) {
 /*TBR: Don't queue anything in here. We simply return and let CLientConnect handle the queueing.
-
 	  //UTIL_LogPrintf( "|---> Player Steam Id (ClientUserInfoChanged) is pending.\n" );
 	  // check if we have him already queued
 	  if ( !g_ovcPendingPlayers.empty() ) {
@@ -1150,7 +1150,6 @@ state, pEntity->v.netname) );
 				  break;
 			  }  // if
 		  }  // for
-
           if ( !bQueued ) {
               // Enqueue the player
               g_ovcPendingPlayers.push_back( pEntity );
@@ -1287,7 +1286,7 @@ state, pEntity->v.netname) );
     int iIndex;
     cell cReturn = 0;
     
-    char *program_file=(char *) CVAR_GET_STRING("script_file");
+    char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     //if(g_fRunScripts==TRUE) {
     if(program_file==NULL|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");		
@@ -1314,7 +1313,7 @@ state, pEntity->v.netname) );
 
 int AM_DispatchThink( edict_t *pent ) {
   if(pent==pTimerEnt && pTimerEnt!=NULL) { // intercept the timer
-    CBaseEntity *pEntity = (CBaseEntity *)GET_PRIVATE(pTimerEnt);
+    CBaseEntity *pEntity = static_cast<CBaseEntity *>(GET_PRIVATE(pTimerEnt));
     if (pEntity) pEntity->Think();
     return RESULT_HANDLED;
   } 
@@ -1393,14 +1392,12 @@ int AM_GetGameDescription( const char* _pcDescription ) {
 
 /*
 int AM_InconsistentFile( const edict_t *player, const char *filename, char *disconnect_message ) {
-
 	DEBUG_LOG(2, ("Inconsistent file: %s", filename) );
 	if ( strcmp("test.akf", filename) == 0 ) {
 		DEBUG_LOG(1, ("Keyfile mismatch") );
 		strcpy( disconnect_message, "keyfile mismatch" );
 		return RESULT_HANDLED;
 	} // if
-
 	return PLUGIN_CONTINUE;
 	
 }  // AM_InconsistentFile()
@@ -1657,7 +1654,6 @@ int AM_StartFrame( void ) {
 			if ( !cvar_file_is_set("admin_plugin_file") ) {
 				
 				if( !cvar_file_is_set("script_file") ) {
-
 					// If neither is set we probably have not yet read the adminmod.cfg file. 
 					// Try to read it from a default location and return so that this check is run again
 					if ( !s_bConfigRead ) {
@@ -1756,11 +1752,11 @@ int AM_GameDLLInit( void ) {
   /* CVars missing here get registered in h_export.cpp::GiveFnptrsToDll() */
 
   CVAR_REGISTER(&admin_balance_teams);
-  /* CVAR_REGISTER(&admin_bot_protection);   /* registered in h_export.cpp */
+  // CVAR_REGISTER(&admin_bot_protection);   /* registered in h_export.cpp */
   CVAR_REGISTER(&admin_cs_restrict);
   CVAR_REGISTER(&admin_connect_msg);
-  /* CVAR_REGISTER(&admin_debug);   /* registered in h_export.cpp */
-  /* CVAR_REGISTER(&admin_devel);   /* registered in h_export.cpp */
+  // CVAR_REGISTER(&admin_debug);   /* registered in h_export.cpp */
+  // CVAR_REGISTER(&admin_devel);   /* registered in h_export.cpp */
   CVAR_REGISTER(&admin_fun_mode);
   CVAR_REGISTER(&admin_fx);
   CVAR_REGISTER(&admin_gag_name);

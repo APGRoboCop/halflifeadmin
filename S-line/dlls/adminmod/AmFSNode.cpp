@@ -48,12 +48,12 @@
 
 
 
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include "AmFSNode.h"
 
 #ifdef WIN32
-#  define snprintf _snprintf
+//#  define snprintf _snprintf
 #  define S_ISDIR(a) ((a)&_S_IFDIR)
 #  define S_ISREG(a) ((a)&_S_IFREG)
 #endif
@@ -89,7 +89,7 @@ AmFSNode::AmFSNode( int _filedes ) : m_iFiledes(_filedes)
 
 AmFSNode::~AmFSNode()
 {
-	if ( NULL != m_poDirectoryObject ) delete m_poDirectoryObject;
+	if (NULL != m_poDirectoryObject ) delete m_poDirectoryObject;
 }
 
 
@@ -327,12 +327,11 @@ void AmDir::sort( void )
 
 
     char acGlob[PATH_MAX+3];
-	long int liDirHandle;
 
-    strcpy( acGlob, m_acFullpath );
+	strcpy( acGlob, m_acFullpath );
     strcat( acGlob, "/*" );
 
-    liDirHandle = _findfirst( acGlob, &m_oDirEntry );
+    long int liDirHandle = _findfirst(acGlob, &m_oDirEntry);
 	if ( liDirHandle < 0 ) return;
 
 	m_iNumDirEntries = 1;

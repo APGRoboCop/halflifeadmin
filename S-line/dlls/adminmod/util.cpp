@@ -60,7 +60,7 @@
 #endif
 #endif
 
-#include <ctype.h> /* for isprint */
+#include <cctype> /* for isprint */
 #include "constants.h"
 #include "amutil.h"
 #include "amlibc.h"
@@ -70,15 +70,10 @@
 #define SDK_UTIL_H
 #include "meta_api.h"
 
-extern globalvars_t   *gpGlobals;
-extern enginefuncs_t g_engfuncs;
+
 extern mapcycle_t mapcycle;
 
 DLL_GLOBAL const Vector     g_vecZero = Vector(0,0,0);   
-
-
-
-
 
 /* Like System_Response, but will _always_ log. */
 void System_Error(char* str, edict_t* pEntity) {
@@ -100,7 +95,7 @@ void System_Error(char* str, edict_t* pEntity) {
  */
 void System_Response(char *str,edict_t *pAdminEnt) {
   
-  if(pAdminEnt==NULL) {
+  if(pAdminEnt== NULL) {
     UTIL_LogPrintf( "%s", str);
   } else {
     CLIENT_PRINTF( pAdminEnt, print_console,str);
@@ -113,13 +108,12 @@ void System_Response(char *str,edict_t *pAdminEnt) {
   stop malformed names stuffing up checking
 */
 int make_friendly(char *name, BOOL check) {
-	int i; 
 	int iLen = strlen(name);
 	
 	
 	if(check && (g_NameCrashAction > 0 ) && ( iLen<=0 )  ) return 2; // the name is zero length....  
 	
-	for(i=0; i < iLen; i++) {
+	for(int i = 0; i < iLen; i++) {
 		if (name[i]=='%') {
 			// replace '%' with ' ' like the engine
 			name[i] = ' ';
@@ -140,7 +134,7 @@ int make_friendly(char *name, BOOL check) {
  *
  */
 const char* escape_chars( const char* _pcString, const char* _pcChars ) {
-	static char* pcResultString = 0;
+	static char* pcResultString = NULL;
 	int iLength = strlen( _pcString );
 	int iNumChars = strlen( _pcChars );
 	int iNumEscapes = 0;
@@ -149,7 +143,7 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 
 	// count the number of characters to escape.
 	const char* pcPos = _pcString;
-	while ( (pcPos = strpbrk(pcPos,_pcChars)) != 0 ) {
+	while ( (pcPos = strpbrk(pcPos,_pcChars)) != NULL ) {
 		iNumEscapes++;
 		pcPos++;
 	}  // while
@@ -159,15 +153,15 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 		return _pcString;
 	}  // if
 
-	if ( pcResultString != 0 ) delete[] pcResultString;
+	if ( pcResultString != NULL ) delete[] pcResultString;
 	pcResultString = new char[iLength + iNumEscapes + 1];
-	if ( pcResultString == 0 ) return 0;
+	if ( pcResultString == NULL ) return NULL;
 
 	// copy the string into our new string, escaping charaters
 	char* pcSet = pcResultString;
 	const char* pcCopy = _pcString;
 	pcPos = _pcString;
-	while( (pcPos = strpbrk(pcPos, _pcChars)) != 0 ) {
+	while( (pcPos = strpbrk(pcPos, _pcChars)) != NULL ) {
 		while( pcCopy != pcPos ) {
 			*pcSet = *pcCopy;
 			pcSet++; pcCopy++;
@@ -238,7 +232,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 	// find the option identifier
 	const char* pcOpt = pcOptions;
 
-	while ( (pcOpt=strstr(pcOpt, _pcOption)) != 0 ) {  // if the identifier string was found ...
+	while ( (pcOpt=strstr(pcOpt, _pcOption)) != NULL ) {  // if the identifier string was found ...
 		if ( pcOpt == pcOptions || *(pcOpt-1) == ':' ) {  // ... and it is indeed the start of an identifier ...
 			if ( (*(pcOpt+iOptionIDLen) == ' ' && *(pcOpt += iOptionIDLen + 1))
 				 || ((*(pcOpt+iOptionIDLen)>=0x30 && *(pcOpt+iOptionIDLen)<=0x39)  && *(pcOpt += iOptionIDLen)) ) {  
@@ -247,9 +241,9 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 				bOptionFound = true;
 
 				// get the numeric value
-				retval = strtol( pcOpt, 0, 0 );
+				retval = strtol( pcOpt, NULL, 0 );
 
-				if ( _pcReturnString != 0 ) {  
+				if ( _pcReturnString != NULL ) {  
 					// if we should return the string value, copy it
 					while ( (*pcOpt != ':') && (*pcOpt != '\0') && _tsLen ) {
 						*_pcReturnString = *pcOpt;
@@ -277,7 +271,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMore, char pszText[1024]) {
 
   int msgShowMenu = 0;
-  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", 0)) == 0 ) {
+  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", NULL)) == 0 ) {
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
 
@@ -298,7 +292,7 @@ void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMor
 void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char pszText[]) {
   
   int msgShowMenu = 0;
-  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", 0)) == 0 ) {
+  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", NULL)) == 0 ) {
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
 
@@ -333,7 +327,7 @@ void ShowMOTD( edict_t* pev, const char *msg )
   int char_count = 0;
 
   int msgShowMOTD = 0;
-  if ( (msgShowMOTD = GET_USER_MSG_ID(PLID, "MOTD", 0)) == 0 ) {
+  if ( (msgShowMOTD = GET_USER_MSG_ID(PLID, "MOTD", NULL)) == 0 ) {
 	  msgShowMOTD = REG_USER_MSG( "MOTD", -1 );
   }  // if
 
@@ -400,9 +394,8 @@ CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
 
 
 CBaseEntity* UTIL_PlayerByName( const char *name ) {
-  int i;
-  CBaseEntity *pPlayer = NULL;
-  for ( i = 1; i <= gpGlobals->maxClients; i++ ) {
+	CBaseEntity *pPlayer = NULL;
+  for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
     pPlayer = UTIL_PlayerByIndex(i);
     if (pPlayer) {
       if(FStrEq(STRING(pPlayer->pev->netname),name))
@@ -544,15 +537,14 @@ void fix_string(char *str,int len)
 */
 void DestroyMapCycle( mapcycle_t *cycle )
 {
-  mapcycle_item_t *p, *n, *start;
-  p = cycle->items;
+	mapcycle_item_t* p = cycle->items;
   if ( p )
     {
-      start = p;
+      mapcycle_item_t* start = p;
       p = p->next;
       while ( p != start )
 	{
-	  n = p->next;
+	  mapcycle_item_t* n = p->next;
 	  delete p;
 	  p = n;
 	}
@@ -575,9 +567,8 @@ static char com_token[ 1500 ];
 char *COM_Parse (char *data)
 {
   int             c;
-  int             len;
-  
-  len = 0;
+
+  int len = 0;
   com_token[0] = 0;
   
   if (!data)
@@ -605,7 +596,7 @@ char *COM_Parse (char *data)
   if (c == '\"')
     {
       data++;
-      while (1)
+      while (true)
 	{
 	  c = *data++;
 	  if (c=='\"' || !c)
@@ -651,9 +642,7 @@ char *COM_Parse (char *data)
 */
 int COM_TokenWaiting( char *buffer )
 {
-  char *p;
-  
-  p = buffer;
+	char* p = buffer;
   while ( *p && *p!='\n')
     {
       if ( !isspace( *p ) || isalnum( *p ) )
@@ -679,16 +668,15 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 	char szMap[ MAP_NAME_LENGTH ];
 	int length;
 	char *pFileList;
-	char *aFileList = pFileList = (char*)LOAD_FILE_FOR_ME( filename, &length );
-	int hasbuffer;
+	char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(filename, &length));
 	mapcycle_item_s *item = NULL, *last = NULL;
 	
 	if (aFileList == NULL || pFileList == NULL ) return 0;
 	
 	if ( pFileList && length ) {
 		// the first map name in the file becomes the default
-		while ( 1 ) {
-			hasbuffer = 0;
+		while ( true ) {
+			int hasbuffer = 0;
 			memset( szBuffer, 0, MAX_RULE_BUFFER );
 			
 			pFileList = COM_Parse( pFileList );
@@ -760,13 +748,13 @@ int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
   if ( mapcfile == NULL ) return 0;
   int length;
   char *pFileList;
-  char *aFileList = pFileList = (char*)LOAD_FILE_FOR_ME( mapcfile, &length );
+  char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(mapcfile, &length));
   if ( pFileList && length )
     {
       
       
       // keep pulling mapnames out of the list until we find "map", else return 0
-      while ( 1 )
+      while ( true )
 	{
 	  while ( *pFileList && isspace( *pFileList ) ) pFileList++; // skip over any whitespace
 	  if ( !(*pFileList) )
@@ -795,7 +783,7 @@ int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
 
 int listmaps(edict_t *pAdminEnt) {
   mapcycle_item_s *item;
-  char *mapcfile = (char*)CVAR_GET_STRING( "mapcyclefile" );
+  char *mapcfile = const_cast<char*>(CVAR_GET_STRING("mapcyclefile"));
   DestroyMapCycle( &mapcycle );
   ReloadMapCycleFile( mapcfile, &mapcycle );
   
@@ -813,12 +801,11 @@ int check_map(char *map, int bypass_allowed_map)
 {
   
   if ( FStrEq(map,"next_map")) { // next map in the cycle
-    
-    mapcycle_item_s *item;
-    char *mapcfile = (char*)CVAR_GET_STRING( "mapcyclefile" );
+
+	  char *mapcfile = const_cast<char*>(CVAR_GET_STRING("mapcyclefile"));
     DestroyMapCycle( &mapcycle );
     ReloadMapCycleFile( mapcfile, &mapcycle );
-    item=CurrentMap(&mapcycle);
+    mapcycle_item_s* item = CurrentMap(&mapcycle);
     strcpy(map,item->mapname);
     return (IS_MAP_VALID(item->mapname));
     
@@ -851,24 +838,20 @@ int check_map(char *map, int bypass_allowed_map)
 
 static unsigned short FixedUnsigned16( float value, float scale )
 {
-  int output;
-  
-  output = value * scale;
+	int output = value * scale;
   if ( output < 0 )
     output = 0;
   if ( output > 0xFFFF )
     output = 0xFFFF;
   
-  return (unsigned short)output;
+  return static_cast<unsigned short>(output);
 }
 
 
 
 static short FixedSigned16( float value, float scale )
 {
-  int output;
-  
-  output = value * scale;
+	int output = value * scale;
   
   if ( output > 32767 )
     output = 32767;
@@ -968,9 +951,7 @@ void UTIL_HudMessage( CBaseEntity *pEntity, const hudtextparms_t &textparms, con
 
 void UTIL_HudMessageAll( const hudtextparms_t &textparms, const char *pMessage )
 {
-  int			i;
-  
-  for ( i = 1; i <= gpGlobals->maxClients; i++ )
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
     {
       CBaseEntity *pPlayer = UTIL_PlayerByIndex( i );
 
@@ -984,11 +965,10 @@ void UTIL_HudMessageAll( const hudtextparms_t &textparms, const char *pMessage )
 
 
 char* GetModDir() {
-  int iPos;
-  static char strGameDir[2048];
+	static char strGameDir[2048];
   
   (*g_engfuncs.pfnGetGameDir)(strGameDir);
-  iPos = strlen(strGameDir) - 1;
+  int iPos = strlen(strGameDir) - 1;
 
  if(strchr(strGameDir,'/') )
   {  
@@ -998,7 +978,7 @@ char* GetModDir() {
   
   	if (iPos == 0) {
   	  // Hrmm.  Well, this might be a problem. Return no mod.
-  	  return 0;
+  	  return NULL;
   	}
   	iPos++;
   	return &strGameDir[iPos];
@@ -1017,7 +997,7 @@ void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name,
 
 	if ( ClientCheck(client) == 0 ) return;
   
-  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", 0)) == 0 ) {
+  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", NULL)) == 0 ) {
 	  g_msgTextMsg = REG_USER_MSG( "TextMsg", -1 );
   }  // if
  
@@ -1066,7 +1046,7 @@ void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name,
 
 	if ( ClientCheck(client) == 0 ) return;
 
-  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", 0)) == 0 ) {
+  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", NULL)) == 0 ) {
 	  g_msgTextMsg = REG_USER_MSG( "TextMsg", -1 );
   }  // if
 
@@ -1160,13 +1140,11 @@ int GetPlayerIndex(char *PlayerText) {
 		  bVerbatim = true;
 	  }  // if
   }  // if
-  
-  AMAuthId oaiAuthID;
-	  
+
   // Get "numeric" representations of the passed string.
-  oaiAuthID = PlayerText;
+  AMAuthId oaiAuthID = PlayerText;
   //-- Set up a numeric id in case we got a SessionID.
-  char* pcEndptr = 0;
+  char* pcEndptr = NULL;
   PlayerNumber = strtol( PlayerText, &pcEndptr, 10);
   //-- Check if we had a valid number or a string starting with a number.
   //-- Following whitespaces do not count as a string, ie. "123  " is 123.
@@ -1188,7 +1166,7 @@ int GetPlayerIndex(char *PlayerText) {
 			  // This is only enabled in verbatim mode. 
 			  if ( stricmp(STRING(pPlayer->pev->netname), PlayerText) == 0) { return i;}
 			  
-			  if ( stristr(STRING(pPlayer->pev->netname), PlayerText) != 0 ) {
+			  if ( stristr(STRING(pPlayer->pev->netname), PlayerText) != NULL ) {
 				  index = i;
 				  found++;
 			  }  // if
@@ -1230,11 +1208,8 @@ int GetPlayerIndex(char *PlayerText) {
 
 
 int GetPlayerCount( edict_t* peIgnorePlayer ) {
-	int i;
-	int iPlayerCount;
-	
-	iPlayerCount = 0;
-	for ( i = 1; i <= gpGlobals->maxClients; i++ ) {
+	int iPlayerCount = 0;
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
 		edict_t* pPlayer = UTIL_EntityByIndex(i);
 		if ( IsPlayerValid(pPlayer) && (pPlayer != peIgnorePlayer) ) {
 			iPlayerCount++;
@@ -1272,7 +1247,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
   const char c_cDirSep = '/';
 #endif
   
-  if ( pcAccessCvar == 0 || (int)CVAR_GET_FLOAT(pcAccessCvar) == 1 ) {  
+  if ( pcAccessCvar == NULL || (int)CVAR_GET_FLOAT(pcAccessCvar) == 1 ) {  
 
     char acFilePath[PATH_MAX];
     memset( acFilePath, 0, PATH_MAX );
@@ -1292,7 +1267,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
     strcat( acFilePath, pcFilename );
 
     char* pcPathSep = acFilePath;
-    while ( pcPathSep != 0 && *pcPathSep != '\0' ) {
+    while ( pcPathSep != NULL && *pcPathSep != '\0' ) {
 #ifdef WIN32
       if ( *pcPathSep == '/' ) {
 	*pcPathSep = '\\';
@@ -1305,7 +1280,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
       pcPathSep++;
     }  // while
 
-    pcPathSep = 0;
+    pcPathSep = NULL;
 
     strncpy( pcPath, acFilePath, iMaxLen );
 
@@ -1375,7 +1350,7 @@ int get_player_team( CBaseEntity* poPlayer ) {
 
 int util_kick_player( int _iSessionId, const char* _pcKickMsg )
 {
-	if ( NULL == _pcKickMsg ) {
+	if (NULL == _pcKickMsg ) {
 		DEBUG_LOG(2, ("Running server command 'kick # %i'", _iSessionId) );
 		SERVER_COMMAND( UTIL_VarArgs("kick # %i\n", _iSessionId) );
 	} else {
@@ -1388,7 +1363,7 @@ int util_kick_player( int _iSessionId, const char* _pcKickMsg )
 
 int util_kick_player( edict_t* _peEntity, const char* _pcKickMsg )
 {
-	if ( NULL == _peEntity ) return 0;
+	if (NULL == _peEntity ) return 0;
 	int iSID = GETPLAYERUSERID( _peEntity );
 	if ( 0 == iSID ) return 0;
 	util_kick_player( iSID, _pcKickMsg );

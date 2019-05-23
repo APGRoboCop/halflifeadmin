@@ -39,7 +39,7 @@
  *
  */
 
-#include <stdio.h> // vsnprintf, etc
+#include <cstdio> // vsnprintf, etc
 #include "extdll.h"
 #include "users.h"
 #include "amutil.h"
@@ -99,7 +99,7 @@ mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/
 	{ "dmc", "dmc\\dlls\\dmc.dll", "dmc/dlls/dmc.so" },
     { "bg", "bg\\dlls\\bg.dll", "ts/dlls/bg_i386.so" },
     { "ts", "ts\\dlls\\mp.dll", "ts/dlls/ts_i686.so" },
-    { "ns", "ns\\dlls\\ns.dll", "ns/dlls/ns_i386.so" },
+    { "ns", "ns\\dlls\\ns.dll", "ns/dlls/ns.so" },
 	{ "zp", "zp\\dlls\\mp.dll", "zp/dlls/hl_i386.so" },
     { "brainbread", "brainbread\\dlls\\bb.dll", "brainbread/dlls/bb_i386.so" },
     { "action", "action\\dlls\\ahl.dll", "action/dlls/ahl_i386.so" },
@@ -110,9 +110,9 @@ mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/
     { "firearms", "firearms\\dlls\\firearms.dll", "firearms/dlls/fa_i386.so" },
     { "goldeneye", "goldeneye\\dlls\\mp.dll", "goldeneye/dlls/golden_i386.so" },
     { "oz", "oz\\dlls\\mp.dll", "oz/dlls/mp_i386.so" },
-	{ "svencoop", "svencoop\\dlls\\hl.dll", "svencoop/dlls/hl_i386.so" },
+	//{ "svencoop", "svencoop\\dlls\\hl.dll", "svencoop/dlls/hl_i386.so" },
 	{ "svencoop", "svencoop\\dlls\\server.dll", "svencoop/dlls/server.so" }, // SC 5 support [APG]RoboCop[CL]
-    { "si", "si\\dlls\\si.dll", "si/dlls/si_i386.so" },
+    { "si", "si\\dlls\\si.dll", "si/dlls/si.so" },
     { "frontline", "frontline\\dlls\\frontline.dll", "frontline/dlls/front_i386.so" },
     { "arg", "arg\\dlls\\hl.dll", "arg/dlls/arg_i386.so" },
     { "gangstawars", "gangstawars\\dlls\\hl.dll", "gangstawars/dlls/gansta_i386.so" },
@@ -444,17 +444,17 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     CVAR_REGISTER(&reserve_slots);
     CVAR_REGISTER(&amv_hide_reserved_slots);
     // CVAR_REGISTER(&amv_keyfiles);
-    ptAM_devel = 0;
+    ptAM_devel = NULL;
     ptAM_devel = CVAR_GET_POINTER("admin_devel");
-    ptAM_debug = 0;
+    ptAM_debug = NULL;
     ptAM_debug = CVAR_GET_POINTER("admin_debug");
     // ptAM_autoban = 0;
     // ptAM_autoban = CVAR_GET_POINTER( "amv_autoban" );
-    ptAM_botProtection = 0;
+    ptAM_botProtection = NULL;
     ptAM_botProtection = CVAR_GET_POINTER("admin_bot_protection");
-    ptAM_reserve_slots = 0;
+    ptAM_reserve_slots = NULL;
     ptAM_reserve_slots = CVAR_GET_POINTER("reserve_slots");
-    ptAM_hide_reserved_slots = 0;
+    ptAM_hide_reserved_slots = NULL;
     ptAM_hide_reserved_slots = CVAR_GET_POINTER("amv_hide_reserved_slots");
     // ptAM_keyfiles = 0;
     // ptAM_keyfiles = CVAR_GET_POINTER( "amv_keyfiles" );
@@ -541,7 +541,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 #endif
 
     BOOL bSymbolLoaded = FALSE;
-    h_Library = 0;
+    h_Library = NULL;
 
 #ifndef USE_METAMOD
     GET_GAME_DIR(game_dir);
@@ -660,7 +660,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
         UTIL_LogPrintf("[ADMIN] INFO: Loading extended Counter-Strike functionality.\n");
 #endif
 
-        if(CS_Library == 0) {
+        if(CS_Library == NULL) {
 #ifdef _WIN32
             CS_Library = LoadLibrary(dll_name);
 #else
@@ -674,9 +674,9 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 #endif
         } else {
 
-            char* pcError = 0;
+            char* pcError = NULL;
 
-            g_pflTimeLimit = (float*)GetProcAddress(CS_Library, "g_flTimeLimit");
+            g_pflTimeLimit = reinterpret_cast<float*>(GetProcAddress(CS_Library, "g_flTimeLimit"));
             if(g_pflTimeLimit == NULL) {
 #if(defined LINUX) || (defined EXTDEBUG)
                 UTIL_LogPrintf(

@@ -90,8 +90,8 @@
 
 
 #ifdef _WIN32
-#  define snprintf _snprintf
-#  define vsnprintf _vsnprintf
+//#  define snprintf _snprintf
+//#  define vsnprintf _vsnprintf
 #  define HAS_SNPRINTF
 #  define sleep(x)	Sleep(x*1000)
 #  define strcasecmp	stricmp
@@ -99,8 +99,6 @@
 #else
 #  define HAS_SNPRINTF
 #endif
-
-
 
 
 /* LINUX COMPILE */
@@ -136,6 +134,8 @@
   #define FALSE 0
   #define TRUE  1
 
+  //Fix for GCC 7 - [APG]RoboCop[CL]
+  #include <algorithm> 
 
   #ifndef max
     #define max(a,b)    (((a) > (b)) ? (a) : (b))
@@ -144,6 +144,11 @@
   #ifndef min
     #define min(a,b)    (((a) < (b)) ? (a) : (b))
   #endif
+
+  #undef max
+  #undef min
+
+  using namespace std;
 
   #define itoa(a,b,c) sprintf(b, "%d", a)
 
@@ -232,8 +237,8 @@ typedef float vec_t;				// needed before including progdefs.h
 //#include <weapons.h>        
 
 
-#include <time.h>
-#include <ctype.h>  /* isprint() */
+#include <ctime>
+#include <cctype>  /* isprint() */
 
 // scripting stuff
 #include "amx.h"

@@ -131,10 +131,10 @@ ifeq "$(USER)" "flori"
 endif
 
 #make sure this is the correct compiler for your system
-CC=gcc-4.8
-CXX=g++-4.8
-#CC=clang
-#CXX=clang++
+#CC=gcc-4.8
+#CXX=g++-4.8
+CC=clang
+CXX=clang++
 
 # !! If you only want to compile and go you shouldn't need to edit anything below this line !!
 ###############################################################################################
@@ -147,7 +147,7 @@ CXX=g++-4.8
 OPT=dbg
 SQL=no
 MM=mm
-REL=beta5
+REL=beta6
 
 default: $(DEFTARGET)
 
@@ -313,13 +313,11 @@ endif
 
 GCCMAJ = $(shell gcc -dumpversion | sed -e 's/\.[0-9][0-9]*\.[0-9]//')
 
-CFWARN = -Wall
 #CFWARN = -w
 
 ifeq "$(GCCMAJ)" "2"
 	CFWARN += -Wbad-function-cast -Wmissing-declarations -Wnested-externs
 endif
-
 
 ifeq "$(ARCH)" "x86_64"
     # K8 targets only available from gcc 3.4 on.
@@ -330,11 +328,11 @@ endif
 
 # debug build (WONT WORK WITH omit-frame-pointer !!!!!)
 
-CFDBG= -g -ggdb
+CFDBG= -g -ggdb -m32
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization // -O1 works best? [APG]RoboCop[CL]
-CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -msse -msse2 \
+CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -msse -msse2 -s -pipe \
 	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 

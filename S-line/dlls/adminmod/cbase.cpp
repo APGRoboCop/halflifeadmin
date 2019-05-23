@@ -168,13 +168,9 @@ int	CBaseEntity :: DamageDecal( int bitsDamageType )
 // will keep a pointer to it after this call.
 CBaseEntity * CBaseEntity::Create( char *szName, const Vector &vecOrigin, const Vector &vecAngles, edict_t *pentOwner )
 {
-  
-  //  CBaseEntity *pCheckEntity;
-  CBaseEntity *pEntity;
-  //	char szClassname[200];
-  
-  edict_t *pEnt;
-  UTIL_LogPrintf( "[ADMIN] spawning\n");
+	//	char szClassname[200];
+
+	UTIL_LogPrintf( "[ADMIN] spawning\n");
   /*		pCheckEntity = UTIL_FindEntityByClassname(NULL, szName);
 		if(pCheckEntity==NULL) {
 		UTIL_LogPrintf("[ADMIN] spawn: The entity to be spawned was not cached at map load, so cannot be spawned.\n");
@@ -182,13 +178,13 @@ CBaseEntity * CBaseEntity::Create( char *szName, const Vector &vecOrigin, const 
 		}
   */
   
-  pEnt = CREATE_NAMED_ENTITY(MAKE_STRING(szName));
+  edict_t* pEnt = CREATE_NAMED_ENTITY(MAKE_STRING(szName));
   if(FNullEnt(pEnt)) {
     UTIL_LogPrintf( "[ADMIN] spawn: Null entity in spawn.\n");
-    return 0;
+    return NULL;
   }
   
-  pEntity = (CBaseEntity *)GET_PRIVATE(pEnt);
+  CBaseEntity* pEntity = static_cast<CBaseEntity *>(GET_PRIVATE(pEnt));
   pEntity->edict()->v.owner = NULL;
   pEntity->edict()->v.origin.x = 0;
   pEntity->edict()->v.origin.y = 0;

@@ -57,10 +57,10 @@ typedef unsigned long uint32_t;
 typedef long long int64_t;
 typedef unsigned long long uint64_t;
 #  endif
-#  define snprintf _snprintf
+//#  define snprintf _snprintf
 #endif  // LINUX
 
-#include <stdio.h>  /* snprintf */
+#include <cstdio>  /* snprintf */
 
 namespace nsAuthid {
 
@@ -97,7 +97,7 @@ class AMAuthId {
 		m_uiAuthid32[nsAuthid::HIGH] = s1;
 		m_uiAuthid32[nsAuthid::LOW]  = s2;
 	};
-	AMAuthId( const unsigned char* _pcID ) { f_parse_id( (const char*)_pcID ); };
+	AMAuthId( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); };
 	AMAuthId( const char* _pcID )          { f_parse_id( _pcID ); };
 
 
@@ -167,9 +167,8 @@ class AMAuthId {
 	}
 #endif
 
-	AMAuthId& operator=( const unsigned char* _pcID ) { f_parse_id( (const char*)_pcID ); return *this; };
+	AMAuthId& operator=( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); return *this; };
 	AMAuthId& operator=( const char* _pcID )          { f_parse_id(_pcID ); return *this; };
-
 
 
 	// Conversions
@@ -298,7 +297,7 @@ class AMAuthId {
 		const int DING = 0x474e4944;
 		const int uLAN = 0x4e414c5f;
 
-		const int* pcI = (const int*)_pcID;
+		const int* pcI = reinterpret_cast<const int*>(_pcID);
 		return (   ( (*pcI == VALV && *(pcI+1) == E_ID) || (*pcI == STEA && *(pcI+1) == M_ID)     ) 
 				&& (  *(pcI+2) == uLAN                  || (*(pcI+2) == uPEN && *(pcI+3) == DING) ) );
 	};
@@ -313,7 +312,7 @@ class AMAuthId {
 		const int uLOO = 0x4f4f4c5f;
 		const int PBAC = 0x43414250;
 
-		const int* pcI = (const int*)_pcID;
+		const int* pcI = reinterpret_cast<const int*>(_pcID);
 		return (   ( (*pcI == VALV && *(pcI+1) == E_ID) || (*pcI == STEA && *(pcI+1) == M_ID) ) 
 				&& (*(pcI+2) == uLOO) && (*(pcI+3) == PBAC) );
 	};
@@ -327,7 +326,7 @@ class AMAuthId {
 		const int E_ID = 0x44495f45;
 		const int uLAN = 0x4e414c5f;
 
-		const int* pcI = (const int*)_pcID;
+		const int* pcI = reinterpret_cast<const int*>(_pcID);
 		return (   ( (*pcI == VALV && *(pcI+1) == E_ID) || (*pcI == STEA && *(pcI+1) == M_ID) ) 
 				&& (*(pcI+2) == uLAN) );
 	};
