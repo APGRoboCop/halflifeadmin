@@ -1,9 +1,0 @@
-Amxdll.aps
-AMX16.DEF
-amxcons.opt
-obj
-*.ncb
-Release
-Debug
-*.plg
-*.obj
