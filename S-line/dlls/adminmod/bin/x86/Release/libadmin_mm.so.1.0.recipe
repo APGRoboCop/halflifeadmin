@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
-  <LocalLibPath>E:\Dropbox\src\halflifeadmin\S-line\dlls\adminmod\bin\x86\Release\libadmin_mm.so.1.0</LocalLibPath>
-  <ObjPaths>E:\Dropbox\src\halflifeadmin\S-line\dlls\adminmod\obj\x86\Release\</ObjPaths>
-  <Configuration>Release</Configuration>
-  <Platform>x86</Platform>
-</Project>

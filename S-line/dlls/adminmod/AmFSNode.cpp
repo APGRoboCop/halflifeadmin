@@ -46,8 +46,6 @@
  * called.
  */
 
-
-
 #include <cstring>
 #include <cstdio>
 #include "AmFSNode.h"
@@ -92,7 +90,6 @@ AmFSNode::~AmFSNode()
 	if (NULL != m_poDirectoryObject ) delete m_poDirectoryObject;
 }
 
-
 void AmFSNode::set( const char* _fullpath )
 {
 	m_iFiledes = 0;
@@ -107,13 +104,11 @@ void AmFSNode::set( const char* _path, const char* _nodename )
 	m_stat_node();
 }
 
-
 void AmFSNode::set( int _filedes ) 
 {
 	m_iFiledes = _filedes;
 	m_stat_node();
 }
-
 
 bool AmFSNode::is_directory( void )
 {
@@ -133,19 +128,15 @@ bool AmFSNode::is_file( void )
 	}
 }
 
-
 void AmFSNode::name( char* _name, int _max )
 {
 	strncpy( _name, m_acFullpath, _max );
 }
 
-
 const char* AmFSNode::name( )
 {
 	return m_acFullpath;
 }
-
-
 
 AmDir* AmFSNode::get_directory_handle( void )
 {
@@ -159,7 +150,6 @@ AmDir* AmFSNode::get_directory_handle( void )
 	
 	return m_poDirectoryObject;
 }
-
 
 void AmFSNode::m_stat_node( void ) {
 	int retval = 0;
@@ -176,9 +166,6 @@ void AmFSNode::m_stat_node( void ) {
 	}
 }
 
-
-
-
 const char* AmDir::get_next_entry( AmFSNode& _oNode )
 {
 	if ( !is_directory() ) return NULL;
@@ -190,8 +177,6 @@ const char* AmDir::get_next_entry( AmFSNode& _oNode )
 	return m_pcDirEntryName;
 }
 
-
-
 const char* AmDir::get_next_entry( void )
 {
 	if ( !is_directory() ) return NULL;
@@ -200,7 +185,6 @@ const char* AmDir::get_next_entry( void )
 
 	return m_pcDirEntryName;
 }
-
 
 #ifdef LINUX
 void AmDir::set( const char* _fullpath )
@@ -220,7 +204,6 @@ void AmDir::set( const char* _path, const char* _nodename )
 void AmDir::set( int filedes ) {
 }
 
-
 void AmDir::sort( void )
 {
 	if ( m_ptDirHandle != NULL ) closedir( m_ptDirHandle );
@@ -233,7 +216,6 @@ void AmDir::sort( void )
 	}
 }
 
-
 void AmDir::rewind( void )
 {
 	if ( m_ppoDirEntries == NULL ) {
@@ -243,10 +225,8 @@ void AmDir::rewind( void )
 	}
 }
 
-
 int AmDir::m_next_entry( void )
 {
-
 	// Check if we read from disk and have no directory open
 	if ( m_ppoDirEntries == NULL && m_ptDirHandle == NULL ) {
 		m_ptDirHandle = opendir( m_acFullpath );
@@ -272,9 +252,6 @@ readdiragain:
 	return 1;
 }
 
-
-
-
 void AmDir::m_free_dir_entries( void )
 {
 	if ( m_ppoDirEntries != NULL ) {
@@ -288,16 +265,11 @@ void AmDir::m_free_dir_entries( void )
 }
 #endif
 
-
-
 #ifdef WIN32
-
-
 static int __cdecl alphasort_finddata(const void *elem1, const void *elem2 ) 
 {
 	return _stricmp( ((struct _finddata_t*)elem1)->name, ((struct _finddata_t*)elem2)->name );
 }
-
 
 void AmDir::set( const char* _fullpath )
 {
@@ -324,7 +296,6 @@ void AmDir::sort( void )
 		m_liDirHandle = -1;
 	}
 	m_free_dir_entries();
-
 
     char acGlob[PATH_MAX+3];
 
@@ -361,14 +332,11 @@ void AmDir::sort( void )
     while ( _findnext(liDirHandle, &m_poDirEntries[m_iCurrDirEntryNum++]) == 0 ) ;	
 	_findclose( liDirHandle );
 
-
 	// and now sort them
     qsort( m_poDirEntries, m_iNumDirEntries, sizeof(struct _finddata_t), alphasort_finddata );
 
 	m_iCurrDirEntryNum = 0;
 }
-
-
 
 void AmDir::rewind( void )
 {
@@ -380,10 +348,8 @@ void AmDir::rewind( void )
 	}
 }
 
-
 int AmDir::m_next_entry( void )
 {
-
 	struct _finddata_t* poDirEntry = &m_oDirEntry;
 
 	if ( m_poDirEntries == NULL && m_liDirHandle < 0 ) {

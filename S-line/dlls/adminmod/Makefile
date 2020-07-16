@@ -81,7 +81,7 @@ SDKSRC= ../../../../hlsdk-2.3-p4/multiplayer
 
 # The directory with the metamod include files.
 # For Linux we assume a link called 'metamod' in the adminmod directory
-METADIR= ../../../../metamod-p-37
+METADIR= ../../../../metamod-p
 METASRC= $(METADIR)/metamod
 
 # The standard C++ library for static linking
@@ -133,8 +133,8 @@ endif
 #make sure this is the correct compiler for your system
 #CC=gcc-4.8
 #CXX=g++-4.8
-CC=clang
-CXX=clang++
+CC=gcc
+CXX=g++
 
 # !! If you only want to compile and go you shouldn't need to edit anything below this line !!
 ###############################################################################################
@@ -280,8 +280,8 @@ else
 	BETA = -DBETA=\"$(REL)\"
 endif
 
-BASE_CFLAGS=-include apsymbols.h -Dstricmp=strcasecmp -D_strnicmp=strncasecmp \
-	-Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
+BASE_CFLAGS=-include apsymbols.h -Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
+	-Wno-unknown-pragmas -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
 	
 XTFLAGS= -DTZONE=\"$(TZONE)\"
 
@@ -332,8 +332,8 @@ CFDBG= -g -ggdb -m32
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization // -O1 works best? [APG]RoboCop[CL]
-CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -msse -msse2 -s -pipe \
-	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2
+CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -mmmx -msse -msse2 -pipe \
+	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
 
@@ -452,8 +452,8 @@ endif
 ##############################################################
 
 
-DO_CC=$(CC) -w $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $< 
-DO_CXX=$(CXX) -w $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $< 
+DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $< 
+DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $< 
 
 
 
