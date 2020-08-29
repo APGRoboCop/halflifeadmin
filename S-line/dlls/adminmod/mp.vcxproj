@@ -834,7 +834,7 @@
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
-      <AdditionalIncludeDirectories>..\..\commonlib\include;..\..\..\..\hlsdk-2.3-p4\multiplayer\engine;..\..\..\..\hlsdk-2.3-p4\multiplayer\common;..\..\..\..\hlsdk-2.3-p4\multiplayer\pm_shared;..\..\..\..\hlsdk-2.3-p4\multiplayer\dlls;..\..\..\..\metamod-p-37\metamod;..\amxdll;..\..\tools\amxconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\commonlib\include;..\..\..\..\hlsdk-2.3-p4\multiplayer\engine;..\..\..\..\hlsdk-2.3-p4\multiplayer\common;..\..\..\..\hlsdk-2.3-p4\multiplayer\pm_shared;..\..\..\..\hlsdk-2.3-p4\multiplayer\dlls;..\..\..\..\metamod-p\metamod;..\amxdll;..\..\tools\amxconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;VALVE_DLL;HAVE_CONFIG_H;USE_METAMOD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\ReleaseMM\obj\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\ReleaseMM\obj\mp.pch</PrecompiledHeaderOutputFile>
@@ -925,7 +925,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\commonlib\include;..\..\..\..\hlsdk-2.3-p4\multiplayer\engine;..\..\..\..\hlsdk-2.3-p4\multiplayer\common;..\..\..\..\hlsdk-2.3-p4\multiplayer\pm_shared;..\..\..\..\hlsdk-2.3-p4\multiplayer\dlls;..\..\..\..\metamod-p-37\metamod;..\amxdll;..\..\tools\amxconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\commonlib\include;..\..\..\..\hlsdk-2.3-p4\multiplayer\engine;..\..\..\..\hlsdk-2.3-p4\multiplayer\common;..\..\..\..\hlsdk-2.3-p4\multiplayer\pm_shared;..\..\..\..\hlsdk-2.3-p4\multiplayer\dlls;..\..\..\..\metamod-p\metamod;..\amxdll;..\..\tools\amxconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;VALVE_DLL;HAVE_CONFIG_H;USE_METAMOD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\DebugMM\obj\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\DebugMM\obj\mp.pch</PrecompiledHeaderOutputFile>
