@@ -3965,7 +3965,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
       DEBUG_PRINT2 ("\n%p: ", p);
 #else
-      DEBUG_PRINT2 ("\n0x%x: ", p);
+      DEBUG_PRINT2 ("\n0x%p: ", p);
 #endif
 
       if (p == pend)
@@ -4548,7 +4548,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
           DEBUG_PRINT3 (" %d (to %p):\n", mcnt, p + mcnt);
 #else
-          DEBUG_PRINT3 (" %d (to 0x%x):\n", mcnt, p + mcnt);
+          DEBUG_PRINT3 (" %d (to 0x%p):\n", mcnt, p + mcnt);
 #endif
 
           PUSH_FAILURE_POINT (p + mcnt, NULL, -2);
@@ -4575,7 +4575,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
           DEBUG_PRINT3 (" %d (to %p)", mcnt, p + mcnt);
 #else
-          DEBUG_PRINT3 (" %d (to 0x%x)", mcnt, p + mcnt);
+          DEBUG_PRINT3 (" %d (to 0x%p)", mcnt, p + mcnt);
 #endif
 
           /* If this on_failure_jump comes right before a group (i.e.,
@@ -4795,7 +4795,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
 	  DEBUG_PRINT2 ("\n%p: ", p);
 #else
-	  DEBUG_PRINT2 ("\n0x%x: ", p);
+	  DEBUG_PRINT2 ("\n0x%p: ", p);
 #endif
           /* Note fall through.  */
 
@@ -4807,7 +4807,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
           DEBUG_PRINT2 ("(to %p).\n", p);
 #else
-          DEBUG_PRINT2 ("(to 0x%x).\n", p);
+          DEBUG_PRINT2 ("(to 0x%p).\n", p);
 #endif
 	  break;
 
@@ -4860,7 +4860,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
                DEBUG_PRINT3 ("  Setting %p to %d.\n", p - 2, mcnt);
 #else
-               DEBUG_PRINT3 ("  Setting 0x%x to %d.\n", p - 2, mcnt);
+               DEBUG_PRINT3 ("  Setting 0x%p to %d.\n", p - 2, mcnt);
 #endif
             }
 	  else if (mcnt == 0)
@@ -4868,7 +4868,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
               DEBUG_PRINT2 ("  Setting two bytes from %p to no_op.\n", p+2);
 #else
-              DEBUG_PRINT2 ("  Setting two bytes from 0x%x to no_op.\n", p+2);
+              DEBUG_PRINT2 ("  Setting two bytes from 0x%p to no_op.\n", p+2);
 #endif
 	      p[2] = (unsigned char) no_op;
               p[3] = (unsigned char) no_op;
@@ -4888,7 +4888,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
                DEBUG_PRINT3 ("  Setting %p to %d.\n", p + 2, mcnt);
 #else
-               DEBUG_PRINT3 ("  Setting 0x%x to %d.\n", p + 2, mcnt);
+               DEBUG_PRINT3 ("  Setting 0x%p to %d.\n", p + 2, mcnt);
 #endif
 	       goto unconditional_jump;
             }
@@ -4907,7 +4907,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 #ifdef _LIBC
             DEBUG_PRINT3 ("  Setting %p to %d.\n", p1, mcnt);
 #else
-            DEBUG_PRINT3 ("  Setting 0x%x to %d.\n", p1, mcnt);
+            DEBUG_PRINT3 ("  Setting 0x%p to %d.\n", p1, mcnt);
 #endif
 	    STORE_NUMBER (p1, mcnt);
             break;
