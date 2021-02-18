@@ -69,19 +69,23 @@ template<class T, bool isArray> inline CLinkItem<T,isArray>::~CLinkItem(){
 
 */
 
-template<class T, bool isArray> inline T* CLinkItem<T,isArray>::Data() {
+template<class T, bool isArray>
+T* CLinkItem<T,isArray>::Data() {
   return m_pData;
 }
 
-template<class T, bool isArray> inline void CLinkItem<T,isArray>::SetData(T* pData) {
+template<class T, bool isArray>
+void CLinkItem<T,isArray>::SetData(T* pData) {
   m_pData = pData;
 }
 
-template<class T, bool isArray> inline CLinkItem<T,isArray>* CLinkItem<T,isArray>::NextLink() {
+template<class T, bool isArray>
+CLinkItem<T,isArray>* CLinkItem<T,isArray>::NextLink() {
   return m_pNext;
 }
 
-template<class T, bool isArray> inline void CLinkItem<T,isArray>::SetNextLink(CLinkItem<T,isArray>* pNextLink) {
+template<class T, bool isArray>
+void CLinkItem<T,isArray>::SetNextLink(CLinkItem<T,isArray>* pNextLink) {
   m_pNext = pNextLink;
 }
 
@@ -173,7 +177,8 @@ template<class T, bool isArray> CLinkItem<T,isArray>* CLinkList<T,isArray>::Find
   return pCurrent;
 }
 
-template<class T, bool isArray> inline CLinkItem<T,isArray>* CLinkList<T,isArray>::FirstLink() {
+template<class T, bool isArray>
+CLinkItem<T,isArray>* CLinkList<T,isArray>::FirstLink() {
   return m_pFirst;
 }
 

@@ -575,11 +575,11 @@ int CPlugin::LoadFile(char* sFilename) {
 #else
 				DEBUG_LOG(2, ("CPlugin::LoadFile: Loading Linux script file '%s', converting to Win32 format.", sFilename) );
 				if ( hdr.file_version == 4 ) {
-					pCodeFrom = convert_header( pTmpMemFile, *(reinterpret_cast<AMX_WIN32_HEADER_V4*>(m_pProgram)) );
+					pCodeFrom = convert_header( pTmpMemFile, *static_cast<AMX_WIN32_HEADER_V4*>(m_pProgram) );
 					pCodeTo = static_cast<char*>(m_pProgram) + sizeof(AMX_WIN32_HEADER_V4);
 					lCodeSize = hdr.size - sizeof(AMX_LINUX_HEADER_V4);
 				} else {
-					pCodeFrom = convert_header( pTmpMemFile, *(reinterpret_cast<AMX_WIN32_HEADER*>(m_pProgram)) );
+					pCodeFrom = convert_header( pTmpMemFile, *static_cast<AMX_WIN32_HEADER*>(m_pProgram) );
 					pCodeTo = static_cast<char*>(m_pProgram) + sizeof(AMX_WIN32_HEADER);
 					lCodeSize = hdr.size - sizeof(AMX_LINUX_HEADER);
 				}  // if-else

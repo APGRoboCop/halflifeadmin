@@ -430,7 +430,7 @@ void WINAPI GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, globalvars_t* pG
 extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, globalvars_t* pGlobals)
 {
 #endif
-    char game_dir[2048];
+    //char game_dir[2048];
     memcpy(&g_engfuncs, pengfuncsFromEngine, sizeof(enginefuncs_t));
     gpGlobals = pGlobals;
 
@@ -674,7 +674,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 #endif
         } else {
 
-            char* pcError = NULL;
+            //char* pcError = NULL;
 
             g_pflTimeLimit = reinterpret_cast<float*>(GetProcAddress(CS_Library, "g_flTimeLimit"));
             if(g_pflTimeLimit == NULL) {

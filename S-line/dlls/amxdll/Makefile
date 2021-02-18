@@ -12,7 +12,7 @@ MODNAME=amx
 ARCH=admin
 
 #make sure this is the correct compiler for your system
-CC=gcc-4.8
+CC=gcc
 
 OBJDIR=obj
 

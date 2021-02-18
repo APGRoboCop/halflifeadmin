@@ -63,3 +63,6 @@ Temporary Items
 *.pdb
 *.dep
 *.suo
+*.opendb
+*.db-wal
+*.db-shm

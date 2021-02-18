@@ -244,6 +244,6 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity);
 int pass_compare( const char* sServerPassword, const char* sPlayerPassword);
 
 
-bool user_ip( int _iIndex, const char** const _pcIP, ulong* _plIP = NULL );
+bool user_ip( int _iIndex, const char** _pcIP, ulong* _plIP = NULL );
 edict_t* get_player_edict( uint32_t ID, uidt type = uid_none );
 edict_t* get_player_edict( const AMAuthId& ID, uidt type = uid_none );

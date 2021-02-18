@@ -186,50 +186,50 @@ class AMAuthId {
 
 	// Comparison operators
 	friend bool operator==( const AMAuthId& lhs, const AMAuthId& rhs );
-	friend bool operator==( const uint32_t  lhs, const AMAuthId& rhs );
-	friend bool operator==( const AMAuthId& lhs, const uint32_t  rhs );
-	friend bool operator==( const int32_t   lhs, const AMAuthId& rhs );
-	friend bool operator==( const AMAuthId& lhs, const int32_t   rhs );
+	friend bool operator==(uint32_t  lhs, const AMAuthId& rhs );
+	friend bool operator==( const AMAuthId& lhs, uint32_t  rhs );
+	friend bool operator==(int32_t   lhs, const AMAuthId& rhs );
+	friend bool operator==( const AMAuthId& lhs, int32_t   rhs );
 	friend bool operator==( const char*     lhs, const AMAuthId& rhs );
 	friend bool operator==( const AMAuthId& lhs, const char*     rhs );
 
 	friend bool operator!=( const AMAuthId& lhs, const AMAuthId& rhs );
-	friend bool operator!=( const uint32_t  lhs, const AMAuthId& rhs );
-	friend bool operator!=( const AMAuthId& lhs, const uint32_t  rhs );
-	friend bool operator!=( const int32_t   lhs, const AMAuthId& rhs );
-	friend bool operator!=( const AMAuthId& lhs, const int32_t   rhs );
+	friend bool operator!=(uint32_t  lhs, const AMAuthId& rhs );
+	friend bool operator!=( const AMAuthId& lhs, uint32_t  rhs );
+	friend bool operator!=(int32_t   lhs, const AMAuthId& rhs );
+	friend bool operator!=( const AMAuthId& lhs, int32_t   rhs );
 	friend bool operator!=( const char*     lhs, const AMAuthId& rhs );
 	friend bool operator!=( const AMAuthId& lhs, const char*     rhs );
 
 	friend bool operator>=( const AMAuthId& lhs, const AMAuthId& rhs );
-	friend bool operator>=( const uint32_t  lhs, const AMAuthId& rhs );
-	friend bool operator>=( const AMAuthId& lhs, const uint32_t  rhs );
-	friend bool operator>=( const int32_t   lhs, const AMAuthId& rhs );
-	friend bool operator>=( const AMAuthId& lhs, const int32_t   rhs );
+	friend bool operator>=(uint32_t  lhs, const AMAuthId& rhs );
+	friend bool operator>=( const AMAuthId& lhs, uint32_t  rhs );
+	friend bool operator>=(int32_t   lhs, const AMAuthId& rhs );
+	friend bool operator>=( const AMAuthId& lhs, int32_t   rhs );
 	friend bool operator>=( const char*     lhs, const AMAuthId& rhs );
 	friend bool operator>=( const AMAuthId& lhs, const char*     rhs );
 
 	friend bool operator<=( const AMAuthId& lhs, const AMAuthId& rhs );
-	friend bool operator<=( const uint32_t  lhs, const AMAuthId& rhs );
-	friend bool operator<=( const AMAuthId& lhs, const uint32_t  rhs );
-	friend bool operator<=( const int32_t   lhs, const AMAuthId& rhs );
-	friend bool operator<=( const AMAuthId& lhs, const int32_t   rhs );
+	friend bool operator<=(uint32_t  lhs, const AMAuthId& rhs );
+	friend bool operator<=( const AMAuthId& lhs, uint32_t  rhs );
+	friend bool operator<=(int32_t   lhs, const AMAuthId& rhs );
+	friend bool operator<=( const AMAuthId& lhs, int32_t   rhs );
 	friend bool operator<=( const char*     lhs, const AMAuthId& rhs );
 	friend bool operator<=( const AMAuthId& lhs, const char*     rhs );
 
 	friend bool operator> ( const AMAuthId& lhs, const AMAuthId& rhs ) ;
-	friend bool operator> ( const uint32_t  lhs, const AMAuthId& rhs ) ;
-	friend bool operator> ( const AMAuthId& lhs, const uint32_t  rhs ) ;
-	friend bool operator> ( const int32_t   lhs, const AMAuthId& rhs ) ;
-	friend bool operator> ( const AMAuthId& lhs, const int32_t   rhs ) ;
+	friend bool operator> (uint32_t  lhs, const AMAuthId& rhs ) ;
+	friend bool operator> ( const AMAuthId& lhs, uint32_t  rhs ) ;
+	friend bool operator> (int32_t   lhs, const AMAuthId& rhs ) ;
+	friend bool operator> ( const AMAuthId& lhs, int32_t   rhs ) ;
 	friend bool operator> ( const char*     lhs, const AMAuthId& rhs ) ;
 	friend bool operator> ( const AMAuthId& lhs, const char*     rhs ) ;
 
 	friend bool operator< ( const AMAuthId& lhs, const AMAuthId& rhs ) ;
-	friend bool operator< ( const uint32_t  lhs, const AMAuthId& rhs ) ;
-	friend bool operator< ( const AMAuthId& lhs, const uint32_t  rhs ) ;
-	friend bool operator< ( const int32_t   lhs, const AMAuthId& rhs ) ;
-	friend bool operator< ( const AMAuthId& lhs, const int32_t   rhs ) ;
+	friend bool operator< (uint32_t  lhs, const AMAuthId& rhs ) ;
+	friend bool operator< ( const AMAuthId& lhs, uint32_t  rhs ) ;
+	friend bool operator< (int32_t   lhs, const AMAuthId& rhs ) ;
+	friend bool operator< ( const AMAuthId& lhs, int32_t   rhs ) ;
 	friend bool operator< ( const char*     lhs, const AMAuthId& rhs ) ;
 	friend bool operator< ( const AMAuthId& lhs, const char*     rhs ) ;
 
