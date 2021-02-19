@@ -42,7 +42,7 @@
  */
 
 //#include <string.h> //Deprecated [APG]RoboCop[CL]
-#include "cstring"
+#include <cstring>
 
 #ifndef _WIN32
 #  include <regex.h>
@@ -196,8 +196,7 @@ static cell access(AMX *amx, cell *params) {
     sUser[0] = '\0';
   }
 
-
-  if(strlen(sUser) > 0) {
+  if(sUser[0] != '\0') {
 	  const int iPlayerIndex = GetPlayerIndex(sUser);
     if (iPlayerIndex == 0) {
       System_Response(UTIL_VarArgs("[ADMIN] (access) Unable to find player: %s\n", sUser),pAdminEnt);
@@ -235,8 +234,7 @@ static cell auth(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   
-  if(sUser == nullptr || strlen(sUser)==0) {
-    // The console should always be considered authed.
+  if(sUser == nullptr || sUser[0] == '\0') {
     if(pAdminEnt== nullptr) 
       return 1; 
     iIndex = ENTINDEX(pAdminEnt);
@@ -249,9 +247,6 @@ static cell auth(AMX *amx, cell *params) {
   }
   return ((g_AuthArray[iIndex].iUserIndex != 0) ? 1 : 0);
 }
-
-
-
 
 
 // ban(user,time,IDorIP) -> Bans 'user' 'IP' or 'ID' for 'time' (0 is permanent)
@@ -274,7 +269,7 @@ static cell ban(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(3);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
 	const int iTime = params[2];
-  if (sUser == nullptr || strlen(sUser) == 0) {
+  if (sUser == nullptr || sUser[0] == '\0') {
     System_Response("[ADMIN] (ban) You must enter a name or Id or IP address.\n",pAdminEnt);
     return 0;
   } else if (iTime < 0) {
@@ -375,7 +370,7 @@ static cell centersay(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(5);
   GET_AMX_STRING(1,CENTER_SAY_SIZE,sText,0);
   
-  if (sText == nullptr || strlen(sText) == 0) {
+  if (sText == nullptr || sText[0] == '\0') {
     System_Response("[ADMIN] (centersay) You must say something.\n",pAdminEnt);
     return 1;
   }	
@@ -401,7 +396,12 @@ static cell centersay(AMX *amx, cell *params) {
     m_textParms.fadeinTime = 0;
     m_textParms.fadeoutTime = 0;
     m_textParms.holdTime = params[2];   
-    m_textParms.fxTime = params[2]/2;
+   
+    //V636 The 'params[2] / 2' expression was implicitly cast from 'int' type to 'float' type.
+  	//Consider utilizing an explicit type cast to avoid the loss of a fractional part.
+  	//An example : double A = (double)(X) / Y; //[APG]RoboCop[CL]
+    m_textParms.fxTime = params[2] / 2;
+  	
     m_textParms.x = -1;
     m_textParms.y = 0.25;
     m_textParms.effect=2;
@@ -435,8 +435,7 @@ static cell centersayex(AMX *amx, cell *params) {
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   GET_AMX_STRING(2,CENTER_SAY_SIZE,sText,0);
 
-  
-  if (sText == nullptr || strlen(sText) == 0) {
+  if (sText == nullptr || sText[0] == '\0') {
     System_Response("[ADMIN] (centersayex) You must say something.\n",pAdminEnt);
     return 1;
   }
@@ -475,8 +474,13 @@ static cell centersayex(AMX *amx, cell *params) {
     m_textParms.a2 = 0;   
     m_textParms.fadeinTime = 0;
     m_textParms.fadeoutTime = 0;
-    m_textParms.holdTime = params[3];   
+    m_textParms.holdTime = params[3];
+
+    //V636 The 'params[3] / 2' expression was implicitly cast from 'int' type to 'float' type.
+	//Consider utilizing an explicit type cast to avoid the loss of a fractional part.
+	//An example : double A = (double)(X) / Y; //[APG]RoboCop[CL]
     m_textParms.fxTime = params[3]/2;
+  	
     m_textParms.x = -1;
     m_textParms.y = 0.25;
     m_textParms.effect=2;
@@ -511,7 +515,7 @@ static cell changelevel(AMX *amx, cell *params) {
   // map again. 
   if ( iIPause >= 0 ) { 
 
-	  if (sMap == nullptr || strlen(sMap) == 0 ) { 
+	  if (sMap == nullptr || sMap[0] == '\0') {
 		  System_Response("[ADMIN] (changelevel) You must enter a map name.\n",pAdminEnt);
 		  return 0;
 	  }
@@ -946,7 +950,7 @@ static cell get_vault_str_data(AMX *amx, cell *params) {
 
 	const int iMaxLength = params[3];
 
-	if (strlen(sKey) > 0) {
+	if (sKey[0] != '\0') {
 		char* sData = GetVaultData(sKey);
 		if (sData == nullptr) 
 			return 0;
@@ -973,7 +977,7 @@ static cell get_vault_num_data(AMX *amx, cell *params) {
 	GET_AMX_STRING(1,BUF_SIZE,sKey, 0);
 
 
-	if (strlen(sKey) > 0) {
+	if (sKey[0] != '\0') {
 		char* sData = GetVaultData(sKey);
 		if (sData == nullptr) return 0;
 
@@ -997,7 +1001,7 @@ static cell kick(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   
-  if (sUser == nullptr || strlen(sUser) == 0) {
+  if (sUser == nullptr || sUser[0] == '\0') {
     System_Response(  "[ADMIN] (kick) You must enter a name to kick\n",pAdminEnt);
     return 0;
   }
@@ -1624,7 +1628,7 @@ static cell plugin_registercmd(AMX* amx, cell* params) {
 	const int iAccess = params[3];
   if (iNumParams >= 4) {
     GET_AMX_STRING(4,PLUGIN_HELP_SIZE,sHelp,1);    
-    if (strlen(sHelp) > 0) {
+    if (sHelp[0] != '\0') {
       AddHelpEntry(sCmd,sHelp,iAccess);
     }
   }
@@ -1709,7 +1713,7 @@ static cell say(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,LARGE_BUF_SIZE,sText,1);
   
-  if (sText == nullptr || strlen(sText) == 0) {
+  if (sText == nullptr || sText[0] == '\0') {
     System_Response("[ADMIN] (say) You must say something.\n",pAdminEnt);
     return 1;
   }
@@ -1948,7 +1952,7 @@ static cell unban(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   
-  if (sUser == nullptr || strlen(sUser) == 0) {
+  if (sUser == nullptr || sUser[0] == '\0') {
     System_Response( "[ADMIN] (unban) You must enter an authid or an IP to unban",pAdminEnt);
     return 0;
   }
@@ -2217,7 +2221,7 @@ static cell help(AMX *amx, cell *params) {
 	char* help_item = strstr(aFileList, iszItem);
 	
 	if(help_item!= nullptr) {
-	  char* next_item = strstr(help_item + strlen(name), ":");
+	  char* next_item = strchr(help_item + strlen(name), ':');
 	  if(next_item!= nullptr) (*next_item)='\0';
 	  System_Response(UTIL_VarArgs( "%s\n",help_item+1),pAdminEnt);
 	  
@@ -2369,7 +2373,7 @@ static cell censor_words(AMX *amx, cell *params) {
     char* sWord = strstr(sBuffer, tWord->sWord);
     while (sWord != nullptr) {
 	    const int iOffset = (sWord - &sBuffer[0]) - 1;
-      for (i = 1; i <= (int)strlen(tWord->sWord); i++) {
+      for (i = 1; i <= static_cast<int>(strlen(tWord->sWord)); i++) {
 	sReturnBuffer[iOffset + i] = '*';
       }
       sWord = strstr(static_cast<char*>(sWord + 1), tWord->sWord);
@@ -2894,7 +2898,6 @@ static cell slay(AMX *amx, cell *params) {
     MESSAGE_END();
   }
   
- 
     // Fix by warhead - [APG]RoboCop[CL]
     CLIENT_COMMAND(pPlayer->edict(), "kill\n");
     util_kill_player(pPlayer);
@@ -3925,7 +3928,7 @@ static cell servertime(AMX *amx, cell *params) {
     strftime( pcTimeString, maxlen, acFormatString, tmMyTime );
   }  // if-else
 
-  if(maxlen < (int)strlen(pcTimeString)) {
+  if(maxlen < static_cast<int>(strlen(pcTimeString))) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }  // if

@@ -1,1 +1,0 @@
-objMM/statics.o objMM/statics.dep : statics.cpp apsymbols.h statics.h

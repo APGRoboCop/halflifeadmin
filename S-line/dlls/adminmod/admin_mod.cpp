@@ -461,9 +461,6 @@ int AM_ClientCommand( edict_t *pEntity ) {
 
 }
 
-
-
-
 //
 // A static global to transfer the return value from ClientConnect() to ClientConnect_Post()
 static BOOL bAM_ClientConnectRetval;

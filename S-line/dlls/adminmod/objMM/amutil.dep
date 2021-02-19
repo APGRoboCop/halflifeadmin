@@ -1,2 +1,0 @@
-objMM/amutil.o objMM/amutil.dep : amutil.cpp apsymbols.h amutil.h \
- ../../../../hlsdk-2.3-p4/multiplayer/common/cvardef.h

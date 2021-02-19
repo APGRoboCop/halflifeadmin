@@ -66,3 +66,6 @@ Temporary Items
 *.opendb
 *.db-wal
 *.db-shm
+S-line/dlls/adminmod/amutil.cpp.PVS-Studio.cfg
+S-line/dlls/adminmod/amutil.cpp.PVS-Studio.cmd
+S-line/dlls/adminmod/amutil.PVS-Studio.i

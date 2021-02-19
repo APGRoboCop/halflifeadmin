@@ -1,1 +1,0 @@
-objMM/version.o objMM/version.dep : version.cpp apsymbols.h
