@@ -13,12 +13,11 @@
  *
  ****************************************************************/
 
-#include <ctype.h>
-#include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-
+#include <stdarg.h>
+#include <ctype.h>
 #include "amx.h"
 
 #ifdef WIN32
@@ -38,6 +37,7 @@
 // #define DEBUG
 
 #define USE_PACKED_STRINGS 0  /* 1 to enable, 0 to disable */
+
 #define ENABLE_RAISE_ERROR 0  /* 1 raises error, 0 doesn't */
 
 #define STATIC_STRING_LEN 512    /* size of static strings */
@@ -92,10 +92,15 @@ static char g_acGTokenString[GTOKEN_STRING_LEN];
 static char g_aacStaticStrings[STATIC_STRINGS][STATIC_STRING_LEN];
 static struct_Lstring g_sLstring[LOCAL_STRINGS];
 
-//#define min(a,b) ((a)<(b))?(a):(b)
-//#define max(a,b) ((a)>(b))?(a):(b)
+
+#define min(a,b) ((a)<(b))?(a):(b)
+#define max(a,b) ((a)>(b))?(a):(b)
+
+
 
 /***********************************  LOCAL HELPER FUNCTIONS  *******************************************************/
+
+
 
 /*
    get_space()
@@ -108,7 +113,7 @@ static int get_space( char** _string, size_t _iMinLen, size_t* _piStrLen )
   int iLocalFree = 0;
   int iStaticFree = 0;
   int iLsIndex = -1;
-  const int err = AMX_ERR_NONE;
+  int err = AMX_ERR_NONE;
 
   if ( _string == NULL ) {
     return AMX_ERR_NATIVE;
@@ -234,6 +239,7 @@ static int bind_string( AMX* _amx, char** _string, cell _cstrAddress, size_t* _p
   return err;
 }  // bind_string()
 
+
 /*
   get_string()
   get a Small string into a C string 
@@ -286,6 +292,7 @@ static int get_string( AMX* _amx, char** _string, cell _cstrAddress, size_t* _pi
   return err;
 }  // get_string()
 
+
 /* 
    set_string() 
    set a C string to a Small string 
@@ -305,6 +312,7 @@ static int set_string( AMX* _amx, cell _cstrAddress, char* _string, size_t _iMax
     return err;
   }  // if
 
+
   if ( _string != 0 ) {
 #ifdef DEBUG
     fprintf( stderr, "String to set: %s\n", _string );
@@ -323,6 +331,7 @@ static int set_string( AMX* _amx, cell _cstrAddress, char* _string, size_t _iMax
 #endif
   }  // if
 
+
   /* set the Small string */
   err = amx_SetString( ptCellString, pcString, USE_PACKED_STRINGS );
   /* restore our string */
@@ -335,11 +344,11 @@ static int set_string( AMX* _amx, cell _cstrAddress, char* _string, size_t _iMax
   return err;
 }  // set_string()
 
+
 /* 
    string_len() 
    get the length of a Small string
 */
-
 static int string_len( AMX* _amx, cell _cstrAddress, size_t* _iStrLen ) {
 
   int err = AMX_ERR_NONE;
@@ -361,6 +370,9 @@ static int string_len( AMX* _amx, cell _cstrAddress, size_t* _iStrLen ) {
   
   return err;
 }  // string_len()
+
+
+
 
 /* 
    clear_string() 
@@ -390,6 +402,7 @@ static int clear_string( AMX* _amx, cell _cstrAddress, size_t _iStrLen ) {
 
   return err;
 }  // clear_string()
+
 
 /*
    free_strings()
@@ -425,6 +438,7 @@ static void free_strings( void )
   return;
 }  // free_strings()
 
+
 /* 
    Return()
    cleanup bofore returning
@@ -437,7 +451,11 @@ static cell Return( cell _iReturnValue )
   return _iReturnValue;
 }  //Return()
 
+
+
+
 /*********************************   ENHANCED LOCAL STRING FUNCTIONS *****************************************************/
+ 
 
 static const char* _strgtok( char* _pcString, char* _pcDelimiter, char* _pcGrouping ) {
 
@@ -489,6 +507,7 @@ static const char* _strgtok( char* _pcString, char* _pcDelimiter, char* _pcGroup
     pcStart += strspn( pcStart, pcDelimiters );
 
   }  // if
+
 
   if ( (!bInGroup) && pcGrouper == NULL ) {
     /* there are no groups */
@@ -545,6 +564,7 @@ static const char* _strgtok( char* _pcString, char* _pcDelimiter, char* _pcGroup
       pcGrouper = NULL;
     }  // if
     
+
   } else if ( (!bInGroup) && pcGrouper > pcStart ) {  
     /* tokenize the part before the group */
 
@@ -582,11 +602,20 @@ static const char* _strgtok( char* _pcString, char* _pcDelimiter, char* _pcGroup
     /* this case should not occur */
     return NULL;
   }  // if-else
+    
   
   return pcToken;
 }  // _strgtok()
 
+
+
+
+
+
 /*********************************   EXPORTED FUNCTIONS  ****************************************************************/
+
+
+
 
 /* amx_strcpy ( destination, source, maxlen ) 
  *
@@ -603,7 +632,7 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t iMaxLength = 0;
   size_t iFromLength = 0;
   char* pcTo = NULL;
@@ -643,6 +672,7 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
     return Return((cell)AMXNULL);
   }  // if
 
+
   /* set the string in the VM */
   err = set_string( amx, params[1], pcTo, iMaxLength );
   if ( err != AMX_ERR_NONE ) {
@@ -654,6 +684,8 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
   return Return((cell)AMXOK);
 
 }  // amx_strcpy()
+
+
 
 /* amx_strncpy ( destination, source, num, maxlen ) 
  *
@@ -671,7 +703,7 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t iToLength = 0;
   size_t iFromLength = 0;
   size_t iMaxLength = 0;
@@ -726,6 +758,9 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
 
 }  // amx_strncpy()
 
+
+
+
 /* amx_strcat ( destination, source, maxlen ) 
  *
  * implements char* strcat ( char* to, char* from )
@@ -741,7 +776,7 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t iToLength = 0;
   size_t iFromLength = 0;
   size_t iNewLength = 0;
@@ -793,12 +828,14 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
 
+
   /* call the standard string function */
   pcRetVal = strcat( pcTo, pcFrom );
   if ( pcRetVal == NULL ) {
     NATIVE_ERROR;
     return Return((cell)AMXNULL);
   }  // if
+
 
   /* set the string in the VM */
   err = set_string( amx, params[1], pcTo, iMaxLength );
@@ -807,9 +844,15 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
   
+
   return Return((cell)AMXOK);
 
 }  // amx_strcat()
+
+
+
+
+
 
 /* amx_strncat ( destination, source, num, maxlen ) 
  *
@@ -827,7 +870,7 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t iToLength = 0;
   size_t iFromLength = 0;
   size_t iNewLength = 0;
@@ -878,12 +921,14 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
 
+
   /* call the standard string function */
   pcRetVal = strncat( pcTo, pcFrom, (size_t)params[3] );
   if ( pcRetVal == NULL ) {
     NATIVE_ERROR;
     return Return((cell)AMXNULL);
   }  // if
+
 
   /* set the string in the VM */
   err = set_string( amx, params[1], pcTo, iMaxLength );
@@ -892,9 +937,12 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
   
+
   return Return((cell)AMXOK);
 
 }  // amx_strncat()
+
+
 
 /* amx_strcmp ( string1, string2 ) 
  *
@@ -910,7 +958,7 @@ static cell AMX_NATIVE_CALL amx_strcmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -945,6 +993,11 @@ static cell AMX_NATIVE_CALL amx_strcmp( AMX* amx, cell* params )
 
 }  // amx_strcmp()
 
+
+
+
+
+
 /* amx_strncmp ( string1, string2, num ) 
  *
  * implements char* strncmp ( const char* s1, const char* s1, size_t size )
@@ -960,7 +1013,7 @@ static cell AMX_NATIVE_CALL amx_strncmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -987,12 +1040,17 @@ static cell AMX_NATIVE_CALL amx_strncmp( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
 
+
   /* call the standard string function */
   iRetVal = strncmp( pcString1, pcString2, (size_t)params[3] );
 
   return Return((cell)iRetVal);
 
 }  // amx_strncmp()
+
+
+
+
 
 
 /* amx_strcasecmp ( string1, string2 ) 
@@ -1009,7 +1067,7 @@ static cell AMX_NATIVE_CALL amx_strcasecmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -1046,6 +1104,10 @@ static cell AMX_NATIVE_CALL amx_strcasecmp( AMX* amx, cell* params )
 }  // amx_strcasecmp()
 
 
+
+
+
+
 /* amx_strncasecmp ( string1, string2, num ) 
  *
  * implements char* strncasecmp ( const char* s1, const char* s1, size_t size )
@@ -1061,7 +1123,7 @@ static cell AMX_NATIVE_CALL amx_strncasecmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -1088,12 +1150,16 @@ static cell AMX_NATIVE_CALL amx_strncasecmp( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
 
+
+
   /* call the standard string function */
   iRetVal = strncasecmp( pcString1, pcString2, (size_t)params[3] );
 
   return Return((cell)iRetVal);
 
 }  // amx_strncasecmp()
+
+
 
 /* amx_strchr ( string, char ) 
  *
@@ -1110,7 +1176,7 @@ static cell AMX_NATIVE_CALL amx_strchr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
@@ -1144,6 +1210,9 @@ static cell AMX_NATIVE_CALL amx_strchr( AMX* amx, cell* params )
 }  // amx_strchr()
 
 
+
+
+
 /* amx_strrchr ( string, char ) 
  *
  * implements char* strrchr ( const char* string, int character )
@@ -1159,7 +1228,7 @@ static cell AMX_NATIVE_CALL amx_strrchr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
@@ -1192,6 +1261,10 @@ static cell AMX_NATIVE_CALL amx_strrchr( AMX* amx, cell* params )
 
 }  // amx_strrchr()
 
+
+
+
+
 /* amx_strstr ( string, substring ) 
  *
  * implements char* strstr ( const char* string, const char* substring )
@@ -1207,7 +1280,7 @@ static cell AMX_NATIVE_CALL amx_strstr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
@@ -1249,6 +1322,9 @@ static cell AMX_NATIVE_CALL amx_strstr( AMX* amx, cell* params )
 
 }  // amx_strstr()
 
+
+
+
 /* amx_strstrx ( string, substring ) 
  *
  * modified implementation of char* strstr ( const char* string, const char* substring )
@@ -1265,7 +1341,7 @@ static cell AMX_NATIVE_CALL amx_strstrx( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
   size_t iStringLen = 0;
   size_t iSubStringLen = 0;
@@ -1273,6 +1349,7 @@ static cell AMX_NATIVE_CALL amx_strstrx( AMX* amx, cell* params )
   char* pcString = NULL;
   char* pcSubString = NULL;
   char* pcRetVal = NULL;
+
 
   const int REQNUMARGS = 2;
 
@@ -1311,6 +1388,9 @@ static cell AMX_NATIVE_CALL amx_strstrx( AMX* amx, cell* params )
 
 }  // amx_strstrx()
 
+
+
+
 /* amx_strcasestr ( string, substring ) 
  *
  * implements case insensitive char* strstr ( const char* string, const char* substring )
@@ -1326,7 +1406,7 @@ static cell AMX_NATIVE_CALL amx_strcasestr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
@@ -1379,6 +1459,9 @@ static cell AMX_NATIVE_CALL amx_strcasestr( AMX* amx, cell* params )
 
 }  // amx_strcasestr()
 
+
+
+
 /* amx_strcasestrx ( string, substring ) 
  *
  * modified implementation of case insensitive char* strstr ( const char* string, const char* substring )
@@ -1395,7 +1478,7 @@ static cell AMX_NATIVE_CALL amx_strcasestrx( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
   size_t iStringLen = 0;
   size_t iSubStringLen = 0;
@@ -1454,6 +1537,11 @@ static cell AMX_NATIVE_CALL amx_strcasestrx( AMX* amx, cell* params )
 
 }  // amx_strcasestrx()
 
+
+
+
+
+
 /* amx_strspn ( string, skipset ) 
  *
  * implements size_t strspn ( const char* string, const char* skipset )
@@ -1469,7 +1557,7 @@ static cell AMX_NATIVE_CALL amx_strspn( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t tSubStringLen = 0;
 
   char* pcString = NULL;
@@ -1506,6 +1594,10 @@ static cell AMX_NATIVE_CALL amx_strspn( AMX* amx, cell* params )
 
 }  // amx_strspn()
 
+
+
+
+
 /* amx_strcspn ( string, stopset ) 
  *
  * implements size_t strcspn ( const char* string, const char* stopset )
@@ -1521,11 +1613,12 @@ static cell AMX_NATIVE_CALL amx_strcspn( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t tSubStringLen = 0;
 
   char* pcString = NULL;
   char* pcStopSet = NULL;
+
 
   const int REQNUMARGS = 2;
 
@@ -1548,12 +1641,16 @@ static cell AMX_NATIVE_CALL amx_strcspn( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
 
+
   /* call the standard string function */
   tSubStringLen = strcspn( pcString, pcStopSet );
   
   return Return((cell)tSubStringLen);
 
+
 }  // amx_strcspn()
+
+
 
 /* amx_strtok ( string, delimiters, token, tokenlength ) 
  *
@@ -1572,7 +1669,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   size_t tStringLen = 0;
@@ -1581,6 +1678,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
   char* pcDelimiters = NULL;
   char* pcTokenString = NULL;
   char* pcRetVal = NULL;
+
 
   const int REQNUMARGS = 4;
 
@@ -1608,6 +1706,8 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
     //NATIVE_ERROR;
     return Return((cell)AMXFAIL);
   }  // if
+
+
 
   if ( tStringLen > 0 ) { /* initial call */
 
@@ -1645,6 +1745,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
     return Return((cell)AMXFAIL);
   }  // if
 
+
   /* call the standard string function */
   pcRetVal = strtok( pcTokenString, pcDelimiters );
   
@@ -1679,6 +1780,8 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
 
 }  // amx_strtok()
 
+
+
 /* amx_strtokrest ( string, maxlen )
  *
  * Returns whatever is left from a string after subsequent calls
@@ -1694,8 +1797,10 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
 
 static cell AMX_NATIVE_CALL amx_strtokrest( AMX* amx, cell* params )
 {
-	const int iNumArgs = params[0] / sizeof(cell);
+
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
+
 
   const int REQNUMARGS = 2;
 
@@ -1728,6 +1833,9 @@ static cell AMX_NATIVE_CALL amx_strtokrest( AMX* amx, cell* params )
 }  // amx_strtokrest()
 
 
+
+
+
 /* amx_strgtok ( string, delimiters, grouping, token, tokenlength ) 
  *
  * implements char* strgtok ( const char* string, const char* delimiters )
@@ -1748,7 +1856,7 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   size_t tStringLen = 0;
@@ -1884,7 +1992,8 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
 
 static cell AMX_NATIVE_CALL amx_strgtokrest( AMX* amx, cell* params )
 {
-	const int iNumArgs = params[0] / sizeof(cell);
+
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
 
@@ -1939,7 +2048,7 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iNumTokens = 0;
   int iNextToken = 3;
 
@@ -2025,7 +2134,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iNumTokens = 0;
   int iNextToken = 4;
 
@@ -2246,7 +2355,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iNumTokens = 0;
   int iNextToken = 3;
 
@@ -2362,7 +2471,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iNumTokens = 0;
   int iNextToken = 4;
 
@@ -2659,7 +2768,7 @@ static cell AMX_NATIVE_CALL amx_strcount( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t iCount = 0;
   int iChar = 0;
   int iRetVal = 0;
@@ -2718,7 +2827,7 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t iRetVal = 0;
   size_t tiCharsTrimmed = 0;
   size_t tiStringLength = 0;
@@ -2807,7 +2916,7 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   size_t tiStringLen = 0;
   size_t iSearchLen = 0;
   size_t iSubstLen  = 0;
@@ -2815,7 +2924,7 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
   int iNewLen  = 0;
   size_t iCopy = 0;
   int iReplaced = 0;
-  const size_t iMaxLen = (size_t)params[4] - 1;
+  size_t iMaxLen = (size_t)params[4] - 1;
 
   char* pcString = NULL;
   char* pcSearch = NULL;
@@ -2950,7 +3059,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 {
 
   int err = 0;
-  const int iNumArgs = params[0] / sizeof(cell);
+  int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
   int iNextParam = 0;
   int iNumParams = 0;

@@ -292,7 +292,7 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, cell *params)
 {
   AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   AMX_FUNCSTUB *func=(AMX_FUNCSTUB *)(amx->base+(int)hdr->natives+(int)index*sizeof(AMX_FUNCSTUB));
-  const AMX_NATIVE f=(AMX_NATIVE)func->address;
+  AMX_NATIVE f=(AMX_NATIVE)func->address;
   assert(f!=NULL);
   assert(index<hdr->num_natives);
 
