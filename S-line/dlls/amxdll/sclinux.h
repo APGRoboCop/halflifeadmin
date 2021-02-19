@@ -17,8 +17,8 @@
  * terminal driven by a tty having -raw)
  */
 #define getch           getchar
-#define	stricmp(a,b)    strcasecmp(a,b)
-#define	strnicmp(a,b,c) strncasecmp(a,b,c)
+//#define	stricmp(a,b)    strcasecmp(a,b)
+//#define	strnicmp(a,b,c) strncasecmp(a,b,c)
 
 #include <sys/types.h>  /* u_char */
 

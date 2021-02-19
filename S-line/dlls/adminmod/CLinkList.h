@@ -45,6 +45,7 @@
  *
  */
 
+#pragma once
 #include <cstdlib>
 #include <cstdio>
 
@@ -57,7 +58,7 @@ private :
 public:
 	CLinkItem(){ m_pNext = 0; m_pData = 0;};
 	~CLinkItem(){
-       if (m_pData != NULL) {
+       if (m_pData != nullptr) {
          if ( isArray ) {
            delete[] m_pData;
 		 } else {
@@ -80,7 +81,7 @@ private:
 public:
 	CLinkList(){ m_pFirst = 0; };
 	~CLinkList(){ Init(); };
-	int AddLink(T* pData, CLinkItem<T,isArray>* pInsertBefore = NULL);
+	int AddLink(T* pData, CLinkItem<T,isArray>* pInsertBefore = nullptr);
 	int Count();
 	int DeleteLink(CLinkItem<T,isArray>* pLink);
 	CLinkItem<T,isArray>* FindLink(T* pData);

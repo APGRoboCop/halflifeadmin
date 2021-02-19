@@ -101,21 +101,21 @@ template<class T, bool isArray> inline CLinkList<T,isArray>::~CLinkList() {
 */
 
 template<class T, bool isArray> int CLinkList<T,isArray>::AddLink(T* pData, CLinkItem<T,isArray>* pInsertBefore) {
-  if (m_pFirst == NULL && pInsertBefore != NULL) {
+  if (m_pFirst == nullptr && pInsertBefore != nullptr) {
     return 0;
-  } else if ( (m_pFirst == NULL) || (m_pFirst == pInsertBefore) ) {
+  } else if ( (m_pFirst == nullptr) || (m_pFirst == pInsertBefore) ) {
     CLinkItem<T,isArray>* pLink = new CLinkItem<T,isArray>();
     pLink->SetData(pData);
     pLink->SetNextLink(m_pFirst);
     m_pFirst = pLink;
   } else {
     CLinkItem<T,isArray>* pCurrent = m_pFirst;
-    while (pCurrent != NULL && pCurrent->NextLink() != pInsertBefore && pCurrent->NextLink() != 0) {
+    while (pCurrent != nullptr && pCurrent->NextLink() != pInsertBefore && pCurrent->NextLink() != 0) {
       pCurrent = pCurrent->NextLink();
     }
-    if (pCurrent == NULL) {
+    if (pCurrent == nullptr) {
       return 0;
-    } else if (pInsertBefore != NULL && pCurrent->NextLink() != pInsertBefore) {
+    } else if (pInsertBefore != nullptr && pCurrent->NextLink() != pInsertBefore) {
       return 0;
     } else {
       CLinkItem<T,isArray>* pLink = new CLinkItem<T,isArray>();
@@ -130,11 +130,11 @@ template<class T, bool isArray> int CLinkList<T,isArray>::AddLink(T* pData, CLin
 template<class T, bool isArray> int CLinkList<T,isArray>::Count() {
   int iCount = 0;
   
-  if (m_pFirst == NULL) 
+  if (m_pFirst == nullptr) 
     return 0;
   
   CLinkItem<T,isArray>* pCurrent = m_pFirst;
-  while (pCurrent != NULL) {
+  while (pCurrent != nullptr) {
     pCurrent = pCurrent->NextLink();
     iCount++;
   }
@@ -142,7 +142,7 @@ template<class T, bool isArray> int CLinkList<T,isArray>::Count() {
 }
 
 template<class T, bool isArray> int CLinkList<T,isArray>::DeleteLink(CLinkItem<T,isArray>* pLink) {
-  if (pLink == NULL || m_pFirst == NULL) {
+  if (pLink == nullptr || m_pFirst == nullptr) {
     return 0;
   } else if (m_pFirst == pLink) {
     m_pFirst = m_pFirst->NextLink();
@@ -150,10 +150,10 @@ template<class T, bool isArray> int CLinkList<T,isArray>::DeleteLink(CLinkItem<T
     pLink = 0;
   } else {
     CLinkItem<T,isArray>* pCurrent = m_pFirst;
-    while (pCurrent != NULL && pCurrent->NextLink() != pLink && pCurrent->NextLink() != 0) {
+    while (pCurrent != nullptr && pCurrent->NextLink() != pLink && pCurrent->NextLink() != 0) {
       pCurrent = pCurrent->NextLink();
     }
-    if (pCurrent == NULL || pCurrent->NextLink() != pLink) {
+    if (pCurrent == nullptr || pCurrent->NextLink() != pLink) {
       return 0;
     }
     pCurrent->SetNextLink(pLink->NextLink());
@@ -164,15 +164,15 @@ template<class T, bool isArray> int CLinkList<T,isArray>::DeleteLink(CLinkItem<T
 }
 
 template<class T, bool isArray> CLinkItem<T,isArray>* CLinkList<T,isArray>::FindLink(T* pData) {
-  if (m_pFirst == NULL) {
-    return NULL;
+  if (m_pFirst == nullptr) {
+    return nullptr;
   }
   CLinkItem<T,isArray>* pCurrent = m_pFirst;
-  while (pCurrent != NULL && pCurrent->Data() != pData) {
+  while (pCurrent != nullptr && pCurrent->Data() != pData) {
     pCurrent = pCurrent->NextLink();
   }
-  if (pCurrent == NULL) {
-    return NULL;
+  if (pCurrent == nullptr) {
+    return nullptr;
   }
   return pCurrent;
 }
@@ -183,13 +183,13 @@ CLinkItem<T,isArray>* CLinkList<T,isArray>::FirstLink() {
 }
 
 template<class T, bool isArray> void CLinkList<T,isArray>::Init() {
-  if (m_pFirst == NULL) {
+  if (m_pFirst == nullptr) {
     return;
   }
   CLinkItem<T,isArray>* pLink = m_pFirst;
-  CLinkItem<T,isArray>* pOldLink = NULL;
+  CLinkItem<T,isArray>* pOldLink = nullptr;
   m_pFirst = 0;
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     pOldLink = pLink;
     pLink = pLink->NextLink();
     pOldLink->SetNextLink(0);

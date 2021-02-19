@@ -118,11 +118,11 @@ plugin_info_t Plugin_info = {
 static META_FUNCTIONS gMetaFunctionTable = {
   GetEntityAPI,		// pfnGetEntityAPI		HL SDK; called before game DLL
   GetEntityAPI_Post,  // pfnGetEntityAPI_Post		META; called after game DLL
-  NULL,			// pfnGetEntityAPI2		HL SDK2; called before game DLL
-  NULL,			// pfnGetEntityAPI2_Post	META; called after game DLL
+  nullptr,			// pfnGetEntityAPI2		HL SDK2; called before game DLL
+  nullptr,			// pfnGetEntityAPI2_Post	META; called after game DLL
   GetNewDLLFunctions, // pfnGetNewDLLFunctions	HL SDK2; called before game DLL
-  NULL,			// pfnGetNewDLLFunctions_Post	META; called after game DLL
-  NULL,			// pfnGetEngineFunctions	META; called before HL engine
+  nullptr,			// pfnGetNewDLLFunctions_Post	META; called after game DLL
+  nullptr,			// pfnGetEngineFunctions	META; called before HL engine
   GetEngineFunctions_Post, // pfnGetEngineFunctions_Post META; called after HL engine
 };
 
@@ -160,7 +160,7 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
   snprintf( script_dll, sizeof(script_dll)-strlen(SCRIPT_DLL)-1,"%s", pcPlPath );
 
   char* pcTmp = strrchr(script_dll, '/');
-  if ( pcTmp == NULL ) {
+  if ( pcTmp == nullptr ) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (%s): incorrect engine path.\n",script_dll );
 	am_exit(1);
   } else {
@@ -178,7 +178,7 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
 #  endif
 
 
-  if ( h_AMX == NULL) {
+  if ( h_AMX == nullptr) {
 #  ifdef WIN32
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (%s) Error: %i\n",script_dll, GetLastError());
 #  else
@@ -188,55 +188,55 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
   }
   
   amx_Init= (AMXINIT)GetProcAddress(h_AMX, "amx_Init");
-  if (amx_Init == NULL ){
+  if (amx_Init == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_Init)\n");
     am_exit(1);
   }
   
   amx_Register= (AMXREGISTER)GetProcAddress(h_AMX, "amx_Register");
-  if (amx_Register == NULL ){
+  if (amx_Register == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_Register)\n");
     am_exit(1);
   }
   
   amx_FindPublic= (AMXFINDPUBLIC)GetProcAddress(h_AMX, "amx_FindPublic");
-  if (amx_FindPublic == NULL ){
+  if (amx_FindPublic == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_FindPublic)\n");
     am_exit(1);
   }
   
   amx_Exec= (AMXEXEC)GetProcAddress(h_AMX, "amx_Exec");
-  if (amx_Exec == NULL ){
+  if (amx_Exec == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_Exec)\n");
     am_exit(1);
   }
   
   amx_GetAddr= (AMXGETADDR)GetProcAddress(h_AMX, "amx_GetAddr");
-  if (amx_GetAddr == NULL ){
+  if (amx_GetAddr == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_GetAddr)\n");
     am_exit(1);
   }
   
   amx_StrLen= (AMXSTRLEN)GetProcAddress(h_AMX, "amx_StrLen");
-  if (amx_StrLen == NULL ){
+  if (amx_StrLen == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_StrLen)\n");
     am_exit(1);
   }
   
   amx_RaiseError= (AMXRAISEERROR)GetProcAddress(h_AMX, "amx_RaiseError");
-  if (amx_RaiseError == NULL ){
+  if (amx_RaiseError == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_RaiseError)\n");
     am_exit(1);
   }
   
   amx_SetString= (AMXSETSTRING)GetProcAddress(h_AMX, "amx_SetString");
-  if (amx_SetString == NULL ){
+  if (amx_SetString == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_SetString)\n");
     am_exit(1);
   }
   
   amx_GetString= (AMXGETSTRING)GetProcAddress(h_AMX, "amx_GetString");
-  if (amx_GetString == NULL ){
+  if (amx_GetString == nullptr ){
     UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't load scripting engine (amx_GetString)\n");
     am_exit(1);
   }
@@ -247,12 +247,12 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
   if ( strcmp(pGameDLL->name, "cstrike") == 0 ) {
       UTIL_LogPrintf( "[ADMIN] INFO: Loading extended Counter-Strike functionality.\n");
 
-    if (pGameDLL->handle == NULL) {
+    if (pGameDLL->handle == nullptr) {
       UTIL_LogPrintf( "[ADMIN] INFO: Unable to open Counter-Strike DLL for extended functionality.\n");
     } else {
 
       g_pflTimeLimit = (float*)GetProcAddress( pGameDLL->handle, "g_flTimeLimit" );
-      if ( g_pflTimeLimit == NULL ) {
+      if ( g_pflTimeLimit == nullptr ) {
         UTIL_LogPrintf( "[ADMIN] INFO: Could not find CS' TimeLimit. AM's timeleft may differ from CS' timeleft.\n");
       } else {
       }  // if-else
@@ -261,7 +261,7 @@ C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, META_FUNCTIONS *pFunctionTable,
   } // if
 #else
   // Disabled since this overwrites the setting in h_export.cpp
-  // g_pflTimeLimit = NULL;
+  // g_pflTimeLimit = nullptr;
 #endif // EXTMM
 
 
@@ -383,7 +383,7 @@ void DispatchObjectCollsionBox( edict_t *pent ) {
 
 // Possible crash cause for 3rd Party HL Mods for 2.50.61 linux? [APG]RoboCop[CL]
 void ClientCommand( edict_t *pEntity ) {
-  int iResult = AM_ClientCommand(pEntity);
+	const int iResult = AM_ClientCommand(pEntity);
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -393,7 +393,7 @@ void ClientCommand( edict_t *pEntity ) {
 }
 
 BOOL ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ] ) {
-  int iResult = AM_ClientConnect(pEntity,pszName,pszAddress,szRejectReason, false);
+	const int iResult = AM_ClientConnect(pEntity,pszName,pszAddress,szRejectReason, false);
 #ifdef USE_METAMOD
   if (iResult == TRUE) {
     RETURN_META_VALUE(MRES_HANDLED,TRUE);
@@ -411,8 +411,8 @@ BOOL ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddres
 
 #ifdef USE_METAMOD
 BOOL ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ] ) {
-	BOOL ret=META_RESULT_ORIG_RET( BOOL );
-	BOOL iResult = AM_ClientConnect_Post( pEntity, pszName, pszAddress, szRejectReason );
+	const BOOL ret=META_RESULT_ORIG_RET( BOOL );
+	const BOOL iResult = AM_ClientConnect_Post( pEntity, pszName, pszAddress, szRejectReason );
   if (iResult == ret) {
     RETURN_META_VALUE(MRES_IGNORED,ret);
   } else {
@@ -422,7 +422,7 @@ BOOL ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *pszA
 #endif
 
 void ClientDisconnect( edict_t *pEntity ) {
-  int iResult = AM_ClientDisconnect(pEntity);
+	const int iResult = AM_ClientDisconnect(pEntity);
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -432,7 +432,7 @@ void ClientDisconnect( edict_t *pEntity ) {
 }
 
 void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer ) {
-  int iResult = AM_ClientUserInfoChanged(pEntity,infobuffer, false);
+	const int iResult = AM_ClientUserInfoChanged(pEntity,infobuffer, false);
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -443,7 +443,7 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer ) {
 
 
 void DispatchThink( edict_t *pent ) {
-  int iResult = AM_DispatchThink(pent);
+	const int iResult = AM_DispatchThink(pent);
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -452,8 +452,8 @@ void DispatchThink( edict_t *pent ) {
 #endif
 }
 
-void GameDLLInit( void ) {
-  int iResult = AM_GameDLLInit();
+void GameDLLInit() {
+	const int iResult = AM_GameDLLInit();
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -463,7 +463,7 @@ void GameDLLInit( void ) {
 }
 
 void OnFreeEntPrivateData( edict_t *pEnt ) {
-  int iResult = AM_OnFreeEntPrivateData(pEnt);
+	const int iResult = AM_OnFreeEntPrivateData(pEnt);
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -473,7 +473,7 @@ void OnFreeEntPrivateData( edict_t *pEnt ) {
 }
 
 void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax ) {
-  int iResult = AM_Initialize();
+	const int iResult = AM_Initialize();
 
   //TODO: What would be even better, would be to store the first map of the mapcycle and start with
   //TODO: a forced map change since the first map set via +map does is not played in the regular cycle.
@@ -481,7 +481,7 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax ) {
   // Check if we had a forced or a normal map change.
   if ( g_iForcedMapChange != 0 ) --g_iForcedMapChange;
   // If we had a normal map change, reset the stored nextmap.
-  if ( g_iForcedMapChange == 0 ) g_pcNextMap = NULL;
+  if ( g_iForcedMapChange == 0 ) g_pcNextMap = nullptr;
 
 
 
@@ -493,9 +493,9 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax ) {
 #endif
 }
 
-const char *GetGameDescription( void ) {
-  const char* pcDescription = NULL;
-  int iResult = AM_GetGameDescription( pcDescription );
+const char *GetGameDescription() {
+  const char* pcDescription = nullptr;
+  const int iResult = AM_GetGameDescription( pcDescription );
 
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
@@ -560,7 +560,7 @@ int GameDispatchSpawn( edict_t *pent ) {
 
 
 void PlayerPreThink( edict_t *pEntity ) {
-	int iResult = AM_PlayerPreThink( pEntity );
+	const int iResult = AM_PlayerPreThink( pEntity );
 #ifdef USE_METAMOD
 	SetMetaResult(iResult);
 #else
@@ -570,18 +570,18 @@ void PlayerPreThink( edict_t *pEntity ) {
 }
 
 void ClientPutInServer( edict_t *pEntity ) {
-  int iResult = AM_ClientPutInServer( pEntity );
+	const int iResult = AM_ClientPutInServer( pEntity );
   SetMetaResult( iResult );
 }
  
-void ServerDeactivate( void ) {
-  int iResult = AM_ServerDeactivate();
+void ServerDeactivate() {
+	const int iResult = AM_ServerDeactivate();
   SetMetaResult( iResult );
 } 
 
 
-void StartFrame( void ) {
-  int iResult = AM_StartFrame();
+void StartFrame() {
+	const int iResult = AM_StartFrame();
 #ifdef USE_METAMOD
   SetMetaResult(iResult);
 #else
@@ -645,7 +645,7 @@ void RestoreGlobalState( SAVERESTOREDATA *pSaveData ) {
   other_gFunctionTable.pfnRestoreGlobalState(pSaveData);
 }
 
-void ResetGlobalState( void ) {
+void ResetGlobalState() {
   other_gFunctionTable.pfnResetGlobalState;
 }
 
@@ -657,7 +657,7 @@ void ClientPutInServer( edict_t *pEntity ) {
   other_gFunctionTable.pfnClientPutInServer(pEntity);
 }
 
-void ServerDeactivate( void ) {
+void ServerDeactivate() {
   other_gFunctionTable.pfnServerDeactivate;
 }
 
@@ -669,15 +669,15 @@ void PlayerPostThink( edict_t *pEntity ) {
   other_gFunctionTable.pfnPlayerPostThink(pEntity);
 }
 
-//void StartFrame( void ) {
+//void StartFrame() {
 //  other_gFunctionTable.pfnStartFrame;
 //}
 
-void ParmsNewLevel( void ) {
+void ParmsNewLevel() {
   other_gFunctionTable.pfnParmsNewLevel;
 }
 
-void ParmsChangeLevel( void ) {
+void ParmsChangeLevel() {
   other_gFunctionTable.pfnParmsChangeLevel;
 }
 
@@ -718,7 +718,7 @@ void CreateBaseline( int player, int eindex, struct entity_state_s *baseline, st
   other_gFunctionTable.pfnCreateBaseline(player,eindex,baseline,entity,playermodelindex,player_mins,player_maxs);
 }
 
-void RegisterEncoders( void ) {
+void RegisterEncoders() {
   other_gFunctionTable.pfnRegisterEncoders;
 }
 
@@ -743,7 +743,7 @@ int GetHullBounds( int hullnumber, float *mins, float *maxs ) {
   return (other_gFunctionTable.pfnGetHullBounds(hullnumber,mins,maxs));
 }
 
-void CreateInstancedBaselines ( void ) {
+void CreateInstancedBaselines () {
   other_gFunctionTable.pfnCreateInstancedBaselines;
 }
 
@@ -834,24 +834,24 @@ DLL_FUNCTIONS gFunctionTable =
     GameDLLInit,	//pfnGameInit
     GameDispatchSpawn,		//pfnSpawn
     DispatchThink,				//pfnThink
-    NULL,	// DispatchUse,			//pfnUse
-    NULL,	// DispatchTouch,		//pfnTouch
-    NULL,	// DispatchBlocked,		//pfnBlocked
-    NULL,	// DispatchKeyValue,		//pfnKeyValue
-    NULL,	// DispatchSave,		//pfnSave
-    NULL,	// DispatchRestore,		//pfnRestore
+    nullptr,	// DispatchUse,			//pfnUse
+    nullptr,	// DispatchTouch,		//pfnTouch
+    nullptr,	// DispatchBlocked,		//pfnBlocked
+    nullptr,	// DispatchKeyValue,		//pfnKeyValue
+    nullptr,	// DispatchSave,		//pfnSave
+    nullptr,	// DispatchRestore,		//pfnRestore
     DispatchObjectCollsionBox,	// DispatchObjectCollsionBox,	//pfnAbsBox
 
-    NULL,	// SaveWriteFields,		//pfnSaveWriteFields
-    NULL,	// SaveReadFields,		//pfnSaveReadFields
+    nullptr,	// SaveWriteFields,		//pfnSaveWriteFields
+    nullptr,	// SaveReadFields,		//pfnSaveReadFields
 
-    NULL,	// SaveGlobalState,		//pfnSaveGlobalState
-    NULL,	// RestoreGlobalState,		//pfnRestoreGlobalState
-    NULL,	// ResetGlobalState,		//pfnResetGlobalState
+    nullptr,	// SaveGlobalState,		//pfnSaveGlobalState
+    nullptr,	// RestoreGlobalState,		//pfnRestoreGlobalState
+    nullptr,	// ResetGlobalState,		//pfnResetGlobalState
     
     ClientConnect,				//pfnClientConnect
     ClientDisconnect,	// ClientDisconnect,		//pfnClientDisconnect
-    NULL,	// ClientKill,			//pfnClientKill
+    nullptr,	// ClientKill,			//pfnClientKill
     ClientPutInServer,		//pfnClientPutInServer
     ClientCommand,				//pfnClientCommand
     ClientUserInfoChanged,			//pfnClientUserInfoChanged
@@ -859,37 +859,37 @@ DLL_FUNCTIONS gFunctionTable =
     ServerDeactivate,		//pfnServerDeactivate
     
     PlayerPreThink,		//pfnPlayerPreThink
-    NULL,	// PlayerPostThink,		//pfnPlayerPostThink
+    nullptr,	// PlayerPostThink,		//pfnPlayerPostThink
     
     StartFrame,			//pfnStartFrame
-    NULL,	// ParmsNewLevel,		//pfnParmsNewLevel
-    NULL,	// ParmsChangeLevel,		//pfnParmsChangeLevel
+    nullptr,	// ParmsNewLevel,		//pfnParmsNewLevel
+    nullptr,	// ParmsChangeLevel,		//pfnParmsChangeLevel
     
     GetGameDescription,		//pfnGetGameDescription    Returns string describing current .dll game.
-    NULL,	// PlayerCustomization,		//pfnPlayerCustomization   Notifies .dll of new customization for player.
+    nullptr,	// PlayerCustomization,		//pfnPlayerCustomization   Notifies .dll of new customization for player.
 
-    NULL,	// SpectatorConnect,		//pfnSpectatorConnect      Called when spectator joins server
-    NULL,	// SpectatorDisconnect,		//pfnSpectatorDisconnect   Called when spectator leaves the server
-    NULL,	// SpectatorThink,		//pfnSpectatorThink        Called when spectator sends a command packet (usercmd_t)
+    nullptr,	// SpectatorConnect,		//pfnSpectatorConnect      Called when spectator joins server
+    nullptr,	// SpectatorDisconnect,		//pfnSpectatorDisconnect   Called when spectator leaves the server
+    nullptr,	// SpectatorThink,		//pfnSpectatorThink        Called when spectator sends a command packet (usercmd_t)
 
-    NULL,	// Sys_Error,			//pfnSys_Error				Called when engine has encountered an error
+    nullptr,	// Sys_Error,			//pfnSys_Error				Called when engine has encountered an error
 
-    NULL,	// PM_Move,			//pfnPM_Move
-    NULL,	// PM_Init,			//pfnPM_Init				Server version of player movement initialization
-    NULL,	// PM_FindTextureType,		//pfnPM_FindTextureType
+    nullptr,	// PM_Move,			//pfnPM_Move
+    nullptr,	// PM_Init,			//pfnPM_Init				Server version of player movement initialization
+    nullptr,	// PM_FindTextureType,		//pfnPM_FindTextureType
 
-    NULL,	// SetupVisibility,		//pfnSetupVisibility        Set up PVS and PAS for networking for this client
-    NULL,	// UpdateClientData,		//pfnUpdateClientData       Set up data sent only to specific client
-    NULL,	// AddToFullPack,		//pfnAddToFullPack
-    NULL,	// CreateBaseline,		//pfnCreateBaseline			Tweak entity baseline for network encoding, allows setup of player baselines, too.
-    NULL,	// RegisterEncoders,		//pfnRegisterEncoders		Callbacks for network encoding
-    NULL,	// GetWeaponData,		//pfnGetWeaponData
-    NULL,	// CmdStart,			//pfnCmdStart
-    NULL,	// CmdEnd,			//pfnCmdEnd
-    NULL,	// ConnectionlessPacket,	//pfnConnectionlessPacket
-    NULL,	// GetHullBounds,		//pfnGetHullBounds
-    NULL,	// CreateInstancedBaselines,	//pfnCreateInstancedBaselines
-    NULL,   //InconsistentFile,		//pfnInconsistentFile
+    nullptr,	// SetupVisibility,		//pfnSetupVisibility        Set up PVS and PAS for networking for this client
+    nullptr,	// UpdateClientData,		//pfnUpdateClientData       Set up data sent only to specific client
+    nullptr,	// AddToFullPack,		//pfnAddToFullPack
+    nullptr,	// CreateBaseline,		//pfnCreateBaseline			Tweak entity baseline for network encoding, allows setup of player baselines, too.
+    nullptr,	// RegisterEncoders,		//pfnRegisterEncoders		Callbacks for network encoding
+    nullptr,	// GetWeaponData,		//pfnGetWeaponData
+    nullptr,	// CmdStart,			//pfnCmdStart
+    nullptr,	// CmdEnd,			//pfnCmdEnd
+    nullptr,	// ConnectionlessPacket,	//pfnConnectionlessPacket
+    nullptr,	// GetHullBounds,		//pfnGetHullBounds
+    nullptr,	// CreateInstancedBaselines,	//pfnCreateInstancedBaselines
+    nullptr,   //InconsistentFile,		//pfnInconsistentFile
   };
 
 
@@ -899,8 +899,8 @@ DLL_FUNCTIONS gFunctionTable_Post;
 NEW_DLL_FUNCTIONS gNewFunctionTable = 
   {
     OnFreeEntPrivateData,		//! pfnOnFreeEntPrivateData()	Called right before the object's memory is freed.  Calls its destructor.
-    NULL,	// pfnGameShutdown()
-    NULL,	// pfnShouldCollide()
+    nullptr,	// pfnGameShutdown()
+    nullptr,	// pfnShouldCollide()
   };
 
 #ifndef _WIN32
@@ -974,7 +974,7 @@ extern "C" _declspec( dllexport) int GetNewDLLFunctions( NEW_DLL_FUNCTIONS *pFun
     return FALSE;
   }
 #else
-  if( other_GetNewDLLFunctions == NULL) 
+  if( other_GetNewDLLFunctions == nullptr) 
     return FALSE;
   
   if (!other_GetNewDLLFunctions(&other_gNewFunctionTable, interfaceVersion)) { 

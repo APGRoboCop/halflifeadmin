@@ -89,14 +89,14 @@
 // m_pHelpList, which is initialized in LoadPlugins(),
 // and m_pSpawnList, which is called in InitSpawnEntityList,
 // and not loaded from a file at all)
-CLinkList<help_struct>* m_pHelpList   = NULL;
-CLinkList<ip_struct>* m_pIPList     = NULL;
-CLinkList<model_struct>* m_pModelList  = NULL;
-CLinkList<CPlugin>* m_pPluginList = NULL;
-CLinkList<spawn_struct>* m_pSpawnList  = NULL;
-CLinkList<user_struct>* m_pUserList   = NULL;
-CLinkList<vault_struct>* m_pVaultList  = NULL;
-CLinkList<word_struct>* m_pWordList   = NULL;
+CLinkList<help_struct>* m_pHelpList   = nullptr;
+CLinkList<ip_struct>* m_pIPList     = nullptr;
+CLinkList<model_struct>* m_pModelList  = nullptr;
+CLinkList<CPlugin>* m_pPluginList = nullptr;
+CLinkList<spawn_struct>* m_pSpawnList  = nullptr;
+CLinkList<user_struct>* m_pUserList   = nullptr;
+CLinkList<vault_struct>* m_pVaultList  = nullptr;
+CLinkList<word_struct>* m_pWordList   = nullptr;
 
 // Auth structure array.  +1 so we can go from 0 - MAX_PLAYERS, rather
 // than 0 - MAX_PLAYERS - 1.
@@ -110,10 +110,10 @@ struct AuthBak {
 
 	auth_struct Array[SIZE];
 
-	AuthBak(void) : m_head(0) { memset( Array, SIZE, 0 ); };
-    int get_head(void) { if ( m_head >= SIZE ) m_head = 0; return m_head++; };
-    int head(void) { if ( m_head >= SIZE ) m_head = 0; return m_head; };
-    void clear(void) { memset( Array, SIZE, 0 ); };
+	AuthBak() : m_head(0) { memset( Array, SIZE, 0 ); };
+    int get_head() { if ( m_head >= SIZE ) m_head = 0; return m_head++; };
+    int head() { if ( m_head >= SIZE ) m_head = 0; return m_head; };
+    void clear() { memset( Array, SIZE, 0 ); };
 
 private:
 	int m_head;
@@ -122,7 +122,7 @@ private:
 static AuthBak g_AuthBak;
 
 
-void clear_auth_bak_array(void) {
+void clear_auth_bak_array() {
     g_AuthBak.clear();
 } 
 
@@ -155,7 +155,7 @@ mapcycle_t mapcycle;
 
 // These are to check if we left the regular mapcycle. Needed to return the proper nextmap.
 int g_iForcedMapChange = 0;
-char* g_pcNextMap = NULL;
+char* g_pcNextMap = nullptr;
 char g_acNextMap[BUF_SIZE];
 
 
@@ -167,7 +167,7 @@ char g_acNextMap[BUF_SIZE];
 // Gets the file in sFilename (relative to the game's mod dir), and returns it as a 
 // linked list of the lines. Empty lines aren't returned, and neither are commented
 //  out lines (determined by is_comment) or those greater than LINE_SIZE in length.
-// May return a NULL pointer.  The linked list returned must be delete()'d, of course.
+// May return a nullptr pointer.  The linked list returned must be delete()'d, of course.
 CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineList) {
   int iBegin = 0;
   int iEnd = 0;
@@ -179,7 +179,7 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
   
   // Check to make sure that we've actually got a file, and it's actually got data.
   if (!(sFile && iLength)) {
-	if ( _pPreLineList == NULL ) {
+	if ( _pPreLineList == nullptr ) {
 		// This is a master file
     	UTIL_LogPrintf("[ADMIN] WARNING: File '%s' seems to be empty (length %i).\n", sFilename, iLength);
 	} else {
@@ -189,7 +189,7 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
 
   } else {
 	// Allocate a new linked list if we didn't get one passed
-    if ( _pPreLineList == NULL ) pLineList = new CLinkList<char,true>();
+    if ( _pPreLineList == nullptr ) pLineList = new CLinkList<char,true>();
 
     // Now, while we've still got data left...
     while (iEnd < iLength) {
@@ -327,20 +327,20 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
 }
 
 inline CLinkList<char, true>* GetFile(char* sFilename) {
-	return GetFile( sFilename, NULL );
+	return GetFile( sFilename, nullptr );
 }
 
 // Returns the number of free (non-reserved slots).  Can be given an entity
 // to not 'count' in determining this number (useful if being called when said
 // entity is disconnecting, for example).
 int GetFreeSlots(edict_t* pEntityIgnore) {
-	int iPlayerCount = GetPlayerCount( pEntityIgnore );
-	int iResType = (int)CVAR_GET_FLOAT("reserve_type");
+	const int iPlayerCount = GetPlayerCount( pEntityIgnore );
+	const int iResType = (int)CVAR_GET_FLOAT("reserve_type");
 	int iResSlots = 0;
 	
 	// If we're ignoring someone, then we should decrement our player
 	// count to count for the ignored party.
-	//if (pEntityIgnore != NULL && iPlayerCount > 0) iPlayerCount--;
+	//if (pEntityIgnore != nullptr && iPlayerCount > 0) iPlayerCount--;
 	
 	// If the player count is greater than or equal to our max number
 	// of players, there are obviously no free slots.
@@ -433,7 +433,7 @@ void InitAdminModData(BOOL fFull = FALSE, BOOL fRun = FALSE) {
 	iResSlots =gpGlobals->maxClients;
   }  // if-else
  
-  CVAR_SET_FLOAT( "public_slots_free", GetFreeSlots(NULL) );
+  CVAR_SET_FLOAT( "public_slots_free", GetFreeSlots(nullptr) );
 
   if ( (int)CVAR_GET_FLOAT("amv_hide_reserved_slots") != 0 && iResSlots > 0 ) {
 	CVAR_SET_FLOAT( "sv_visiblemaxplayers", (gpGlobals->maxClients - iResSlots) );
@@ -462,14 +462,14 @@ void InitAdminModData(BOOL fFull = FALSE, BOOL fRun = FALSE) {
 template<class T, bool isArray> void LoadFile(char* sType, CLinkList<T,isArray>* pList, char* sFileVar, PARSE_FILE fpParse) {
 	char* sFile = const_cast<char*>(get_cvar_file_value( sFileVar ));  // TODO: remove necessity for dirty const cast? 
 
-	if (pList == NULL) {
-    UTIL_LogPrintf("[ADMIN] ERROR: LoadFile for '%s' called with NULL linked list.\n", sType);
+	if (pList == nullptr) {
+    UTIL_LogPrintf("[ADMIN] ERROR: LoadFile for '%s' called with nullptr linked list.\n", sType);
     return;
   }
   pList->Init();
   
   // Make sure we have a file.
-  if ( sFile == NULL ) {
+  if ( sFile == nullptr ) {
 	DEBUG_LOG(1, ("LoadFile::%s cvar not set.  No %ss loaded.\n", sFileVar, sType) );
     return;
   }
@@ -492,10 +492,10 @@ template<class T, bool isArray> void LoadFile(char* sType, CLinkList<T,isArray>*
 
   // Get the file in linked-list format.
   CLinkList<char, true>* pFile = GetFile(sFile);
-  if (pFile != NULL) {
+  if (pFile != nullptr) {
     // For every line in the file...
     CLinkItem<char, true>* pLine = pFile->FirstLink();
-    while (pLine != NULL) {
+    while (pLine != nullptr) {
       // Parse the line.
       fpParse(pLine->Data());
       // Get the next line
@@ -520,13 +520,13 @@ template<class T, bool isArray> BOOL LoadTable(char* sType, CLinkList<T,isArray>
   char sQuery[QUERY_BUF_SIZE];
   char* sTable = const_cast<char*>(get_cvar_string_value( sTableVar )); // TODO: remove necessity for dirty const cast?
   MYSQL_RES *pResult;
-  MYSQL_ROW pRow = NULL;
+  MYSQL_ROW pRow = nullptr;
 
 // if its a user query and we don't want to preload the file exit right now
   if( (FStrEq(sType,"user") || FStrEq(sType,"tags")) && (int)CVAR_GET_FLOAT("mysql_preload") == 0) return TRUE;
 
-  if (pList == NULL) {
-    UTIL_LogPrintf("[ADMIN] ERROR: LoadTable for '%s' called with NULL linked list.\n", sType);
+  if (pList == nullptr) {
+    UTIL_LogPrintf("[ADMIN] ERROR: LoadTable for '%s' called with nullptr linked list.\n", sType);
     return FALSE;
   }
   pList->Init();
@@ -534,7 +534,7 @@ template<class T, bool isArray> BOOL LoadTable(char* sType, CLinkList<T,isArray>
   // Make sure that MySQL is initialized, and that we have a table.
   if (g_fUseMySQL == FALSE) {
     return FALSE;
-  } else if ( sTable == NULL ) {
+  } else if ( sTable == nullptr ) {
 	  DEBUG_LOG(1, ("LoadTable::%s cvar empty.  Switching to loading from file...\n", sTableVar) );
     return FALSE;
   }
@@ -570,10 +570,10 @@ template<class T, bool isArray> BOOL LoadTable(char* sType, CLinkList<T,isArray>
   }
   // Make sure we got a valid result back.
   if (iResult || !pResult) {
-    UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned NULL result.\n", sType);
+    UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned nullptr result.\n", sType);
   } else {
     // For every row in the result set...
-    while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+    while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
 
       //**** NOTE - NEVER to MySQL stuff in the parse function, except for
       //         reading row data! Otherwise we could get out of sync errs
@@ -603,8 +603,8 @@ template<class T, bool isArray> BOOL LoadPgTable(char* sType, CLinkList<T,isArra
 // if its a user query and we don't want to preload the file exit right now
   if( (FStrEq(sType,"user") || FStrEq(sType,"tags")) && (int)CVAR_GET_FLOAT("pgsql_preload") == 0) return TRUE;
 
-  if (pList == NULL) {
-    UTIL_LogPrintf("[ADMIN] ERROR: LoadPgTable for '%s' called with NULL linked list.\n", sType);
+  if (pList == nullptr) {
+    UTIL_LogPrintf("[ADMIN] ERROR: LoadPgTable for '%s' called with nullptr linked list.\n", sType);
     return FALSE;
   }
   pList->Init();
@@ -612,7 +612,7 @@ template<class T, bool isArray> BOOL LoadPgTable(char* sType, CLinkList<T,isArra
   // Make sure that PgSQL is initialized, and that we have a table.
   if (g_fUsePgSQL == FALSE) {
     return FALSE;
-  } else if ( sTable == NULL ) {
+  } else if ( sTable == nullptr ) {
 	  DEBUG_LOG(1, ("LoadPgTable::%s cvar empty.  Switching to loading from file...\n", sTableVar) );
     return FALSE;
   }
@@ -625,7 +625,7 @@ template<class T, bool isArray> BOOL LoadPgTable(char* sType, CLinkList<T,isArra
 
   // Make sure we got a valid result back.
   if (!PQntuples(pgResult)) {
-    UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned NULL result.\n", sType);
+    UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned nullptr result.\n", sType);
   } else {
     // For every row in the result set...
     for (tup_num = 0; tup_num < PQntuples(pgResult); tup_num++) {
@@ -646,7 +646,7 @@ template<class T, bool isArray> BOOL LoadPgTable(char* sType, CLinkList<T,isArra
 //
 int match(const char *string, char *pattern) {
   // Null pointers match anything.
-  if ( string == NULL || pattern == NULL ) {
+  if ( string == nullptr || pattern == nullptr ) {
     return 1;
     // Empty strings match nothing except other empty strings (this keeps
     // empty passwords from matching any pattern)
@@ -664,7 +664,7 @@ int match(const char *string, char *pattern) {
     if ( regcomp(&re, pattern, REG_EXTENDED|REG_NOSUB|REG_ICASE) != 0) {
       return(0);      // report error
     }
-    int status = regexec(&re, string, (size_t)0, NULL, 0);
+	  const int status = regexec(&re, string, (size_t)0, nullptr, 0);
     regfree(&re);
     if (status != 0) {
       return(0);      // report error
@@ -685,21 +685,21 @@ int match(const char *string, char *pattern) {
 const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 
 	static char acEncryptPw[PASSWORD_SIZE];
-	const char* pcEncryptPw = NULL;
+	const char* pcEncryptPw = nullptr;
 
-	int iEncryptMethod = (int)CVAR_GET_FLOAT( "encrypt_password" );
+	const int iEncryptMethod = (int)CVAR_GET_FLOAT( "encrypt_password" );
  
-	if ( _pcPassword == NULL ) {
-		UTIL_LogPrintf("[ADMIN] ERROR: pass_encrypt called with NULL pointer\n");
-		return NULL;
+	if ( _pcPassword == nullptr ) {
+		UTIL_LogPrintf("[ADMIN] ERROR: pass_encrypt called with nullptr pointer\n");
+		return nullptr;
 	}  // if
 	
 
 	switch ( iEncryptMethod ) {
 	case 1:
-		if ( _pcRefPassword == NULL ) {
-			UTIL_LogPrintf("[ADMIN] ERROR: pass_encrypt called with NULL reference password, method crypt()\n");
-			return NULL;
+		if ( _pcRefPassword == nullptr ) {
+			UTIL_LogPrintf("[ADMIN] ERROR: pass_encrypt called with nullptr reference password, method crypt()\n");
+			return nullptr;
 		}  // if
 		// Encrypt with a salt based on the user password.
 		pcEncryptPw = crypt( _pcPassword, _pcRefPassword);
@@ -742,10 +742,10 @@ const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 // sPlayerPassword is the password the player has (via admin_password, or whatever).
 //
 int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
-	const char *sEncrypt = NULL;
+	const char *sEncrypt = nullptr;
 	
-	if ( sServerPassword == NULL || sPlayerPassword == NULL ) {
-		UTIL_LogPrintf( "[ADMIN] ERROR: pass_compare called with NULL pointer\n" );
+	if ( sServerPassword == nullptr || sPlayerPassword == nullptr ) {
+		UTIL_LogPrintf( "[ADMIN] ERROR: pass_compare called with nullptr pointer\n" );
 		return 0;
 	}  // if
 	
@@ -755,7 +755,7 @@ int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
 	// Encrypt the password 
 	sEncrypt = pass_encrypt( sPlayerPassword, sServerPassword );
 
-    if (NULL == sEncrypt ) {
+    if (nullptr == sEncrypt ) {
     	UTIL_LogPrintf ( "[ADMIN] ERROR: pass_compare: encryption returned an error\n" );
     	return 0;
     }
@@ -775,7 +775,7 @@ int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
  ***************************/
 // Returns 1 if the entity has access to use sModel, 0 otherwise.
 int GetModelAccess(char* sModel, edict_t* pEntity) {
-  int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
   model_struct tModel;
   
   // Verify the entity is valid
@@ -789,13 +789,13 @@ int GetModelAccess(char* sModel, edict_t* pEntity) {
 }
 
 // Given a model name, and optionally password, fills the model_struct record 
-// with the first info that matches that name/password combination.  A NULL password
+// with the first info that matches that name/password combination.  A nullptr password
 // bypasses the password match (useful for testing for existance).
 // Returns TRUE if successful, FALSE otherwise.
 BOOL GetModelRecord(char* sModel, char* sPassword, model_struct* tModelRecord) {
   // Make sure we're passed a pointer to use.
-  if (tModelRecord == NULL) {
-    UTIL_LogPrintf("[ADMIN] ERROR: GetModelRecord called with NULL tModelRecord.\n");
+  if (tModelRecord == nullptr) {
+    UTIL_LogPrintf("[ADMIN] ERROR: GetModelRecord called with nullptr tModelRecord.\n");
     return FALSE;
   }
   
@@ -804,20 +804,20 @@ BOOL GetModelRecord(char* sModel, char* sPassword, model_struct* tModelRecord) {
     LoadModels();
   
   // If we have no model list, we can't match.
-  if (m_pModelList == NULL) 
+  if (m_pModelList == nullptr) 
     return FALSE;
 
   CLinkItem<model_struct>* pModel = m_pModelList->FirstLink();
-  model_struct* tModel = NULL;
+  model_struct* tModel = nullptr;
 
   // Go through each model in the list.
-  while (pModel != NULL) {
+  while (pModel != nullptr) {
     tModel = pModel->Data();
     // If the model's names match...
     if (match(sModel,tModel->sModelName)==1) {
-      // A NULL password matches anything; otherwise, we need
+      // A nullptr password matches anything; otherwise, we need
       // to compare passwords.
-      if (sPassword == NULL) {
+      if (sPassword == nullptr) {
 	break;
       } else if (pass_compare(tModel->sPassword,sPassword)) {
 	break;
@@ -827,7 +827,7 @@ BOOL GetModelRecord(char* sModel, char* sPassword, model_struct* tModelRecord) {
   }
   
   // We got a match
-  if (pModel != NULL) {
+  if (pModel != nullptr) {
     if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
       UTIL_LogPrintf( "[ADMIN] DEBUG: Model '%s' matches model entry '%s'\n",sModel,tModel->sModelName);
     }
@@ -843,7 +843,7 @@ BOOL GetModelRecord(char* sModel, char* sPassword, model_struct* tModelRecord) {
 BOOL IsModelReserved(char* sModel) {
   model_struct tModel;
   
-  return GetModelRecord(sModel, NULL, &tModel);
+  return GetModelRecord(sModel, nullptr, &tModel);
 }
 
 // Loads a model record from line in a file.  Returns TRUE if successful, 
@@ -853,13 +853,13 @@ BOOL ParseModel(char* sLine) {
   char sDelimiter[] = ":";
 
   char* sNameToken = strtok(sLine, sDelimiter);
-  if (sNameToken == NULL) {
+  if (sNameToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No Model name found: '%s'\n", sLine);
   } else if ((int)strlen(sNameToken) > USERNAME_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: Model name too long: '%s'\n", sNameToken);
   } else {
-    char* sPasswordToken = strtok(NULL, sDelimiter);
-    if (sPasswordToken == NULL) {
+    char* sPasswordToken = strtok(nullptr, sDelimiter);
+    if (sPasswordToken == nullptr) {
       UTIL_LogPrintf("[ADMIN] ERROR: No Model password found: '%s'\n", sLine);
     } else if ((int)strlen(sPasswordToken) > PASSWORD_SIZE) {
 		if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
@@ -869,7 +869,7 @@ BOOL ParseModel(char* sLine) {
 		}  // if-else			
     } else {
       model_struct* tModel = new model_struct;
-      if(tModel == NULL) {
+      if(tModel == nullptr) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: ParseModel::'new' failed for tModel record.\n");
 	return FALSE;
       }
@@ -896,7 +896,7 @@ BOOL ParseModelSQL(MYSQL_ROW pRow) {
   model_struct* tModel;
 
   tModel = new model_struct;
-  if(tModel == NULL) {
+  if(tModel == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: ParseModelSQL::'new' failed for tModel record.\n");
     return FALSE;
   }
@@ -921,7 +921,7 @@ BOOL ParseModelPgSQL(const PGresult *res, int tup_num) {
   model_struct* tModel;
 
   tModel = new model_struct;
-  if(tModel == NULL) {
+  if(tModel == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: ParseModelPgSQL::'new' failed for tModel record.\n");
     return FALSE;
   }
@@ -947,7 +947,7 @@ void LoadModels() {
   g_fModelsLoaded = TRUE;
 
   // Create a new linked list, if necessary.
-  if (m_pModelList == NULL)
+  if (m_pModelList == nullptr)
     m_pModelList = new CLinkList<model_struct>();
 
   // Load the Models
@@ -964,9 +964,9 @@ void LoadModels() {
 void UnloadModels() {
   g_fModelsLoaded = FALSE;
 
-  if (m_pModelList == NULL) return;
+  if (m_pModelList == nullptr) return;
   delete m_pModelList;
-  m_pModelList = NULL;
+  m_pModelList = nullptr;
 
 }
 
@@ -1004,8 +1004,8 @@ BOOL IsIPValid( const char* sIP ) {
   int iDigCount = 0;
   const char* sChar = sIP;
   
-  // If the string is NULL, it's obviously invalid.
-  if (sIP == NULL) {
+  // If the string is nullptr, it's obviously invalid.
+  if (sIP == nullptr) {
     return FALSE;
     // If the string is too big, it's invalid.
   } else if ((int)strlen(sIP) > IP_SIZE) {
@@ -1048,17 +1048,17 @@ BOOL IsIPReserved(char *sIP) {
     LoadIPs();
   
   // If we have no IP list, we can't match.
-  if (m_pIPList == NULL)
+  if (m_pIPList == nullptr)
     return FALSE;
   
   CLinkItem<ip_struct>* pLink = m_pIPList->FirstLink();
-  ip_struct* tIP = NULL;
+  ip_struct* tIP = nullptr;
   ulong lIP;
   
   // Convert the IP to bits.
   IPStringToBits(sIP,&lIP);
   // For each record...
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     tIP = pLink->Data();
     // If the record's IP and mask equals the given IP and mask, we have a match.
     if ((tIP->lIP & tIP->lMask) == (lIP & tIP->lMask)) {
@@ -1077,7 +1077,7 @@ BOOL ParseIP(char* sLine) {
 	char sDelimiter[] = "/";
 
 	char* sIPToken = strtok(sLine, sDelimiter);
-  if (sIPToken == NULL) {
+  if (sIPToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No IP found: '%s'\n", sLine);
   } else if ((int)strlen(sIPToken) > IP_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: IP too long: '%s'\n", sIPToken);
@@ -1086,8 +1086,8 @@ BOOL ParseIP(char* sLine) {
   } else {
     // It's allowable to not have a mask.
     int iHasMask = 0;
-    char* sMaskToken = strtok(NULL, sDelimiter);
-    if (sMaskToken != NULL) {
+    char* sMaskToken = strtok(nullptr, sDelimiter);
+    if (sMaskToken != nullptr) {
       if ((int)strlen(sMaskToken) > IP_SIZE) {
 	UTIL_LogPrintf("[ADMIN] ERROR: IP mask too long: '%s'\n", sMaskToken);
       } else if (!IsIPValid(sMaskToken)) {
@@ -1097,7 +1097,7 @@ BOOL ParseIP(char* sLine) {
       }
     }
     ip_struct* tIP = new ip_struct;
-    if(tIP == NULL) {
+    if(tIP == nullptr) {
       UTIL_LogPrintf( "[ADMIN] ERROR: LoadIPs::'new' failed for tIP record.\n");
       return FALSE;
     }
@@ -1128,7 +1128,7 @@ BOOL ParseIPSQL(MYSQL_ROW pRow) {
   ip_struct* tIP;
 
   tIP = new ip_struct;
-  if(tIP == NULL) {
+  if(tIP == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: ParseIPSQL::'new' failed for tIP record.\n");
     return FALSE;
   }
@@ -1153,7 +1153,7 @@ BOOL ParseIPPgSQL(const PGresult *res, int tup_num) {
   ip_struct* tIP;
 
   tIP = new ip_struct;
-  if(tIP == NULL) {
+  if(tIP == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: ParseIPPgSQL::'new' failed for tIP record.\n");
     return FALSE;
   }
@@ -1179,7 +1179,7 @@ void LoadIPs() {
   g_fIPsLoaded = TRUE;
 
   // Create a new linked list, if necessary.
-  if (m_pIPList == NULL)
+  if (m_pIPList == nullptr)
     m_pIPList = new CLinkList<ip_struct>();
 
   // Load the IPs
@@ -1195,10 +1195,10 @@ void LoadIPs() {
 void UnloadIPs() {
   g_fIPsLoaded = FALSE;
 
-  if (m_pIPList == NULL) return;
+  if (m_pIPList == nullptr) return;
 
   delete m_pIPList;
-  m_pIPList = NULL;
+  m_pIPList = nullptr;
 }
 
 
@@ -1207,11 +1207,11 @@ void UnloadIPs() {
 // users IP address in the auth struct.
 bool user_ip( int _iIndex, const char** const _pcIP, ulong* _plIP ) {
 
-	if ( g_AuthArray[_iIndex].sIP != NULL && g_AuthArray[_iIndex].sIP[0] != 0 ) {
+	if ( g_AuthArray[_iIndex].sIP != nullptr && g_AuthArray[_iIndex].sIP[0] != 0 ) {
 
-		if ( _pcIP != NULL ) *_pcIP = g_AuthArray[_iIndex].sIP;
+		if ( _pcIP != nullptr ) *_pcIP = g_AuthArray[_iIndex].sIP;
 
-		if ( _plIP != NULL ) {
+		if ( _plIP != nullptr ) {
 			IPStringToBits( g_AuthArray[_iIndex].sIP, _plIP );
 		}  // if
 
@@ -1233,7 +1233,7 @@ bool user_ip( int _iIndex, const char** const _pcIP, ulong* _plIP ) {
 // <word>
 BOOL ParseWord(char* sLine) {
 	word_struct* tWord = new word_struct;
-  if(tWord == NULL) {
+  if(tWord == nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: ParseWord::'new' failed for tWord record.\n");
     return FALSE;
   }
@@ -1273,7 +1273,7 @@ BOOL ParseWordPgSQL(const PGresult *res, int tup_num) {
 }
 #endif
 
-void LoadWords(void) {
+void LoadWords() {
   // Make sure we're not already loaded.
   if (g_fWordsLoaded == TRUE)
     return;
@@ -1281,7 +1281,7 @@ void LoadWords(void) {
   g_fWordsLoaded = TRUE;
   
   // Create a new linked list, if necessary.
-  if (m_pWordList == NULL) 
+  if (m_pWordList == nullptr) 
     m_pWordList = new CLinkList<word_struct>();
   
   // Load the words
@@ -1296,13 +1296,13 @@ void LoadWords(void) {
 
 
 
-void UnloadWords(void) {
+void UnloadWords() {
   g_fWordsLoaded = FALSE;
   
-  if (m_pWordList == NULL) return;
+  if (m_pWordList == nullptr) return;
 
   delete m_pWordList;
-  m_pWordList = NULL;
+  m_pWordList = nullptr;
 }
 
 
@@ -1332,7 +1332,7 @@ edict_t* get_player_edict( uint32_t _uiID, uidt _uidType ) {
     int i;
 	switch ( _uidType ) {
 	case uid_index:
-		if ( _uiID < 1 || _uiID > gpGlobals->maxClients ) return NULL;
+		if ( _uiID < 1 || _uiID > gpGlobals->maxClients ) return nullptr;
 		return g_AuthArray[_uiID].pPlayerEdict;
 		break;
 
@@ -1350,7 +1350,7 @@ edict_t* get_player_edict( uint32_t _uiID, uidt _uidType ) {
 
 	}  // switch
 
-	return NULL;
+	return nullptr;
 }  // get_player_edict()
 
 
@@ -1359,7 +1359,7 @@ edict_t* get_player_edict( const AMAuthId& _oaiID, uidt _uidType ) {
 		if ( g_AuthArray[i].oaiAuthID == _oaiID ) return g_AuthArray[i].pPlayerEdict;
 	};
 
-	return NULL;
+	return nullptr;
 }  // get_player_edict()
 
 
@@ -1371,15 +1371,15 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 	bool bAuthNeeded = true;
 	char cTmpChar;
 	char* pcIpPortSep = strchr(sIP,':');
-  int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
   int iPrevIndex = 0;
   int iPort = 0;
   AMAuthId oaiAuthID;
   int iReconnTime = 300;
   int iReconnectWindow = (int)CVAR_GET_FLOAT("amv_reconnect_time");
-  auth_struct* poPrevAuth = NULL;
-  auth_struct* poPrevAuthBak = NULL;
-  time_t ttiNow = time(NULL);
+  auth_struct* poPrevAuth = nullptr;
+  auth_struct* poPrevAuthBak = nullptr;
+	const time_t ttiNow = time(nullptr);
 
   if ( iReconnectWindow > 90 ) iReconnectWindow = 90;
 
@@ -1395,7 +1395,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
     oaiAuthID = GETPLAYERAUTHID( pEntity );
   }  // if-else
 
-  int iSessionID = GETPLAYERUSERID(pEntity); 
+	const int iSessionID = GETPLAYERUSERID(pEntity); 
   
   iReconnTime = (int)CVAR_GET_FLOAT( "admin_reconnect_timeout" );
 
@@ -1479,7 +1479,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 
 		  // if there was none, check if we have a record with the same AuthID, 
 		  // IP:port and NAME in the AuthArray backup copy
-		  if ( poPrevAuth == NULL ) {
+		  if ( poPrevAuth == nullptr ) {
 			  for ( int i = 0; i < g_AuthBak.SIZE; i++ ) {
 				  if ( g_AuthBak.Array[i].oaiAuthID == oaiAuthID
 					   //&& g_AuthBak.Array[i].iPort == iPort
@@ -1506,7 +1506,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 		}  // for
 
 		// again, if we didn't find it, check the backup copies
-		if ( poPrevAuth == NULL ) {
+		if ( poPrevAuth == nullptr ) {
 			for ( int i = 0; i < g_AuthBak.SIZE; i++ ) {
 				if ( strcmp(sIP, g_AuthBak.Array[i].sIP) == 0
 				     &&  g_AuthBak.Array[i].iPort == iPort
@@ -1599,7 +1599,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 
   if ( bAuthNeeded ) {
     // Try to get the user's password from the setinfo buffer
-    SetUserPassword(sName, NULL, pEntity);
+    SetUserPassword(sName, nullptr, pEntity);
     // Try to find a matching user record. We do this in any case or don't we?
     VerifyUserAuth(sName, pEntity);
   }
@@ -1634,7 +1634,7 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
 
   // We may want to ignore a player when searching for the Highlander,
   // e.g. when that person is about to disconnect.  
-  if ( pIgnoreEntity != NULL ) iIgnoreIndex = ENTINDEX( pIgnoreEntity );
+  if ( pIgnoreEntity != nullptr ) iIgnoreIndex = ENTINDEX( pIgnoreEntity );
 
   // If admin_highlander is 0, there is no highlander.
   if((int)CVAR_GET_FLOAT("admin_highlander")==0) {
@@ -1686,10 +1686,10 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
 // Returns the access associated with an entity.
 int GetUserAccess(edict_t* pEntity) {
 	// Console has complete access.
-  if (pEntity == NULL) {
+  if (pEntity == nullptr) {
     return -1;
   }
-  int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
   // Make sure we have a valid index.
   if (iIndex < 1 || iIndex > gpGlobals->maxClients) {
     UTIL_LogPrintf("[ADMIN] ERROR: GetUserAccess: User '%s' has out of bounds entity index %i\n", STRING(pEntity->v.netname), iIndex);
@@ -1697,7 +1697,7 @@ int GetUserAccess(edict_t* pEntity) {
   }
   // Check to see if we're in highlander mode.  If we are, anybody besides the
   // highlander should only get reserve-name, reserve-spot, immunity, and default access.
-  int iHighlanderIndex = GetHighlanderIndex();
+	const int iHighlanderIndex = GetHighlanderIndex();
   if (iHighlanderIndex != 0 && iHighlanderIndex != iIndex) {
     return (g_AuthArray[iIndex].iAccess & (ACCESS_RESERVE_NICK | ACCESS_RESERVE_SPOT | ACCESS_IMMUNITY | (int)
 	    CVAR_GET_FLOAT("default_access")));
@@ -1711,32 +1711,32 @@ int GetUserAccess(edict_t* pEntity) {
 
 // Given a user name and/or WON ID, and optionally password, fills the
 // user_struct record with the first info that matches that name/password
-// combination.  A NULL password bypasses the password match (useful
-// for testing for existance). A NULL user record means testing for
+// combination.  A nullptr password bypasses the password match (useful
+// for testing for existance). A nullptr user record means testing for
 // existance only. No record is returned.
 // Returns TRUE if successful, FALSE otherwise.
 BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP, char* sPassword, user_struct* ptUserRecord) {
   // If we have no record to write to we only do test. Else clear the record.
-  if (ptUserRecord == NULL) {
+  if (ptUserRecord == nullptr) {
     DEBUG_LOG(2, ("GetUserRecord testing for existance") );
   } else {
 	  memset( ptUserRecord, 0, sizeof(user_struct) );
   }  // if-else
 
 
-  if ( sName == NULL ) sName = "";
-  if ( sIP == NULL ) sIP = "0.0.0.0";
+  if ( sName == nullptr ) sName = "";
+  if ( sIP == nullptr ) sIP = "0.0.0.0";
 
   // For a listenserver user we don't check the password
-  if ( oaiAuthID.is_loopid() ) sPassword = NULL;
+  if ( oaiAuthID.is_loopid() ) sPassword = nullptr;
 
   // Make sure the users are loaded.
   if (g_fUsersLoaded == FALSE)
     LoadUsers();
 
-  user_struct *ptUser = NULL;
+  user_struct *ptUser = nullptr;
 
-  CLinkItem<user_struct>*  pUser= NULL;
+  CLinkItem<user_struct>*  pUser= nullptr;
 
 #ifdef USE_MYSQL
 
@@ -1744,7 +1744,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
  //int iResult;      // used for db func return values
  // char *sType="user"; // the "type" of query we are doing
  MYSQL_RES *pResult;
- MYSQL_ROW pRow = NULL;	
+ MYSQL_ROW pRow = nullptr;	
  BOOL valid_user=FALSE;
 
  if( (int)CVAR_GET_FLOAT("mysql_preload")==0 ) {
@@ -1754,12 +1754,12 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 	 bool bUsersTableIsSet = true;
 	 bool bTagsTableIsSet = true;
 	 const char* pcCVar = get_cvar_string_value( "mysql_dbtable_users" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bUsersTableIsSet = false;
 		 DEBUG_LOG(2, ("mySQL users table is not set.") );
 	 }  // if
 	 pcCVar = get_cvar_string_value( "mysql_dbtable_tags" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bTagsTableIsSet = false;
 		 DEBUG_LOG(2, ("mySQL tags table is not set.") );
 	 }  // if
@@ -1774,19 +1774,19 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
   
    // Make sure we got a valid result back.
    if ( !pResult) {
-	   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+	   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
    } else {
 
 	   // For every row in the result set...
-	   while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+	   while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
 		   valid_user=TRUE; // there was at least one user...
                    if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
                       DEBUG_LOG(3, ("SQL Query returned password '%s', access '%s'", pRow[0], pRow[1]) );
                    } else {
                       DEBUG_LOG(3, ("SQL Query returned password  '********', access '%s'", pRow[1]) );
                    }  // if-else
-	   if ( sPassword == NULL ) {
-			   // The NULL password matches anything, setup the Users struct and copy it across
+	   if ( sPassword == nullptr ) {
+			   // The nullptr password matches anything, setup the Users struct and copy it across
 			   am_strncpy(User.sUserName,sName,USERNAME_SIZE);
 			   am_strncpy(User.sPassword,pRow[0],PASSWORD_SIZE);
 			   User.iAccess=atoi(pRow[1]);
@@ -1820,11 +1820,11 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
 	   // Make sure we got a valid result back.
 	   if ( !pResult) {
-		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 	   } else {
 
 		   // For every row in the result set...
-		   while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+		   while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
                         if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
                            DEBUG_LOG(3, ("SQL Query returned password '%s', access '%s'", pRow[0], pRow[1]) );
                         } else {
@@ -1832,7 +1832,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
                         }  // if-else
 			   valid_user=TRUE; // there was at least one user...
 			   if ( sPassword == 0 ) {
-				   // The NULL password matches anything, setup the Users struct and copy it across
+				   // The nullptr password matches anything, setup the Users struct and copy it across
 				   am_strncpy(User.sUserName,sName,USERNAME_SIZE);
 				   am_strncpy(User.sPassword,pRow[0],PASSWORD_SIZE);
 				   User.iAccess=atoi(pRow[1]);
@@ -1870,11 +1870,11 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
 	   // Make sure we got a valid result back.
 	   if ( !pResult) {
-		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 	   } else {
 
 		   // For every row in the result set...
-		   while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+		   while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
                        if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
                           DEBUG_LOG(3, ("SQL Query returned password '%s', access '%s'", pRow[0], pRow[1]) );
                        } else {
@@ -1882,7 +1882,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
                        }  // if-else
 
 			   if ( sPassword == 0 ) {
-				   // The NULL password machtes anything, setup the Users struct and copy it across
+				   // The nullptr password machtes anything, setup the Users struct and copy it across
 				   am_strncpy(User.sUserName,sName,USERNAME_SIZE);
 				   am_strncpy(User.sPassword,pRow[0],PASSWORD_SIZE);
 				   User.iAccess=atoi(pRow[1]);
@@ -1929,12 +1929,12 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 	 bool bUsersTableIsSet = true;
 	 bool bTagsTableIsSet = true;
 	 const char* pcCVar = get_cvar_string_value( "pgsql_dbtable_users" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bUsersTableIsSet = false;
 		 DEBUG_LOG(2, ("PgSQL users table is not set.") );
 	 }  // if
 	 pcCVar = get_cvar_string_value( "pgsql_dbtable_tags" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bTagsTableIsSet = false;
 		 DEBUG_LOG(2, ("PgSQL tags table is not set.") );
 	 }  // if
@@ -1949,7 +1949,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
   
    // Make sure we got a valid result back.
    if ( !pgResult) {
-	   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+	   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
    } else {
 
 	   // For every row in the result set...
@@ -1960,8 +1960,8 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
                    } else {
                       DEBUG_LOG(3, ("SQL Query returned password  '********', access '%s'", PQgetvalue(pgResult, tup_num, 1)) );
                    }  // if-else
-		   if ( sPassword == NULL ) {
-			   // The NULL password matches anything, setup the Users struct and copy it across
+		   if ( sPassword == nullptr ) {
+			   // The nullptr password matches anything, setup the Users struct and copy it across
 			   am_strncpy(User.sUserName,sName,USERNAME_SIZE);
 			   am_strncpy(User.sPassword,PQgetvalue(pgResult, tup_num, 0),PASSWORD_SIZE);
 			   User.iAccess=atoi(PQgetvalue(pgResult, tup_num, 1));
@@ -1995,7 +1995,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
 	   // Make sure we got a valid result back.
 	   if ( !pgResult) {
-		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 	   } else {
 
 		   // For every row in the result set...
@@ -2007,7 +2007,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
                         }  // if-else
 			   pg_valid_user=TRUE; // there was at least one user...
 			   if ( sPassword == 0 ) {
-				   // The NULL password matches anything, setup the Users struct and copy it across
+				   // The nullptr password matches anything, setup the Users struct and copy it across
 				   am_strncpy(User.sUserName,sName,USERNAME_SIZE);
 				   am_strncpy(User.sPassword,PQgetvalue(pgResult, tup_num, 0),PASSWORD_SIZE);
 				   User.iAccess=atoi(PQgetvalue(pgResult, tup_num, 1));
@@ -2045,7 +2045,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
 	   // Make sure we got a valid result back.
 	   if ( !pgResult) {
-		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 	   } else {
 
 		   // For every row in the result set...
@@ -2057,7 +2057,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
                        }  // if-else
 
 			   if ( sPassword == 0 ) {
-				   // The NULL password machtes anything, setup the Users struct and copy it across
+				   // The nullptr password machtes anything, setup the Users struct and copy it across
 				   am_strncpy(User.sUserName,sName,USERNAME_SIZE);
 				   am_strncpy(User.sPassword,PQgetvalue(pgResult, tup_num, 0),PASSWORD_SIZE);
 				   User.iAccess=atoi(PQgetvalue(pgResult, tup_num, 1));
@@ -2091,14 +2091,14 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
  } else {
 #endif
     // If we have no user list, we can't match.
-    if (m_pUserList == NULL)
+    if (m_pUserList == nullptr)
       return FALSE;
 
    pUser= m_pUserList->FirstLink();
-   // user_struct* ptUser = NULL;
+   // user_struct* ptUser = nullptr;
 
     // For each user record...
-    while (pUser != NULL) {
+    while (pUser != nullptr) {
 		//TBR char* pcEndptr = 0; int iNum = 0;
 		ptUser = pUser->Data();
 		AMAuthId oaiID = ptUser->sUserName;
@@ -2108,9 +2108,9 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 		if ( (!oaiID.is_set() && !IsIPValid(sName) && match(sName,ptUser->sUserName)!=0)   // a user name
 			 || (oaiID.is_set() && oaiID == oaiAuthID)                // an auth id
 			 || (IsIPValid(sIP) && match(sIP, ptUser->sUserName)) ) { // a valid IP number
-			// A NULL password matches anything.  Otherwise, we need to compare
+			// A nullptr password matches anything.  Otherwise, we need to compare
 			// passwords.
-			if (sPassword == NULL) {
+			if (sPassword == nullptr) {
 				break;
 			} else if (pass_compare(ptUser->sPassword,sPassword)) {
 				break;
@@ -2126,13 +2126,13 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 #endif
 
   // We got a match.
-  if (pUser != NULL) {
+  if (pUser != nullptr) {
     if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
       UTIL_LogPrintf("[ADMIN] DEBUG: Name '%s' / AUTHID '%s' matches user entry '%s'\n", sName,
                      static_cast<const char*>(oaiAuthID),
                      ptUser->sUserName);
     }
-	if ( ptUserRecord != NULL ) {
+	if ( ptUserRecord != nullptr ) {
 		memcpy(ptUserRecord,ptUser,sizeof(user_struct));
 	}  // if
     return 1;
@@ -2150,22 +2150,22 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 // Note that this will return TRUE if any record that matches sName has 16384
 // access.
 BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sIP, user_struct* ptUserRecord) {
-  if (ptUserRecord == NULL) {
-    UTIL_LogPrintf("[ADMIN] ERROR: IsNameReserved called with NULL ptUserRecord.\n");
+  if (ptUserRecord == nullptr) {
+    UTIL_LogPrintf("[ADMIN] ERROR: IsNameReserved called with nullptr ptUserRecord.\n");
     return FALSE;
   }
 
 
   memset( ptUserRecord, 0, sizeof(user_struct) );
 
-  if ( sName == NULL ) sName = "";
-  if ( sIP == NULL ) sIP = "0.0.0.0";
+  if ( sName == nullptr ) sName = "";
+  if ( sIP == nullptr ) sIP = "0.0.0.0";
 
   if (g_fUsersLoaded == FALSE)
     LoadUsers();
 
 
-  user_struct* ptUser = NULL;
+  user_struct* ptUser = nullptr;
 
 
 #ifdef USE_MYSQL
@@ -2175,7 +2175,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
   //int iResult;      // return val check for db funcs
   // char *sType="user";  // "type" of check
   MYSQL_RES *pResult;   // store for result set
-  MYSQL_ROW pRow = NULL; // store for rows from results
+  MYSQL_ROW pRow = nullptr; // store for rows from results
 
   if( (int)CVAR_GET_FLOAT("mysql_preload")==0) { // if we didn't preload the users file
 
@@ -2184,12 +2184,12 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 	 bool bUsersTableIsSet = true;
 	 bool bTagsTableIsSet = true;
 	 const char* pcCVar = get_cvar_string_value( "mysql_dbtable_users" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bUsersTableIsSet = false;
 		 DEBUG_LOG(2, ("mySQL users table is not set.") );
 	 }  // if
 	 pcCVar = get_cvar_string_value( "mysql_dbtable_tags" );
-	 if ( pcCVar == NULL) {
+	 if ( pcCVar == nullptr) {
 		 bTagsTableIsSet = false;
 		 DEBUG_LOG(2, ("mySQL tags table is not set.") );
 	 }  // if
@@ -2204,10 +2204,10 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
     bool valid_user = false;
     // Make sure we got a valid result back.
     if ( !pResult) {
-		UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
     } else {
 		// For every row in the result set...
-		while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+		while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
 			valid_user = true;
                         if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
                            DEBUG_LOG(3, ("SQL Query returned password '%s', access '%s'", pRow[0], pRow[1]) );
@@ -2240,10 +2240,10 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 
 	   // Make sure we got a valid result back.
 	   if ( !pResult) {
-		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 	   } else {
 		   // For every row in the result set...
-		   while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+		   while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
                        if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
                           DEBUG_LOG(3, ("SQL Query returned password '%s', access '%s'", pRow[0], pRow[1]) );
                        } else {
@@ -2280,10 +2280,10 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 		pResult=admin_mysql_query(sQuery,"user");
 
 		if ( !pResult) {
-			UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+			UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 		} else {
 			// For every row in the result set...
-			while ((pRow = mysql_fetch_row(pResult)) != NULL) {
+			while ((pRow = mysql_fetch_row(pResult)) != nullptr) {
                             if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
                                DEBUG_LOG(3, ("SQL Query returned password '%s', access '%s'", pRow[0], pRow[1]) );
                             } else {
@@ -2331,12 +2331,12 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 	 bool bUsersTableIsSet = true;
 	 bool bTagsTableIsSet = true;
 	 const char* pcCVar = get_cvar_string_value( "pgsql_dbtable_users" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bUsersTableIsSet = false;
 		 DEBUG_LOG(2, ("PgSQL users table is not set.") );
 	 }  // if
 	 pcCVar = get_cvar_string_value( "pgsql_dbtable_tags" );
-	 if ( pcCVar == NULL ) {
+	 if ( pcCVar == nullptr ) {
 		 bTagsTableIsSet = false;
 		 DEBUG_LOG(2, ("PgSQL tags table is not set.") );
 	 }  // if
@@ -2351,7 +2351,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
     bool pg_valid_user = false;
     // Make sure we got a valid result back.
     if ( !pgResult) {
-		UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
     } else {
 		// For every row in the result set...
 		for (tup_num = 0; tup_num < PQntuples(pgResult); tup_num++) {
@@ -2387,7 +2387,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 
 	   // Make sure we got a valid result back.
 	   if ( !pgResult) {
-		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+		   UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 	   } else {
 		   // For every row in the result set...
 		   for (tup_num = 0; tup_num < PQntuples(pgResult); tup_num++) {
@@ -2427,7 +2427,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 		pgResult=admin_pgsql_query(sQuery,"user");
 
 		if ( !pgResult) {
-			UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned NULL result.\n");
+			UTIL_LogPrintf("[ADMIN] ERROR: Select query for users returned nullptr result.\n");
 		} else {
 			// For every row in the result set...
 			for (tup_num = 0; tup_num < PQntuples(pgResult); tup_num++) {
@@ -2466,7 +2466,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 
 	  CLinkItem<user_struct>* pUser = m_pUserList->FirstLink();
 
-	  while (pUser != NULL) {
+	  while (pUser != nullptr) {
 		  //TBR char* pcEndptr = 0;
 		  ptUser = pUser->Data();
 		  ///TBR int iNum = strtol( ptUser->sUserName, &pcEndptr, 10 );
@@ -2505,11 +2505,11 @@ BOOL ParseUser(char* pcLine) {
   char* sAccessToken;
   char sDelimiter[] = ":";
 	char* sPasswordToken;
-  char* pcDelim = NULL;
+  char* pcDelim = nullptr;
 
-	if ( pcLine == NULL ) return FALSE;
+	if ( pcLine == nullptr ) return FALSE;
 
-  int iLineLength = strlen(pcLine);
+	const int iLineLength = strlen(pcLine);
   char* sLine = new char[iLineLength+1];
   memset (sLine, 0, (iLineLength + 1) );
   memcpy( sLine, pcLine, iLineLength );
@@ -2539,18 +2539,18 @@ BOOL ParseUser(char* pcLine) {
     while ( *(pcDelim - 1) == '\\' ) {  // accept the colon as part of the name
       memmove( (pcDelim - 1), pcDelim, (iLineLength - (pcDelim - sLine) + 1) );
       pcDelim = strchr( (pcDelim + 1), ':' );
-      if ( pcDelim == NULL ) break;
+      if ( pcDelim == nullptr ) break;
     }  // while
   }  // if
 
-  if ( pcDelim == NULL ) {
-    sNameToken = NULL;
+  if ( pcDelim == nullptr ) {
+    sNameToken = nullptr;
   } else {
     *pcDelim = 0;
     pcDelim++;
   }  // if-else
 
-  if (sNameToken == NULL) {
+  if (sNameToken == nullptr) {
 	  UTIL_LogPrintf("[ADMIN] ERROR: No user name found: '%s'\n", sLine);
   } else if ((int)strlen(sNameToken) > USERNAME_SIZE) {
 	  UTIL_LogPrintf("[ADMIN] ERROR: User name too long: '%s'\n", sNameToken);
@@ -2566,15 +2566,15 @@ BOOL ParseUser(char* pcLine) {
 		  pcDelim = strchr( pcDelim, ':' );
 		  // If we have a authid in this entry we have a colon within the column.
 		  // In that case we have to skip it and search for the next colon.
-		  if (NULL != pcDelim && AMAuthId::is_authid(sPasswordToken) ) pcDelim = strchr( (pcDelim+1), ':' );
-		  if (NULL == pcDelim ) sPasswordToken = NULL;
+		  if (nullptr != pcDelim && AMAuthId::is_authid(sPasswordToken) ) pcDelim = strchr( (pcDelim+1), ':' );
+		  if (nullptr == pcDelim ) sPasswordToken = nullptr;
 		  else {
 			  *pcDelim = 0;
 			  ++pcDelim;
 		  }  // if-else
 	  }  // if-else
 
-	  if (sPasswordToken == NULL) {
+	  if (sPasswordToken == nullptr) {
 		  UTIL_LogPrintf("[ADMIN] ERROR: No user password found: '%s'\n", sLine);
 	  } else if ((int)strlen(sPasswordToken) > PASSWORD_SIZE) {
 		  if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
@@ -2590,7 +2590,7 @@ BOOL ParseUser(char* pcLine) {
 			  sAccessToken = "0";
 		  }  // if-else
 
-		  if (sAccessToken == NULL) {
+		  if (sAccessToken == nullptr) {
 			  UTIL_LogPrintf("[ADMIN] ERROR: No user access found: '%s'\n", sLine);
 			  /* AccessToken too long? Oh please, all we do is pass it to atoi(). Let's comment this out.
 				 } else if ((int)strlen(sAccessToken) > ACCESS_SIZE) {
@@ -2598,16 +2598,16 @@ BOOL ParseUser(char* pcLine) {
 			  */
 		  } else {
 			  user_struct* tUser = new user_struct;
-			  if(tUser == NULL) {
+			  if(tUser == nullptr) {
 				  UTIL_LogPrintf( "[ADMIN] ERROR: ParseUser::'new' failed for tUser record.\n");
 				  delete[] sLine;
-				  sLine = NULL;
+				  sLine = nullptr;
 				  return FALSE;
 			  }
 			  memset(tUser,0x0,sizeof(user_struct));
 			  strcpy(tUser->sUserName,sNameToken);
 			  strcpy(tUser->sPassword,sPasswordToken);
-			  int iAccess = atoi(sAccessToken);
+			  const int iAccess = atoi(sAccessToken);
 			  tUser->iAccess = iAccess;
 			  tUser->iIndex = m_iUserIndex++;
 			  m_pUserList->AddLink(tUser);
@@ -2618,13 +2618,13 @@ BOOL ParseUser(char* pcLine) {
 				  DEBUG_LOG(1, ("User loaded: Index: %i, Name '%s', Password '********', Access '%i'",tUser->iIndex, tUser->sUserName, tUser->iAccess) );
 			  }
 			  delete[] sLine;
-			  sLine = NULL;
+			  sLine = nullptr;
 			  return TRUE;
 		  }
 	  }
   }
   delete[] sLine;
-  sLine = NULL;
+  sLine = nullptr;
   return FALSE;
 }
 
@@ -2635,7 +2635,7 @@ BOOL ParseUserSQL(MYSQL_ROW pRow) {
   user_struct* tUser;
   
   tUser = new user_struct;
-  if(tUser == NULL) {
+  if(tUser == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: ParseUserSQL::'new' failed for tUser record.\n");
     return FALSE;
   }
@@ -2662,7 +2662,7 @@ BOOL ParseUserPgSQL(const PGresult *res, int tup_num) {
   user_struct* tUser;
   
   tUser = new user_struct;
-  if(tUser == NULL) {
+  if(tUser == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: ParseUserPgSQL::'new' failed for tUser record.\n");
     return FALSE;
   }
@@ -2693,7 +2693,7 @@ void LoadUsers() {
   m_iUserIndex = 1;
   
   // Create a new linked list, if necessary.
-  if (m_pUserList == NULL) 
+  if (m_pUserList == nullptr) 
     m_pUserList = new CLinkList<user_struct>();
   
   // Load the users
@@ -2714,22 +2714,22 @@ void UnloadUsers() {
   m_iUserIndex = 1;
   
   // Create a new linked list, if necessary.
-  if (m_pUserList == NULL)  return;
+  if (m_pUserList == nullptr)  return;
 
   delete m_pUserList;
-  m_pUserList = NULL;
+  m_pUserList = nullptr;
 }
 
 
-// Sets the user password.  If sSetPassword is NULL, this will attempt to read it
+// Sets the user password.  If sSetPassword is nullptr, this will attempt to read it
 // (and then clear it) from the player's setinfo buffer.
 void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
-  int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
   int iSetPassword = 0;
   char sPassword[PASSWORD_SIZE];
   char* sPasswordField = const_cast<char*>(get_cvar_string_value( "password_field" ));
   char* infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(pEntity);
-  char* pcClientPwBufferCopy = NULL;
+  char* pcClientPwBufferCopy = nullptr;
   char szCommand[128];
   
   if (iIndex < 1 || iIndex > gpGlobals->maxClients) {
@@ -2742,21 +2742,21 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
 
   // If we're passed a password, use that.  Otherwise, grab it
   // from their setinfo key, if possible.
-  if (sSetPassword != NULL) {
+  if (sSetPassword != nullptr) {
     strncpy(sPassword, sSetPassword, PASSWORD_SIZE);
     iSetPassword = 1;
 
-  } else if ( sPasswordField != NULL ) {
+  } else if ( sPasswordField != nullptr ) {
     pcClientPwBufferCopy = g_engfuncs.pfnInfoKeyValue(infobuffer,sPasswordField);
 
     // If we got a password from their setinfo buffer, use it and clear it.
-    if ( pcClientPwBufferCopy != NULL && !FStrEq(pcClientPwBufferCopy,"")) {
+    if ( pcClientPwBufferCopy != nullptr && !FStrEq(pcClientPwBufferCopy,"")) {
 	  strncpy(sPassword, pcClientPwBufferCopy, PASSWORD_SIZE);
 /*TBR: This should not be needed anymore since we don't touch the user password 
        in CUIC() before we get to CC().
 	  // Store a temporary copy which will timeout after some seconds.
 	  strncpy(m_aoTmpPwd[iIndex].acPwd, pcClientPwBufferCopy, PASSWORD_SIZE);
-	  m_aoTmpPwd[iIndex].iSet = time(NULL);
+	  m_aoTmpPwd[iIndex].iSet = time(nullptr);
 	  if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
 		  DEBUG_LOG(2, ("Storing password '%s'.", m_aoTmpPwd[iIndex].acPwd) ); 
 	  } else {
@@ -2776,7 +2776,7 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
 */
 /*TBR: Uhm, we don't have a backup copy anymore. See above.
 	  // Else if we have a backup copy, use that one.
-    } else if ( m_aoTmpPwd[iIndex].iSet && ((time(NULL)-m_aoTmpPwd[iIndex].iSet) < 5) ) {
+    } else if ( m_aoTmpPwd[iIndex].iSet && ((time(nullptr)-m_aoTmpPwd[iIndex].iSet) < 5) ) {
 		strncpy( sPassword, m_aoTmpPwd[iIndex].acPwd, PASSWORD_SIZE );
 		if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
 			DEBUG_LOG(2, ("Restoring password '%s'.", m_aoTmpPwd[iIndex].acPwd) ); 
@@ -2817,14 +2817,14 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
 }
 
 void UpdateUserAuth(edict_t* pEntity) {
-  int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
   
   // Make sure we have a valid index.
   if (iIndex < 1 || iIndex > gpGlobals->maxClients) {
     UTIL_LogPrintf("[ADMIN] ERROR: UpdateUserAuth: User '%s' has out of bounds entity index %i\n", pEntity->v.netname, iIndex);
     return;
   }
-  g_AuthArray[iIndex].iTime = time(NULL);
+  g_AuthArray[iIndex].iTime = time(nullptr);
 
   DEBUG_LOG( 4, ("UpdateUserAuth: %d: %ld.", iIndex, g_AuthArray[iIndex].iTime) );
 }
@@ -2832,8 +2832,8 @@ void UpdateUserAuth(edict_t* pEntity) {
 // Attempts to find a matching user record for this player.  
 BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
   BOOL fResult = FALSE;
-  int iIndex = ENTINDEX(pEntity);
-  const char* pcIP = NULL;
+  const int iIndex = ENTINDEX(pEntity);
+  const char* pcIP = nullptr;
   user_struct tUser;
   
   // Make sure we have a valid index.
@@ -2842,7 +2842,7 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
     return FALSE;
   }
 
-  user_ip( iIndex, &pcIP, NULL );
+  user_ip( iIndex, &pcIP, nullptr );
  
   DEBUG_DO(1, System_Response("[ADMIN] Checking password for user access...\n", pEntity); );
 
@@ -2869,7 +2869,7 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
 
   DEBUG_LOG(1, ("VerifyUserAuth: Access granted: %i", g_AuthArray[iIndex].iAccess) );  
 
-  g_AuthArray[iIndex].iTime = time(NULL);
+  g_AuthArray[iIndex].iTime = time(nullptr);
   // Because someone's access may have changed, we should see if the highlander has changed.
   GetHighlanderIndex();
   return fResult;
@@ -2883,20 +2883,20 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
 // Adds a new spawn record to the linked list.  Returns
 // the identity if successful, 0 otherwise.
 int AddSpawnEntity(const char* szClassname, CBaseEntity* pEntity) {
-  spawn_struct* tSpawn = NULL;
+  spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
 
   // Make a new link
   tSpawn = new spawn_struct;
   // Make sure the link is a valid address
-  if(tSpawn == NULL) {
+  if(tSpawn == nullptr) {
     UTIL_LogPrintf("[ADMIN] AddSpawnEntity: 'new' failed for tSpawn record.\n");
     return 0;
   }
   
   // Initialize the link's data
   memset(tSpawn, 0x0, sizeof(spawn_struct));
-  int iIdentity = m_iSpawnIdentity++;
+  const int iIdentity = m_iSpawnIdentity++;
   strcpy(tSpawn->szClassname, szClassname);
   tSpawn->iIdentity = iIdentity;
   tSpawn->pEntity = pEntity;
@@ -2905,12 +2905,12 @@ int AddSpawnEntity(const char* szClassname, CBaseEntity* pEntity) {
 }
 
 // Find a spawn record, given a spawn's identity.
-// May return NULL for no matching id.
+// May return nullptr for no matching id.
 spawn_struct* FindSpawnEntity(int iIdentity) {
-  spawn_struct* tSpawn = NULL;
+  spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
-  while(pLink != NULL) {
+  while(pLink != nullptr) {
     // For each link on the list, check to see if the identities match.
     // Check the classname only if the identity we're looking for is 0.
     tSpawn = pLink->Data();
@@ -2920,12 +2920,12 @@ spawn_struct* FindSpawnEntity(int iIdentity) {
       pLink = pLink->NextLink();
     }
   }
-  return (pLink == NULL ? NULL : tSpawn);
+  return (pLink == nullptr ? nullptr : tSpawn);
 }
 
 // Initializes the linked list.  DOES NOT REMOVE THE ENTITIES.
 void InitSpawnEntityList() {
-  if (m_pSpawnList == NULL) {
+  if (m_pSpawnList == nullptr) {
     m_pSpawnList = new CLinkList<spawn_struct>();
   } else {
     m_pSpawnList->Init();
@@ -2933,17 +2933,17 @@ void InitSpawnEntityList() {
 }
 
 // Lists the contents of the spawn linked list that match
-// szFindClassname (or all, if szFindClassname is NULL or empty)
+// szFindClassname (or all, if szFindClassname is nullptr or empty)
 void ListSpawnEntities(edict_t* pMsg, char* szFindClassname) {
-	int iLength = strlen(szFindClassname);
+	const int iLength = strlen(szFindClassname);
   char szClassname[BUF_SIZE];
-  spawn_struct* tSpawn = NULL;
+  spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
   System_Response(UTIL_VarArgs("Identity            ClassName         \n"), pMsg);
-  while(pLink != NULL) {
+  while(pLink != nullptr) {
     tSpawn = pLink->Data();
-    int iIdentity = tSpawn->iIdentity;
+    const int iIdentity = tSpawn->iIdentity;
     strcpy(szClassname, tSpawn->szClassname);
     if(iLength==0 || strnicmp(szFindClassname, szClassname, iLength)==0) {
       System_Response(UTIL_VarArgs( "  <%d>              %s\n",iIdentity,szClassname), pMsg);
@@ -2955,11 +2955,11 @@ void ListSpawnEntities(edict_t* pMsg, char* szFindClassname) {
 // Removes a spawn record by identity from the linked list.
 // Returns TRUE if successful, FALSE otherwise.
 BOOL RemoveSpawnEntity(int iIdentity) {
-  spawn_struct* tSpawn = NULL;
+  spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
   // Search through the list, like in FindSpawnEntity.
-  while(pLink != NULL) {
+  while(pLink != nullptr) {
     tSpawn = pLink->Data();
     if (iIdentity == tSpawn->iIdentity) {
       break;
@@ -2969,7 +2969,7 @@ BOOL RemoveSpawnEntity(int iIdentity) {
   }
   
   // If we found nothing, we can't remove anything.
-  if(pLink == NULL) {
+  if(pLink == nullptr) {
     return FALSE;
   } else {
     // Remove the entity and free the link.
@@ -2985,13 +2985,13 @@ BOOL RemoveSpawnEntity(int iIdentity) {
 
 // Removes a spawn record by identity from the linked list.
 // Returns TRUE if successful, FALSE otherwise.
-void DeleteSpawnEntityList( void ) 
+void DeleteSpawnEntityList() 
 {
-  spawn_struct* tSpawn = NULL;
+  spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
   // Search through the list, like in FindSpawnEntity.
-  while(pLink != NULL) {
+  while(pLink != nullptr) {
     tSpawn = pLink->Data();
     // Remove the entity and free the link.
     REMOVE_ENTITY(tSpawn->pEntity->edict());
@@ -3014,19 +3014,19 @@ void DeleteSpawnEntityList( void )
 // if successful, FALSE otherwise.
 BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
 	help_struct* tHelp;
-	CLinkItem<help_struct>* pOldLink = NULL;
+	CLinkItem<help_struct>* pOldLink = nullptr;
   
   // Make sure our help list is initialized
-  if (m_pHelpList == NULL) {
+  if (m_pHelpList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: AddHelpEntry called when help list not initialized.\n");
     return FALSE;
   }
   // Compare this entry to the entries we currently have; we want to
   // avoid duplicates.
   CLinkItem<help_struct>* pLink = m_pHelpList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     tHelp = pLink->Data();
-    int iCompare = stricmp(sCmd, tHelp->sCmd);
+    const int iCompare = stricmp(sCmd, tHelp->sCmd);
     // If iCompare < 0, then this entry belongs in front of the one
     // we're currently at, so we can break and insert it.
     if (iCompare < 0) {
@@ -3047,9 +3047,9 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
   }
   
   // Ok.  We found the entry that we're going to put our new one before
-  // (or NULL, if we're putting it at the end.)  Let's add it.
+  // (or nullptr, if we're putting it at the end.)  Let's add it.
   tHelp = new help_struct;
-  if(tHelp == NULL) {
+  if(tHelp == nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: AddHelpEntry::'new' failed for tHelp record.\n");
     return FALSE;
   }
@@ -3065,15 +3065,15 @@ CPlugin* GetPlugin(AMX* amx) {
 	CPlugin* pPlugin;
   
   // Make sure our list is initialized.
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: GetPlugin called when plugin list not initialized.\n");
-    return NULL;
+    return nullptr;
   }
   // For each plugin, compare the AMX pointers.
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     pPlugin = pLink->Data();
-    if (NULL != pPlugin ) {
+    if (nullptr != pPlugin ) {
       // We got a match?  Cool.
       if (amx == pPlugin->amx()) {
         break;
@@ -3083,9 +3083,9 @@ CPlugin* GetPlugin(AMX* amx) {
   }
   
   // No match?  Bummer.
-  if (pLink == NULL) {
+  if (pLink == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: GetPlugin failed.\n");
-    return NULL;
+    return nullptr;
   }
   return pPlugin;
 }
@@ -3100,7 +3100,7 @@ int CheckCommand( edict_t* _pEntity, const char* _pcCommand, unsigned int& _uiAc
 	int iResult = 0; // number of plugins that implement this command
 	unsigned int uiAccess = 0;
 
-	if ( m_pPluginList == NULL ) {
+	if ( m_pPluginList == nullptr ) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CheckCommand() called when plugin list not initialized.\n" );
 		return 0;
 	}  // if
@@ -3109,7 +3109,7 @@ int CheckCommand( edict_t* _pEntity, const char* _pcCommand, unsigned int& _uiAc
 	_uiAccess = ~0;
 
 	CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-	while ( pLink != NULL ) {
+	while ( pLink != nullptr ) {
 		CPlugin* pPlugin = pLink->Data();
 		// ATTN: the next line would usually be placed at the end of the while-loop. 
 		// But since we don't need the pLink later anymore, we have it here to be able 
@@ -3143,12 +3143,12 @@ plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
   plugin_result iResult = PLUGIN_INVAL_CMD;
   plugin_result iReturn = PLUGIN_INVAL_CMD;
 
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleCommand called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleCommand(pEntity, sCmd, sData);
 	if ( iResult != PLUGIN_INVAL_CMD ) iReturn = iResult;
@@ -3166,12 +3166,12 @@ plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
 plugin_result HandleConnect(edict_t* pEntity, char* sName, char* sIPAddress) {
   plugin_result iResult = PLUGIN_CONTINUE;
 
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleConnect called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleConnect(pEntity, sName, sIPAddress);
     if (iResult == PLUGIN_HANDLED) {
@@ -3187,12 +3187,12 @@ plugin_result HandleConnect(edict_t* pEntity, char* sName, char* sIPAddress) {
 plugin_result HandleDisconnect(edict_t* pEntity) {
   plugin_result iResult = PLUGIN_CONTINUE;
 
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleDisconnect called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleDisconnect(pEntity);
     if (iResult == PLUGIN_HANDLED) {
@@ -3214,14 +3214,14 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   int iStart = 1;
   char sDelimiter = ' ';
 	char sCommand[COMMAND_SIZE];
-  char* sFilter = NULL;
+  char* sFilter = nullptr;
   char sFilterText[BUF_SIZE];
   char sHelp[BUF_SIZE];
   char sParam[BUF_SIZE];
-	char* sToken = NULL;
+	char* sToken = nullptr;
 
 	// Verify our list is initialized.
-  if (m_pHelpList == NULL) {
+  if (m_pHelpList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleHelp called when help list not initialized.\n");
     return PLUGIN_ERROR;
   }
@@ -3234,7 +3234,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   strncpy( pcData, sData, strlen(sData) );
 
   // Get the access of the user; this will determine what they can see.
-  int iAccess = GetUserAccess(pEntity);
+	const int iAccess = GetUserAccess(pEntity);
   DEBUG_LOG(3, ("HandleHelp: User Access: %d", iAccess) );
   // Tokenize the data.  This is kludgy, but the data format is:
   // [<search string>] [<start> [<length>]] 
@@ -3244,22 +3244,22 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   // If there's a third token, it's used only if the first was alphabetic.  In that
   // case, it's length. 
   // Confused?
-  if (pcData != NULL) {
+  if (pcData != nullptr) {
     sToken = strtok(pcData, &sDelimiter);
-    if (sToken != NULL) {
+    if (sToken != nullptr) {
       // If the first token is alphabetic, it's the search string.
       if (atoi(sToken) == 0 && *sToken != '0') {
 	sFilter = sToken;
 	// Get the second token.
-	sToken = strtok(NULL, &sDelimiter);
+	sToken = strtok(nullptr, &sDelimiter);
       }
-      if (sToken != NULL) {
+      if (sToken != nullptr) {
 	// Otherwise, the first (or second) token is start.
 	iStart = atoi(sToken);
 	if (iStart < 1)
 	  iStart = 1;
-	sToken = strtok(NULL, &sDelimiter);
-	if (sToken != NULL) {
+	sToken = strtok(nullptr, &sDelimiter);
+	if (sToken != nullptr) {
 	  // And the second (or third) token is length.
 	  iLength = atoi(sToken);
 	  if (iLength < 1)
@@ -3269,7 +3269,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
     }
   }
   
-  if (sFilter == NULL || strlen(sFilter) == 0) {
+  if (sFilter == nullptr || strlen(sFilter) == 0) {
     strcpy(sFilterText, "");
   } else {
     sprintf(sFilterText, " for '%s'", sFilter);
@@ -3281,12 +3281,12 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   
   // For each help entry...
   CLinkItem<help_struct>* pLink = m_pHelpList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     help_struct* tHelp = pLink->Data();
     // Make sure that they have access to this entry, and it matches the filter they give
     // (or they didn't give a filter).
     if (((iAccess & tHelp->iAccess) == tHelp->iAccess)
-	&& (sFilter == NULL || stristr(tHelp->sCmd, sFilter) != NULL || stristr(tHelp->sHelp, sFilter) != NULL )) {
+	&& (sFilter == nullptr || stristr(tHelp->sCmd, sFilter) != nullptr || stristr(tHelp->sHelp, sFilter) != nullptr )) {
       iMaxCount++;
       // Make sure we're underneath their end point.
       if (iCount < (iStart + iLength - 1)) {
@@ -3302,11 +3302,11 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
 	    // We need to try to break apart the help entry into its various components
 	    char* sColon = strchr(tHelp->sHelp, ':');
 	    char* sSpace = strchr(tHelp->sHelp, ' ');
-	    if (sColon == NULL) {
+	    if (sColon == nullptr) {
 	      strcpy(sCommand, "Unknown/Bad Format");
 	      strcpy(sParam, "");
 	      strcpy(sHelp, tHelp->sHelp);
-	    } else if (sSpace == NULL || sSpace > sColon) {
+	    } else if (sSpace == nullptr || sSpace > sColon) {
 	      strncpy(sCommand, tHelp->sHelp, sColon - tHelp->sHelp);
 	      sCommand[sColon - tHelp->sHelp] = '\0';
 	      strcpy(sParam, "");
@@ -3342,7 +3342,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
       System_Response(UTIL_VarArgs("----- Entries %i - %i Of %i %s -----\n", iStart, iCount, iMaxCount, sFilterText),pEntity);
       // If there are some that we didn't show them, let them know.
       if (iCount < iMaxCount) {
-	if (sFilter == NULL) {
+	if (sFilter == nullptr) {
 	  System_Response(UTIL_VarArgs("----- Use 'admin_help %i' For More -----\n",iCount + 1),pEntity);
 	} else {
 	  System_Response(UTIL_VarArgs("----- Use 'admin_help %s %i' For More -----\n",sFilter, iCount + 1),pEntity);
@@ -3377,12 +3377,12 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
 plugin_result HandleInfo(edict_t* pEntity, char* sNewName) {
   plugin_result iResult = PLUGIN_CONTINUE;
 
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleInfo called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleInfo(pEntity, sNewName);
     if (iResult == PLUGIN_HANDLED) {
@@ -3399,11 +3399,11 @@ plugin_result HandleLog(char* sLog) {
 
   // Unlike the other procs, this one will be called before initialization. 
 	// So don't display an error.
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     return iResult;
   }
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
     iResult = pPlugin->HandleLog(sLog);
     if (iResult == PLUGIN_HANDLED) {
@@ -3422,7 +3422,7 @@ plugin_result HandleVersion(edict_t* pEntity) {
   char sVersion[BUF_SIZE];
 
   // Make sure our plugin data is initialized.
-  if (m_pPluginList == NULL) {
+  if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleVersion called when plugin list not initialized.\n");
     return PLUGIN_ERROR;
   }
@@ -3435,7 +3435,7 @@ plugin_result HandleVersion(edict_t* pEntity) {
 
   // Otherwise report the version for each plugin.
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
     strcpy(sName, pPlugin->Name());
     if (sName[0] == 0) {
@@ -3444,7 +3444,7 @@ plugin_result HandleVersion(edict_t* pEntity) {
     strcpy(sDesc, pPlugin->Desc());
     strcpy(sVersion, pPlugin->Version());
     System_Response(UTIL_VarArgs( "* Plugin #%2i: %s (v. %s)\n",i++, sName, sVersion) ,pEntity);
-    if (sDesc != NULL && strlen(sDesc) > 0)
+    if (sDesc != nullptr && strlen(sDesc) > 0)
       System_Response(UTIL_VarArgs("  %s \n", sDesc), pEntity);
     pLink = pLink->NextLink();
   }
@@ -3473,7 +3473,7 @@ BOOL ParsePlugin( char* sLine ) {
 	AmDir* poDir = oNode.get_directory_handle();
 	poDir->sort();
 	const char* pcNode;
-	while (NULL != (pcNode = poDir->get_next_entry(oNode)) ) {
+	while (nullptr != (pcNode = poDir->get_next_entry(oNode)) ) {
 		// Check if this is a file with ending '.amx' (or '.amx64' on 64bit)
 #ifdef __amd64__
 		const char* const pcAmxExt = ".amx64";
@@ -3536,7 +3536,7 @@ BOOL ParsePluginPgSQL(const PGresult *res, int tup_num) {
 
 // Loads the plugins.  Returns TRUE if at least one plugin is loaded successfully,
 // FALSE otherwise.
-BOOL LoadPlugins(void) {
+BOOL LoadPlugins() {
   // Debug: Print out the game dir
   char sPluginDir[PATH_MAX];
 
@@ -3547,11 +3547,11 @@ BOOL LoadPlugins(void) {
   }
   
   // Create a new linked list, if necessary.
-  if (m_pPluginList == NULL) 
+  if (m_pPluginList == nullptr) 
     m_pPluginList = new CLinkList<CPlugin>();
   
   // Init the help linked list
-  if (m_pHelpList == NULL) 
+  if (m_pHelpList == nullptr) 
     m_pHelpList = new CLinkList<help_struct>();
   m_pHelpList->Init();
   
@@ -3564,7 +3564,7 @@ BOOL LoadPlugins(void) {
 #endif
 	// check if the admin_plugin_file cvar holds a directory name
 	char* sFile = const_cast<char*>(get_cvar_file_value( "admin_plugin_file" ));
-	if ( sFile == NULL ) {
+	if ( sFile == nullptr ) {
 		DEBUG_LOG(1, ("LoadPlugins()::admin_plugin_file cvar not set.  No plugins loaded.\n") );
 	} else {
 		snprintf( sPluginDir, PATH_MAX, "%s/%s", GET_GAME_INFO(PLID,GINFO_GAMEDIR), sFile );
@@ -3590,15 +3590,15 @@ BOOL LoadPlugins(void) {
 }
 
 
-void UnloadPlugins(void) {
+void UnloadPlugins() {
 
   DEBUG_LOG(3, ("UnloadPlugins\n") );
   
   delete m_pPluginList;
-  m_pPluginList = NULL;
+  m_pPluginList = nullptr;
   
   delete m_pHelpList;
-  m_pHelpList = NULL;
+  m_pHelpList = nullptr;
 }
 
 
@@ -3612,24 +3612,24 @@ vault_struct* FindVaultData(char* sKey) {
   if (g_fVaultLoaded == FALSE)
     LoadVault();
   
-  if (m_pVaultList == NULL) 
-    return NULL;
+  if (m_pVaultList == nullptr) 
+    return nullptr;
   
   CLinkItem<vault_struct>* pLink = m_pVaultList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     vault_struct* tVault = pLink->Data();
     if (!stricmp(sKey, tVault->sKey)) {
       return tVault;
     }
     pLink = pLink->NextLink();
   }
-  return NULL;
+  return nullptr;
 }
 
 char* GetVaultData(char* sKey) {
 	vault_struct* tVault = FindVaultData(sKey);
-  if (tVault == NULL) {
-    return NULL;
+  if (tVault == nullptr) {
+    return nullptr;
   } else {
     return tVault->sData;
   }
@@ -3640,31 +3640,31 @@ char* GetVaultData(char* sKey) {
 // <key> <data>
 BOOL ParseVault(char* sLine) {
   char sDelimiter[] = " ";
-  char* sKeyToken = NULL;
-  char* sDataToken = NULL;
-  int iLineLen = strlen( sLine );
+  char* sKeyToken = nullptr;
+  char* sDataToken = nullptr;
+  const int iLineLen = strlen( sLine );
 
   sKeyToken = strtok(sLine,sDelimiter);
-  if (sKeyToken == NULL) {
+  if (sKeyToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No vault key found: '%s'\n", sLine);
   } else if ((int)strlen(sKeyToken) > BUF_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: Vault key too long: '%s'\n", sKeyToken);
   } else {
 
-    //sDataToken = strtok(NULL,sDelimiter);
-    int iKeyLen = strlen( sKeyToken );
+    //sDataToken = strtok(nullptr,sDelimiter);
+    const int iKeyLen = strlen( sKeyToken );
     if ( iLineLen > iKeyLen ) {
       sDataToken = sLine + iKeyLen + 1;
       // skip leading whitespace
       sDataToken += strspn( sDataToken, " \t" );
     }  // if
-    if (sDataToken == NULL) {
+    if (sDataToken == nullptr) {
       UTIL_LogPrintf("[ADMIN] ERROR: No vault data found: '%s'\n", sLine);
     } else if ((int)strlen(sDataToken) > BUF_SIZE) {
       UTIL_LogPrintf("[ADMIN] ERROR: Vault data too long: '%s'\n", sDataToken);
     } else {
       vault_struct* tVault = new vault_struct;
-      if(tVault == NULL) {
+      if(tVault == nullptr) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: ParseVault::'new' failed for tVault record.\n");
 	return FALSE;
       }
@@ -3687,7 +3687,7 @@ void LoadVault() {
   g_fVaultLoaded = TRUE;
 
 	// Create a new linked list, if necessary.
-  if (m_pVaultList == NULL) 
+  if (m_pVaultList == nullptr) 
     m_pVaultList = new CLinkList<vault_struct>();
   
   // Load the vault
@@ -3695,14 +3695,14 @@ void LoadVault() {
 }
 
 
-void UnloadVault(void) {
+void UnloadVault() {
 
   g_fVaultLoaded = FALSE;
 
-  if ( m_pVaultList == NULL ) return;
+  if ( m_pVaultList == nullptr ) return;
 
   delete  m_pVaultList;
-  m_pVaultList = NULL;
+  m_pVaultList = nullptr;
   
 }
 
@@ -3711,22 +3711,22 @@ void SaveVault() {
 	char sGameDir[2048];
   char sVaultFile[LINE_SIZE];
 
-	if (m_pVaultList == NULL || !g_fVaultLoaded) 
+	if (m_pVaultList == nullptr || !g_fVaultLoaded) 
     return;
   
   const char* sFile = get_cvar_file_value("admin_vault_file");
-  if ( sFile == NULL ) return;
+  if ( sFile == nullptr ) return;
   
   (*g_engfuncs.pfnGetGameDir)(sGameDir);
   sprintf(sVaultFile,"%s/%s",sGameDir,sFile);
   FormatPath(sVaultFile);
   
   FILE* pFile = fopen(sVaultFile, "w");
-  if (pFile == NULL) 
+  if (pFile == nullptr) 
     return;
   
   CLinkItem<vault_struct>* pLink = m_pVaultList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     vault_struct* tVault = pLink->Data();
     fprintf(pFile,"%s %s\n", tVault->sKey, tVault->sData);
     pLink = pLink->NextLink();
@@ -3736,9 +3736,9 @@ void SaveVault() {
 
 void SetVaultData(char* sKey, char* sData) {
 	vault_struct* tVault = FindVaultData(sKey);
-  if (tVault == NULL) {
+  if (tVault == nullptr) {
     tVault = new vault_struct;
-    if(tVault == NULL) {
+    if(tVault == nullptr) {
       UTIL_LogPrintf( "[ADMIN] ERROR: SetVaultData::'new' failed for tVault record.\n");
       return;
     }
@@ -3746,9 +3746,9 @@ void SetVaultData(char* sKey, char* sData) {
     strcpy(tVault->sData, sData);
     m_pVaultList->AddLink(tVault);
   } else {
-    if (sData == NULL || strlen(sData) == 0) {
+    if (sData == nullptr || strlen(sData) == 0) {
       CLinkItem<vault_struct>* pLink = m_pVaultList->FindLink(tVault);
-      if (pLink != NULL) 
+      if (pLink != nullptr) 
 	m_pVaultList->DeleteLink(pLink);
     } else {
       strcpy(tVault->sData, sData);

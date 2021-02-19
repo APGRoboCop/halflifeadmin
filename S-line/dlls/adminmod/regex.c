@@ -4184,6 +4184,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 
           PREFETCH ();
 
+        reg_syntax_t RE_DOT_NOT_NULL;
           if ((!(bufp->syntax & RE_DOT_NEWLINE) && TRANSLATE (*d) == '\n')
               || (bufp->syntax & RE_DOT_NOT_NULL && TRANSLATE (*d) == '\000'))
 	    goto fail;

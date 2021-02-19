@@ -42,7 +42,7 @@
  */
 
 //#include <string.h> //Deprecated [APG]RoboCop[CL]
-#include "cstring"
+#include <cstring>
 
 #define QUEUEING_DEBUGF(s) 
 
@@ -81,7 +81,7 @@ FII myCountTeamPlayers = 0;
 #endif
 
 AMX amx;
-void *program=NULL;
+void *program=nullptr;
 
 DLL_GLOBAL edict_t *pAdminEnt;
 DLL_GLOBAL edict_t *pTimerEnt;
@@ -225,12 +225,12 @@ cvar_t words_file = {"words_file","0",FCVAR_EXTDLL};
 #endif
 
 /* direct access to cvars. They get registered in h_export.cpp */
-cvar_t* ptAM_devel = 0;
-cvar_t* ptAM_debug = 0;
+cvar_t* ptAM_devel = nullptr;
+cvar_t* ptAM_debug = nullptr;
 //cvar_t* ptAM_autoban = 0;
-cvar_t* ptAM_botProtection = 0;
-cvar_t* ptAM_reserve_slots = 0;
-cvar_t* ptAM_hide_reserved_slots = 0;
+cvar_t* ptAM_botProtection = nullptr;
+cvar_t* ptAM_reserve_slots = nullptr;
+cvar_t* ptAM_hide_reserved_slots = nullptr;
 
 
 int g_NameCrashAction = 0;
@@ -251,8 +251,8 @@ static unsigned int s_uiDequeueTimeout = 0;
 unsigned int me_log_fix( bool Log, bool Fix );
 
 
-void AM_AdminCommand(void) {  
-  AM_ClientCommand(NULL);
+void AM_AdminCommand() {  
+  AM_ClientCommand(nullptr);
 }
 
 int AM_ClientCommand( edict_t *pEntity ) {
@@ -283,7 +283,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
   if( FStrEq(pcmd,"admin_command") || FStrEq(pcmd,"admin_cmd") ) {
 	  
 	  pcmd=CMD_ARGV(1);
-	  if ( (admin_command = strchr( commandline, ' ' )) == 0 ) {
+	  if ( (admin_command = strchr( commandline, ' ' )) == nullptr ) {
 		  admin_command = strchr( commandline, 0 );
 	  } else {
 		  admin_command++;
@@ -321,7 +321,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
      note that admin_help and admin_version are only checked if we're using
      plugins */  
   if ( FStrEq(pcmd, "admin_login") || FStrEq(pcmd, "admin_password") ) {
-    if (pAdminEnt == NULL) {
+    if (pAdminEnt == nullptr) {
       UTIL_LogPrintf("Laf. Why are you trying to enter a password?  You're at the console!\n");
     } else if ( CMD_ARGC() == 2) {
       SetUserPassword(STRING(pEntity->v.netname),const_cast<char*>(CMD_ARGV(1)),pEntity);
@@ -353,8 +353,8 @@ int AM_ClientCommand( edict_t *pEntity ) {
   } else if ( 0 == stricmp(pcmd, "admin_adm")) {
     /* This never gets passed back to the engine,
        so ignore the return value. */
-	  if ( admin_command != NULL && strcasecmp( admin_command, "mefix") == 0 ) {
-		  int ret = me_log_fix( false, true );
+	  if ( admin_command != nullptr && strcasecmp( admin_command, "mefix") == 0 ) {
+		  const int ret = me_log_fix( false, true );
 		  if ( ret ) {
 			  System_Response( UTIL_VarArgs("Attempted to fix %i suspicious entities.\n", ret), pAdminEnt );
 		  } else {
@@ -365,7 +365,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
   } else if ( 0 == stricmp(pcmd, "admin_status")) {
 	  // print some information on the requested user
 	  int iIndx = 0;
-	  if ( admin_command == 0 || pAdminEnt != 0 || *admin_command == '\0' || !stricmp(admin_command,"am i") ) {
+	  if ( admin_command == nullptr || pAdminEnt != nullptr || *admin_command == '\0' || !stricmp(admin_command,"am i") ) {
 		  iIndx = ENTINDEX( pEntity );
 	  } else {
 		  iIndx = GetPlayerIndex( admin_command );
@@ -385,21 +385,21 @@ int AM_ClientCommand( edict_t *pEntity ) {
        anything else means keep on truckin'. */
 	// This script is maybe considered a bug [APG]RoboCop[CL]
 	  DEBUG_LOG(4, ("'%s' - '%s'", pcmd, admin_command) );
-	  plugin_result tprResult = HandleCommand(pAdminEnt, const_cast<char*>(pcmd), admin_command);
+    const plugin_result tprResult = HandleCommand(pAdminEnt, const_cast<char*>(pcmd), admin_command);
 	  if ( tprResult == PLUGIN_HANDLED || tprResult == PLUGIN_NO_ACCESS ) {
 		  return RESULT_HANDLED;
 	  }  // if
   } else {
     char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     
-    if(program_file==NULL|| FStrEq(program_file,"0") || !g_fRunScripts) {
+    if(program_file==nullptr|| FStrEq(program_file,"0") || !g_fRunScripts) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");			
     } else {
       iError = amx_FindPublic(&amx,"client_commands",&iIndex);
       if (iError != AMX_ERR_NONE) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't find 'client_commands' proc, error #%i\n",iError);
       } else { 
-	if(pEntity!=NULL) 
+	if(pEntity!=nullptr) 
 	  iError = amx_Exec(&amx, &cReturn, iIndex, 5, pcmd, CMD_ARGS(), STRING(pEntity->v.netname), GETPLAYERUSERID(pEntity), GETPLAYERWONID(pEntity));
 	else
 	  iError = amx_Exec(&amx, &cReturn, iIndex, 5, pcmd, admin_command,"Admin",-1,-1); 
@@ -418,9 +418,9 @@ int AM_ClientCommand( edict_t *pEntity ) {
     CTimer *pTimer = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
     if (pTimer->VoteInProgress()) {
       int iIndex;
-      int iVote = atoi(CMD_ARGV(1));
+      const int iVote = atoi(CMD_ARGV(1));
       
-      if (pAdminEnt == NULL) {
+      if (pAdminEnt == nullptr) {
 				iIndex = 0;
       } else {
 				iIndex = ENTINDEX(pAdminEnt);
@@ -436,7 +436,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
 				System_Response(UTIL_VarArgs("[ADMIN] Vote entered for option #%i\n",atoi(CMD_ARGV(1))),pAdminEnt);
 	
 				if((int)CVAR_GET_FLOAT("admin_vote_echo") != 0) {
-					if (pAdminEnt == NULL) {
+					if (pAdminEnt == nullptr) {
 						UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s voted for option #%i\n","Admin",atoi(CMD_ARGV(1))));
 					} else {
 						UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s voted for option #%i\n",STRING(pAdminEnt->v.netname),atoi(CMD_ARGV(1))));
@@ -449,7 +449,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
   }
   
   // If we got this from console (via admin_command), don't send it on anywhere else.
-  if (pAdminEnt == NULL) {
+  if (pAdminEnt == nullptr) {
     return RESULT_HANDLED;
   } else {
     return RESULT_CONTINUE;
@@ -471,11 +471,11 @@ static BOOL bAM_ClientConnectRetval;
 #define CLIENT_CONNECT_RETURN( a ) bAM_ClientConnectRetval = (a); return a
 
 BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ], bool bForce ) {    
-  char* infobuffer = 0;
-  char sIP[IPPORT_SIZE], *p = 0;
+  char* infobuffer = nullptr;
+  char sIP[IPPORT_SIZE], *p = nullptr;
   char sModel[MODELNAME_SIZE];
   char sName[USERNAME_SIZE];
-  int iIndex = ENTINDEX(pEntity);
+  const int iIndex = ENTINDEX(pEntity);
   user_struct tUser;
   // lazy man's pointer :)
   auto_ptr<AMConnectingPlayer> poPlayerData( new AMConnectingPlayer );
@@ -522,7 +522,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
   AMAuthId oaiAuthID( pcAuthId );
   // In case this is the listenserver user, we set the authid to STEAM_ID_LOOPBACK
   // unless we already have a loopback id, i.e. VALVE_ID_LOOPBACK
-  if ( (! IS_DEDICATED_SERVER()) && (!oaiAuthID.is_loopid()) && NULL != pszAddress) {
+  if ( (! IS_DEDICATED_SERVER()) && (!oaiAuthID.is_loopid()) && nullptr != pszAddress) {
 	  if ( 0 == strcmp("127.0.0.1:27005", pszAddress) && 1 == GETPLAYERUSERID(pEntity) ) {
 		  oaiAuthID = "STEAM_ID_LOOPBACK";
 	  }
@@ -537,7 +537,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 	  if ( !g_ovcPendingPlayers.empty() ) {
 		  bool bQueued = false;
 		  deque<AMConnectingPlayer*>::iterator it = g_ovcPendingPlayers.begin();
-		  deque<AMConnectingPlayer*>::iterator itEnd = g_ovcPendingPlayers.end();
+		  const deque<AMConnectingPlayer*>::iterator itEnd = g_ovcPendingPlayers.end();
 		  for ( it; it < itEnd; ++it ) {
 			  if ( (*it)->pEntity == poPlayerData->pEntity ) {
 				  bQueued = true;
@@ -589,12 +589,12 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
 	  // check if the user is listed in our user list
 	  // or if his IP is listed in our IPs list
-	  if ( !(GetUserRecord(sName, oaiAuthID, sIP, g_AuthArray[iIndex].sPassword, 0))
+	  if ( !(GetUserRecord(sName, oaiAuthID, sIP, g_AuthArray[iIndex].sPassword, nullptr))
 		   && !(IsIPReserved(sIP)) ) { 
 
 		  const char* sRsvdRejectMsg = get_cvar_string_value( "amv_prvt_kick_message", true );
 		  
-		  if ( sRsvdRejectMsg == NULL ) {
+		  if ( sRsvdRejectMsg == nullptr ) {
 			  strcpy(szRejectReason,"\n[ADMIN] Only registered users are allowed on this server.");
 		  } else {
 			  snprintf( szRejectReason, 128, "\n%s", sRsvdRejectMsg);
@@ -615,7 +615,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
 		  const char* sNickRejectMsg = get_cvar_string_value( "nicks_kick_msg", true );
 		  
-		  if ( sNickRejectMsg == NULL ) {
+		  if ( sNickRejectMsg == nullptr ) {
 			  strcpy(szRejectReason,"\n[ADMIN] Your nickname or WONID is reserved on this server." );
 		  } else {
 			  snprintf( szRejectReason, 128, "\n%s", sNickRejectMsg);
@@ -633,7 +633,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
     if (GetModelAccess(sModel, pEntity)==0) {
       const char* sModelRejectMsg = get_cvar_string_value( "models_kick_msg", true );
       
-      if ( sModelRejectMsg == NULL ) {
+      if ( sModelRejectMsg == nullptr ) {
 		strcpy(szRejectReason,"\n[ADMIN] That model is reserved on this server.");
       } else {
 		snprintf( szRejectReason, 128, "\n%s", sModelRejectMsg);
@@ -643,9 +643,9 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
       CLIENT_CONNECT_RETURN(FALSE);
     }
   }
-  
-    int iFreeSlots = GetFreeSlots( pEntity );
-	int iResType = (int)CVAR_GET_FLOAT("reserve_type");
+
+  const int iFreeSlots = GetFreeSlots( pEntity );
+  const int iResType = (int)CVAR_GET_FLOAT("reserve_type");
 	int iResTaken = 0;
 	DEBUG_LOG(1, ("%i players / %i free spots / %i max spots.", GetPlayerCount(), iFreeSlots, gpGlobals->maxClients) );
 
@@ -666,9 +666,9 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 			// still might get here with some free spots open, if we have
 			// reserve type 2).  If there are no free spots, kick 'em.
 			const char* sReserveMsg = get_cvar_string_value( "reserve_slots_msg", true );
-			int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
+			const int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
 			
-			if ( sReserveMsg == NULL ) {
+			if ( sReserveMsg == nullptr ) {
 				snprintf(szRejectReason, 128, "\n[ADMIN] %d of the %d slots on this server are reserved,\n[ADMIN] and no unreserved slots are left. Try again later.\n", iResSlots, gpGlobals->maxClients);
 			} else {
 				snprintf( szRejectReason, 128, "\n%s", sReserveMsg);
@@ -696,7 +696,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
     // now run the script
     char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     
-    if(program_file==NULL|| FStrEq(program_file,"0")) {
+    if(program_file==nullptr|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");
     } else {
       int iError;
@@ -740,7 +740,7 @@ BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *p
   if ( TRUE == bAM_ClientConnectRetval && (int)CVAR_GET_FLOAT("allow_client_exec") == 1 ) {
 	  //System_Response( "**\n", pAdminEnt );	  
 	  System_Response( "************** NOTICE >>>>>>>>>>>>\n", pAdminEnt );	  
-	  System_Response( const_cast<char*>(get_am_string(0,0,statstr[9],statstr_table)), pAdminEnt );
+	  System_Response( const_cast<char*>(get_am_string(nullptr,0,statstr[9],statstr_table)), pAdminEnt );
 	  System_Response( "************** NOTICE <<<<<<<<<<<<\n", pAdminEnt );	  
   }  // if
 
@@ -755,8 +755,8 @@ BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *p
 int AM_ClientDisconnect( edict_t* pEntity ) {
     
   DEBUG_LOG(1, ("AM_ClientDisconnect: %s\n", STRING(pEntity->v.netname)) );
- 
-  int iIndex = ENTINDEX( pEntity ); 
+
+  const int iIndex = ENTINDEX( pEntity ); 
   const char* pcAuthId = GETPLAYERAUTHID( pEntity );
 
   if(g_fRunPlugins) {
@@ -805,10 +805,10 @@ void AM_ClientStart(edict_t *pEntity) {
   const char* sUser = get_cvar_string_value( "mysql_user" );
   
 
-  if ( g_fUseMySQL == FALSE && sHost != NULL && sUser != NULL) {
+  if ( g_fUseMySQL == FALSE && sHost != nullptr && sUser != nullptr) {
     g_fUseMySQL = TRUE;
     mysql_init( &mysql );
-    mysql_real_connect( &mysql, sHost, sUser, sPassword, sDatabase, port, NULL, 0 );
+    mysql_real_connect( &mysql, sHost, sUser, sPassword, sDatabase, port, nullptr, 0 );
     
     if ( mysql_errno(&mysql) ) {
       UTIL_LogPrintf( "[ADMIN] ERROR: MySQL Error: %s\n", mysql_error(&mysql) );
@@ -831,9 +831,9 @@ void AM_ClientStart(edict_t *pEntity) {
   const char* psUser = get_cvar_string_value( "pgsql_user" );
   
 
-  if ( g_fUsePgSQL == FALSE && psHost != NULL && psUser != NULL ) {
+  if ( g_fUsePgSQL == FALSE && psHost != nullptr && psUser != nullptr ) {
     g_fUsePgSQL = TRUE;
-    pgsql = PQsetdbLogin(psHost, psPort, NULL, NULL, psDatabase, psUser, psPassword );
+    pgsql = PQsetdbLogin(psHost, psPort, nullptr, nullptr, psDatabase, psUser, psPassword );
     
     if (PQstatus(pgsql) == CONNECTION_BAD) {
       UTIL_LogPrintf( "[ADMIN] ERROR: PgSQL Error: %s\n", PQerrorMessage(pgsql) );
@@ -882,21 +882,21 @@ void AM_ClientStart(edict_t *pEntity) {
   
   pAdminEnt=pEntity;
   
-  if(program!=NULL)
+  if(program!=nullptr)
     free(program);
-  
-  int istr = MAKE_STRING("adminmod_timer");
+
+  const int istr = MAKE_STRING("adminmod_timer");
   
   pTimerEnt = CREATE_NAMED_ENTITY(istr);
   if ( FNullEnt( pTimerEnt ) ) {
-    UTIL_LogPrintf("[ADMIN] ERROR: NULL Ent for adminmod_timer\n" );
+    UTIL_LogPrintf("[ADMIN] ERROR: nullptr Ent for adminmod_timer\n" );
     am_exit(1);
   }
   
   DispatchSpawn(pTimerEnt);  
 
     pTimerEnt->v.origin =  Vector(0,0,0);
-    pTimerEnt->v.euser1 = NULL;
+    pTimerEnt->v.euser1 = nullptr;
     pTimerEnt->v.angles = Vector(0,0,0);
     pTimerEnt->v.velocity = Vector(0,0,0);
         pTimerEnt->v.takedamage = DAMAGE_NO;
@@ -915,7 +915,7 @@ void AM_ClientStart(edict_t *pEntity) {
     pTimer->Spawn();   
   }
   
-  //pTimer->edict()->v.owner = NULL;
+  //pTimer->edict()->v.owner = nullptr;
   //pTimerEnt->v.origin.x = 9000;
   //pTimerEnt->v.origin.y = 9000;
   //pTimerEnt->v.origin.z = 9000;
@@ -931,10 +931,10 @@ void AM_ClientStart(edict_t *pEntity) {
   // make sure that the password_field cvar is set and is prefixed with an underscore
   const char *passwd_field = get_cvar_string_value( "password_field", true );
 
-  if( passwd_field == NULL  ) {  // Default value "0", i.e. config file not read.
+  if( passwd_field == nullptr  ) {  // Default value "0", i.e. config file not read.
 	UTIL_LogPrintf("\n[ADMIN] ERROR: ********************************************************\nThe configuration file for Admin Mod (default: adminmod.cfg) could not be read.\nMake sure that the Admin Mod configuration file is executed from server.cfg\nwhen you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n");
 #ifdef WIN32
-	MessageBox(NULL,"[ADMIN] ERROR:\n\nThe configuration file for Admin Mod could not be read.\nMake sure that the Admin Mod configuration file (default: adminmod.cfg) is executed from server.cfg when you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
+	MessageBox(nullptr,"[ADMIN] ERROR:\n\nThe configuration file for Admin Mod could not be read.\nMake sure that the Admin Mod configuration file (default: adminmod.cfg) is executed from server.cfg when you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
 #else
 	fprintf(stderr,"\n[ADMIN] ERROR: ********************************************************\nThe configuration file for Admin Mod (default: adminmod.cfg) could not be read.\nMake sure that the Admin Mod configuration file is executed from server.cfg\nwhen you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n");
 #endif
@@ -948,7 +948,7 @@ void AM_ClientStart(edict_t *pEntity) {
 #ifdef WIN32
 	  char acErrMsg[500];
 	  snprintf( acErrMsg, 500, "[ADMIN] ERROR:\n\nFor your own safety you are required to set the password_field cvar to a value which is prefixed with an underscore. This is to protect your admins' passwords from being distributed to other clients.\n\nChange the value for password_field in your adminmod.cfg file from '%s' to '_%s'.\nGo to http://www.adminmod.org/manual/ for more details.\n", passwd_field, passwd_field );
-	  MessageBox(NULL, acErrMsg, "ERROR", MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
+	  MessageBox(nullptr, acErrMsg, "ERROR", MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
 #else
 	  fprintf(stderr,"\n[ADMIN] ERROR: *********************************************************\nFor your own safety you are required to set the password_field cvar to a value\nwhich is prefixed with an underscore. This is to protect your admins' passwords\nfrom being distributed to other clients.\n\nChange the value for password_field in your adminmod.cfg file\nfrom '%s' to '_%s'.\nGo to http://www.adminmod.org/manual/ for more details.\n", passwd_field, passwd_field );
 #endif
@@ -959,13 +959,13 @@ void AM_ClientStart(edict_t *pEntity) {
 
 
   const char* sPluginFile = get_cvar_file_value( "admin_plugin_file" );
-  if ( sPluginFile == NULL ) {
+  if ( sPluginFile == nullptr ) {
     const char *program_file = get_cvar_file_value( "script_file" );
-    if ( program_file != NULL ) {
+    if ( program_file != nullptr ) {
   /*TBR This isn't used anymore, we allow not using any plugins now
-    if( program_file == NULL ) {
+    if( program_file == nullptr ) {
 #ifdef WIN32
-      MessageBox(NULL,"[ADMIN] ERROR:\n\nYou must define \"admin_plugin_file\" in your adminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
+      MessageBox(nullptr,"[ADMIN] ERROR:\n\nYou must define \"admin_plugin_file\" in your adminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
 #else
       fprintf(stderr,"[ADMIN] ERROR: **********************************\n\nYou must define \"admin_plugin_file\" in your adminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n");
 #endif
@@ -975,7 +975,7 @@ void AM_ClientStart(edict_t *pEntity) {
 
 		// reload the script file  
 		program = LoadScript(&amx,program_file);
-		if (program == NULL) {
+		if (program == nullptr) {
 			UTIL_LogPrintf( "[ADMIN] ERROR: Unable to load script file '%s'\n",program_file);
 		}
 		
@@ -1014,7 +1014,7 @@ void AM_ClientStart(edict_t *pEntity) {
 
 
 
-void AM_Stop(void) {
+void AM_Stop() {
 
   if ( g_fInitialized != TRUE) {
     return;
@@ -1057,7 +1057,7 @@ void AM_Stop(void) {
   
   UnloadPlugins(); 
   
-  if(program!=NULL)
+  if(program!=nullptr)
     free(program);
   
   
@@ -1088,7 +1088,7 @@ int AM_ClientUserInfoChanged( edict_t *pEntity, char *infobuffer, bool bForce ) 
   const int c_SERVER_CMD_LEN= 256;
 
   int iKick = 0;
-  int iIndex = ENTINDEX(pEntity);
+  const int iIndex = ENTINDEX(pEntity);
   char szCommand[c_SERVER_CMD_LEN];
   char acKickMsg[c_KICK_MSG_LEN]; 
   char sModel[MODELNAME_SIZE];
@@ -1114,7 +1114,7 @@ state, pEntity->v.netname) );
   }
 
   const char* pcAuthId = GETPLAYERAUTHID( pEntity );
-  AMAuthId oaiAuthID( pcAuthId );
+  const AMAuthId oaiAuthID( pcAuthId );
 
 
   retval = make_friendly( sName, TRUE );
@@ -1183,12 +1183,12 @@ state, pEntity->v.netname) );
 
 	      // check if the user is listed in our user list
 	      // or if his IP is listed in our IPs list
-	      if ( !(GetUserRecord(sName, oaiAuthID, g_AuthArray[iIndex].sIP, g_AuthArray[iIndex].sPassword, 0))
+	      if ( !(GetUserRecord(sName, oaiAuthID, g_AuthArray[iIndex].sIP, g_AuthArray[iIndex].sPassword, nullptr))
 		       && !(IsIPReserved(g_AuthArray[iIndex].sIP)) ) { 
 
 		      const char* sRsvdRejectMsg = get_cvar_string_value( "amv_prvt_kick_message", true );
 		  
-		      if ( sRsvdRejectMsg == NULL ) {
+		      if ( sRsvdRejectMsg == nullptr ) {
 				  am_strncpy( acKickMsg, "[ADMIN] Only registered nicknames are allowed on this server.", c_KICK_MSG_LEN );
 		      } else {
 				  am_strncpy( acKickMsg, sRsvdRejectMsg, c_KICK_MSG_LEN );
@@ -1203,7 +1203,7 @@ state, pEntity->v.netname) );
 
       if ( 0 == iKick ) {
 	      VerifyUserAuth(sName, pEntity);
-	      if (IsNameReserved(sName, oaiAuthID, 0, &tUser)) {
+	      if (IsNameReserved(sName, oaiAuthID, nullptr, &tUser)) {
 		      if ( !oaiAuthID.is_loopid() &&
 			       ( ( (tUser.iAccess >= 0) && 
 			           ( ((GetUserAccess(pEntity) & ACCESS_RESERVE_NICK) != ACCESS_RESERVE_NICK) ||
@@ -1217,7 +1217,7 @@ state, pEntity->v.netname) );
 			      const char* sNickRejectMsg = get_cvar_string_value( "nicks_kick_msg", true );
 			  
 
-			      if ( sNickRejectMsg == NULL ) {
+			      if ( sNickRejectMsg == nullptr ) {
 				      CLIENT_PRINTF(pEntity, print_console, "[ADMIN] Your name or WON ID is reserved on this server.\n");
 				      am_strncpy( acKickMsg, "[ADMIN] Your name or WON ID is reserved on this server.", c_KICK_MSG_LEN );
 			      } else {
@@ -1241,7 +1241,7 @@ state, pEntity->v.netname) );
 		  if (GetModelAccess(sModel, pEntity)==0) {
 			  const char* sModelRejectMsg = get_cvar_string_value( "models_kick_msg", true );
 			  
-			  if ( sModelRejectMsg == NULL ) {
+			  if ( sModelRejectMsg == nullptr ) {
 				  CLIENT_PRINTF(pEntity, print_console, "[ADMIN] That model is reserved on this server.\n");
 				  am_strncpy( acKickMsg, "[ADMIN] That model is reserved on this server.", c_KICK_MSG_LEN );
 			  } else {
@@ -1288,7 +1288,7 @@ state, pEntity->v.netname) );
     
     char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     //if(g_fRunScripts==TRUE) {
-    if(program_file==NULL|| FStrEq(program_file,"0")) {
+    if(program_file==nullptr|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");		
     } else {
       iError = amx_FindPublic(&amx,"client_info",&iIndex);
@@ -1312,7 +1312,7 @@ state, pEntity->v.netname) );
 }
 
 int AM_DispatchThink( edict_t *pent ) {
-  if(pent==pTimerEnt && pTimerEnt!=NULL) { // intercept the timer
+  if(pent==pTimerEnt && pTimerEnt!=nullptr) { // intercept the timer
     CBaseEntity *pEntity = static_cast<CBaseEntity *>(GET_PRIVATE(pTimerEnt));
     if (pEntity) pEntity->Think();
     return RESULT_HANDLED;
@@ -1330,14 +1330,14 @@ int AM_GetGameDescription( const char* _pcDescription ) {
   static int s_iVisMaxPlayers = -1;
   static int s_iFreeSlots = -1;
 
-  _pcDescription = 0;
+  _pcDescription = nullptr;
 
-  int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots"); 
-  int iResType = (int)CVAR_GET_FLOAT("reserve_type"); 
-  int iHideSlots = (int)CVAR_GET_FLOAT("amv_hide_reserved_slots");
-  int iPlayerCnt = GetPlayerCount();
-  int iFreeSlots = (int)CVAR_GET_FLOAT("public_slots_free");
-  int iVisMaxPlayers = (int)CVAR_GET_FLOAT("sv_visiblemaxplayers");
+  int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
+  const int iResType = (int)CVAR_GET_FLOAT("reserve_type");
+  const int iHideSlots = (int)CVAR_GET_FLOAT("amv_hide_reserved_slots");
+  const int iPlayerCnt = GetPlayerCount();
+  const int iFreeSlots = (int)CVAR_GET_FLOAT("public_slots_free");
+  const int iVisMaxPlayers = (int)CVAR_GET_FLOAT("sv_visiblemaxplayers");
 
   if ( iResType == 1 ) iResSlots = 1;
 
@@ -1424,7 +1424,7 @@ int AM_PlayerPreThink( edict_t* pEntity ) {
 
 
 int AM_ClientPutInServer( edict_t* pEntity ) {
-    int iIndex = ENTINDEX( pEntity );
+	const int iIndex = ENTINDEX( pEntity );
  
     // flag this client as clean so CUIC() will do checks
     g_AuthArray[iIndex].state = auth_struct::clean;
@@ -1434,7 +1434,7 @@ int AM_ClientPutInServer( edict_t* pEntity ) {
 
 
  
-int AM_ServerDeactivate( void ) {
+int AM_ServerDeactivate() {
  
     DEVEL_LOG(1, ("AM_ServerDeactivate(): reseting backup auth buffer") );
     clear_auth_bak_array();
@@ -1446,7 +1446,7 @@ int AM_ServerDeactivate( void ) {
 unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 
 	// This code is courtesy of Tom Simpson.
-	edict_t *pent = NULL;
+	edict_t *pent = nullptr;
 	unsigned int uiMECount = 0;
 	unsigned int uiECount = 0;
 		
@@ -1454,8 +1454,8 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 			
 		DEBUG_LOG(2, ("Checking for broken entities (frame %u).", s_uiFCount) );
 		
-		//while ((pent = FIND_ENTITY_BY_STRING( pent, "classname","trigger_multiple" )) != NULL && (!FNullEnt(pent)))
-		while ( (pent = FIND_ENTITY_IN_SPHERE(pent, Vector(0,0,0),8000)) != NULL && (!FNullEnt(pent)) ) {
+		//while ((pent = FIND_ENTITY_BY_STRING( pent, "classname","trigger_multiple" )) != nullptr && (!FNullEnt(pent)))
+		while ( (pent = FIND_ENTITY_IN_SPHERE(pent, Vector(0,0,0),8000)) != nullptr && (!FNullEnt(pent)) ) {
 			
 			
 			++uiECount;
@@ -1531,7 +1531,7 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 
 
 
-int AM_StartFrame( void ) {
+int AM_StartFrame() {
   
 
 	++s_uiFCount;
@@ -1553,7 +1553,7 @@ int AM_StartFrame( void ) {
 			}  // if
 
 			const char* pcAuthId = GETPLAYERAUTHID( pePPlayer->pEntity );
-			int iIndex = ENTINDEX( pePPlayer->pEntity );
+		    const int iIndex = ENTINDEX( pePPlayer->pEntity );
 			QUEUEING_DEBUGF( ("|---> Player Auth Id (StartFrame %lu) %s  -- (%d queued)\n", s_uiFCount, pcAuthId, g_ovcPendingPlayers.size()) );
 
 			if ( AMAuthId::is_pending(pcAuthId) ) {
@@ -1562,18 +1562,18 @@ int AM_StartFrame( void ) {
 
 			} else {
 				// Update the auth entry with the validated auth id
-				AMAuthId oaiAuthID( pcAuthId );
+				const AMAuthId oaiAuthID( pcAuthId );
 				g_AuthArray[iIndex].oaiAuthID = oaiAuthID;
 				QUEUEING_DEBUGF( ("|---> (Start Frame %lu) Auth id validated (%s), calling ClientUserInfoChanged()\n", s_uiFCount, pcAuthId) );
 
 				// Run SetUserPassword() since we might have an invalid entry from a first connect
-				QUEUEING_DEBUGF( ("|----> Call SetUserPassword( %s, NULL, %p )\n", pePPlayer->acName, pePPlayer->pEntity) );
-				SetUserPassword( pePPlayer->acName, NULL, pePPlayer->pEntity );
+				QUEUEING_DEBUGF( ("|----> Call SetUserPassword( %s, nullptr, %p )\n", pePPlayer->acName, pePPlayer->pEntity) );
+				SetUserPassword( pePPlayer->acName, nullptr, pePPlayer->pEntity );
 
 				// call AM_ClientConnect() to make an entry for him and check his access
 			    char acRejectMsg[128];
 				QUEUEING_DEBUGF( ("|----> Call  AM_ClientConnect( %p, %s, %s, acRejectMsg, true ) \n", pePPlayer->pEntity, pePPlayer->acName, pePPlayer->acIPPort) );
-				BOOL retval = AM_ClientConnect( pePPlayer->pEntity, pePPlayer->acName, pePPlayer->acIPPort, acRejectMsg, true );
+				const BOOL retval = AM_ClientConnect( pePPlayer->pEntity, pePPlayer->acName, pePPlayer->acIPPort, acRejectMsg, true );
 				QUEUEING_DEBUGF( ("|----> AM-ClientConnect() returned %s\n", retval?"TRUE":"FALSE") );
 				if ( retval == FALSE ) {
 					// oopsie, need to kick the poor bastard off for some reason
@@ -1622,7 +1622,7 @@ int AM_StartFrame( void ) {
 			//				GetPlayerCount(), gpGlobals->maxClients) );
 			if ( GetPlayerCount() >= gpGlobals->maxClients ) {
 				DEBUG_LOG(3, ("KickHighestPinger() triggered in frame %lu", s_uiFCount) );
-				KickHighestPinger( NULL, NULL, NULL);
+				KickHighestPinger( nullptr, nullptr, nullptr);
 			}  // if
 		}  // if
 	}  // if
@@ -1633,9 +1633,9 @@ int AM_StartFrame( void ) {
 
 		if ( s_bMECheck ) {
 			// On mapchange check for missing entities.
-			
-			int iLog = get_option_cvar_value( "amv_enable_beta", "melog", NULL, 0 );
-			int iFix = get_option_cvar_value( "amv_enable_beta", "mefix", NULL, 0 );
+
+			const int iLog = get_option_cvar_value( "amv_enable_beta", "melog", nullptr, 0 );
+			const int iFix = get_option_cvar_value( "amv_enable_beta", "mefix", nullptr, 0 );
 			me_log_fix( (iLog != 0), (iFix != 0) );
 			
 			s_bMECheck = false;
@@ -1671,7 +1671,7 @@ int AM_StartFrame( void ) {
  
 					UTIL_LogPrintf("[ADMIN] ERROR: ********************************************************\n\nYou must define \"admin_plugin_file\" in your\nadminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n");
 #ifdef WIN32
-					MessageBox(NULL,"[ADMIN] ERROR:\n\nYou must define \"admin_plugin_file\" in your adminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
+					MessageBox(nullptr,"[ADMIN] ERROR:\n\nYou must define \"admin_plugin_file\" in your adminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
 #else
 					fprintf(stderr,"[ADMIN] ERROR: ********************************************************\n\nYou must define \"admin_plugin_file\" in your\nadminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n");
 #endif
@@ -1684,7 +1684,7 @@ int AM_StartFrame( void ) {
 			// make sure that the password_field cvar is set and is prefixed with an underscore
 			const char *passwd_field = get_cvar_string_value( "password_field", true );
     
-            if( passwd_field == NULL  ) {
+            if( passwd_field == nullptr  ) {
 				// If it is set to "0" we probably have not yet read the adminmod.cfg file. 
 				// Try to read it from a default location and return so that this check is run again
 				if ( !s_bConfigRead ) {
@@ -1702,7 +1702,7 @@ int AM_StartFrame( void ) {
 
 				UTIL_LogPrintf("\n[ADMIN] ERROR: ********************************************************\nThe configuration file for Admin Mod (default: adminmod.cfg) could not be read.\nMake sure that the Admin Mod configuration file is executed from server.cfg\nwhen you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n");
 #ifdef WIN32
-				MessageBox(NULL,"[ADMIN] ERROR:\n\nYThe configuration file for Admin Mod could not be read.\nMake sure that the Admin Mod configuration file (default: adminmod.cfg) is executed from server.cfg when you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
+				MessageBox(nullptr,"[ADMIN] ERROR:\n\nYThe configuration file for Admin Mod could not be read.\nMake sure that the Admin Mod configuration file (default: adminmod.cfg) is executed from server.cfg when you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
 #else
 				fprintf(stderr,"\n[ADMIN] ERROR: ********************************************************\nThe configuration file for Admin Mod (default: adminmod.cfg) could not be read.\nMake sure that the Admin Mod configuration file is executed from server.cfg\nwhen you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n");
 #endif
@@ -1716,7 +1716,7 @@ int AM_StartFrame( void ) {
 #ifdef WIN32
 				char acErrMsg[500];
 				snprintf( acErrMsg, 500, "[ADMIN] ERROR:\n\nFor your own safety you are required to set the password_field cvar to a value which is prefixed with an underscore. This is to protect your admins' passwords from being distributed to other clients.\n\nChange the value for password_field in your adminmod.cfg file from '%s' to '_%s'.\nGo to http://www.adminmod.org/manual/ for more details.\n", passwd_field, passwd_field );
-				MessageBox(NULL, acErrMsg, "ERROR", MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
+				MessageBox(nullptr, acErrMsg, "ERROR", MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
 #else
 				fprintf(stderr,"[ADMIN] ERROR: *********************************************************\nFor your own safety you are required to set the password_field cvar to a value\nwhich is prefixed with an underscore. This is to protect your admins' passwords\nfrom being distributed to other clients.\n\nChange the value for password_field in your adminmod.cfg file\nfrom '%s' to '_%s'.\nGo to http://www.adminmod.org/manual/ for more details.\n", passwd_field, passwd_field );
 #endif
@@ -1727,7 +1727,7 @@ int AM_StartFrame( void ) {
 
 			// Set the public_slots_free cvar. We need to do it here because we don't have
 			// the info on reserved slots from the config file earlier.
-			CVAR_SET_FLOAT( "public_slots_free", GetFreeSlots(NULL) );
+			CVAR_SET_FLOAT( "public_slots_free", GetFreeSlots(nullptr) );
 
 
 			s_bInitCheck = false;
@@ -1747,7 +1747,7 @@ int AM_StartFrame( void ) {
 
 
 
-int AM_GameDLLInit( void ) {
+int AM_GameDLLInit() {
  
   /* CVars missing here get registered in h_export.cpp::GiveFnptrsToDll() */
 
@@ -1860,7 +1860,7 @@ int AM_GameDLLInit( void ) {
 }
 
 int AM_Initialize() {
-  pTimerEnt = NULL;
+  pTimerEnt = nullptr;
   s_bMECheck = true;
   s_uiFCount = 0;
 
@@ -1873,7 +1873,7 @@ int AM_Initialize() {
 }
 
 int AM_OnFreeEntPrivateData( edict_t *pent ) {
-  if(pent==pTimerEnt && pTimerEnt!=NULL) { // intercept the timer
+  if(pent==pTimerEnt && pTimerEnt!=nullptr) { // intercept the timer
     //This seems to crash.  Prolly a bad idea.
     //CBaseEntity *pEntity = (CBaseEntity *)GET_PRIVATE(pTimerEnt);
     //if (pEntity) delete(pent);
@@ -1919,7 +1919,7 @@ void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity) {
     
     const char* sReserveKickMsg = get_cvar_string_value( "reserve_slots_msg", true );
     
-    if ( sReserveKickMsg == NULL ) {
+    if ( sReserveKickMsg == nullptr ) {
       sReserveKickMsg = "[ADMIN] The Server Admin has enabled reserved slots. You have been kicked due to another player taking a reserved slot.";
 	}
 
@@ -1935,19 +1935,19 @@ void* LoadScript(AMX *amx, const char *filename) {
   AMX_HEADER hdr;
   void* program;
   
-  if ( (fp = fopen( filename, "rb" )) != NULL ) {
+  if ( (fp = fopen( filename, "rb" )) != nullptr ) {
     fread(&hdr, sizeof hdr, 1, fp);
-    if ( (program = calloc(1, (int)hdr.stp)) != NULL ) {
+    if ( (program = calloc(1, (int)hdr.stp)) != nullptr ) {
       rewind( fp );
       fread( program, 1, (int)hdr.size, fp );
       fclose( fp );
       memset(amx, 0, sizeof(AMX));
       if ( amx_Init( amx, program ) != AMX_ERR_NONE ) {
 	free(program);
-	return NULL;
+	return nullptr;
       }
       return program;
     }
   }
-  return NULL;
+  return nullptr;
 }

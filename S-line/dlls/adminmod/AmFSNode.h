@@ -81,13 +81,13 @@ public:
 	virtual void set( const char* path, const char* nodename );
 	virtual void set( int filedes );
 	
-	bool is_directory( void );
-	bool is_file( void );
+	bool is_directory() const;
+	bool is_file() const;
 
-	void name( char* name, int max );
-	const char* name( void );
+	void name( char* name, int max ) const;
+	const char* name() const;
 	
-	AmDir* get_directory_handle( void );
+	AmDir* get_directory_handle();
 
 
 protected:
@@ -96,7 +96,7 @@ protected:
 
 private:
 
-	void m_stat_node( void );
+	void m_stat_node();
 	
 	bool m_bIsSet;
 	int m_iFiledes;
@@ -117,28 +117,28 @@ public:
 	AmDir( const char* path, const char* dirname );
 	virtual ~AmDir();
 
-	virtual void set( const char* fullpath );
-	virtual void set( const char* path, const char* nodename );
+	void set( const char* fullpath ) override;
+	void set( const char* path, const char* nodename ) override;
 
-	const char* get_next_entry( void );
+	const char* get_next_entry();
 	const char* get_next_entry( AmFSNode& );
-	void rewind( void );
+	void rewind();
 
 	// Loads the directory content into memory and sorts it. It is the disconnected from the
 	// actual directory content so that a change in the directory is not reflected.
-	void sort( void );
+	void sort();
 
 	
 protected:
 	
-	int m_next_entry( void );
-	void m_free_dir_entries( void );
+	int m_next_entry();
+	void m_free_dir_entries();
 	const char* m_pcDirEntryName;
 	
 private:
 
 	AmDir( int dirdes ) {};
-	virtual void set( int filedes );
+	void set( int filedes ) override;
 
     int m_iNumDirEntries;
 	int m_iCurrDirEntryNum;
@@ -161,31 +161,31 @@ private:
 #ifdef LINUX
 inline AmDir::AmDir() : AmFSNode() 
 {
-    m_ptDirHandle = NULL; 
-	m_pcDirEntryName = NULL;
-	m_ppoDirEntries = NULL;
+    m_ptDirHandle = nullptr; 
+	m_pcDirEntryName = nullptr;
+	m_ppoDirEntries = nullptr;
 }
 
 
 inline AmDir::AmDir( const char* fullpath ) : AmFSNode(fullpath) 
 {
-    m_ptDirHandle = NULL; 
-	m_pcDirEntryName = NULL;
-	m_ppoDirEntries = NULL;
+    m_ptDirHandle = nullptr; 
+	m_pcDirEntryName = nullptr;
+	m_ppoDirEntries = nullptr;
 }
 
 
 inline AmDir::AmDir( const char* path, const char* dirname ) : AmFSNode(path, dirname) 
 {
-    m_ptDirHandle = NULL; 
-	m_pcDirEntryName = NULL;
-	m_ppoDirEntries = NULL;
+    m_ptDirHandle = nullptr; 
+	m_pcDirEntryName = nullptr;
+	m_ppoDirEntries = nullptr;
 }
 
 
 inline AmDir::~AmDir() 
 {
-    if ( m_ptDirHandle != NULL ) closedir( m_ptDirHandle ); 
+    if ( m_ptDirHandle != nullptr ) closedir( m_ptDirHandle ); 
 	m_free_dir_entries();
 }
 #endif
@@ -197,24 +197,24 @@ inline AmDir::~AmDir()
 inline AmDir::AmDir() : AmFSNode() 
 {
     m_liDirHandle = -1; 
-	m_pcDirEntryName = NULL;
-	m_poDirEntries = NULL;
+	m_pcDirEntryName = nullptr;
+	m_poDirEntries = nullptr;
 }
 
 
 inline AmDir::AmDir( const char* fullpath ) : AmFSNode(fullpath) 
 {
     m_liDirHandle = -1; 
-	m_pcDirEntryName = NULL;
-	m_poDirEntries = NULL;
+	m_pcDirEntryName = nullptr;
+	m_poDirEntries = nullptr;
 }
 
 
 inline AmDir::AmDir( const char* path, const char* dirname ) : AmFSNode(path, dirname) 
 {
     m_liDirHandle = -1; 
-	m_pcDirEntryName = NULL;
-	m_poDirEntries = NULL;
+	m_pcDirEntryName = nullptr;
+	m_poDirEntries = nullptr;
 }
 
 inline AmDir::~AmDir() 

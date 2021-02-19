@@ -64,10 +64,10 @@ extern apat eclist[];
 #endif
 
 inline char pat_bits( char* _pcKey, int _iKeySize, unsigned int _uiPos, unsigned char _ucNum ) {
-  unsigned int uiNumBits = sizeof(char) * 8;
-  unsigned int uiOffset = _uiPos / uiNumBits;
+	const unsigned int uiNumBits = sizeof(char) * 8;
+	const unsigned int uiOffset = _uiPos / uiNumBits;
   if ( uiOffset >= static_cast<unsigned int>(_iKeySize) ) return 0;
-  unsigned int uiBitPos = _uiPos % uiNumBits;
+	const unsigned int uiBitPos = _uiPos % uiNumBits;
   return( (_pcKey[uiOffset] >> (uiNumBits-uiBitPos-_ucNum)) & ~(~0 << _ucNum) );
 }
 

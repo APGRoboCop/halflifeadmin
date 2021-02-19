@@ -47,10 +47,10 @@
 apat* pat_search_key( apat* _pPatricia, char* _pcKey ) {
 
   apat *pThis, *pNext;
-  size_t iKeySize = strlen( _pcKey );
+  const size_t iKeySize = strlen( _pcKey );
 
-  if ( _pPatricia == NULL || _pcKey == NULL ) return NULL;
-  if ( iKeySize > static_cast<size_t>(PAT_KEY_SIZE) ) return NULL;
+  if ( _pPatricia == nullptr || _pcKey == nullptr ) return nullptr;
+  if ( iKeySize > static_cast<size_t>(PAT_KEY_SIZE) ) return nullptr;
 
 #if SAVEKEY
   static char pcKey[PAT_KEY_SIZE];
@@ -72,7 +72,7 @@ apat* pat_search_key( apat* _pPatricia, char* _pcKey ) {
     return pNext;
   }  // if
 
-  return NULL;
+  return nullptr;
 }  // search_key()
 
 #if SAVEKEY
@@ -92,9 +92,9 @@ const char* get_am_string( char* _pcDest, int _iMaxLen, char* _pucSrc, unsigned 
   static char acStaticBuf[STATSTRING_MAXSIZE];
   unsigned char stack[STACKSIZE];
   short c, top = 0;
-  char* pcDest = NULL;
+  char* pcDest = nullptr;
 
-  if ( _pcDest == NULL ) {
+  if ( _pcDest == nullptr ) {
     _pcDest = acStaticBuf;
     _iMaxLen = STATSTRING_MAXSIZE;
     pcDest = acStaticBuf;

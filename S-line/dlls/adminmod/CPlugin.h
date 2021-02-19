@@ -44,6 +44,7 @@
  *
  */
 
+#pragma once
 #define BUF_SIZE 100 // general buffer size
 #define PLUGIN_CMD_SIZE 100
 #define PLUGIN_HELP_SIZE 150
@@ -136,9 +137,9 @@ public:	//Unstable that ~CPlugin is unwanted? [APG]RoboCop[CL]
     CPlugin(); 
     ~CPlugin(); //AdminMod 2.50.61 fix by Cavey
 	
-	AMX* amx();
+	AMX* amx() const;
 	BOOL AddCommand(char* Cmd, char* Function, int iAccess);
-	BOOL CheckCommand( const char* Command, unsigned int& Access );
+	BOOL CheckCommand( const char* Command, unsigned int& Access ) const;
 	plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData);
 	plugin_result HandleConnect(edict_t* pEntity, char* sName, char* IPAddress);
 	plugin_result HandleDisconnect(edict_t* pEntity);

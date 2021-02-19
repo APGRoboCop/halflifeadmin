@@ -60,7 +60,7 @@
  */
 extern int g_NameCrashAction;
 int make_friendly(char *name, bool check) {
-	int iLen = strlen(name);
+	const int iLen = strlen(name);
 	
 	
 	if(check && (g_NameCrashAction > 0 ) && ( iLen<=0 )  ) return 2; // the name is zero length....  
@@ -82,8 +82,7 @@ int make_friendly(char *name, bool check) {
 // covert a string to lowercase
 //
 void strtolower( char* string ) {
-  
-  int length = strlen ( string );
+	const int length = strlen ( string );
   char character = 0;
 
   for ( int i = 0; i < length; i++ ) {
@@ -106,15 +105,14 @@ void strtolower( char* string ) {
 // must be improved some day.
 //
 char* stristr( const char* haystack, const char* needle ) {
-
-  int iLength = strlen( haystack );
-  int iNeedleLen = strlen( needle );
-  char* pcBegin = NULL;
+	const int iLength = strlen( haystack );
+	const int iNeedleLen = strlen( needle );
+  char* pcBegin = nullptr;
 
   int iH = 0;
   int iN = 0;
 
-  if ( iNeedleLen > iLength ) return NULL;
+  if ( iNeedleLen > iLength ) return nullptr;
 
   for ( int iStart = 0; iStart < iLength-iNeedleLen+1; iStart++ ) {
     pcBegin = const_cast<char*>(haystack + iStart);
@@ -131,10 +129,10 @@ char* stristr( const char* haystack, const char* needle ) {
     if ( iN == iNeedleLen ) return pcBegin;
 
     // no match
-    if ( iH == iLength ) return NULL;
+    if ( iH == iLength ) return nullptr;
   }  // for
 
-  return NULL;
+  return nullptr;
 
 }  // stristr()
 
@@ -166,7 +164,7 @@ void FormatLine(char* sLine) {
 // Formats a path so all the /s and \s are correct for that OS.
 //
 void FormatPath(char* sPath) {
-  while ( sPath != NULL && *sPath != '\0') {
+  while ( sPath != nullptr && *sPath != '\0') {
 
 #ifdef WIN32
     if ( *sPath == '/' ) {
@@ -234,7 +232,7 @@ int wrap_lines( char* _pcString, int _iLineLen, int _iWrap ) {
 // Print a MD5 digest in ASCII representation into a char array
 //
 void sprintmd5( char* _pcTarget, const unsigned char* _pucMD5Src ) {
-	if ( _pcTarget == NULL || _pucMD5Src == NULL ) return;
+	if ( _pcTarget == nullptr || _pucMD5Src == nullptr ) return;
  
     for ( unsigned char i = 0; i < 16; i++ ) {
         unsigned char num = _pucMD5Src[i] >> 4;

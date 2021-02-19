@@ -76,11 +76,11 @@ int CTimer::AddTimer(AMX* amx, int iWait, int iRepeat, char* sFunction, char* sP
     return INVALID_TIMER;
   }
   
-  timers[i].iStart = time(NULL);
+  timers[i].iStart = time(nullptr);
   timers[i].iWait = iWait;
   timers[i].iRepeatCount = iRepeat;
   strcpy(timers[i].sFunction,sFunction);
-  if (sParam != NULL) {
+  if (sParam != nullptr) {
     strcpy(timers[i].sParam, sParam);
   } else {
     strcpy( timers[i].sParam,"");
@@ -94,7 +94,7 @@ int CTimer::AddTimer(AMX* amx, int iWait, int iRepeat, char* sFunction, char* sP
 
 // Calculates when the next timer event is due to fire
 void CTimer::CalcNextTimer() {
-  int iCurrentTime = time(NULL);
+	const int iCurrentTime = time(nullptr);
   int iNextTime = iCurrentTime + 99999;
 
   m_iNextTimer = INVALID_TIMER;
@@ -132,13 +132,14 @@ int CTimer::DeleteTimer(int iTimer, int iForceDelete = 0) {
       timers[iTimer].iRepeatCount--;
     
     DEBUG_LOG( 4, ("CTimer::DeleteTimer: Timer #%i repeats decremented to %i.", iTimer, timers[iTimer].iRepeatCount) );
-    timers[iTimer].iStart = time(NULL);
+    timers[iTimer].iStart = time(nullptr);
   }
   CalcNextTimer();
   return 1;
 }
 
-int CTimer::GetMaxVoteChoice() {
+int CTimer::GetMaxVoteChoice() const
+{
 	if (m_iVote == INVALID_TIMER) {
 		return INVALID_TIMER;
 	} else {
@@ -171,8 +172,8 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
   // Set the vote duration in some sensible interval.
   if ( iDuration < 2 ) iDuration = 2;             // minimum 2 seconds
   else if ( iDuration > 1800 ) iDuration = 1800;  // maximum 30 minutes
-  
-  int iTimer = AddTimer(amx, iDuration, 1, sFunction, sParam, pEntity);
+
+	const int iTimer = AddTimer(amx, iDuration, 1, sFunction, sParam, pEntity);
   if (iTimer == INVALID_TIMER)
     return FALSE;
   
@@ -180,7 +181,7 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
   m_iVote = iTimer;
   // The next time a vote can start is now, plus iDuration seconds (for when
   // this vote is over) plus the frequency.
-  m_iNextVoteTime = time(NULL) + iDuration + (int)CVAR_GET_FLOAT("vote_freq");
+  m_iNextVoteTime = time(nullptr) + iDuration + (int)CVAR_GET_FLOAT("vote_freq");
   
   // Initialize the array to -1 (invalid vote)
   memset(m_iPlayerVotes,-1,(MAX_PLAYERS + 1) * sizeof(int));
@@ -204,17 +205,19 @@ BOOL CTimer::ValidTimerIndex(int iTimer) {
   return (iTimer >= 0 && iTimer < NUM_TIMERS);
 }
 
-BOOL CTimer::VoteAllowed() {
-  return (time(NULL) >= m_iNextVoteTime);
+BOOL CTimer::VoteAllowed() const
+{
+  return (time(nullptr) >= m_iNextVoteTime);
 }
 
-BOOL CTimer::VoteInProgress() {
+BOOL CTimer::VoteInProgress() const
+{
   return (m_iVote != INVALID_TIMER);
 }
 
-void CTimer :: Spawn(void) {
+void CTimer :: Spawn() {
   m_iNextTimer = INVALID_TIMER;
-  m_iNextVoteTime = time(NULL);
+  m_iNextVoteTime = time(nullptr);
   m_iVote = INVALID_TIMER;
   memset(timers,0x0,NUM_TIMERS * sizeof(timer_struct));
   memset(m_iPlayerVotes,0x0,(MAX_PLAYERS + 1) * sizeof(int));
@@ -224,11 +227,12 @@ void CTimer :: Spawn(void) {
 }                  
 
 
-void CTimer::Precache(void) {    
+void CTimer::Precache() {    
   // Do nothing
 }
 
-void CTimer::SetTimer(int amount) {    
+void CTimer::SetTimer(int amount) const
+{    
   if (amount==-1) {
     pev->nextthink = gpGlobals->time + 10000;
   } else {
@@ -238,9 +242,9 @@ void CTimer::SetTimer(int amount) {
 }
 
 
-void CTimer::Think(void) {
+void CTimer::Think() {
 	int iIndex;
-  int iTimer = m_iNextTimer;
+	const int iTimer = m_iNextTimer;
   cell iReturn;
   
   if (iTimer == INVALID_TIMER) {
@@ -268,7 +272,7 @@ void CTimer::Think(void) {
 	  DEBUG_LOG( 4, ("CTimer::Think: Vote ended.") );
 	  
 	  for (int iPlayer = 0; iPlayer <= MAX_PLAYERS; iPlayer++) {
-	    int iVote = m_iPlayerVotes[iPlayer];
+		  const int iVote = m_iPlayerVotes[iPlayer];
 	    
 	    if (iVote >= 0)
 	      iMaxPossibleVotes++;
@@ -284,14 +288,14 @@ void CTimer::Think(void) {
 	  
 	  // Save the pAdminEnt pointer to call the plugin_init() function as server.
 	  const edict_t* pTempEnt = pAdminEnt;
-	  pAdminEnt = NULL;
+	  pAdminEnt = nullptr;
 
 	  iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, (cell)iWinningVote, (cell)(timers[iTimer].sParam),
                                                                  (cell)iVotes[iWinningVote], (cell)iMaxPossibleVotes);
 
 	  // Restore the pAdminEnt pointer.
 	  pAdminEnt = const_cast<edict_t*>(pTempEnt);
-	  pTempEnt = NULL;
+	  pTempEnt = nullptr;
 
 	  if (iError != AMX_ERR_NONE) {
 	    UTIL_LogPrintf( "[ADMIN] ERROR: Calling vote function %s returned error %i\n",timers[iTimer].sFunction,iError);
@@ -306,7 +310,7 @@ void CTimer::Think(void) {
 	  // We offset the timer index by one that we feed to the script
 	  // because we don't want to feed an index 0 timer (hard to
 	  // distinguish that from an error)
-	  if(timers[iTimer].pEntity!= NULL) {
+	  if(timers[iTimer].pEntity!= nullptr) {
 	    iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, (cell)(iTimer + 1), (cell)(timers[iTimer].iRepeatCount),
                                                                    (cell)(STRING(timers[iTimer].pEntity->v.netname)), 
                                                                    (cell)(timers[iTimer].sParam));

@@ -236,28 +236,28 @@ class AMAuthId {
 
 
 	// Read access functions
-	uint32_t wonid(void) const    { return m_uiWonid; }
-	uint32_t authid_a(void) const { return m_uiWonid; }
-	uint64_t authid_b(void) const { return m_uiAuthid64; }
+	uint32_t wonid() const    { return m_uiWonid; }
+	uint32_t authid_a() const { return m_uiWonid; }
+	uint64_t authid_b() const { return m_uiAuthid64; }
 
-	uint32_t authid_x(void) const { return m_uiWonid; }
-	uint32_t authid_y(void) const { return m_uiAuthid32[nsAuthid::HIGH]; }
-	uint32_t authid_z(void) const { return m_uiAuthid32[nsAuthid::LOW];  }
+	uint32_t authid_x() const { return m_uiWonid; }
+	uint32_t authid_y() const { return m_uiAuthid32[nsAuthid::HIGH]; }
+	uint32_t authid_z() const { return m_uiAuthid32[nsAuthid::LOW];  }
 
-	bool is_wonid(void) const   { return ( m_bIdIsSet &&  m_bIsWonid ); };
-	bool is_authid(void) const  { return ( m_bIdIsSet && !m_bIsWonid ); };
-	bool is_steamid(void) const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == steam || m_cAuthidType == steam2) ); };
-	bool is_valveid(void) const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == valve || m_cAuthidType == valve2) ); };
+	bool is_wonid() const   { return ( m_bIdIsSet &&  m_bIsWonid ); };
+	bool is_authid() const  { return ( m_bIdIsSet && !m_bIsWonid ); };
+	bool is_steamid() const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == steam || m_cAuthidType == steam2) ); };
+	bool is_valveid() const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == valve || m_cAuthidType == valve2) ); };
 
-	bool is_set(void) const    { return m_bIdIsSet; };
-	bool is_botid(void) const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::BOT_ID  ); };
-	bool is_lanid(void) const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::LAN_ID  ); };
-	bool is_loopid(void) const { return ( !m_bIsWonid && m_uiWonid == nsAuthid::LOOP_ID ); };
+	bool is_set() const    { return m_bIdIsSet; };
+	bool is_botid() const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::BOT_ID  ); };
+	bool is_lanid() const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::LAN_ID  ); };
+	bool is_loopid() const { return ( !m_bIsWonid && m_uiWonid == nsAuthid::LOOP_ID ); };
 
 	
 	// utility functions
 	static bool is_authid( const char* _pcID ) {
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( ((_pcID[0] == 'S' && _pcID[1] == 'T' && _pcID[2] == 'E' && 
 				   _pcID[3] == 'A' && _pcID[4] == 'M')
 				  ||	
@@ -267,14 +267,14 @@ class AMAuthId {
 	};
 
 	static bool is_steamid( const char* _pcID ) {
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( _pcID[0] == 'S' && _pcID[1] == 'T' && _pcID[2] == 'E' && 
 				 _pcID[3] == 'A' && _pcID[4] == 'M' && _pcID[5] == '_' && 
 				 _pcID[6] >= 0x30 && _pcID[6] <= 0x39 );
 	};
 
 	static bool is_valveid( const char* _pcID ) {
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( _pcID[0] == 'V' && _pcID[1] == 'A' && _pcID[2] == 'L' && 
 				 _pcID[3] == 'V' && _pcID[4] == 'E' && _pcID[5] == '_' && 
 				 _pcID[6] >= 0x30 && _pcID[6] <= 0x39 );
@@ -282,13 +282,13 @@ class AMAuthId {
 
 	static bool is_botid( const char* _pcID ) {
 		const int BOT = 0x00544f42;
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( BOT == *(reinterpret_cast<const int*>(_pcID)) );
 	};
 
 	// utility functions
 	static bool is_pending( const char* _pcID ) {
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		const int STEA = 0x41455453;
 		const int M_ID = 0x44495f4d;
 		const int VALV = 0x564c4156;
@@ -304,7 +304,7 @@ class AMAuthId {
 
 
 	static bool is_loopid( const char* _pcID ) {
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		const int STEA = 0x41455453;
 		const int M_ID = 0x44495f4d;
 		const int VALV = 0x564c4156;
@@ -319,7 +319,7 @@ class AMAuthId {
 
 
 	static bool is_lanid( const char* _pcID ) {
-		if ( _pcID == NULL || *_pcID == '\0' ) return false;
+		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		const int STEA = 0x41455453;
 		const int M_ID = 0x44495f4d;
 		const int VALV = 0x564c4156;
@@ -359,7 +359,7 @@ class AMAuthId {
 	static char m_acString[nsAuthid::STATIC_LEN];
 
 	void f_parse_id( const char* _pcID );
-	void f_assemble_string(void) const;
+	void f_assemble_string() const;
 
 };
 
@@ -368,7 +368,7 @@ class AMAuthId {
 //
 // We need this first so that we can inline it in the const char* operator.
 //
-inline void AMAuthId::f_assemble_string( void ) const {
+inline void AMAuthId::f_assemble_string() const {
 
 	if ( !m_bIdIsSet ) {
 		m_acString[0] = '\0';
@@ -463,7 +463,7 @@ inline  bool operator==( const char* pcLhs, const AMAuthId& rhs ) {
 
 	if ( !rhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcLhs );
+		const AMAuthId tmp( pcLhs );
 		return ( tmp == rhs );
 	}  // else
 }
@@ -472,7 +472,7 @@ inline  bool operator==( const AMAuthId& lhs, const char* pcRhs ) {
 
 	if ( !lhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcRhs );
+		const AMAuthId tmp( pcRhs );
 		return ( lhs == tmp );
 	}  // else
 }
@@ -524,7 +524,7 @@ inline  bool operator!=( const char* pcLhs, const AMAuthId& rhs ) {
 
 	if ( !rhs.m_bIdIsSet ) return true;
 	else {
-		AMAuthId tmp( pcLhs );
+		const AMAuthId tmp( pcLhs );
 		return ( tmp != rhs );
 	}  // else
 }
@@ -533,7 +533,7 @@ inline  bool operator!=( const AMAuthId& lhs, const char* pcRhs ) {
 
 	if ( !lhs.m_bIdIsSet ) return true;
 	else {
-		AMAuthId tmp( pcRhs );
+		const AMAuthId tmp( pcRhs );
 		return ( lhs != tmp );
 	}  // else
 }
@@ -585,7 +585,7 @@ inline  bool operator>=( const char* pcLhs, const AMAuthId& rhs ) {
 
 	if ( !rhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcLhs );
+		const AMAuthId tmp( pcLhs );
 		return ( tmp >= rhs );
 	}  // else
 }
@@ -594,7 +594,7 @@ inline  bool operator>=( const AMAuthId& lhs, const char* pcRhs ) {
 
 	if ( !lhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcRhs );
+		const AMAuthId tmp( pcRhs );
 		return ( lhs >= tmp );
 	}  // else
 }
@@ -646,7 +646,7 @@ inline  bool operator<=( const char* pcLhs, const AMAuthId& rhs ) {
 
 	if ( !rhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcLhs );
+		const AMAuthId tmp( pcLhs );
 		return ( tmp <= rhs );
 	}  // else
 }
@@ -655,7 +655,7 @@ inline  bool operator<=( const AMAuthId& lhs, const char* pcRhs ) {
 
 	if ( !lhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcRhs );
+		const AMAuthId tmp( pcRhs );
 		return ( lhs <= tmp );
 	}  // else
 }
@@ -707,7 +707,7 @@ inline  bool operator>( const char* pcLhs, const AMAuthId& rhs ) {
 
 	if ( !rhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcLhs );
+		const AMAuthId tmp( pcLhs );
 		return ( tmp > rhs );
 	}  // else
 }
@@ -716,7 +716,7 @@ inline  bool operator>( const AMAuthId& lhs, const char* pcRhs ) {
 
 	if ( !lhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcRhs );
+		const AMAuthId tmp( pcRhs );
 		return ( lhs > tmp );
 	}  // else
 }
@@ -768,7 +768,7 @@ inline  bool operator<( const char* pcLhs, const AMAuthId& rhs ) {
 
 	if ( !rhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcLhs );
+		const AMAuthId tmp( pcLhs );
 		return ( tmp < rhs );
 	}  // else
 }
@@ -777,7 +777,7 @@ inline  bool operator<( const AMAuthId& lhs, const char* pcRhs ) {
 
 	if ( !lhs.m_bIdIsSet ) return false;
 	else {
-		AMAuthId tmp( pcRhs );
+		const AMAuthId tmp( pcRhs );
 		return ( lhs < tmp );
 	}  // else
 }

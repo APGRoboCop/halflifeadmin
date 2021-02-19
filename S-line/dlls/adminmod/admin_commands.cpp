@@ -123,7 +123,7 @@ extern DLL_GLOBAL BOOL  g_fRunPlugins;
 extern int GameDispatchSpawn( edict_t *pent );
 
 // CEM - 12/27/2000 - Not really necessary, but nice to have.
-char* INVALID_TIMER_PARAM = NULL;
+char* INVALID_TIMER_PARAM = nullptr;
 
 // Using this macro requires the following variable declarations:
 //  int iNumParams = params[0] / sizeof(cell);
@@ -169,7 +169,7 @@ char* INVALID_TIMER_PARAM = NULL;
 
 #define SET_AMX_STRING(Param,MaxLength,String) \
 	amx_GetAddr(amx,params[Param],&cStr); \
-	if (String == NULL) { \
+	if (String == nullptr) { \
 		amx_SetString(cStr, "", 0); \
 	} else if((int)strlen(String) > MaxLength) { \
 		System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too small.  Required size %i, is %i.\n", strlen(String), MaxLength),pAdminEnt); \
@@ -184,12 +184,12 @@ char* INVALID_TIMER_PARAM = NULL;
 // if 'target' is empty, use the user who executed the command.
 static cell access(AMX *amx, cell *params) {
 	int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   char sUser[BUF_SIZE];
   cell* cStr;
 
 	CHECK_AMX_PARAMS(1);
-  int iAccess = (int)params[1];
+	const int iAccess = (int)params[1];
   if (iNumParams >= 2) {
     GET_AMX_STRING(2,BUF_SIZE,sUser,0);
   } else {
@@ -198,7 +198,7 @@ static cell access(AMX *amx, cell *params) {
 
 
   if(strlen(sUser) > 0) {
-    int iPlayerIndex = GetPlayerIndex(sUser);
+	  const int iPlayerIndex = GetPlayerIndex(sUser);
     if (iPlayerIndex == 0) {
       System_Response(UTIL_VarArgs("[ADMIN] (access) Unable to find player: %s\n", sUser),pAdminEnt);
       return 0;
@@ -211,7 +211,7 @@ static cell access(AMX *amx, cell *params) {
     }
   } else {	  
     // If we're console, we have full access
-	  if ( pAdminEnt== NULL ) {
+	  if ( pAdminEnt== nullptr ) {
 		  if ( iAccess < 0 ) return (ucell)-1;
 		  return 1;
 	  }  // if
@@ -228,16 +228,16 @@ static cell access(AMX *amx, cell *params) {
 static cell auth(AMX *amx, cell *params) {
   int iIndex;
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   cell* cStr;
   char sUser[BUF_SIZE];
   
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   
-  if(sUser == NULL || strlen(sUser)==0) {
+  if(sUser == nullptr || strlen(sUser)==0) {
     // The console should always be considered authed.
-    if(pAdminEnt== NULL) 
+    if(pAdminEnt== nullptr) 
       return 1; 
     iIndex = ENTINDEX(pAdminEnt);
   } else {
@@ -263,7 +263,7 @@ static cell ban(AMX *amx, cell *params) {
 
   bool bIsIP = false;
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   int iPlayerIndex = 0;
 	int iSessionID = 0;
   char sCommand[COMMAND_SIZE];
@@ -273,8 +273,8 @@ static cell ban(AMX *amx, cell *params) {
   
   CHECK_AMX_PARAMS(3);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
-  int iTime = params[2];
-  if (sUser == NULL || strlen(sUser) == 0) {
+	const int iTime = params[2];
+  if (sUser == nullptr || strlen(sUser) == 0) {
     System_Response("[ADMIN] (ban) You must enter a name or Id or IP address.\n",pAdminEnt);
     return 0;
   } else if (iTime < 0) {
@@ -329,7 +329,7 @@ static cell ban(AMX *amx, cell *params) {
 
 	// if the player is on the server, kick him
 	if ( iSessionID > 0 ) {
-		util_kick_player( iSessionID, NULL );
+		util_kick_player( iSessionID, nullptr );
 	}
 
     snprintf(sCommand,COMMAND_SIZE,"writeid\n");
@@ -349,7 +349,7 @@ static cell ban(AMX *amx, cell *params) {
   
   // if the player is on the server, kick him
   if ( iSessionID > 0 ) {
-	util_kick_player( iSessionID, NULL );
+	util_kick_player( iSessionID, nullptr );
   }
 
   snprintf(sCommand,COMMAND_SIZE,"writeip\n");
@@ -367,7 +367,7 @@ static cell ban(AMX *amx, cell *params) {
 static cell centersay(AMX *amx, cell *params) {
   int iLength;
   int iLineFeed = -1;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[CENTER_SAY_SIZE];
   cell* cStr;    
   hudtextparms_t m_textParms;
@@ -375,7 +375,7 @@ static cell centersay(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(5);
   GET_AMX_STRING(1,CENTER_SAY_SIZE,sText,0);
   
-  if (sText == NULL || strlen(sText) == 0) {
+  if (sText == nullptr || strlen(sText) == 0) {
     System_Response("[ADMIN] (centersay) You must say something.\n",pAdminEnt);
     return 1;
   }	
@@ -383,7 +383,7 @@ static cell centersay(AMX *amx, cell *params) {
   iLineFeed = wrap_lines( sText, CENTER_SAY_LINE_SIZE, SW_WRAP);
   if ( !iLineFeed ){
     System_Response(UTIL_VarArgs("[ADMIN] (centersay) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
-    if (pAdminEnt != NULL) {
+    if (pAdminEnt != nullptr) {
       UTIL_LogPrintf("[ADMIN] WARNING: Centersay line limit size exceeded: %s\n", sText);
     }  // if
     return 0;
@@ -425,7 +425,7 @@ static cell centersay(AMX *amx, cell *params) {
 static cell centersayex(AMX *amx, cell *params) {
   int iLength;
   int iLineFeed = 0;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[CENTER_SAY_SIZE];
   char sUser[BUF_SIZE];
   cell* cStr;    
@@ -436,12 +436,12 @@ static cell centersayex(AMX *amx, cell *params) {
   GET_AMX_STRING(2,CENTER_SAY_SIZE,sText,0);
 
   
-  if (sText == NULL || strlen(sText) == 0) {
+  if (sText == nullptr || strlen(sText) == 0) {
     System_Response("[ADMIN] (centersayex) You must say something.\n",pAdminEnt);
     return 1;
-  }	
+  }
 
-  int iPlayerIndex = GetPlayerIndex(sUser);
+  const int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex == 0) {
     System_Response( UTIL_VarArgs("[ADMIN] (centersayex) Unable to find player: %s\n",sUser),pAdminEnt);
     return 0;
@@ -458,7 +458,7 @@ static cell centersayex(AMX *amx, cell *params) {
   if ( !iLineFeed ){
     System_Response(UTIL_VarArgs("[ADMIN] (centersayex) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
   }
-  if (pAdminEnt != NULL) {
+  if (pAdminEnt != nullptr) {
     UTIL_LogPrintf("[ADMIN] WARNING: Centersayex line limit size exceeded: %s\n", sText);
   }  // if
   return 0;
@@ -496,22 +496,22 @@ static cell centersayex(AMX *amx, cell *params) {
 // changelevel(map) -> changes level to 'map'
 static cell changelevel(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char szNextMap[32];
   cell* cStr;    
   char sMap[BUF_SIZE];
 
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,sMap, 0);
-  
-  int iIPause = params[2];
+
+  const int iIPause = params[2];
 
 
   // if we got called from an intermission timer we don't need to check the
   // map again. 
   if ( iIPause >= 0 ) { 
 
-	  if (sMap == NULL || strlen(sMap) == 0 ) { 
+	  if (sMap == nullptr || strlen(sMap) == 0 ) { 
 		  System_Response("[ADMIN] (changelevel) You must enter a map name.\n",pAdminEnt);
 		  return 0;
 	  }
@@ -530,12 +530,12 @@ static cell changelevel(AMX *amx, cell *params) {
   // if we want to go into intermission first, set the timer to change map
   if ( iIPause > 0 ) {
 	  CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));  
-	  if (NULL == pEntity ) {
+	  if (nullptr == pEntity ) {
 		  UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to set an intermission timer when timer entity is missing.\n");
 		  amx_RaiseError( amx,AMX_ERR_NATIVE );
 		  return 0;
 	  }
-	  int iTimer = pEntity->AddTimer(amx,iIPause,0,"ChangeMap",szNextMap,pAdminEnt);
+	  const int iTimer = pEntity->AddTimer(amx,iIPause,0,"ChangeMap",szNextMap,pAdminEnt);
 	  if (iTimer == INVALID_TIMER)  {
 		  UTIL_LogPrintf("[ADMIN] ERROR (changelevel): Could not set timer for intermission. Changing map directly.\n");
 	  } else {
@@ -550,7 +550,7 @@ static cell changelevel(AMX *amx, cell *params) {
   // Register that we are forcing a map change.
   g_iForcedMapChange = 2;
   // Store the next map from the regular cycle to be reported, but only if we come from a regular cycle.
-  if ( g_pcNextMap == NULL ) {
+  if ( g_pcNextMap == nullptr ) {
 	  char *mapcfile = const_cast<char*>(CVAR_GET_STRING("mapcyclefile"));
 	  DestroyMapCycle( &mapcycle );
 	  ReloadMapCycleFile( mapcfile, &mapcycle );
@@ -560,7 +560,7 @@ static cell changelevel(AMX *amx, cell *params) {
   }  // if
 
   UTIL_LogPrintf( "[ADMIN] (changelevel) Changing map to %s\n",sMap);
-  CHANGE_LEVEL( szNextMap, NULL );
+  CHANGE_LEVEL( szNextMap, nullptr );
   return 1;
 }
 
@@ -568,7 +568,7 @@ static cell changelevel(AMX *amx, cell *params) {
 // cvar_exists(cvar[]) -> checks if cvar[] exists
 static cell amx_cvar_exists(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   cell* cStr;    
 
   char sCvar[BUF_SIZE];
@@ -577,7 +577,7 @@ static cell amx_cvar_exists(AMX *amx, cell *params) {
 
   GET_AMX_STRING( 1, BUF_SIZE, sCvar, 0 );
  
-  return (CVAR_GET_POINTER(sCvar) != NULL) ? 1 : 0;
+  return (CVAR_GET_POINTER(sCvar) != nullptr) ? 1 : 0;
 }
 
 
@@ -585,7 +585,7 @@ static cell amx_cvar_exists(AMX *amx, cell *params) {
 // check_user(user) -> Returns 1 if 'user' can be found on the server
 static cell check_user_amx(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sUser[BUF_SIZE];
   cell* cStr;    
   
@@ -600,7 +600,7 @@ static cell check_user_amx(AMX *amx, cell *params) {
 // 'hlstring' pointer and puts it into 'amxstring'.
 static cell convert_string(AMX *amx, cell *params) {
 	cell* cStr;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   
 
   CHECK_AMX_PARAMS(3);
@@ -608,7 +608,7 @@ static cell convert_string(AMX *amx, cell *params) {
 
   DEBUG_LOG(4, ("convert_string() string: %p", sHLString) );
 
-  int iLength = params[3];
+	const int iLength = params[3];
   SET_AMX_STRING(2, iLength, sHLString);
   return 1;
 }
@@ -618,11 +618,11 @@ static cell convert_string(AMX *amx, cell *params) {
 // currentmap(map, length) -> If 'length' is 0, prints current map to console.  Otherwise,
 // puts it in 'map' var.
 static cell currentmap(AMX *amx, cell *params) {
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   cell* cStr;
   
   CHECK_AMX_PARAMS(2);
-  int iMaxLength = params[2];
+	const int iMaxLength = params[2];
   
   if(iMaxLength == 0) {
     System_Response(UTIL_VarArgs( "[ADMIN] Current map: %s\n",STRING(gpGlobals->mapname)),pAdminEnt);
@@ -642,7 +642,7 @@ static cell currentmap(AMX *amx, cell *params) {
 static cell directmessage(AMX *amx, cell *params) {
 
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	char sText[BUF_SIZE];
 	cell* cStr;
 	edict_t* pPlayer;
@@ -658,7 +658,7 @@ static cell directmessage(AMX *amx, cell *params) {
 	if ( params[2] == -1 ) {
 		pPlayer = pAdminEnt;
 
-	} else if ( (pPlayer = get_player_edict(params[2], static_cast<uidt>(params[3]))) == NULL ) {
+	} else if ( (pPlayer = get_player_edict(params[2], static_cast<uidt>(params[3]))) == nullptr ) {
 		System_Response( UTIL_VarArgs("[ADMIN] (directmessage) User ID '%d' not found.\n", params[2]), pAdminEnt );
 		return 0;
 	}  // if
@@ -680,9 +680,9 @@ bool is_registering_command( const char* _pcCommand ) {
 
 	// If the command string contains no blank it cannot be a 
 	// properly formatted registering command.
-	if ( _pcCommand == NULL || strchr(_pcCommand, ' ') == NULL ) return false;
+	if ( _pcCommand == nullptr || strchr(_pcCommand, ' ') == nullptr ) return false;
 
-	int iCmdLen = strlen( _pcCommand );
+	const int iCmdLen = strlen( _pcCommand );
 
 	//-- Check for restricted commands.
 	if ( strncasecmp( _pcCommand, "alias", 5) == 0 ) {
@@ -710,7 +710,7 @@ bool is_registering_command( const char* _pcCommand ) {
 	//   have any added via the cvar.
 
 	const char* pcRegCmds = get_cvar_string_value( "amv_register_cmds" );
-	if ( pcRegCmds != NULL ) {
+	if ( pcRegCmds != nullptr ) {
 		// We have a dynamic list set
 		// Okay then, lets parse it.
 		const char* pcStart = pcRegCmds;
@@ -749,7 +749,7 @@ bool is_registering_command( const char* _pcCommand ) {
 // If the second parameter is there and 0 no log message is written.
 static cell exec(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sCommand[COMMAND_SIZE+1];
   cell* cStr;
   bool bLogCommand = true;
@@ -762,7 +762,7 @@ static cell exec(AMX *amx, cell *params) {
 
   iLength = strlen( sCommand );
 
-  if (sCommand == NULL || iLength == 0) {
+  if (sCommand == nullptr || iLength == 0) {
     System_Response("[ADMIN] (exec) You must include a command.\n", pAdminEnt);
     return 0;
   }
@@ -773,11 +773,11 @@ static cell exec(AMX *amx, cell *params) {
   char* pcCmnd = sCommand + strspn(sCommand, " ");
   char* pcLastSpace = sCommand;
   char* pcPos = sCommand;
-  char* pcNextSpace = NULL;
+  char* pcNextSpace = nullptr;
   int iSemicolons = 0;
 
   // count semicolons
-  while ( ((pcPos = strchr(pcPos, ';')) != NULL) ) {
+  while ( ((pcPos = strchr(pcPos, ';')) != nullptr) ) {
 	  ++iSemicolons;
 	  ++pcPos;
   }  // while
@@ -820,7 +820,7 @@ static cell exec(AMX *amx, cell *params) {
   //   the only exception is for registering commands from other mods
 
   // If admin_command is contained
-  if ( (pcPos = strstr(sCommand, "admin_command")) != NULL ) {
+  if ( (pcPos = strstr(sCommand, "admin_command")) != nullptr ) {
 	  // If we have semicolons
 	  if ( iSemicolons != 0 ) {
 		  // this is not allowed. Return.
@@ -846,7 +846,7 @@ static cell exec(AMX *amx, cell *params) {
 	  // allocate a larger string if the result string doesn't fit into the original
 	  if ( COMMAND_SIZE < (iLength+(2*iSemicolons)) ) {
 		  pcCmnd = new char[iLength+(2*iSemicolons)+1];
-		  if ( pcCmnd == NULL ) {
+		  if ( pcCmnd == nullptr ) {
 			  System_Response("[ADMIN] (exec) Failed: could not allocate memory.\n", pAdminEnt);
 			  return 0;
 		  }  // if
@@ -937,18 +937,18 @@ static cell exec(AMX *amx, cell *params) {
 // Returns 1 on success, 0 on failure.
 static cell get_vault_str_data(AMX *amx, cell *params) {
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	cell* cStr;
 	char sKey[BUF_SIZE];
 
 	CHECK_AMX_PARAMS(3);
 	GET_AMX_STRING(1,BUF_SIZE,sKey,0);
 
-	int iMaxLength = params[3];
+	const int iMaxLength = params[3];
 
 	if (strlen(sKey) > 0) {
 		char* sData = GetVaultData(sKey);
-		if (sData == NULL) 
+		if (sData == nullptr) 
 			return 0;
 		SET_AMX_STRING(2,iMaxLength,sData);
 		return 1;
@@ -965,7 +965,7 @@ static cell get_vault_str_data(AMX *amx, cell *params) {
  */
 static cell get_vault_num_data(AMX *amx, cell *params) {
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	cell* cStr;
 	char sKey[BUF_SIZE];
 
@@ -975,10 +975,10 @@ static cell get_vault_num_data(AMX *amx, cell *params) {
 
 	if (strlen(sKey) > 0) {
 		char* sData = GetVaultData(sKey);
-		if (sData == NULL) return 0;
+		if (sData == nullptr) return 0;
 
 		amx_GetAddr(amx,params[2],&cStr);
-		*cStr = (cell)strtol( sData, NULL, 0 );
+		*cStr = (cell)strtol( sData, nullptr, 0 );
 		return 1;
 	}
 	return 0;
@@ -989,7 +989,7 @@ static cell get_vault_num_data(AMX *amx, cell *params) {
 // kick(user) -> kicks user
 static cell kick(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   int iPlayerIndex = 0;
   char sUser[BUF_SIZE];
   cell* cStr;
@@ -997,7 +997,7 @@ static cell kick(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   
-  if (sUser == NULL || strlen(sUser) == 0) {
+  if (sUser == nullptr || strlen(sUser) == 0) {
     System_Response(  "[ADMIN] (kick) You must enter a name to kick\n",pAdminEnt);
     return 0;
   }
@@ -1008,7 +1008,7 @@ static cell kick(AMX *amx, cell *params) {
   }
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
   if (IsPlayerValid(pPlayer)) {
-    util_kick_player( GETPLAYERUSERID(pPlayer->edict()), NULL );
+    util_kick_player( GETPLAYERUSERID(pPlayer->edict()), nullptr );
     UTIL_LogPrintf( "[ADMIN] Kicked %s\n",sUser);   
   }
   return 1;
@@ -1018,14 +1018,14 @@ static cell kick(AMX *amx, cell *params) {
 
 // kill_timer(timer id) -> stops the specified timer
 static cell kill_timer(AMX *amx, cell *params) {
-  int iNumParams = params[0] / sizeof (cell);
+	const int iNumParams = params[0] / sizeof (cell);
 
   CHECK_AMX_PARAMS(1);
   // set_timer gives us an off by one index, so compensate
-  int iTimer = params[1] - 1;
+	const int iTimer = params[1] - 1;
   
   CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
-  if (pEntity== NULL) {
+  if (pEntity== nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to kill a timer when no map is loaded.\n");
     amx_RaiseError( amx,AMX_ERR_NATIVE );
     return 0;
@@ -1051,14 +1051,14 @@ static cell kill_timer(AMX *amx, cell *params) {
 
 // get_timer(timer_id) -> stops the specified timer
 static cell get_timer(AMX *amx, cell *params) {
-  int iNumParams = params[0] / sizeof (cell);
+	const int iNumParams = params[0] / sizeof (cell);
 
   CHECK_AMX_PARAMS(1);
   // set_timer gives us an off by one index, so compensate
-  int iTimer = params[1] - 1;
+	const int iTimer = params[1] - 1;
   
   CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
-  if (pEntity== NULL) {
+  if (pEntity== nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to get a timer when no map is loaded.\n");
     amx_RaiseError( amx,AMX_ERR_NATIVE );
     return 0;
@@ -1088,7 +1088,7 @@ static cell list_maps(AMX *amx, cell *params) {
 // log(data) -> writes 'data' to the log
 static cell log(AMX *amx, cell *params) {
 	int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   char sText[LARGE_BUF_SIZE];
   cell* cStr;
   
@@ -1125,12 +1125,12 @@ static cell maxplayercount(AMX *amx, cell *params) {
 // menu(user,data,keys) -> show menu
 static cell menu(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[HUGE_BUF_SIZE];
   char sUser[BUF_SIZE];
   cell* cStr;
 
-  if ( get_option_cvar_value("amv_enable_beta", "menu", NULL, 0) != 1 ) {
+  if ( get_option_cvar_value("amv_enable_beta", "menu", nullptr, 0) != 1 ) {
     System_Response(UTIL_VarArgs( "[ADMIN] Beta feature 'menu' not enabled.\n"), pAdminEnt);
     return 0;
   }  // if	  
@@ -1139,10 +1139,10 @@ static cell menu(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(3);
   GET_AMX_STRING(1,BUF_SIZE,sUser, 0);
   GET_AMX_STRING(2,HUGE_BUF_SIZE,sText, 0); //Max. 512 chars
-  int iKeys = params[3];
-  int iTime = params[4];
+  const int iKeys = params[3];
+  const int iTime = params[4];
 
-  int iPlayerIndex = GetPlayerIndex(sUser);
+  const int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex == 0) {
 	  System_Response( UTIL_VarArgs("[ADMIN] (menu) Unable to find player: %s\n",sUser),pAdminEnt);
 	  return 0;
@@ -1174,7 +1174,7 @@ static cell menu(AMX *amx, cell *params) {
 // message(target,data) -> Displays 'data' to 'target' in the console
 static cell message(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[LARGE_BUF_SIZE];
   char sUser[BUF_SIZE];
   cell* cStr;
@@ -1182,8 +1182,8 @@ static cell message(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   GET_AMX_STRING(2,LARGE_BUF_SIZE,sText,0);
-  
-  int iPlayerIndex = GetPlayerIndex(sUser);
+
+  const int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex == 0) {
     System_Response( UTIL_VarArgs("[ADMIN] (message) Unable to find player: %s\n", sUser),pAdminEnt);
     return 0;
@@ -1211,7 +1211,7 @@ static cell message(AMX *amx, cell *params) {
 // determine where to display to (console, chat, center, etc)
 static cell messageex(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[LARGE_BUF_SIZE];
   char sUser[BUF_SIZE];
   cell* cStr;
@@ -1219,9 +1219,9 @@ static cell messageex(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(3);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   GET_AMX_STRING(2,LARGE_BUF_SIZE,sText,0);
-  int iType = params[3];
-  
-  int iPlayerIndex = GetPlayerIndex(sUser);
+  const int iType = params[3];
+
+  const int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex == 0) {
     System_Response( UTIL_VarArgs("[ADMIN] (messageex) Unable to find player: %s\n",sUser),pAdminEnt);
     return 0;
@@ -1248,14 +1248,14 @@ static cell messageex(AMX *amx, cell *params) {
     if (pPlayer->edict() != pAdminEnt) {
       ClientPrint(pev, HUD_PRINTTALK, UTIL_VarArgs("%s\n", sText) );
     } else {
-      UTIL_ClientPrint_UR(pev, HUD_PRINTTALK, UTIL_VarArgs("%s\n", sText),NULL,NULL,NULL,NULL );
+      UTIL_ClientPrint_UR(pev, HUD_PRINTTALK, UTIL_VarArgs("%s\n", sText),nullptr,nullptr,nullptr,nullptr );
     }
   } else if (iType == print_tty) {
 
     // check if the line is too long
     if ( !wrap_lines( sText, CENTER_SAY_LINE_SIZE, SW_WRAP) ) {
       System_Response(UTIL_VarArgs("[ADMIN] (messageex) The maximum size for any one line in a print_tty is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
-      if (pAdminEnt != NULL) {
+      if (pAdminEnt != nullptr) {
 	UTIL_LogPrintf("[ADMIN] WARNING: Messageex line limit size exceeded: %s\n", sText);
       }  // if
       return 0;
@@ -1287,7 +1287,7 @@ static cell messageex(AMX *amx, cell *params) {
 	for (i = 0; i < (int)strlen(sText); i++) {
       if ((i - iLineFeed) >= CENTER_SAY_LINE_SIZE) {
         System_Response(UTIL_VarArgs("[ADMIN] (messageex) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
-        if (pAdminEnt != NULL) {
+        if (pAdminEnt != nullptr) {
 		  UTIL_LogPrintf("[ADMIN] WARNING: Messageex line limit size exceeded: %s\n", sText);
 		}
 		return 0;
@@ -1333,15 +1333,15 @@ static cell messageex(AMX *amx, cell *params) {
 // nextmap(map, length) -> If 'length' is 0, prints next map to console.  Otherwise,
 // puts it in 'map' var.
 static cell nextmap(AMX *amx, cell *params) {
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   cell* cStr;
   
   CHECK_AMX_PARAMS(2);
-  int iMaxLength = params[2];
+	const int iMaxLength = params[2];
   
-  char * pcNextMap = NULL;
+  char * pcNextMap = nullptr;
 
-  if ( g_pcNextMap == NULL ) {
+  if ( g_pcNextMap == nullptr ) {
 	  //TODO: we need a better function for getting the mapcycle, which will read 
 	  //TODO: the mapcycle file only when the mapcyclefile cvar actually changed.
 	  char *mapcfile = const_cast<char*>(CVAR_GET_STRING("mapcyclefile"));
@@ -1376,13 +1376,13 @@ static cell playercount(AMX *amx, cell *params) {
 // playerinfo(index,name[],length,userid,wonid,team,dead,authid[]) -> Given 'index', fills the other
 // parameters with the appropriate player info.
 static cell playerinfo(AMX *amx, cell *params) {
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	char sName[BUF_SIZE];
   cell *cParam;
   cell* cStr;
 
   CHECK_AMX_PARAMS(3);
-  int iPlayerIndex = params[1];
+	const int iPlayerIndex = params[1];
   if (iPlayerIndex < 1) {
     System_Error(UTIL_VarArgs("[ADMIN] ERROR: Request for player info for invalid index %d \n", iPlayerIndex, gpGlobals->maxClients),pAdminEnt);
     //amx_RaiseError(amx,AMX_ERR_NATIVE);
@@ -1397,7 +1397,7 @@ static cell playerinfo(AMX *amx, cell *params) {
 
   if (IsPlayerValid(pPlayer)) {
     strncpy(sName,STRING(pPlayer->pev->netname), BUF_SIZE);
-    int iMaxLength = params[3];
+    const int iMaxLength = params[3];
     SET_AMX_STRING(2, iMaxLength, sName);
 
 	// Since we have default values we will always get 7 parameters passed. 
@@ -1445,7 +1445,7 @@ static cell playerinfo(AMX *amx, cell *params) {
 static cell playsound(AMX *amx, cell *params) {
   cell* cStr;    
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char sCmd[BUF_SIZE];
   char sPlayer[BUF_SIZE];
@@ -1458,7 +1458,7 @@ static cell playsound(AMX *amx, cell *params) {
   if(PlayerIndex==0) 
   	return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
-  if (pPlayer== NULL) 
+  if (pPlayer== nullptr) 
   	return 0;
     
   if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
@@ -1483,7 +1483,7 @@ static cell plugin_checkcommand(AMX* amx, cell* params) {
   unsigned int iAccess = 0;
   int iLength;
   int iResult = 0;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char acCommand[PLUGIN_CMD_SIZE];
   cell* cStr;
   cell *cParam;
@@ -1510,7 +1510,7 @@ static cell plugin_checkcommand(AMX* amx, cell* params) {
 //
 static cell plugin_exec( AMX* amx, cell* params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sCmd[BUF_SIZE];
   char sData[LARGE_BUF_SIZE];
   cell* cStr;
@@ -1535,8 +1535,7 @@ static cell plugin_exec( AMX* amx, cell* params) {
   
   // execute the command via HandleCommand() if we are using plugins
   if (g_fRunPlugins) {
-
-    int iRetVal = HandleCommand(pAdminEnt, sCmd, sData);
+	  const int iRetVal = HandleCommand(pAdminEnt, sCmd, sData);
     if ( iRetVal == PLUGIN_ERROR || iRetVal == PLUGIN_NO_ACCESS ) {
       return 0;
     } else {
@@ -1548,14 +1547,14 @@ static cell plugin_exec( AMX* amx, cell* params) {
     /*
     char *program_file=(char *) CVAR_GET_STRING("script_file");
     
-    if(program_file==NULL|| FStrEq(program_file,"0") || !g_fRunScripts) {
+    if(program_file==nullptr|| FStrEq(program_file,"0") || !g_fRunScripts) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");			
     } else { 
       iError = amx_FindPublic(&amx,"client_commands",&iIndex);
       if (iError != AMX_ERR_NONE) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't find 'client_commands' proc, error #%i\n",iError);
       } else { 
-	if(pEntity!=NULL) 
+	if(pEntity!=nullptr) 
 	  iError = amx_Exec(&amx, &cReturn, iIndex, 5, pcmd, CMD_ARGS(), STRING(pEntity->v.netname), GETPLAYERUSERID(pEntity), GETPLAYERWONID(pEntity));
 	else
 	  iError = amx_Exec(&amx, &cReturn, iIndex, 5, pcmd, admin_command,"Admin",-1,-1); 
@@ -1580,12 +1579,12 @@ static cell plugin_exec( AMX* amx, cell* params) {
 // 'Text', much like message(), but identifies the plugin as well.
 static cell plugin_message(AMX* amx, cell* params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sBuffer[BUF_SIZE];
   cell* cStr;
   CPlugin* pPlugin = GetPlugin(amx);
   
-  if (pPlugin == NULL) {
+  if (pPlugin == nullptr) {
     System_Error("[ADMIN] ERROR: plugin_message: Could not find matching amx.\n",pAdminEnt);
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
@@ -1593,7 +1592,7 @@ static cell plugin_message(AMX* amx, cell* params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sBuffer,1);
   
-  if (pPlugin->Name() == NULL) {
+  if (pPlugin->Name() == nullptr) {
     System_Response(UTIL_VarArgs("%s: %s\n", pPlugin->File(), sBuffer),pAdminEnt);
   } else {
     System_Response(UTIL_VarArgs("%s: %s\n", pPlugin->Name(), sBuffer),pAdminEnt);
@@ -1606,14 +1605,14 @@ static cell plugin_message(AMX* amx, cell* params) {
 // user has 'Access'.  'Help' is an optional entry to add into the help system.
 static cell plugin_registercmd(AMX* amx, cell* params) {
 	int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   char sCmd[PLUGIN_CMD_SIZE];
   char sFunction[BUF_SIZE];
   char sHelp[PLUGIN_HELP_SIZE];
   cell* cStr;
   CPlugin* pPlugin = GetPlugin(amx);
   
-  if (pPlugin == NULL) {
+  if (pPlugin == nullptr) {
     System_Error("[ADMIN] ERROR: plugin_registercmd: Could not find matching amx.\n",pAdminEnt);
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
@@ -1622,7 +1621,7 @@ static cell plugin_registercmd(AMX* amx, cell* params) {
   CHECK_AMX_PARAMS(3);
   GET_AMX_STRING(1,PLUGIN_CMD_SIZE,sCmd,0);
   GET_AMX_STRING(2,BUF_SIZE,sFunction,0);
-  int iAccess = params[3];
+	const int iAccess = params[3];
   if (iNumParams >= 4) {
     GET_AMX_STRING(4,PLUGIN_HELP_SIZE,sHelp,1);    
     if (strlen(sHelp) > 0) {
@@ -1637,21 +1636,21 @@ static cell plugin_registercmd(AMX* amx, cell* params) {
 // with the text 'Help'.  Shown only to those people with 'Access'.
 static cell plugin_registerhelp(AMX* amx, cell* params) {
 	int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   char sCmd[PLUGIN_CMD_SIZE];
   char sHelp[PLUGIN_HELP_SIZE];
   cell* cStr;
   CPlugin* pPlugin = GetPlugin(amx);
   
-  if (pPlugin == NULL) {
+  if (pPlugin == nullptr) {
     System_Error("[ADMIN] ERROR: plugin_registerhelp: Could not find matching amx.\n",pAdminEnt);
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
   
   CHECK_AMX_PARAMS(3);
-  GET_AMX_STRING(1,PLUGIN_CMD_SIZE,sCmd,0);  
-  int iAccess = params[2];
+  GET_AMX_STRING(1,PLUGIN_CMD_SIZE,sCmd,0);
+	const int iAccess = params[2];
   GET_AMX_STRING(3,PLUGIN_HELP_SIZE,sHelp,1);
   
   if(AddHelpEntry(sCmd,sHelp,iAccess)) {
@@ -1665,14 +1664,14 @@ static cell plugin_registerhelp(AMX* amx, cell* params) {
 // that admin_version will return.
 static cell plugin_registerinfo(AMX* amx, cell* params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sDesc[BUF_SIZE];
   char sName[BUF_SIZE];
   char sVersion[BUF_SIZE];
   cell* cStr;
   CPlugin* pPlugin = GetPlugin(amx);
  
-  if (pPlugin == NULL) {
+  if (pPlugin == nullptr) {
     System_Error("[ADMIN] ERROR: plugin_registerinfo: Could not find matching amx.\n",pAdminEnt);
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
@@ -1692,7 +1691,7 @@ static cell plugin_registerinfo(AMX* amx, cell* params) {
 
 // reload() -> Reloads the AM data files
 static cell reload(AMX *amx, cell *params) {
-  if (pAdminEnt != NULL) 
+  if (pAdminEnt != nullptr) 
     UTIL_LogPrintf("[ADMIN] Reloading files.\n" );
   InitAdminModData(FALSE, TRUE);
   return 1;
@@ -1703,14 +1702,14 @@ static cell reload(AMX *amx, cell *params) {
 // say(data) -> says 'data' as if said by 'rcon say'
 static cell say(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[LARGE_BUF_SIZE];
   cell* cStr;
   
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,LARGE_BUF_SIZE,sText,1);
   
-  if (sText == NULL || strlen(sText) == 0) {
+  if (sText == nullptr || strlen(sText) == 0) {
     System_Response("[ADMIN] (say) You must say something.\n",pAdminEnt);
     return 1;
   }
@@ -1729,7 +1728,7 @@ static cell say(AMX *amx, cell *params) {
 // to the console, which message can't, etc.
 static cell selfmessage(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[LARGE_BUF_SIZE];
   cell* cStr;
   
@@ -1745,15 +1744,15 @@ static cell selfmessage(AMX *amx, cell *params) {
 // every 'wait' seconds for 'repeatcount' times.
 static cell set_timer(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sFunction[BUF_SIZE];
   char sParam[BUF_SIZE];
   cell* cStr;    
   
   CHECK_AMX_PARAMS(3);
   GET_AMX_STRING(1,BUF_SIZE,sFunction,0);
-  int iWait = params[2];
-  int iRepeat = params[3];
+  const int iWait = params[2];
+  const int iRepeat = params[3];
   if(iNumParams >= 4) {
     GET_AMX_STRING(4,BUF_SIZE,sParam,0);
   } else {
@@ -1763,13 +1762,13 @@ static cell set_timer(AMX *amx, cell *params) {
   // Update the timer to make sure it calls the correct 
   // timer next
   CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));  
-  if (pEntity== NULL) {
+  if (pEntity== nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to set a timer when no map is loaded.\n");
     amx_RaiseError( amx,AMX_ERR_NATIVE );
     return 0;
   }
 
-  int iTimer = pEntity->AddTimer(amx,iWait,iRepeat,sFunction,sParam,pAdminEnt);
+  const int iTimer = pEntity->AddTimer(amx,iWait,iRepeat,sFunction,sParam,pAdminEnt);
   if (iTimer == INVALID_TIMER)  {
     UTIL_LogPrintf("[ADMIN] ERROR: set_timer returned invalid timer index for function %s, wait %i, repeat %i.\n", sFunction,iWait,iRepeat);
     amx_RaiseError(amx,AMX_ERR_NATIVE);
@@ -1788,7 +1787,7 @@ static cell set_timer(AMX *amx, cell *params) {
 // Returns 1 on success, 0 on failure.
 static cell set_vault_str_data(AMX *amx, cell *params) {
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	cell* cStr;
 	char sData[BUF_SIZE];
 	char sKey[BUF_SIZE];
@@ -1811,7 +1810,7 @@ static cell set_vault_str_data(AMX *amx, cell *params) {
  */
 static cell set_vault_num_data(AMX *amx, cell *params) {
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	cell* cStr;
 	char sData[14];
 	char sKey[BUF_SIZE];
@@ -1830,7 +1829,7 @@ static cell set_vault_num_data(AMX *amx, cell *params) {
 static cell am_speakto(AMX *amx, cell *params) {
   cell* cStr;    
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char sSentence[LARGE_BUF_SIZE];
   char sPlayer[BUF_SIZE];
@@ -1843,7 +1842,7 @@ static cell am_speakto(AMX *amx, cell *params) {
   if(PlayerIndex==0) 
   	return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
-  if (pPlayer== NULL) 
+  if (pPlayer== nullptr) 
   	return 0;
     
   if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
@@ -1867,19 +1866,19 @@ static cell am_speakto(AMX *amx, cell *params) {
 // timeleft(printconsole = 1) -> Returns the time left on the map in seconds.  If 
 // printconsole is 1, prints out to the console, too.
 static cell timeleft(AMX *amx, cell *params) {
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   float flTimeLimit;
 
-  if ( g_pflTimeLimit == NULL ) {
+  if ( g_pflTimeLimit == nullptr ) {
 	  flTimeLimit = CVAR_GET_FLOAT("mp_timelimit") * 60.0; // map timelimit in sec
   } else {
 	  flTimeLimit = *g_pflTimeLimit;  // Counterstrike's timelimit value
   }  // if-else
 
   if (iNumParams == 0 || params[1] == 1) {
-    int timeleft = (int)(flTimeLimit - gpGlobals->time);
-    int minleft = timeleft / 60;
-    int secleft = timeleft % 60;
+	  const int timeleft = (int)(flTimeLimit - gpGlobals->time);
+	  const int minleft = timeleft / 60;
+	  const int secleft = timeleft % 60;
     System_Response(UTIL_VarArgs( "[ADMIN] Time left on map: %02d:%02d.\n",minleft, secleft), pAdminEnt);
   }  // if
   return (cell)(flTimeLimit - gpGlobals->time);
@@ -1890,7 +1889,7 @@ static cell timeleft(AMX *amx, cell *params) {
 // char area for 'time' seconds in the (R,G,B) color.  
 static cell typesay(AMX *amx, cell *params) {
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	char sText[LARGE_BUF_SIZE];
 	cell* cStr;
 	hudtextparms_t m_textParms;
@@ -1908,7 +1907,7 @@ static cell typesay(AMX *amx, cell *params) {
 	// check if the line is too long
 	if ( !wrap_lines( sText, CENTER_SAY_LINE_SIZE, SW_WRAP) ) {
 	  System_Response(UTIL_VarArgs("[ADMIN] (typesay) The maximum size for any one line in a typesay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
-	  if (pAdminEnt != NULL) {
+	  if (pAdminEnt != nullptr) {
 	    UTIL_LogPrintf("[ADMIN] WARNING: Typesay line limit size exceeded: %s\n", sText);
 	  }  // if
 	  return 0;
@@ -1941,7 +1940,7 @@ static cell typesay(AMX *amx, cell *params) {
 // unban(user) -> unbans user
 static cell unban(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sCommand[COMMAND_SIZE];
   char sUser[BUF_SIZE];
   cell* cStr;
@@ -1949,7 +1948,7 @@ static cell unban(AMX *amx, cell *params) {
   CHECK_AMX_PARAMS(1);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   
-  if (sUser == NULL || strlen(sUser) == 0) {
+  if (sUser == nullptr || strlen(sUser) == 0) {
     System_Response( "[ADMIN] (unban) You must enter an authid or an IP to unban",pAdminEnt);
     return 0;
   }
@@ -1992,7 +1991,7 @@ static cell unban(AMX *amx, cell *params) {
 // valid_map(map) -> returns 1 if 'map' is a valid map
 static cell valid_map(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sMap[BUF_SIZE];
   cell* cStr;    
   
@@ -2005,13 +2004,13 @@ static cell valid_map(AMX *amx, cell *params) {
 
 static cell valid_mapex(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sMap[BUF_SIZE];
   cell* cStr;    
   
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,sMap,0);
-  int iBypass = params[2];
+  const int iBypass = params[2];
   return(check_map(sMap,iBypass)) ;
 }
 
@@ -2033,7 +2032,7 @@ static cell vote_multiple(AMX *amx, cell *params) {
 	int iBits = 1;
   int iChoiceCount = 0;
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   char sFunction[BUF_SIZE];
   char sOption[BUF_SIZE];
   char sParam[BUF_SIZE];
@@ -2061,7 +2060,7 @@ static cell vote_multiple(AMX *amx, cell *params) {
   DEVEL_LOG( 3, ("Vote called: \"%s\"", sText) );
   // Add a new timer for this vote
   CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));  
-  if (pEntity== NULL) {
+  if (pEntity== nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to start a vote when no map is loaded.\n");
     amx_RaiseError( amx,AMX_ERR_NATIVE );
     return 0;
@@ -2079,12 +2078,12 @@ static cell vote_multiple(AMX *amx, cell *params) {
 
 // vote_allowed() -> Returns 1 if a call to vote_multiple is allowed right now.
 static cell vote_allowed(AMX *amx, cell *params) {
-  int iVoteFreq = (int)CVAR_GET_FLOAT("vote_freq" );
+	const int iVoteFreq = (int)CVAR_GET_FLOAT("vote_freq" );
   
   if (iVoteFreq <= 0) 
     return 0;
   CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
-  if (pEntity== NULL) {
+  if (pEntity== nullptr) {
     return 0;
   }
 
@@ -2095,7 +2094,7 @@ static cell vote_allowed(AMX *amx, cell *params) {
 
 static cell userlist(AMX *amx, cell *params) {
 	int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   cell *cString;
   char name[BUF_SIZE];
   
@@ -2147,8 +2146,8 @@ static cell getvar(AMX *amx, cell *params) {
   } /* if */ 
   amx_GetString(name,cStr);    
   char *iszItem=name;
-  
-  int value = (int)CVAR_GET_FLOAT(name);
+
+  const int value = (int)CVAR_GET_FLOAT(name);
   return (cell)value;
 }
 
@@ -2203,7 +2202,7 @@ static cell help(AMX *amx, cell *params) {
   char *iszItem=name;
   char* help_file = const_cast<char*>(get_cvar_file_value("help_file"));
   
-  if( help_file == NULL ) return 0;
+  if( help_file == nullptr ) return 0;
   
   char *pFileList;
   char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(help_file, &length));
@@ -2217,19 +2216,19 @@ static cell help(AMX *amx, cell *params) {
 	
 	char* help_item = strstr(aFileList, iszItem);
 	
-	if(help_item!= NULL) {
+	if(help_item!= nullptr) {
 	  char* next_item = strstr(help_item + strlen(name), ":");
-	  if(next_item!= NULL) (*next_item)='\0';
+	  if(next_item!= nullptr) (*next_item)='\0';
 	  System_Response(UTIL_VarArgs( "%s\n",help_item+1),pAdminEnt);
 	  
 	}
       } else {
 	char *next=aFileList,*last=aFileList;
 	
-	while(next!= NULL) {
+	while(next!= nullptr) {
 	  
 	  next=strchr(last,':');
-	  if(next!= NULL) {
+	  if(next!= nullptr) {
 	    *next='\0';
 	    System_Response(UTIL_VarArgs( "%s\n",last),pAdminEnt);
 	  }
@@ -2242,14 +2241,14 @@ static cell help(AMX *amx, cell *params) {
   
   
   FREE_FILE( aFileList );
-  aFileList = NULL;
+  aFileList = nullptr;
   return 1;
 }
 
 
 static cell setvar(AMX *amx, cell *params) {
   cell* cStr;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   int iLength;
   char name[BUF_SIZE];
 
@@ -2280,7 +2279,7 @@ static cell setvar(AMX *amx, cell *params) {
 static cell setstrvar(AMX *amx, cell *params) {
   
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[LARGE_BUF_SIZE];
   char sCvar[BUF_SIZE];
   cell* cStr;
@@ -2346,10 +2345,10 @@ static cell censor_words(AMX *amx, cell *params) {
   cell* cStr;
 
   // admin can swear all they want ;)
-  if(pAdminEnt== NULL) 
+  if(pAdminEnt== nullptr) 
     return 1; 
   
-  if (m_pWordList == NULL)
+  if (m_pWordList == nullptr)
     return 1;
   
   amx_GetAddr(amx,params[1],&cStr); 
@@ -2365,11 +2364,11 @@ static cell censor_words(AMX *amx, cell *params) {
     sBuffer[i] = tolower(sBuffer[i]);
   
   CLinkItem<word_struct>* pLink = m_pWordList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     word_struct* tWord = pLink->Data();
     char* sWord = strstr(sBuffer, tWord->sWord);
-    while (sWord != NULL) {
-      int iOffset = (sWord - &sBuffer[0]) - 1;
+    while (sWord != nullptr) {
+	    const int iOffset = (sWord - &sBuffer[0]) - 1;
       for (i = 1; i <= (int)strlen(tWord->sWord); i++) {
 	sReturnBuffer[iOffset + i] = '*';
       }
@@ -2390,10 +2389,10 @@ static cell check_words(AMX *amx, cell *params) {
   cell* cStr;
 
 	// admin can swear all they want ;)
-  if(pAdminEnt== NULL) 
+  if(pAdminEnt== nullptr) 
     return 1; 
   
-  if (m_pWordList == NULL)
+  if (m_pWordList == nullptr)
     return 1;
   
   amx_GetAddr(amx,params[1],&cStr); 
@@ -2408,9 +2407,9 @@ static cell check_words(AMX *amx, cell *params) {
     sBuffer[i] = tolower(sBuffer[i]);
   
   CLinkItem<word_struct>* pLink = m_pWordList->FirstLink();
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     word_struct* tWord = pLink->Data();
-    if (strstr(sBuffer, tWord->sWord) != NULL ) {
+    if (strstr(sBuffer, tWord->sWord) != nullptr ) {
       DEBUG_LOG( 1, ("check_words: User '%s' matched swear word '%s'",STRING(pAdminEnt->v.netname),tWord->sWord) );
       return 0;
     }
@@ -2425,7 +2424,7 @@ static cell get_userindex(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2463,10 +2462,10 @@ static cell get_userindex(AMX *amx, cell *params) {
 static cell amx_get_userIP( AMX *amx, cell *params ) {
 	cell* cStr;
 	int iLength;
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 	int iPlayerIndex = 0;
 	char acPlayerText[BUF_SIZE];
-	const char* pcIP = NULL;
+	const char* pcIP = nullptr;
 	cell* cParam;
 
 	ulong ulNBOIP = 1;
@@ -2498,7 +2497,7 @@ static cell get_username(AMX *amx, cell *params) {
   cell *cptr;
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2533,8 +2532,8 @@ static cell get_username(AMX *amx, cell *params) {
 static cell getteamcount(AMX *amx, cell *params) {
 	int iCS;
 	int iTeamCount = 0;
-  
-  int iTeam = params[1];
+
+	const int iTeam = params[1];
   
   char* pcMod = GetModDir();
   if (strcmp(pcMod, "cstrike") == 0) {
@@ -2579,7 +2578,7 @@ static cell get_userorigin(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2625,7 +2624,7 @@ static cell get_userSessionID(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2656,7 +2655,7 @@ static cell get_userWONID(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2691,7 +2690,7 @@ static cell get_user_authid(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2726,7 +2725,7 @@ static cell get_user_authid(AMX *amx, cell *params) {
 static cell execclient(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char CmdText[BUF_SIZE];
   char CmdBuf[BUF_SIZE];
@@ -2751,7 +2750,7 @@ static cell execclient(AMX *amx, cell *params) {
   PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
-  if (pPlayer== NULL) return 0;
+  if (pPlayer== nullptr) return 0;
   
   if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
@@ -2771,10 +2770,10 @@ static cell execclient(AMX *amx, cell *params) {
 
   // prepare the command to be executed
   BOOL bMoreCmds = FALSE;
-  apat* pCmd = NULL;
-  char* pcStart = NULL;
-  char* pcEnd = NULL;
-  char* pcEOB = NULL;
+  apat* pCmd = nullptr;
+  char* pcStart = nullptr;
+  char* pcEnd = nullptr;
+  char* pcEOB = nullptr;
   memcpy( CmdBuf, CmdText, BUF_SIZE );
   pcEOB = CmdBuf + strlen( CmdBuf );
   pcStart = CmdBuf;
@@ -2786,7 +2785,7 @@ static cell execclient(AMX *amx, cell *params) {
 		  *pcEnd = 0;
 	  }  // if
 	  if ( (pCmd = pat_search_key(eclist, pcStart)) && (pCmd->atAttribute != 1) ) {
-		  System_Response( UTIL_VarArgs(const_cast<char*>(get_am_string(NULL,0,statstr[5],statstr_table)), pcStart), pAdminEnt );
+		  System_Response( UTIL_VarArgs(const_cast<char*>(get_am_string(nullptr,0,statstr[5],statstr_table)), pcStart), pAdminEnt );
 		  return 0;
 	  } // if
 	  if ( pcEnd++ != pcStart ) {
@@ -2836,7 +2835,7 @@ static cell execclient(AMX *amx, cell *params) {
     }
   }
   
-  CLIENT_PRINTF( pPlayer->edict(), print_console,UTIL_VarArgs("%s %s.\n",get_am_string(NULL,0,statstr[4],statstr_table),CmdText));
+  CLIENT_PRINTF( pPlayer->edict(), print_console,UTIL_VarArgs("%s %s.\n",get_am_string(nullptr,0,statstr[4],statstr_table),CmdText));
   CLIENT_COMMAND ( pPlayer->edict(), UTIL_VarArgs("%s\n", CmdText) );
   return 1;
 }
@@ -2845,7 +2844,7 @@ static cell execclient(AMX *amx, cell *params) {
 static cell slay(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2863,7 +2862,7 @@ static cell slay(AMX *amx, cell *params) {
   PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
-  if (pPlayer== NULL) return 0;
+  if (pPlayer== nullptr) return 0;
   
   
   if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
@@ -2909,7 +2908,7 @@ static cell slay(AMX *amx, cell *params) {
 static cell teleport(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -2978,7 +2977,7 @@ static cell fileexists(AMX *amx, cell *params) {
   
   cell* cStr;    
   int iLen;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
   FILE* fFile;
   
@@ -2993,10 +2992,10 @@ static cell fileexists(AMX *amx, cell *params) {
   amx_GetString( acFilename, cStr ); 
   
   char acFilePath[PATH_MAX];
-  if ( get_file_path(acFilePath, acFilename, PATH_MAX, NULL) > 0 ) {  
+  if ( get_file_path(acFilePath, acFilename, PATH_MAX, nullptr) > 0 ) {  
     DEBUG_LOG( 1, ("fileexists looking for file %s", acFilePath) );
     
-    if( (fFile = fopen(acFilePath,"r")) == NULL ) {
+    if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
       return 0;
     }  // if
     
@@ -3018,7 +3017,7 @@ static cell filesize(AMX *amx, cell *params) {
 
   cell* cStr;    
   int iLen;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int iRetVal = 0;
   char acFilename[BUF_SIZE];
   
@@ -3033,10 +3032,10 @@ static cell filesize(AMX *amx, cell *params) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }  // if
-  amx_GetString( acFilename, cStr ); 
+  amx_GetString( acFilename, cStr );
 
 
-  int iUnits = params[2];
+  const int iUnits = params[2];
 
   char acFilePath[PATH_MAX];
 
@@ -3066,7 +3065,7 @@ static cell filesize(AMX *amx, cell *params) {
 	// searching for the newline characters, counting them. Since DOS uses it, 
 	// too, this is our indicator for an EOL.
 	unsigned char* pucFileBuf = LOAD_FILE_FOR_ME( acFilename, &iNumBytes );
-	if ( (pucFileBuf != NULL) && (iNumBytes != 0) ) {
+	if ( (pucFileBuf != nullptr) && (iNumBytes != 0) ) {
 		for ( unsigned char* pChar = pucFileBuf; *pChar != '\0'; ++pChar ) {
 			if ( *pChar == '\n' ) ++iNumLines;
 		}  // for
@@ -3100,11 +3099,11 @@ static cell readfile(AMX *amx, cell *params) {
   cell *cptr;
   cell* cStr;    
   int iLen;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
   FILE* fFile;
   char acLine[c_LineLen];
-  char* pcLine = NULL;
+  char* pcLine = nullptr;
 
   if (iNumParams < 4) {
     amx_RaiseError( amx, AMX_ERR_NATIVE );
@@ -3117,9 +3116,9 @@ static cell readfile(AMX *amx, cell *params) {
 	  // amx_RaiseError( amx, AMX_ERR_NATIVE );
     return 0;
   }  // if
-  amx_GetString( acFilename, cStr ); 
-  
-  int line_no=(int)params[3];     
+  amx_GetString( acFilename, cStr );
+
+  const int line_no=(int)params[3];     
   
   memset( acLine, 0x0, c_LineLen );
   
@@ -3127,13 +3126,13 @@ static cell readfile(AMX *amx, cell *params) {
 
   if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_read") > 0 ) {  
     
-    if( (fFile = fopen(acFilePath,"r")) == NULL ) {
+    if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
       return 0;
     }  // if
     
     for ( int i = 0; i < line_no; i++ ) {                
 	  pcLine = fgets( acLine, c_LineLen, fFile );
-	  if( pcLine == NULL ) {
+	  if( pcLine == nullptr ) {
 		fclose( fFile );
 		return 0;
 	  }  // if
@@ -3176,7 +3175,7 @@ static cell writefile(AMX *amx, cell *params) {
 
   cell* cStr;    
   int iLen;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
   char acData[c_LineLen];
   FILE* fFile;
@@ -3220,7 +3219,7 @@ static cell writefile(AMX *amx, cell *params) {
   if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_write") > 0 ) {  
     
       
-    if( (fFile = fopen(acFilePath,"a+")) == NULL ) {
+    if( (fFile = fopen(acFilePath,"a+")) == nullptr ) {
       DEBUG_LOG( 2, ("ERROR:writefile: fopen failed on filename %s: %s.", acFilePath, strerror(errno)) ); 
       amx_RaiseError( amx, AMX_ERR_NATIVE );
       return 0;
@@ -3239,7 +3238,7 @@ static cell writefile(AMX *amx, cell *params) {
       // We have to close it again before we can write to it.
       fclose( fFile );
 
-      if( (fFile = fopen(acFilePath,"r")) == NULL ) {
+      if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
 	DEBUG_LOG( 2, ("ERROR:writefile: fopen failed on filename %s: %s.", acFilePath, strerror(errno)) ); 
 	amx_RaiseError( amx, AMX_ERR_NATIVE );
 	return 0;
@@ -3250,7 +3249,7 @@ static cell writefile(AMX *amx, cell *params) {
 
       get_file_path( acTempFilePath, "adminmod.tmp", PATH_MAX, "file_access_write" );
       
-      if( (tmp_file = fopen(acTempFilePath,"w+")) == NULL ) {
+      if( (tmp_file = fopen(acTempFilePath,"w+")) == nullptr ) {
 	DEBUG_LOG( 2, ("ERROR:writefile: failed to create temporary file.") ); 
 	amx_RaiseError( amx, AMX_ERR_NATIVE );
 	fclose( fFile );
@@ -3261,7 +3260,7 @@ static cell writefile(AMX *amx, cell *params) {
       while ( !feof( fFile ) ) {
 	memset( acLine, 0, c_LineLen );
 	i++;
-	if ( fgets(acLine, c_LineLen, fFile) != NULL) {
+	if ( fgets(acLine, c_LineLen, fFile) != nullptr) {
 	  if( i == params[3] )
 	    fprintf( tmp_file, "%s%s", acData, pcEOL);
 	  else
@@ -3276,7 +3275,7 @@ static cell writefile(AMX *amx, cell *params) {
 
       // copied to tmp file, now copy back
       fclose( fFile );
-      if( (fFile = fopen(acFilePath,"w")) == NULL ) {
+      if( (fFile = fopen(acFilePath,"w")) == nullptr ) {
 	DEBUG_LOG( 2, ("ERROR:writefile: fopen failed on filename %s.", acFilePath) ); 
 	amx_RaiseError( amx, AMX_ERR_NATIVE );
 	fclose( tmp_file );
@@ -3314,7 +3313,7 @@ static cell resetfile(AMX *amx, cell *params) {
   
   cell* cStr;    
   int iLen;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
   FILE* fFile;
   
@@ -3335,7 +3334,7 @@ static cell resetfile(AMX *amx, cell *params) {
   if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_write") > 0 ) {  
 
 #ifdef _WIN32
-    if( (fFile = fopen(acFilePath,"w")) == NULL ) {
+    if( (fFile = fopen(acFilePath,"w")) == nullptr ) {
       amx_RaiseError( amx, AMX_ERR_NATIVE );
       return 0;
     }
@@ -3360,7 +3359,7 @@ static cell deletefile(AMX *amx, cell *params) {
   
   cell* cStr;    
   int iLen;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int iRetVal = 0;
   char acFilename[BUF_SIZE];
 
@@ -3395,7 +3394,7 @@ static cell get_userinfo(AMX *amx, cell *params) {
   cell *cptr;
   cell* cStr;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerName[BUF_SIZE];
   char InfoName[BUF_SIZE];
@@ -3443,7 +3442,7 @@ static cell get_serverinfo(AMX *amx, cell *params) {
   cell *cptr;
   cell* cStr;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char InfoName[INFO_KEYVAL_SIZE];
   
@@ -3462,7 +3461,7 @@ static cell get_serverinfo(AMX *amx, cell *params) {
   
   amx_GetAddr(amx,params[2],&cptr);
   
-  char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(NULL);
+  char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(nullptr);
   char *value=g_engfuncs.pfnInfoKeyValue( infobuffer,InfoName );
   
   if(params[3] < (int)strlen(value)) {
@@ -3479,7 +3478,7 @@ static cell get_serverinfo(AMX *amx, cell *params) {
 static cell set_serverinfo(AMX *amx, cell *params) {
   cell* cStr;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char value[INFO_KEYVAL_SIZE];
   char InfoName[INFO_KEYVAL_SIZE];
@@ -3507,7 +3506,7 @@ static cell set_serverinfo(AMX *amx, cell *params) {
   amx_GetString(value,cStr);
   
   DEBUG_LOG(2, ("setting KEY %s to %s", InfoName, value) );
-  char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(NULL);
+  char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(nullptr);
   g_engfuncs.pfnSetKeyValue(infobuffer,InfoName,value);
   
   return 1;
@@ -3519,7 +3518,7 @@ static cell set_serverinfo(AMX *amx, cell *params) {
 static cell slap(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -3555,7 +3554,7 @@ static cell slap(AMX *amx, cell *params) {
     pPlayer->edict()->v.health -= 5;
   }
 
-  float flRndSound = RANDOM_FLOAT(0, 1); 
+  const float flRndSound = RANDOM_FLOAT(0, 1); 
   
   char strMod[32];
   strcpy(strMod, GetModDir());
@@ -3605,7 +3604,7 @@ static cell slap(AMX *amx, cell *params) {
 static cell godmode(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -3627,15 +3626,15 @@ static cell godmode(AMX *amx, cell *params) {
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  int iGodMode = (int)params[2];
+  const int iGodMode = (int)params[2];
   if(iGodMode!=0) {
     pPlayer->edict()->v.solid = SOLID_NOT;
     pPlayer->edict()->v.takedamage = DAMAGE_NO;
-  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(NULL,0,statstr[0],statstr_table)),STRING(pPlayer->pev->netname))); 
+  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(nullptr,0,statstr[0],statstr_table)),STRING(pPlayer->pev->netname))); 
   } else {
     pPlayer->edict()->v.solid = SOLID_SLIDEBOX;
     pPlayer->edict()->v.takedamage = DAMAGE_AIM;
-  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(NULL,0,statstr[1],statstr_table)),STRING(pPlayer->pev->netname))); 
+  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(nullptr,0,statstr[1],statstr_table)),STRING(pPlayer->pev->netname))); 
   }
   return 1;
 }
@@ -3646,7 +3645,7 @@ static cell godmode(AMX *amx, cell *params) {
 static cell noclip(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -3676,13 +3675,13 @@ static cell noclip(AMX *amx, cell *params) {
     }  // if 
   }  // if
 
-  int iMoveType = (int)params[2];
+  const int iMoveType = (int)params[2];
   if(iMoveType!=0) {
     pPlayer->edict()->v.movetype = MOVETYPE_NOCLIP;
-  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(NULL,0,statstr[2],statstr_table)),STRING(pPlayer->pev->netname))); 
+  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(nullptr,0,statstr[2],statstr_table)),STRING(pPlayer->pev->netname))); 
   } else {
     pPlayer->edict()->v.movetype = MOVETYPE_WALK;
-  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(NULL,0,statstr[3],statstr_table)),STRING(pPlayer->pev->netname))); 
+  UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(nullptr,0,statstr[3],statstr_table)),STRING(pPlayer->pev->netname))); 
   }
 
   return 1;
@@ -3693,7 +3692,7 @@ static cell noclip(AMX *amx, cell *params) {
 
 static cell spawn(AMX *amx, cell *params) {
 	int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   cell* cString;
   char szClassname[BUF_SIZE];
 
@@ -3713,8 +3712,8 @@ static cell spawn(AMX *amx, cell *params) {
   for(int i = 0; i < (int)strlen(szClassname); i++) 
     szClassname[i] = tolower(szClassname[i]);
   
-  CBaseEntity* pCheckEntity = UTIL_FindEntityByClassname(NULL, szClassname);
-  if(pCheckEntity== NULL) {
+  CBaseEntity* pCheckEntity = UTIL_FindEntityByClassname(nullptr, szClassname);
+  if(pCheckEntity== nullptr) {
     System_Response( "[ADMIN] spawn: The entity to be spawned was not cached at map load, so cannot be spawned.\n",pAdminEnt);
     return 0;
   }
@@ -3725,7 +3724,7 @@ static cell spawn(AMX *amx, cell *params) {
   }
   
   edict_t* pOwner;
-  if ( pAdminEnt == NULL ) {
+  if ( pAdminEnt == nullptr ) {
 	  pOwner = INDEXENT( 0 );
   } else {
 	  pOwner = pAdminEnt;
@@ -3740,8 +3739,8 @@ static cell spawn(AMX *amx, cell *params) {
   pEntity->edict()->v.angles.y = (float)params[6];
   pEntity->edict()->v.angles.z = (float)params[7];
   GameDispatchSpawn( pEntity->edict() );
-  
-  int iIdentity = AddSpawnEntity(szClassname, pEntity);
+
+	const int iIdentity = AddSpawnEntity(szClassname, pEntity);
   if(iIdentity==0) {
     System_Response( "[ADMIN] spawn: AddSpawnEntity returned 0.\n",pAdminEnt);
     return 0;
@@ -3754,7 +3753,7 @@ static cell spawn(AMX *amx, cell *params) {
 
 static cell listspawn(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   cell* cString;
   char szClassname[BUF_SIZE];
   
@@ -3777,16 +3776,16 @@ static cell listspawn(AMX *amx, cell *params) {
 
 
 static cell movespawn(AMX *amx, cell *params) {
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
 
 	if (iNumParams < 7) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
-  
-  int iIdentity = (int)params[1];
+
+	const int iIdentity = (int)params[1];
   spawn_struct* pSpawnEntity = FindSpawnEntity(iIdentity);
-  if(pSpawnEntity== NULL) {
+  if(pSpawnEntity== nullptr) {
     System_Response( "[ADMIN] movespawn: Could not find matching spawned entity.\n",pAdminEnt);
     return 0;
   }
@@ -3802,13 +3801,13 @@ static cell movespawn(AMX *amx, cell *params) {
 
 
 static cell removespawn(AMX *amx, cell *params) {
-	int iNumParams = params[0] / sizeof(cell);
+	const int iNumParams = params[0] / sizeof(cell);
   
   if (iNumParams < 1) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
-  int iIdentity = (int)params[1];
+	const int iIdentity = (int)params[1];
   return (RemoveSpawnEntity(iIdentity) ? 1 : 0);
 }
 
@@ -3816,7 +3815,7 @@ static cell removespawn(AMX *amx, cell *params) {
 
 //CEM - 12/27/2000 - System time. Useful for timestamps, more stable than timeleft.
 static cell systemtime(AMX *amx, cell *params) {
-  return (cell)time(NULL);
+  return (cell)time(nullptr);
 }
 
 /************************************************************************************************
@@ -3834,23 +3833,22 @@ static cell systemtime(AMX *amx, cell *params) {
  ************************************************************************************************/
 
 static cell maptime(AMX *amx, cell *params) {
-  
-  int iNumParams = params[0]/sizeof(cell);
+	const int iNumParams = params[0]/sizeof(cell);
   
   if ( iNumParams<2) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }  // if
 
-  float flTimeLimit = CVAR_GET_FLOAT("mp_timelimit") * 60; // map timelimit in sec
+	const float flTimeLimit = CVAR_GET_FLOAT("mp_timelimit") * 60; // map timelimit in sec
 
   // if we should return the time left
   if ( params[1] == 1 ) {
-    float timeleft = flTimeLimit - gpGlobals->time;
+	  const float timeleft = flTimeLimit - gpGlobals->time;
 
     if ( params[2] == 1 ) {
-      int minleft = (int)(timeleft) / 60;
-      int secleft = (int)(timeleft) % 60;
+	    const int minleft = (int)(timeleft) / 60;
+	    const int secleft = (int)(timeleft) % 60;
       System_Response(UTIL_VarArgs( "timeleft on map: %d:%d\n",minleft, secleft),pAdminEnt);
     }  // if
 
@@ -3859,8 +3857,8 @@ static cell maptime(AMX *amx, cell *params) {
     // we return the map time
 
     if ( params[2] == 1 ) {
-      int min = (int)(gpGlobals->time / 60);
-      int sec = (int)(gpGlobals->time) % 60;
+	    const int min = (int)(gpGlobals->time / 60);
+	    const int sec = (int)(gpGlobals->time) % 60;
       System_Response(UTIL_VarArgs( "time into map: %d:%d\n",min, sec),pAdminEnt);
     }  // if
 
@@ -3879,11 +3877,11 @@ static cell servertime(AMX *amx, cell *params) {
   cell* cStr; 
   int iFormatFound = 0;
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   char acFormatString[BUF_SIZE];
-  char* pcTimeString = NULL;
+  char* pcTimeString = nullptr;
 
-  time_t myTime = time(NULL);
+  time_t myTime = time(nullptr);
   struct tm *tmMyTime = localtime( &myTime );
   myTime = mktime( tmMyTime );
 
@@ -3898,8 +3896,8 @@ static cell servertime(AMX *amx, cell *params) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
-  
-  int maxlen = params[2];
+
+  const int maxlen = params[2];
 
   // get the format string
   amx_GetAddr(amx,params[3],&cStr);
@@ -3934,7 +3932,7 @@ static cell servertime(AMX *amx, cell *params) {
 
   // chomp the newline
   char* nl = strrchr( pcTimeString, '\n' );
-  if ( nl != NULL ) {
+  if ( nl != nullptr ) {
     *nl = '\0';
   }  // if
 
@@ -3942,7 +3940,7 @@ static cell servertime(AMX *amx, cell *params) {
 
   if ( iFormatFound ) {
     delete pcTimeString;
-    pcTimeString = NULL;
+    pcTimeString = nullptr;
   }  // if
 
   return (cell) myTime;
@@ -3953,9 +3951,9 @@ static cell servertime(AMX *amx, cell *params) {
 
 static cell consgreet(AMX *amx, cell *params) {
 
-  cell *cellstr = NULL;
+  cell *cellstr = nullptr;
   int len = 0;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char text[LARGE_BUF_SIZE];
   
 
@@ -3978,12 +3976,12 @@ static cell consgreet(AMX *amx, cell *params) {
   int iMsgLength = 0;          // length of the message in a file
   BOOL bReadFromFile = FALSE;  
 
-  char* pcMsgFile = NULL;        // the message read from a file
+  char* pcMsgFile = nullptr;        // the message read from a file
   char strGameDir[2048];  
   (*g_engfuncs.pfnGetGameDir)(strGameDir); 
 
   // check if the string provided ends with ".txt"
-  if ( pcExtension != NULL && *(pcExtension + strlen(extension)) == '\0' ) {
+  if ( pcExtension != nullptr && *(pcExtension + strlen(extension)) == '\0' ) {
     // skip spaces at the beginning
     while ( *pcText == ' ' || *pcText == '\t' ) pcText++;
 
@@ -4032,7 +4030,7 @@ static cell consgreet(AMX *amx, cell *params) {
     }  // if-else
 #else
     pcMsgFile = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(pcText, &iMsgLength));
-    if ( pcMsgFile != NULL ) {
+    if ( pcMsgFile != nullptr ) {
       if ( iMsgLength <= 1 ) {
 	return 1;
       } else {
@@ -4049,15 +4047,15 @@ static cell consgreet(AMX *amx, cell *params) {
   
   if ( bReadFromFile == TRUE ) {
     // safety first
-    if ( pcMsgFile == NULL ) {
+    if ( pcMsgFile == nullptr ) {
       FREE_FILE( pcMsgFile ) ;
-      pcMsgFile = NULL;
+      pcMsgFile = nullptr;
       return 0;
     }  // if
  
     // delete \r from the text
     char* pC = strchr( pcMsgFile, '\r' );
-    while ( pC != NULL ) {
+    while ( pC != nullptr ) {
       *pC = ' ';
       pC = strchr( pC, '\r' );
     }  // while
@@ -4067,7 +4065,7 @@ static cell consgreet(AMX *amx, cell *params) {
   }  // if
 
   FREE_FILE( pcMsgFile ) ;
-  pcMsgFile = NULL;
+  pcMsgFile = nullptr;
 
   return 1;
 }  // consgreet
@@ -4083,7 +4081,7 @@ static cell rainbow(AMX *amx, cell *params)
    *   params[3,4,5] = r,g,b colour
    *   params[6,7,8] = r,g,b colour
    */
-  cell result = 1;
+  const cell result = 1;
   int len;
   char buf[CENTER_SAY_SIZE];
   cell* cStr;    
@@ -4098,7 +4096,7 @@ static cell rainbow(AMX *amx, cell *params)
   amx_GetString(buf,cStr);    
   char* iszItem = buf;
   
-  if ( iszItem== NULL ) {
+  if ( iszItem== nullptr ) {
     System_Response( "You must say something\n", pAdminEnt );
     return result;
   }    
@@ -4107,7 +4105,7 @@ static cell rainbow(AMX *amx, cell *params)
   FormatLine(buf);
   if ( !wrap_lines( buf, CENTER_SAY_LINE_SIZE, SW_NOWRAP) ) {
     System_Response(UTIL_VarArgs("[ADMIN] (rainbow) The maximum size for any one line in a rainbow is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
-    if (pAdminEnt != NULL) {
+    if (pAdminEnt != nullptr) {
       UTIL_LogPrintf("[ADMIN] WARNING: Rainbow line limit size exceeded: %s\n", buf);
     }  // if
     return 0;
@@ -4155,7 +4153,7 @@ static cell look_in_dir(AMX *amx, cell *params) {
   
   int len_dir;
   int len_selection;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   
   if (iNumParams < 4) { // wrong #of arguments
     amx_RaiseError(amx,AMX_ERR_NATIVE);
@@ -4183,8 +4181,8 @@ static cell look_in_dir(AMX *amx, cell *params) {
   
   char array_selection[BUF_SIZE];
   amx_GetString(array_selection, fileselection); // getting fileselection criteria in array
-  
-  int map_place = (int)params[4]; 
+
+  const int map_place = (int)params[4]; 
   
   char game_dir[200];
   int i=0;
@@ -4209,8 +4207,8 @@ static cell look_in_dir(AMX *amx, cell *params) {
   
   struct _finddata_t filestruct;
   //        char buffer[_MAX_PATH];
-  
-  long hnd = _findfirst(game_dir, &filestruct);
+
+  const long hnd = _findfirst(game_dir, &filestruct);
   
   if((hnd == -1)) {
     amx_SetString(cptr, "", 0);
@@ -4234,7 +4232,7 @@ static cell look_in_dir(AMX *amx, cell *params) {
 static cell glow(AMX *amx, cell *params) {
   cell* cStr;
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4304,8 +4302,8 @@ static cell gettarget(AMX *amx, cell *params) {
   cell *cpUserName;
   int len;
   cell *cpReturnedUser;
-  
-  int iNumParams = params[0]/sizeof(cell);
+
+  const int iNumParams = params[0]/sizeof(cell);
   
   if (iNumParams < 4) { // wrong #of arguments
     amx_RaiseError(amx,AMX_ERR_NATIVE);
@@ -4321,7 +4319,7 @@ static cell gettarget(AMX *amx, cell *params) {
     return 0;
   }
   
-  CBaseEntity *pPlayer = NULL;
+  CBaseEntity *pPlayer = nullptr;
   int PlayerIndex = 0;
  
   if ( len > 0 ) {
@@ -4335,7 +4333,7 @@ static cell gettarget(AMX *amx, cell *params) {
 	}
     
   } else {
-    if ( pAdminEnt == NULL ) {
+    if ( pAdminEnt == nullptr ) {
       UTIL_LogPrintf("[ADMIN] gettarget: You cannot use this function from the server console.\n");
       return 0;
     } // if
@@ -4348,7 +4346,7 @@ static cell gettarget(AMX *amx, cell *params) {
   }  // if-else
 
   pPlayer = UTIL_PlayerByIndex(PlayerIndex); 
-  if ( pPlayer == NULL ) 
+  if ( pPlayer == nullptr ) 
     return 0; 
 
   TraceResult tr;
@@ -4390,9 +4388,9 @@ static cell gettarget(AMX *amx, cell *params) {
 
 static cell pointto(AMX *amx, cell *params) { 
   int iIndex = 0;
-  int iNumParams = params[0]/sizeof(cell); 
+  const int iNumParams = params[0]/sizeof(cell); 
   
-  if ( pAdminEnt == NULL ) {
+  if ( pAdminEnt == nullptr ) {
     UTIL_LogPrintf("[ADMIN] pointto: You cannot use this function from the server console.\n");
     return 0;
   } // if
@@ -4407,12 +4405,12 @@ static cell pointto(AMX *amx, cell *params) {
   }
   
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(iIndex); 
-  if ( pPlayer == NULL ) 
-    return 0; 
-  
-  int traceflags = gpGlobals->trace_flags;
+  if ( pPlayer == nullptr ) 
+    return 0;
 
-  char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(NULL);
+  const int traceflags = gpGlobals->trace_flags;
+
+  char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(nullptr);
   char *value=g_engfuncs.pfnInfoKeyValue( infobuffer, "trace" );
 
   if ( strcmp(value, "box") == 0) {
@@ -4446,7 +4444,7 @@ static cell pointto(AMX *amx, cell *params) {
 static cell givehealth(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4465,7 +4463,7 @@ static cell givehealth(AMX *amx, cell *params) {
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  int iHealth = (int)params[2];
+  const int iHealth = (int)params[2];
   if(iHealth>=0) {
     pPlayer->edict()->v.health += iHealth;
     UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs("%s given %i Health\n",STRING(pPlayer->pev->netname),iHealth));  
@@ -4478,7 +4476,7 @@ static cell givehealth(AMX *amx, cell *params) {
 static cell takehealth(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4497,7 +4495,7 @@ static cell takehealth(AMX *amx, cell *params) {
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  int iHealth = (int)params[2];
+  const int iHealth = (int)params[2];
 
   UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs("%s lost %i Health\n",STRING(pPlayer->pev->netname),iHealth));  
   UTIL_LogPrintf("[ADMIN] %s lost %i health\n",STRING(pPlayer->pev->netname),iHealth);
@@ -4520,7 +4518,7 @@ static cell get_userFrags(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4543,7 +4541,7 @@ static cell get_userHealth(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4566,7 +4564,7 @@ static cell get_userTeam(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4589,7 +4587,7 @@ static cell get_userArmor(AMX *amx, cell *params) {
   cell* cStr;    
   cell *Param;
   int iLength;
-  int iNumParams = params[0]/sizeof(cell);
+  const int iNumParams = params[0]/sizeof(cell);
   int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
@@ -4610,7 +4608,7 @@ static cell get_userArmor(AMX *amx, cell *params) {
 // motd - show a MOTD style message to a client
 static cell motd(AMX *amx, cell *params) {
   int iLength;
-  int iNumParams = params[0] / sizeof(cell);
+  const int iNumParams = params[0] / sizeof(cell);
   char sText[MAX_MOTD_LENGTH];
   char sUser[BUF_SIZE];
   cell* cStr;
@@ -4619,7 +4617,7 @@ static cell motd(AMX *amx, cell *params) {
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   GET_AMX_STRING(2,MAX_MOTD_LENGTH,sText,0);
 
-  int iPlayerIndex = GetPlayerIndex(sUser);
+  const int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex == 0) {
     System_Response( UTIL_VarArgs("[ADMIN] (message) Unable to find player: %s\n", sUser),pAdminEnt);
     return 0;
@@ -4749,7 +4747,7 @@ AMX_NATIVE_INFO admin_Natives[] = {
   { "motd", motd},
 
   // Terminator
-  { NULL, NULL }
+  { nullptr, nullptr }
 };
 
 

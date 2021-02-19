@@ -102,11 +102,11 @@ typedef unsigned long int reg_syntax_t;
 
 /* If this bit is set, then . doesn't match NUL.
    If not set, then it does.  */
-#define RE_DOT_NOT_NULL (RE_DOT_NEWLINE << 1)
+#define RE_DOT_NOT_nullptr (RE_DOT_NEWLINE << 1)
 
 /* If this bit is set, nonmatching lists [^...] do not match newline.
    If not set, they do.  */
-#define RE_HAT_LISTS_NOT_NEWLINE (RE_DOT_NOT_NULL << 1)
+#define RE_HAT_LISTS_NOT_NEWLINE (RE_DOT_NOT_nullptr << 1)
 
 /* If this bit is set, either \{...\} or {...} defines an
      interval, depending on RE_NO_BK_BRACES.
@@ -177,7 +177,7 @@ extern reg_syntax_t re_syntax_options;
 #define RE_SYNTAX_EMACS 0
 
 #define RE_SYNTAX_AWK							\
-  (RE_BACKSLASH_ESCAPE_IN_LISTS   | RE_DOT_NOT_NULL			\
+  (RE_BACKSLASH_ESCAPE_IN_LISTS   | RE_DOT_NOT_nullptr			\
    | RE_NO_BK_PARENS              | RE_NO_BK_REFS			\
    | RE_NO_BK_VBAR                | RE_NO_EMPTY_RANGES			\
    | RE_DOT_NEWLINE		  | RE_CONTEXT_INDEP_ANCHORS		\
@@ -185,7 +185,7 @@ extern reg_syntax_t re_syntax_options;
 
 #define RE_SYNTAX_GNU_AWK						\
   ((RE_SYNTAX_POSIX_EXTENDED | RE_BACKSLASH_ESCAPE_IN_LISTS | RE_DEBUG)	\
-   & ~(RE_DOT_NOT_NULL | RE_INTERVALS | RE_CONTEXT_INDEP_OPS))
+   & ~(RE_DOT_NOT_nullptr | RE_INTERVALS | RE_CONTEXT_INDEP_OPS))
 
 #define RE_SYNTAX_POSIX_AWK 						\
   (RE_SYNTAX_POSIX_EXTENDED | RE_BACKSLASH_ESCAPE_IN_LISTS		\
@@ -212,7 +212,7 @@ extern reg_syntax_t re_syntax_options;
 
 /* Syntax bits common to both basic and extended POSIX regex syntax.  */
 #define _RE_SYNTAX_POSIX_COMMON						\
-  (RE_CHAR_CLASSES | RE_DOT_NEWLINE      | RE_DOT_NOT_NULL		\
+  (RE_CHAR_CLASSES | RE_DOT_NEWLINE      | RE_DOT_NOT_nullptr		\
    | RE_INTERVALS  | RE_NO_EMPTY_RANGES)
 
 #define RE_SYNTAX_POSIX_BASIC						\
@@ -445,7 +445,7 @@ extern reg_syntax_t re_set_syntax _RE_ARGS ((reg_syntax_t syntax));
 
 /* Compile the regular expression PATTERN, with length LENGTH
    and syntax given by the global `re_syntax_options', into the buffer
-   BUFFER.  Return NULL if successful, and an error string if not.  */
+   BUFFER.  Return nullptr if successful, and an error string if not.  */
 extern const char *re_compile_pattern
   _RE_ARGS ((const char *pattern, size_t length,
              struct re_pattern_buffer *buffer));

@@ -49,7 +49,6 @@
 #include "amlibc.h"
 #include <amxconv_l.h>
 
-
 extern AMXINIT amx_Init;
 extern AMXREGISTER amx_Register;
 extern AMXFINDPUBLIC amx_FindPublic;
@@ -59,17 +58,15 @@ extern AMXSTRLEN amx_StrLen;
 extern AMXRAISEERROR amx_RaiseError;
 extern AMXSETSTRING amx_SetString;
 extern AMXGETSTRING amx_GetString;
-
-
 extern AMX_NATIVE_INFO admin_Natives[];
 
 extern DLL_GLOBAL edict_t* pAdminEnt;
 
 // Constructor
 CPlugin::CPlugin() {
-	m_pAmx = NULL;
-	m_pCommands = NULL;
-	m_pProgram = NULL;
+	m_pAmx = nullptr;
+	m_pCommands = nullptr;
+	m_pProgram = nullptr;
 	InitValues();
 }
 
@@ -79,7 +76,8 @@ CPlugin::~CPlugin() { //Unstable that ~CPlugin is unwanted? [APG]RoboCop[CL]
 }
 
 // The plugin's Small VM
-AMX* CPlugin::amx() {
+AMX* CPlugin::amx() const
+{
 	return m_pAmx;
 }
 
@@ -91,13 +89,13 @@ BOOL CPlugin::AddCommand(char* sCmd, char* sFunction, int iAccess) {
 	int iIndex;
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::AddCommand called when no AMX present for plugin '%s'.\n", m_sFile);
 		return FALSE;
 	}
 
 	// Verify that the function exists
-	int iError = amx_FindPublic(m_pAmx, sFunction, &iIndex);
+	const int iError = amx_FindPublic(m_pAmx, sFunction, &iIndex);
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s wants to hook command '%s' to non-existant function '%s'\n",m_sFile,sCmd,sFunction);
 		return FALSE;
@@ -115,37 +113,36 @@ BOOL CPlugin::AddCommand(char* sCmd, char* sFunction, int iAccess) {
 // General clean up, for when we're destroyed, or need to
 // re-initialize ourselves
 void CPlugin::Cleanup() {
-	if (m_pAmx != NULL) {
+	if (m_pAmx != nullptr) {
 		delete(m_pAmx);
-		m_pAmx = NULL;
+		m_pAmx = nullptr;
 	}
 
-	if (m_pProgram != NULL) {
+	if (m_pProgram != nullptr) {
 		delete[] m_pProgram;
-		m_pProgram = NULL;
+		m_pProgram = nullptr;
 	}
 
-	if (m_pCommands != NULL) {
+	if (m_pCommands != nullptr) {
 		delete(m_pCommands);
-		m_pCommands = NULL;
+		m_pCommands = nullptr;
 	}
 }
-
-
 
 // Checks if this plugin implements a command and returns the access level
 // associated with this command in the second parameter.
 // Returns TRUE if the plugin implements the command, FALSE otherwise.
-BOOL CPlugin::CheckCommand( const char* _pcCommand, unsigned int& _uiAccess ) {
+BOOL CPlugin::CheckCommand( const char* _pcCommand, unsigned int& _uiAccess ) const
+{
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		//UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::CheckCommand called when no AMX present for plugin '%s'.\n", m_sFile);
 		return FALSE;
 	}
 
 	// Verify that we hook any commands
-	if (m_pCommands == NULL) {
+	if (m_pCommands == nullptr) {
 		return FALSE;
 	}
 
@@ -153,19 +150,19 @@ BOOL CPlugin::CheckCommand( const char* _pcCommand, unsigned int& _uiAccess ) {
   CLinkItem<command_struct>* pLink = m_pCommands->FirstLink();
   command_struct* pCmd;
   
-  while ( pLink != NULL ) {
+  while ( pLink != nullptr ) {
 	  pCmd = pLink->Data();
 	  if ( strcasecmp(_pcCommand, pCmd->sCmd) == 0 ) {
 		  _uiAccess = pCmd->iAccess;
-		  pCmd = NULL;
-		  pLink = NULL;
+		  pCmd = nullptr;
+		  pLink = nullptr;
 		  return TRUE;
 	  }  // if
 	  pLink = pLink->NextLink();
   }  // while
 
-  pCmd = NULL;
-  pLink = NULL;
+  pCmd = nullptr;
+  pLink = nullptr;
   return FALSE;
 }
 
@@ -175,33 +172,33 @@ BOOL CPlugin::CheckCommand( const char* _pcCommand, unsigned int& _uiAccess ) {
 // Handles a command. Calls plugin_command, if this plugin implements it,
 // and any functions associated with the command, if the plugin has any. 
 // Note that with 'admin_command', it's possible for this proc to be called
-// with a NULL pEntity (ie, from the console)
+// with a nullptr pEntity (ie, from the console)
 plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
   int iError;
   cell iResult = PLUGIN_INVAL_CMD;
   
   // Verify that we're a loaded plugin
-  if (m_pAmx == NULL) {
+  if (m_pAmx == nullptr) {
     UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::HandleCommand called when no AMX present for plugin '%s'.\n", m_sFile);
     return PLUGIN_ERROR;
   }
 
-  // Some safekeeping. A NULL sCmd gets passed as a an empty string. Same for sData.
+  // Some safekeeping. A nullptr sCmd gets passed as a an empty string. Same for sData.
   // DOS line endings get transformed to proper format without the CR.
-  if ( sCmd == NULL ) {
+  if ( sCmd == nullptr ) {
 	  sCmd = "";
   } else {
-	  char* pcCR = NULL;
+	  char* pcCR = nullptr;
 	  // check if the first '\r' from right is the last ("\r\0") or second to last (prob. "\r\l\0") character. If yes, end the string there.
-	  if ( (pcCR = strrchr(sCmd, '\r')) != NULL  && (*(pcCR+1) == '\0' || *(pcCR+2) == '\0') ) *pcCR = '\0';
+	  if ( (pcCR = strrchr(sCmd, '\r')) != nullptr  && (*(pcCR+1) == '\0' || *(pcCR+2) == '\0') ) *pcCR = '\0';
   }  // if
   
-  if ( sData == NULL ) {
+  if ( sData == nullptr ) {
 	  sData = "";
   } else {
-	  char* pcCR = NULL;
+	  char* pcCR = nullptr;
 	  // check if the first '\r' from right is the last ("\r\0") or second to last (prob. "\r\l\0") character. If yes, end the string there.
-	  if ( (pcCR = strrchr(sData, '\r')) != NULL && (*(pcCR+1) == '\0' || *(pcCR+2) == '\0') ) *pcCR = '\0';
+	  if ( (pcCR = strrchr(sData, '\r')) != nullptr && (*(pcCR+1) == '\0' || *(pcCR+2) == '\0') ) *pcCR = '\0';
   }  // if
   
 
@@ -211,7 +208,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
     // If we are, call that procedure.
     // The implementation of plugin_command is:
     // plugin_command(Command[], Data[], UserName[], UserIndex);
-    if (pEntity == NULL) {
+    if (pEntity == nullptr) {
       iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, (cell)sCmd, (cell)sData, (cell)"Admin", (cell)0);
     } else {
 		char name[USERNAME_SIZE];
@@ -223,7 +220,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
     // Check for errors.
     if (iError != AMX_ERR_NONE) {
       UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_command\n",m_sFile,iError);
-      if (pEntity != NULL) {
+      if (pEntity != nullptr) {
 		  CLIENT_PRINTF(pEntity, print_console, UTIL_VarArgs("[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_command\n",m_sFile,iError));
       }
       return PLUGIN_ERROR;
@@ -235,7 +232,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   
 
 	// Verify that we hook any commands
-	if (m_pCommands == NULL) {
+	if (m_pCommands == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s has no valid list of available commands.\n",m_sFile);
 		return PLUGIN_ERROR;
 	}
@@ -245,7 +242,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   CLinkItem<command_struct>* pLink = m_pCommands->FirstLink();
   command_struct* pCmd;
   
-  while (pLink != NULL) {
+  while (pLink != nullptr) {
     pCmd = pLink->Data();
     if (stricmp(sCmd,pCmd->sCmd)==0) {
       DEBUG_LOG( 3, ("Match found on command %s (access:%i) for plugin %s / function %i",sCmd, pCmd->iAccess, m_sFile, pCmd->iIndex) );
@@ -255,15 +252,15 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   }
   
   // If we have no current command, we ran out, and so obviously don't handle this command.
-  if (pLink == NULL) {
+  if (pLink == nullptr) {
     return PLUGIN_INVAL_CMD;
     // Then, unless this command is ACCESS_ALL or we're the console, we need to check for
     // valid access.
-  } else if (pCmd->iAccess != ACCESS_ALL && pEntity != NULL) {
+  } else if (pCmd->iAccess != ACCESS_ALL && pEntity != nullptr) {
     if ((GetUserAccess(pEntity) & pCmd->iAccess) != pCmd->iAccess) {
       char* sRejectMsg = const_cast<char*>(CVAR_GET_STRING("admin_reject_msg"));
       
-      if (sRejectMsg == NULL || FStrEq(sRejectMsg,"0")) {
+      if (sRejectMsg == nullptr || FStrEq(sRejectMsg,"0")) {
 		  CLIENT_PRINTF(pEntity, print_console, "You do not have access to this command.\n");
       } else {
 		  CLIENT_PRINTF(pEntity, print_console, UTIL_VarArgs("%s\n", sRejectMsg));
@@ -276,7 +273,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   // Otherwise, call the procedure this command is associated with.
   // The implementation of an exported command is:
   // command(Command[], Data[], UserName[], UserIndex);
-  if (pEntity == NULL) {
+  if (pEntity == nullptr) {
     iError = amx_Exec(m_pAmx, &iResult, pCmd->iIndex, 4, (cell)sCmd, (cell)sData, (cell)"Admin", (cell)0);
   } else {
 	// Possible instabilty error for 2.50 Linux SteamPipe build [APG]RoboCop[CL]
@@ -286,7 +283,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   // Check for errors.
   if (iError != AMX_ERR_NONE) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing command %s\n",m_sFile,iError,sCmd);
-    if (pEntity != NULL) {
+    if (pEntity != nullptr) {
       CLIENT_PRINTF(pEntity, print_console, UTIL_VarArgs("[ADMIN] ERROR: Plugin %s returned error %i when executing command %s\n",m_sFile,iError,sCmd));
     }
     return PLUGIN_ERROR;
@@ -299,17 +296,17 @@ plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddr
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::HandleConnect called when no AMX present for plugin '%s'.\n", m_sFile);
 		return PLUGIN_ERROR;
 	// Verify that we have a valid entity
-	} else if (pEntity == NULL) {
-		UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::HandleConnect called with NULL entity.\n");
+	} else if (pEntity == nullptr) {
+		UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::HandleConnect called with nullptr entity.\n");
 		return PLUGIN_ERROR;
 	}
 
 	// Make sure the entity's index is valid.
-	int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
 	if (!(iIndex >= 1 && iIndex <= INT_MAX_PLAYERS)) {
 		UTIL_LogPrintf("[ADMIN] WARNING: CPlugin::HandleConnect called with invalid index %i entity.\n", iIndex);
 		return PLUGIN_ERROR;
@@ -322,7 +319,7 @@ plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddr
 	// Otherwise, call the procedure.
 	// The implementation of plugin_connect is:
 	// plugin_connect(UserName[], IP[], UserIndex);
-	int iError = amx_Exec(m_pAmx, &iResult, m_iEventConnectIndex, 3, (cell)sName, (cell)IPAddress, (cell)iIndex);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventConnectIndex, 3, (cell)sName, (cell)IPAddress, (cell)iIndex);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_connect\n",m_sFile,iError);
@@ -336,17 +333,17 @@ plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::HandleDisconnect called when no AMX present for plugin '%s'.\n", m_sFile);
 		return PLUGIN_ERROR;
 	// Verify that we have a valid entity
-	} else if (pEntity == NULL) {
-		UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::HandleDisconnect called with NULL entity.\n");
+	} else if (pEntity == nullptr) {
+		UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::HandleDisconnect called with nullptr entity.\n");
 		return PLUGIN_ERROR;
 	}
 
 	// Make sure the entity's index is valid.
-	int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
 	if (!(iIndex >= 1 && iIndex <= INT_MAX_PLAYERS)) {
 		UTIL_LogPrintf("[ADMIN] WARNING: CPlugin::HandleDisconnect called with invalid index %i entity.\n", iIndex);
 		return PLUGIN_ERROR;
@@ -359,7 +356,7 @@ plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_disconnect is:
 	// plugin_disconnect(UserName[], UserIndex);
-	int iError = amx_Exec(m_pAmx, &iResult, m_iEventDisconnectIndex, 2, (cell)STRING(pEntity->v.netname), (cell)iIndex);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventDisconnectIndex, 2, (cell)STRING(pEntity->v.netname), (cell)iIndex);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_disconnect\n",m_sFile,iError);
@@ -376,17 +373,17 @@ plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::HandleInfo called when no AMX present for plugin '%s'.\n", m_sFile);
 		return PLUGIN_ERROR;
 	// Verify that we have a valid entity
-	} else if (pEntity == NULL) {
-		UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::HandleInfo called with NULL entity.\n");
+	} else if (pEntity == nullptr) {
+		UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::HandleInfo called with nullptr entity.\n");
 		return PLUGIN_ERROR;
 	}
 
 	// Make sure the entity's index is valid.
-	int iIndex = ENTINDEX(pEntity);
+	const int iIndex = ENTINDEX(pEntity);
 	if (!(iIndex >= 1 && iIndex <= INT_MAX_PLAYERS)) {
 		UTIL_LogPrintf("[ADMIN] WARNING: CPlugin::HandleInfo called with invalid index %i entity.\n", iIndex);
 		return PLUGIN_ERROR;
@@ -399,8 +396,8 @@ plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_info is:
 	// plugin_info(OldUserName[],NewUserName[],UserIndex);
-	int iError = amx_Exec(m_pAmx, &iResult, m_iEventInfoIndex, 3, (cell)STRING(pEntity->v.netname), (cell)sNewName,
-	                      (cell)iIndex);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventInfoIndex, 3, (cell)STRING(pEntity->v.netname), (cell)sNewName,
+	                            (cell)iIndex);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_info\n",m_sFile,iError);
@@ -414,7 +411,7 @@ plugin_result CPlugin::HandleLog(char* sLog) {
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::HandleLog called when no AMX present for plugin '%s'.\n", m_sFile);
 		return PLUGIN_ERROR;
 	}
@@ -426,7 +423,7 @@ plugin_result CPlugin::HandleLog(char* sLog) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_log is:
 	// plugin_log(Log[]);
-	int iError = amx_Exec(m_pAmx, &iResult, m_iEventLogIndex, 1, (cell)sLog);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventLogIndex, 1, (cell)sLog);
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_log\n",m_sFile,iError);
@@ -462,19 +459,19 @@ int CPlugin::LoadFile(char* sFilename) {
 	FILE *fp;
 	AMX_LINUX_HEADER hdr;
 
-	if ( m_pProgram != NULL ) {
+	if ( m_pProgram != nullptr ) {
 		delete[] m_pProgram ;
 	}
-	m_pProgram = NULL;
+	m_pProgram = nullptr;
 	m_pAmx = new AMX;
 
 	// Attempt to open the file
-	if ( (fp = fopen( sFilename, "rb" )) != NULL ) {
+	if ( (fp = fopen( sFilename, "rb" )) != nullptr ) {
 
 		// If we opened it, read the puppy in
 		fread(&hdr, sizeof hdr, 1, fp);
 		// check .amx file type
-		int iFileType = check_header_type(hdr, iAMXsize);
+		const int iFileType = check_header_type(hdr, iAMXsize);
 
 		if ( iFileType == INVAL_AMX_HDR ) {
 			// This is no valid AMX file
@@ -535,7 +532,7 @@ int CPlugin::LoadFile(char* sFilename) {
 
 		// Get a memory chunk big enough for the file
 		m_pProgram = new char[ iAMXsize ];
-		if ( m_pProgram != NULL ) {
+		if ( m_pProgram != nullptr ) {
 			// Go to the start of the file again
 			rewind( fp );
 			
@@ -549,7 +546,7 @@ int CPlugin::LoadFile(char* sFilename) {
 				char* pTmpMemFile = new char[hdr.size];
 				char* pCodeFrom, *pCodeTo;
 				long lCodeSize;
-				if ( pTmpMemFile == NULL ) {
+				if ( pTmpMemFile == nullptr ) {
 					UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::LoadFile: Loading file '%s' to memory failed: not enough memory (%i)\n", sFilename, hdr.size );
 					delete[] m_pProgram;
 					fclose( fp );
@@ -596,7 +593,7 @@ int CPlugin::LoadFile(char* sFilename) {
 			memset(m_pAmx, 0, sizeof(AMX));
 			// Now attempt to 'start' the file in the new AMX space
 			// Ignore error indicating that native functions aren't found. The admin functions get registered later.
-			int iError = amx_Init(m_pAmx, m_pProgram);
+			const int iError = amx_Init(m_pAmx, m_pProgram);
 			if ( iError != AMX_ERR_NONE && iError != AMX_ERR_NOTFOUND ) {
 				UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::LoadFile: Call to amx_Init on plugin '%s' returned error #%i.\n",sFilename, iError);
 				delete[] m_pProgram;
@@ -691,14 +688,14 @@ plugin_result CPlugin::StartPlugin() {
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
-	if (m_pAmx == NULL) {
+	if (m_pAmx == nullptr) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::StartPlugin called when no AMX present for plugin '%s'.\n", m_sFile);
 		return PLUGIN_ERROR;
 	}
 
 	// Save the pAdminEnt pointer to call the plugin_init() function as server.
 	const edict_t* pTempEnt = pAdminEnt;
-	pAdminEnt = NULL;
+	pAdminEnt = nullptr;
 
 	// Call plugin_init.  We know the plugin has to implement plugin_init,
 	// because we check for this in LoadPlugin.
@@ -706,7 +703,7 @@ plugin_result CPlugin::StartPlugin() {
 
 	// Restore the pAdminEnt pointer.
 	pAdminEnt = const_cast<edict_t*>(pTempEnt);
-	pTempEnt = NULL;
+	pTempEnt = nullptr;
 
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {

@@ -60,7 +60,7 @@ AmFSNode::AmFSNode()
 {
 	m_iFiledes = 0;
 	m_bIsSet = false;
-	m_poDirectoryObject = NULL;
+	m_poDirectoryObject = nullptr;
 }
 
 AmFSNode::AmFSNode( const char* _fullpath )
@@ -68,7 +68,7 @@ AmFSNode::AmFSNode( const char* _fullpath )
 	m_iFiledes = 0;
 	strncpy( m_acFullpath, _fullpath, PATH_MAX );
 	m_stat_node();
-	m_poDirectoryObject = NULL;
+	m_poDirectoryObject = nullptr;
 }
 
 AmFSNode::AmFSNode( const char* _path, const char* _nodename )
@@ -76,18 +76,18 @@ AmFSNode::AmFSNode( const char* _path, const char* _nodename )
 	m_iFiledes = 0;
 	snprintf( m_acFullpath, PATH_MAX, "%s/%s", _path, _nodename );
 	m_stat_node();
-	m_poDirectoryObject = NULL;
+	m_poDirectoryObject = nullptr;
 }
 
 AmFSNode::AmFSNode( int _filedes ) : m_iFiledes(_filedes)
 {
 	m_stat_node();
-	m_poDirectoryObject = NULL;
+	m_poDirectoryObject = nullptr;
 }
 
 AmFSNode::~AmFSNode()
 {
-	if (NULL != m_poDirectoryObject ) delete m_poDirectoryObject;
+	if (nullptr != m_poDirectoryObject ) delete m_poDirectoryObject;
 }
 
 void AmFSNode::set( const char* _fullpath )
@@ -110,7 +110,7 @@ void AmFSNode::set( int _filedes )
 	m_stat_node();
 }
 
-bool AmFSNode::is_directory( void )
+bool AmFSNode::is_directory() const
 {
 	if ( m_bIsSet ) {
 		return (S_ISDIR(m_oStat.st_mode)?true:false);
@@ -119,7 +119,7 @@ bool AmFSNode::is_directory( void )
 	}
 }
 
-bool AmFSNode::is_file( void )
+bool AmFSNode::is_file() const
 {
 	if ( m_bIsSet ) {
 		return (S_ISREG(m_oStat.st_mode)?true:false);
@@ -128,21 +128,21 @@ bool AmFSNode::is_file( void )
 	}
 }
 
-void AmFSNode::name( char* _name, int _max )
+void AmFSNode::name( char* _name, int _max ) const
 {
 	strncpy( _name, m_acFullpath, _max );
 }
 
-const char* AmFSNode::name( )
+const char* AmFSNode::name( ) const
 {
 	return m_acFullpath;
 }
 
-AmDir* AmFSNode::get_directory_handle( void )
+AmDir* AmFSNode::get_directory_handle()
 {
-	if ( ! is_directory() || ! m_bIsSet ) return NULL;
+	if ( ! is_directory() || ! m_bIsSet ) return nullptr;
 
-	if ( m_poDirectoryObject != NULL ) {
+	if ( m_poDirectoryObject != nullptr ) {
 		delete m_poDirectoryObject;
 	}
 
@@ -151,7 +151,7 @@ AmDir* AmFSNode::get_directory_handle( void )
 	return m_poDirectoryObject;
 }
 
-void AmFSNode::m_stat_node( void ) {
+void AmFSNode::m_stat_node() {
 	int retval = 0;
 	if ( 0 != m_iFiledes ) {
 		retval = fstat( m_iFiledes, &m_oStat );
@@ -168,20 +168,20 @@ void AmFSNode::m_stat_node( void ) {
 
 const char* AmDir::get_next_entry( AmFSNode& _oNode )
 {
-	if ( !is_directory() ) return NULL;
+	if ( !is_directory() ) return nullptr;
 
-	if ( m_next_entry() == 0 ) return NULL;
+	if ( m_next_entry() == 0 ) return nullptr;
 
 	_oNode.set( m_acFullpath, m_pcDirEntryName );
 
 	return m_pcDirEntryName;
 }
 
-const char* AmDir::get_next_entry( void )
+const char* AmDir::get_next_entry()
 {
-	if ( !is_directory() ) return NULL;
+	if ( !is_directory() ) return nullptr;
 
-	if ( m_next_entry() == 0 ) return NULL;
+	if ( m_next_entry() == 0 ) return nullptr;
 
 	return m_pcDirEntryName;
 }
@@ -189,14 +189,14 @@ const char* AmDir::get_next_entry( void )
 #ifdef LINUX
 void AmDir::set( const char* _fullpath )
 {
-    if ( m_ptDirHandle != NULL ) closedir( m_ptDirHandle );
+    if ( m_ptDirHandle != nullptr ) closedir( m_ptDirHandle );
 	m_free_dir_entries();
     AmFSNode::set( _fullpath );
 }
 
 void AmDir::set( const char* _path, const char* _nodename )
 {
-    if ( m_ptDirHandle != NULL ) closedir( m_ptDirHandle );
+    if ( m_ptDirHandle != nullptr ) closedir( m_ptDirHandle );
 	m_free_dir_entries();
     AmFSNode::set( _path, _nodename );
 }
@@ -204,39 +204,39 @@ void AmDir::set( const char* _path, const char* _nodename )
 void AmDir::set( int filedes ) {
 }
 
-void AmDir::sort( void )
+void AmDir::sort()
 {
-	if ( m_ptDirHandle != NULL ) closedir( m_ptDirHandle );
+	if ( m_ptDirHandle != nullptr ) closedir( m_ptDirHandle );
 	m_free_dir_entries();
 
-	if ( (m_iNumDirEntries = scandir(m_acFullpath, &m_ppoDirEntries, NULL, alphasort)) < 0 ) {
-		m_ppoDirEntries == NULL;
+	if ( (m_iNumDirEntries = scandir(m_acFullpath, &m_ppoDirEntries, nullptr, alphasort)) < 0 ) {
+		m_ppoDirEntries == nullptr;
 	} else {
 		m_iCurrDirEntryNum = 0;
 	}
 }
 
-void AmDir::rewind( void )
+void AmDir::rewind()
 {
-	if ( m_ppoDirEntries == NULL ) {
+	if ( m_ppoDirEntries == nullptr ) {
 		rewinddir( m_ptDirHandle );
 	} else {
 		m_iCurrDirEntryNum = 0;
 	}
 }
 
-int AmDir::m_next_entry( void )
+int AmDir::m_next_entry()
 {
 	// Check if we read from disk and have no directory open
-	if ( m_ppoDirEntries == NULL && m_ptDirHandle == NULL ) {
+	if ( m_ppoDirEntries == nullptr && m_ptDirHandle == nullptr ) {
 		m_ptDirHandle = opendir( m_acFullpath );
-		if ( m_ptDirHandle == NULL ) return 0;
+		if ( m_ptDirHandle == nullptr ) return 0;
 	}
 
 readdiragain:
-	if ( m_ppoDirEntries == NULL ) {
+	if ( m_ppoDirEntries == nullptr ) {
 		m_poDirEntry = readdir( m_ptDirHandle );
-		if ( m_poDirEntry == NULL ) {
+		if ( m_poDirEntry == nullptr ) {
 			return 0;
 		}
 	} else {
@@ -252,9 +252,9 @@ readdiragain:
 	return 1;
 }
 
-void AmDir::m_free_dir_entries( void )
+void AmDir::m_free_dir_entries()
 {
-	if ( m_ppoDirEntries != NULL ) {
+	if ( m_ppoDirEntries != nullptr ) {
 		while ( m_iNumDirEntries-- ) {
 			free( m_ppoDirEntries[m_iNumDirEntries] );
 		}
@@ -289,7 +289,7 @@ void AmDir::set( int filedes ) {
         return;
 }
 
-void AmDir::sort( void )
+void AmDir::sort()
 {
 	if ( m_liDirHandle >= 0 ) {
 		_findclose( m_liDirHandle );
@@ -321,7 +321,7 @@ void AmDir::sort( void )
 	// if we have any entries, load and save them
 	// first, lets make an array
 	m_poDirEntries = new _finddata_t[m_iNumDirEntries];
-	if ( m_poDirEntries == NULL ) {
+	if ( m_poDirEntries == nullptr ) {
 		m_iNumDirEntries = 0;
 		return;
 	}
@@ -338,9 +338,9 @@ void AmDir::sort( void )
 	m_iCurrDirEntryNum = 0;
 }
 
-void AmDir::rewind( void )
+void AmDir::rewind()
 {
-	if ( m_poDirEntries == NULL ) {
+	if ( m_poDirEntries == nullptr ) {
 		if ( m_liDirHandle >= 0 ) _findclose( m_liDirHandle );
 		m_liDirHandle = -1;
 	} else {
@@ -348,11 +348,11 @@ void AmDir::rewind( void )
 	}
 }
 
-int AmDir::m_next_entry( void )
+int AmDir::m_next_entry()
 {
 	struct _finddata_t* poDirEntry = &m_oDirEntry;
 
-	if ( m_poDirEntries == NULL && m_liDirHandle < 0 ) {
+	if ( m_poDirEntries == nullptr && m_liDirHandle < 0 ) {
         char acGlob[PATH_MAX+3];
 
         strcpy( acGlob, m_acFullpath );
@@ -363,7 +363,7 @@ int AmDir::m_next_entry( void )
 
     } else {
 readdiragain:
-		if ( m_poDirEntries == NULL ) {
+		if ( m_poDirEntries == nullptr ) {
 	        if ( _findnext(m_liDirHandle, poDirEntry) < 0 ) {
 		        _findclose( m_liDirHandle );
 			    m_liDirHandle = -1;
@@ -383,9 +383,9 @@ readdiragain:
 	return 1;
 }
 
-void AmDir::m_free_dir_entries( void )
+void AmDir::m_free_dir_entries()
 {
-	if ( m_poDirEntries != NULL ) {
+	if ( m_poDirEntries != nullptr ) {
 		delete[] m_poDirEntries;
 	}
 	m_iNumDirEntries = 0;

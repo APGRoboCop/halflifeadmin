@@ -45,13 +45,13 @@ typedef void (*LINK_ENTITY_FUNC)(entvars_t*);
     extern "C" _declspec(dllexport) void mapClassName(entvars_t* pev);                    \
     void mapClassName(entvars_t* pev)                                                     \
     {                                                                                     \
-        static LINK_ENTITY_FUNC otherClassName = NULL;                                    \
+        static LINK_ENTITY_FUNC otherClassName = nullptr;                                    \
         static int missing = 0;                                                           \
         if(missing == 1)                                                                  \
             return;                                                                       \
-        if(otherClassName == NULL)                                                        \
+        if(otherClassName == nullptr)                                                        \
             otherClassName = (LINK_ENTITY_FUNC)GetProcAddress(h_Library, mapClassString); \
-        if(otherClassName == NULL) {                                                      \
+        if(otherClassName == nullptr) {                                                      \
             missing = 1;                                                                  \
             UTIL_LogPrintf("[ADMIN] ERROR: couldn't find entity %s\n", mapClassString);   \
             return;                                                                       \
@@ -63,13 +63,13 @@ typedef void (*LINK_ENTITY_FUNC)(entvars_t*);
     extern "C" void mapClassName(entvars_t* pev);                                       \
     void mapClassName(entvars_t* pev)                                                   \
     {                                                                                   \
-        static LINK_ENTITY_FUNC otherClassName = NULL;                                  \
+        static LINK_ENTITY_FUNC otherClassName = nullptr;                                  \
         static int missing = 0;                                                         \
         if(missing == 1)                                                                \
             return;                                                                     \
-        if(otherClassName == NULL)                                                      \
+        if(otherClassName == nullptr)                                                      \
             otherClassName = (LINK_ENTITY_FUNC)dlsym(h_Library, mapClassString);        \
-        if(otherClassName == NULL) {                                                    \
+        if(otherClassName == nullptr) {                                                    \
             missing = 1;                                                                \
             UTIL_LogPrintf("[ADMIN] ERROR: couldn't find entity %s\n", mapClassString); \
             return;                                                                     \

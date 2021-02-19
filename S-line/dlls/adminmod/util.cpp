@@ -78,7 +78,7 @@ DLL_GLOBAL const Vector     g_vecZero = Vector(0,0,0);
 /* Like System_Response, but will _always_ log. */
 void System_Error(char* str, edict_t* pEntity) {
   UTIL_LogPrintf( "%s", str);
-  if (pEntity != NULL) {
+  if (pEntity != nullptr) {
     if ((int)CVAR_GET_FLOAT("admin_debug") != 0) {
       CLIENT_PRINTF(pEntity, print_chat, str);
     } else {
@@ -95,7 +95,7 @@ void System_Error(char* str, edict_t* pEntity) {
  */
 void System_Response(char *str,edict_t *pAdminEnt) {
   
-  if(pAdminEnt== NULL) {
+  if(pAdminEnt== nullptr) {
     UTIL_LogPrintf( "%s", str);
   } else {
     CLIENT_PRINTF( pAdminEnt, print_console,str);
@@ -108,7 +108,7 @@ void System_Response(char *str,edict_t *pAdminEnt) {
   stop malformed names stuffing up checking
 */
 int make_friendly(char *name, BOOL check) {
-	int iLen = strlen(name);
+	const int iLen = strlen(name);
 	
 	
 	if(check && (g_NameCrashAction > 0 ) && ( iLen<=0 )  ) return 2; // the name is zero length....  
@@ -134,8 +134,8 @@ int make_friendly(char *name, BOOL check) {
  *
  */
 const char* escape_chars( const char* _pcString, const char* _pcChars ) {
-	static char* pcResultString = NULL;
-	int iLength = strlen( _pcString );
+	static char* pcResultString = nullptr;
+	const int iLength = strlen( _pcString );
 	int iNumChars = strlen( _pcChars );
 	int iNumEscapes = 0;
 
@@ -143,7 +143,7 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 
 	// count the number of characters to escape.
 	const char* pcPos = _pcString;
-	while ( (pcPos = strpbrk(pcPos,_pcChars)) != NULL ) {
+	while ( (pcPos = strpbrk(pcPos,_pcChars)) != nullptr ) {
 		iNumEscapes++;
 		pcPos++;
 	}  // while
@@ -153,15 +153,15 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 		return _pcString;
 	}  // if
 
-	if ( pcResultString != NULL ) delete[] pcResultString;
+	if ( pcResultString != nullptr ) delete[] pcResultString;
 	pcResultString = new char[iLength + iNumEscapes + 1];
-	if ( pcResultString == NULL ) return NULL;
+	if ( pcResultString == nullptr ) return nullptr;
 
 	// copy the string into our new string, escaping charaters
 	char* pcSet = pcResultString;
 	const char* pcCopy = _pcString;
 	pcPos = _pcString;
-	while( (pcPos = strpbrk(pcPos, _pcChars)) != NULL ) {
+	while( (pcPos = strpbrk(pcPos, _pcChars)) != nullptr ) {
 		while( pcCopy != pcPos ) {
 			*pcSet = *pcCopy;
 			pcSet++; pcCopy++;
@@ -223,7 +223,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 
 
 	long int retval = _liNumDefault;
-	size_t iOptionIDLen = strlen( _pcOption );
+	const size_t iOptionIDLen = strlen( _pcOption );
 
 	// set if the option was found
 	bool bOptionFound = false;
@@ -232,7 +232,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 	// find the option identifier
 	const char* pcOpt = pcOptions;
 
-	while ( (pcOpt=strstr(pcOpt, _pcOption)) != NULL ) {  // if the identifier string was found ...
+	while ( (pcOpt=strstr(pcOpt, _pcOption)) != nullptr ) {  // if the identifier string was found ...
 		if ( pcOpt == pcOptions || *(pcOpt-1) == ':' ) {  // ... and it is indeed the start of an identifier ...
 			if ( (*(pcOpt+iOptionIDLen) == ' ' && *(pcOpt += iOptionIDLen + 1))
 				 || ((*(pcOpt+iOptionIDLen)>=0x30 && *(pcOpt+iOptionIDLen)<=0x39)  && *(pcOpt += iOptionIDLen)) ) {  
@@ -241,9 +241,9 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 				bOptionFound = true;
 
 				// get the numeric value
-				retval = strtol( pcOpt, NULL, 0 );
+				retval = strtol( pcOpt, nullptr, 0 );
 
-				if ( _pcReturnString != NULL ) {  
+				if ( _pcReturnString != nullptr ) {  
 					// if we should return the string value, copy it
 					while ( (*pcOpt != ':') && (*pcOpt != '\0') && _tsLen ) {
 						*_pcReturnString = *pcOpt;
@@ -258,7 +258,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 	}  // while
 
 	// in case the option was not found and we have a default string, copy it over
-	if ( !bOptionFound && _pcStringDefault != NULL ) {
+	if ( !bOptionFound && _pcStringDefault != nullptr ) {
 		am_strncpy( _pcReturnString, _pcStringDefault, _tsLen );
 	}  // if
 
@@ -271,11 +271,11 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMore, char pszText[1024]) {
 
   int msgShowMenu = 0;
-  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", NULL)) == 0 ) {
+  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", nullptr)) == 0 ) {
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
 
-  MESSAGE_BEGIN( MSG_ONE, msgShowMenu, NULL, pev);
+  MESSAGE_BEGIN( MSG_ONE, msgShowMenu, nullptr, pev);
   
   WRITE_SHORT( bitsValidSlots);
   WRITE_CHAR( nDisplayTime );
@@ -292,7 +292,7 @@ void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMor
 void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char pszText[]) {
   
   int msgShowMenu = 0;
-  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", NULL)) == 0 ) {
+  if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", nullptr)) == 0 ) {
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
 
@@ -310,7 +310,7 @@ void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char ps
 
 	  pMenuList = aMenuList + iCharCount;
 
-	  MESSAGE_BEGIN( MSG_ONE, msgShowMenu, NULL, pev );	
+	  MESSAGE_BEGIN( MSG_ONE, msgShowMenu, nullptr, pev );	
 	  WRITE_SHORT( bitsValidSlots );
 	  WRITE_CHAR( nDisplayTime );
 	  WRITE_BYTE(*pMenuList ? TRUE : FALSE); //Need more menu?
@@ -327,7 +327,7 @@ void ShowMOTD( edict_t* pev, const char *msg )
   int char_count = 0;
 
   int msgShowMOTD = 0;
-  if ( (msgShowMOTD = GET_USER_MSG_ID(PLID, "MOTD", NULL)) == 0 ) {
+  if ( (msgShowMOTD = GET_USER_MSG_ID(PLID, "MOTD", nullptr)) == 0 ) {
 	  msgShowMOTD = REG_USER_MSG( "MOTD", -1 );
   }  // if
 
@@ -350,9 +350,9 @@ void ShowMOTD( edict_t* pev, const char *msg )
     if ( char_count < MAX_MOTD_LENGTH && char_count < strlen(msg) )
 	msg += strlen(chunk);
     else
-	msg = NULL;
+	msg = nullptr;
 
-    MESSAGE_BEGIN( MSG_ONE, msgShowMOTD, NULL, pev );
+    MESSAGE_BEGIN( MSG_ONE, msgShowMOTD, nullptr, pev );
 	WRITE_BYTE( msg ? FALSE : TRUE );  //FALSE means there is still more message to come
 	WRITE_STRING( chunk );
     MESSAGE_END();
@@ -367,12 +367,12 @@ void ShowMOTD( edict_t* pev, const char *msg )
 
 
 edict_t* UTIL_EntityByIndex( int playerIndex ){
-	edict_t* pPlayerEdict = NULL;
+	edict_t* pPlayerEdict = nullptr;
 
 	if ( playerIndex > 0 && playerIndex <= gpGlobals->maxClients ) {
 		pPlayerEdict = INDEXENT( playerIndex );
 		if ( !pPlayerEdict || pPlayerEdict->free ) {
-			pPlayerEdict = NULL;
+			pPlayerEdict = nullptr;
 		}
 	}
 	return pPlayerEdict;
@@ -381,7 +381,7 @@ edict_t* UTIL_EntityByIndex( int playerIndex ){
 
 
 CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
-  CBaseEntity* pPlayer = NULL;
+  CBaseEntity* pPlayer = nullptr;
   
   if ( playerIndex > 0 && playerIndex <= gpGlobals->maxClients ) {
     edict_t* pPlayerEdict = INDEXENT( playerIndex );
@@ -394,7 +394,7 @@ CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
 
 
 CBaseEntity* UTIL_PlayerByName( const char *name ) {
-	CBaseEntity *pPlayer = NULL;
+	CBaseEntity *pPlayer = nullptr;
   for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
     pPlayer = UTIL_PlayerByIndex(i);
     if (pPlayer) {
@@ -402,7 +402,7 @@ CBaseEntity* UTIL_PlayerByName( const char *name ) {
 	return pPlayer;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 
@@ -493,14 +493,14 @@ CBaseEntity *UTIL_FindEntityByString( CBaseEntity *pStartEntity, const
   if (pStartEntity)
     pentEntity = pStartEntity->edict();
   else
-    pentEntity = NULL;
+    pentEntity = nullptr;
   
   pentEntity = FIND_ENTITY_BY_STRING( pentEntity, szKeyword, szValue
 				      );
   
   if (!FNullEnt(pentEntity))
     return CBaseEntity::Instance(pentEntity);
-  return NULL;
+  return nullptr;
 }                        
 
 CBaseEntity *UTIL_FindEntityByClassname( CBaseEntity *pStartEntity, const
@@ -551,8 +551,8 @@ void DestroyMapCycle( mapcycle_t *cycle )
       
       delete cycle->items;
     }
-  cycle->items = NULL;
-  cycle->next_item = NULL;
+  cycle->items = nullptr;
+  cycle->next_item = nullptr;
 }
 
 
@@ -572,14 +572,14 @@ char *COM_Parse (char *data)
   com_token[0] = 0;
   
   if (!data)
-    return NULL;
+    return nullptr;
   
   // skip whitespace
  skipwhite:
   while ( (c = *data) <= ' ')
     {
       if (c == 0)
-	return NULL;                    // end of file;
+	return nullptr;                    // end of file;
       data++;
     }
   
@@ -669,9 +669,9 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 	int length;
 	char *pFileList;
 	char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(filename, &length));
-	mapcycle_item_s *item = NULL, *last = NULL;
+	mapcycle_item_s *item = nullptr, *last = nullptr;
 	
-	if (aFileList == NULL || pFileList == NULL ) return 0;
+	if (aFileList == nullptr || pFileList == nullptr ) return 0;
 	
 	if ( pFileList && length ) {
 		// the first map name in the file becomes the default
@@ -745,7 +745,7 @@ mapcycle_item_s *CurrentMap(mapcycle_t *cycle)
 int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
   
   char *mapcfile = const_cast<char*>(get_cvar_file_value( "maps_file" ));
-  if ( mapcfile == NULL ) return 0;
+  if ( mapcfile == nullptr ) return 0;
   int length;
   char *pFileList;
   char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(mapcfile, &length));
@@ -761,7 +761,7 @@ int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
 	    break;
 	  
 	  char cBuf[32];
-	  int ret = sscanf( pFileList, " %32s", cBuf );
+	  const int ret = sscanf( pFileList, " %32s", cBuf );
 	  // Check the map name is valid
 	  if ( ret != 1 || *cBuf < 13 )
 	    break;
@@ -908,7 +908,7 @@ void UTIL_HudMessage( CBaseEntity *pEntity, const hudtextparms_t &textparms, con
   
  if( ClientCheck(pEntity) == 0 ) return;
 
-  MESSAGE_BEGIN( MSG_ONE, SVC_TEMPENTITY, NULL, pEntity->edict() );
+  MESSAGE_BEGIN( MSG_ONE, SVC_TEMPENTITY, nullptr, pEntity->edict() );
   WRITE_BYTE( TE_TEXTMESSAGE );
   WRITE_BYTE( textparms.channel & 0xFF );
   
@@ -978,7 +978,7 @@ char* GetModDir() {
   
   	if (iPos == 0) {
   	  // Hrmm.  Well, this might be a problem. Return no mod.
-  	  return NULL;
+  	  return nullptr;
   	}
   	iPos++;
   	return &strGameDir[iPos];
@@ -997,14 +997,14 @@ void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name,
 
 	if ( ClientCheck(client) == 0 ) return;
   
-  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", NULL)) == 0 ) {
+  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", nullptr)) == 0 ) {
 	  g_msgTextMsg = REG_USER_MSG( "TextMsg", -1 );
   }  // if
  
 
  
   
-  MESSAGE_BEGIN( MSG_ONE, g_msgTextMsg, NULL, client );
+  MESSAGE_BEGIN( MSG_ONE, g_msgTextMsg, nullptr, client );
   WRITE_BYTE( msg_dest );
   WRITE_STRING( msg_name );
 
@@ -1046,11 +1046,11 @@ void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name,
 
 	if ( ClientCheck(client) == 0 ) return;
 
-  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", NULL)) == 0 ) {
+  if ( (g_msgTextMsg = GET_USER_MSG_ID(PLID, "TextMsg", nullptr)) == 0 ) {
 	  g_msgTextMsg = REG_USER_MSG( "TextMsg", -1 );
   }  // if
 
-  MESSAGE_BEGIN( MSG_ONE_UNRELIABLE, g_msgTextMsg, NULL, client );
+  MESSAGE_BEGIN( MSG_ONE_UNRELIABLE, g_msgTextMsg, nullptr, client );
   WRITE_BYTE( msg_dest );
   WRITE_STRING( msg_name );
 
@@ -1142,9 +1142,9 @@ int GetPlayerIndex(char *PlayerText) {
   }  // if
 
   // Get "numeric" representations of the passed string.
-  AMAuthId oaiAuthID = PlayerText;
+  const AMAuthId oaiAuthID = PlayerText;
   //-- Set up a numeric id in case we got a SessionID.
-  char* pcEndptr = NULL;
+  char* pcEndptr = nullptr;
   PlayerNumber = strtol( PlayerText, &pcEndptr, 10);
   //-- Check if we had a valid number or a string starting with a number.
   //-- Following whitespaces do not count as a string, ie. "123  " is 123.
@@ -1156,7 +1156,7 @@ int GetPlayerIndex(char *PlayerText) {
   }  // for
 
 
-  bool bIsId = (oaiAuthID.is_set() || (PlayerNumber != 0));
+  const bool bIsId = (oaiAuthID.is_set() || (PlayerNumber != 0));
 
 
   if ( !bVerbatim ) { // Verbatim means a number is a number. Don't match it on a name.
@@ -1166,7 +1166,7 @@ int GetPlayerIndex(char *PlayerText) {
 			  // This is only enabled in verbatim mode. 
 			  if ( stricmp(STRING(pPlayer->pev->netname), PlayerText) == 0) { return i;}
 			  
-			  if ( stristr(STRING(pPlayer->pev->netname), PlayerText) != NULL ) {
+			  if ( stristr(STRING(pPlayer->pev->netname), PlayerText) != nullptr ) {
 				  index = i;
 				  found++;
 			  }  // if
@@ -1233,7 +1233,7 @@ int GetPlayerCount( edict_t* peIgnorePlayer ) {
  * pcFilename  : name of the file to search. Can contain a relative path.
  * iMaxLen     : maximum path length
  * pcAccessCvar: cvar name that control access to this file operation, eg. file_access_read
- *               If set to NULL no access permissions are checked
+ *               If set to nullptr no access permissions are checked
  *
  * Returns 1 if path was created, -1 on error or 0 if access denied.
  *
@@ -1247,7 +1247,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
   const char c_cDirSep = '/';
 #endif
   
-  if ( pcAccessCvar == NULL || (int)CVAR_GET_FLOAT(pcAccessCvar) == 1 ) {  
+  if ( pcAccessCvar == nullptr || (int)CVAR_GET_FLOAT(pcAccessCvar) == 1 ) {  
 
     char acFilePath[PATH_MAX];
     memset( acFilePath, 0, PATH_MAX );
@@ -1267,7 +1267,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
     strcat( acFilePath, pcFilename );
 
     char* pcPathSep = acFilePath;
-    while ( pcPathSep != NULL && *pcPathSep != '\0' ) {
+    while ( pcPathSep != nullptr && *pcPathSep != '\0' ) {
 #ifdef WIN32
       if ( *pcPathSep == '/' ) {
 	*pcPathSep = '\\';
@@ -1280,7 +1280,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
       pcPathSep++;
     }  // while
 
-    pcPathSep = NULL;
+    pcPathSep = nullptr;
 
     strncpy( pcPath, acFilePath, iMaxLen );
 
@@ -1350,7 +1350,7 @@ int get_player_team( CBaseEntity* poPlayer ) {
 
 int util_kick_player( int _iSessionId, const char* _pcKickMsg )
 {
-	if (NULL == _pcKickMsg ) {
+	if (nullptr == _pcKickMsg ) {
 		DEBUG_LOG(2, ("Running server command 'kick # %i'", _iSessionId) );
 		SERVER_COMMAND( UTIL_VarArgs("kick # %i\n", _iSessionId) );
 	} else {
@@ -1363,8 +1363,8 @@ int util_kick_player( int _iSessionId, const char* _pcKickMsg )
 
 int util_kick_player( edict_t* _peEntity, const char* _pcKickMsg )
 {
-	if (NULL == _peEntity ) return 0;
-	int iSID = GETPLAYERUSERID( _peEntity );
+	if (nullptr == _peEntity ) return 0;
+	const int iSID = GETPLAYERUSERID( _peEntity );
 	if ( 0 == iSID ) return 0;
 	util_kick_player( iSID, _pcKickMsg );
 	return 1;
@@ -1389,11 +1389,11 @@ void util_kill_player( CBaseEntity* pPlayer ) {
 
 MYSQL_RES* admin_mysql_query(char *sQuery/* the SQL query */,char *sType /* string name for the type of query*/) {
 
-  if ( sQuery == NULL ) return NULL;
+  if ( sQuery == nullptr ) return nullptr;
 
   int iSQLErr;      // used for db func return values
-  MYSQL_RES* pResult = NULL;
-  MYSQL_ROW pRow = NULL;	
+  MYSQL_RES* pResult = nullptr;
+  MYSQL_ROW pRow = nullptr;	
 
 
   if ((int)CVAR_GET_FLOAT("admin_debug") != 0) 
@@ -1408,14 +1408,14 @@ MYSQL_RES* admin_mysql_query(char *sQuery/* the SQL query */,char *sType /* stri
         iSQLErr = mysql_real_query(&mysql, sQuery, (unsigned int)strlen(sQuery));
       } else {
         UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned disconnect, reconnect failed.\n", sType);
-        return NULL;
+        return nullptr;
       }
     } else if (mysql_errno(&mysql) == CR_COMMANDS_OUT_OF_SYNC) {
       UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned commands out of sync!  NO FURTHER SQL QUERIES WILL WORK.\n", sType);
-      return NULL;
+      return nullptr;
     } else {
       UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned error: \"%s\"\n", sType, mysql_error(&mysql));
-      return NULL;
+      return nullptr;
     }
   }
   if (!iSQLErr) {
@@ -1430,7 +1430,7 @@ const char* am_mysql_password_encrypt( const char* _pcPassword ) {
 
 	static char acPassword[PASSWORD_SIZE];
 
-	if ( _pcPassword == NULL ) return NULL;
+	if ( _pcPassword == nullptr ) return nullptr;
 
 	// Password cache: if we get passed the same password twice we can
 	// reuse the result from the last encryption.
@@ -1443,8 +1443,8 @@ const char* am_mysql_password_encrypt( const char* _pcPassword ) {
 		
 
 	int iSQLErr;
-	MYSQL_RES *pResult = NULL;
-	MYSQL_ROW pRow = NULL;
+	MYSQL_RES *pResult = nullptr;
+	MYSQL_ROW pRow = nullptr;
 
 	char acQuery[17+PASSWORD_SIZE+3] = "SELECT PASSWORD('";
 	strncat( acQuery, _pcPassword, PASSWORD_SIZE );
@@ -1459,14 +1459,14 @@ const char* am_mysql_password_encrypt( const char* _pcPassword ) {
 				iSQLErr = mysql_query(&mysql, acQuery );
 			} else {
 				UTIL_LogPrintf("[ADMIN] ERROR: Select query for PASSWORD() returned disconnect, reconnect failed.\n" );
-				return NULL;
+				return nullptr;
 			}
 		} else if (mysql_errno(&mysql) == CR_COMMANDS_OUT_OF_SYNC) {
 			UTIL_LogPrintf("[ADMIN] ERROR: Select query for PASSWORD() returned commands out of sync!  NO FURTHER SQL QUERIES WILL WORK.\n" );
-			return NULL;
+			return nullptr;
 		} else {
 			UTIL_LogPrintf("[ADMIN] ERROR: Select query for PASSWORD() returned error: \"%s\"\n", mysql_error(&mysql));
-			return NULL;
+			return nullptr;
 		}  // if-else
 	}  // if
 
@@ -1474,15 +1474,15 @@ const char* am_mysql_password_encrypt( const char* _pcPassword ) {
 		pResult = mysql_use_result(&mysql);
 	}  // if
 
-	if ( iSQLErr || pResult==NULL ) {
-		UTIL_LogPrintf("[ADMIN] ERROR: Select query for PASSWORD() returned NULL result.\n" );
-		return NULL;
+	if ( iSQLErr || pResult==nullptr ) {
+		UTIL_LogPrintf("[ADMIN] ERROR: Select query for PASSWORD() returned nullptr result.\n" );
+		return nullptr;
 	} else {
-		if  ( (pRow = mysql_fetch_row(pResult)) != NULL ) {
+		if  ( (pRow = mysql_fetch_row(pResult)) != nullptr ) {
 			am_strncpy( acPassword, pRow[0], PASSWORD_SIZE );
 		} else {
 			mysql_free_result( pResult );
-			return NULL;
+			return nullptr;
 		}
 
 		mysql_free_result(pResult);
@@ -1502,13 +1502,13 @@ const char* am_mysql_password_encrypt( const char* _pcPassword ) {
 
 PGresult* admin_pgsql_query(char *sQuery/* the SQL query */,char *sType /* string name for the type of query*/) {
 
-  if ( sQuery == NULL ) return NULL;
+  if ( sQuery == nullptr ) return nullptr;
 
   if (g_fUsePgSQL == FALSE) {
     return FALSE;
   }
 
-  PGresult* pResult = NULL;
+  PGresult* pResult = nullptr;
 
   if ((int)CVAR_GET_FLOAT("admin_debug") != 0) 
     UTIL_LogPrintf("[ADMIN] PGSQL: Running query \"%s\"\n",sQuery);
@@ -1521,13 +1521,13 @@ PGresult* admin_pgsql_query(char *sQuery/* the SQL query */,char *sType /* strin
       pResult = PQexec(pgsql, sQuery);
     } else {
       UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned disconnect, reconnect failed.\n", sType);
-      return NULL;
+      return nullptr;
     }
   }
 
   if (PQresultStatus(pResult) != PGRES_TUPLES_OK) {
     UTIL_LogPrintf("[ADMIN] ERROR: Select query for %ss returned error: \"%s\"\n", sType, PQresultErrorMessage(pResult));
-    return NULL;
+    return nullptr;
   }
 
   return pResult;

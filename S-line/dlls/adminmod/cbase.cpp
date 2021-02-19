@@ -87,9 +87,9 @@ void CBaseEntity :: Killed( entvars_t *pevAttacker, int iGib )
 }
 
 
-CBaseEntity *CBaseEntity::GetNextTarget( void )
+CBaseEntity *CBaseEntity::GetNextTarget()
 {
-  return NULL;
+  return nullptr;
   
 }
 
@@ -119,7 +119,7 @@ void SetObjectCollisionBox( entvars_t *pev )
 }
 
 
-void CBaseEntity::SetObjectCollisionBox( void )
+void CBaseEntity::SetObjectCollisionBox()
 {
 }
 
@@ -130,17 +130,17 @@ int	CBaseEntity :: Intersects( CBaseEntity *pOther )
   return 1;
 }
 
-void CBaseEntity :: MakeDormant( void )
+void CBaseEntity :: MakeDormant()
 {
   
 }
 
-int CBaseEntity :: IsDormant( void )
+int CBaseEntity :: IsDormant()
 {
   return 1;
 }
 
-BOOL CBaseEntity :: IsInWorld( void )
+BOOL CBaseEntity :: IsInWorld()
 {
   
   return TRUE;
@@ -166,13 +166,13 @@ int	CBaseEntity :: DamageDecal( int bitsDamageType )
 
 // NOTE: szName must be a pointer to constant memory, e.g. "monster_class" because the entity
 // will keep a pointer to it after this call.
-CBaseEntity *Create( const char *szName, const Vector &vecOrigin, const Vector &vecAngles, edict_t *pentOwner = NULL )
+CBaseEntity *Create( const char *szName, const Vector &vecOrigin, const Vector &vecAngles, edict_t *pentOwner = nullptr )
 {
 	//	char szClassname[200];
 
 	UTIL_LogPrintf( "[ADMIN] spawning\n");
-  /*		pCheckEntity = UTIL_FindEntityByClassname(NULL, szName);
-		if(pCheckEntity==NULL) {
+  /*		pCheckEntity = UTIL_FindEntityByClassname(nullptr, szName);
+		if(pCheckEntity==nullptr) {
 		UTIL_LogPrintf("[ADMIN] spawn: The entity to be spawned was not cached at map load, so cannot be spawned.\n");
 		return 0;
 		}
@@ -181,11 +181,11 @@ CBaseEntity *Create( const char *szName, const Vector &vecOrigin, const Vector &
   edict_t* pEnt = CREATE_NAMED_ENTITY(MAKE_STRING(szName));
   if(FNullEnt(pEnt)) {
     UTIL_LogPrintf( "[ADMIN] spawn: Null entity in spawn.\n");
-    return NULL;
+    return nullptr;
   }
   
   CBaseEntity* pEntity = static_cast<CBaseEntity *>(GET_PRIVATE(pEnt));
-  pEntity->edict()->v.owner = NULL;
+  pEntity->edict()->v.owner = nullptr;
   pEntity->edict()->v.origin.x = 0;
   pEntity->edict()->v.origin.y = 0;
   pEntity->edict()->v.origin.z = 0;

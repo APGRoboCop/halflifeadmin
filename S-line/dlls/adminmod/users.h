@@ -53,9 +53,9 @@
 //#define USERS_QUERY "SELECT pass,access FROM %s where '%s' REGEXP nick or nick='%i'\n"
 //#endif
 
+#pragma once
 #include "constants.h"
 #include "authid.h"
-
 
 // Declare external globals
 extern int g_iForcedMapChange;
@@ -79,7 +79,7 @@ struct auth_struct {
     AMAuthId oaiAuthID;             // ID used to auth a player on reconnect. Can be Wonid or Steamid.
 };
 
-void clear_auth_bak_array( void );
+void clear_auth_bak_array();
 
 
 #define ulong unsigned long
@@ -211,7 +211,7 @@ BOOL RemoveSpawnEntity(int iIdentity);
 // CEM - 02/03/01
 BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess = ACCESS_ALL);
 BOOL LoadPlugins();
-void UnloadPlugins( void );
+void UnloadPlugins();
 int CheckCommand( edict_t* Entity, const char* Command, unsigned int& Access, BOOL _bCheckUserAcc = FALSE, BOOL PrintOut = FALSE );
 plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData);
 plugin_result HandleConnect(edict_t* pEntity, char* sName, char* IPAddress);
@@ -227,8 +227,8 @@ void System_Error(char* str, edict_t* pEntity);
 void System_Response(char *str,edict_t *);
 
 void AddUserAuth(char* sName, char* sIP, edict_t* pEntity);
-int GetFreeSlots(edict_t* pEntityIgnore = NULL);
-int GetHighlanderIndex( edict_t* IgnoreEntity = NULL );
+int GetFreeSlots(edict_t* pEntityIgnore = nullptr);
+int GetHighlanderIndex( edict_t* IgnoreEntity = nullptr );
 int GetModelAccess(char* sModel, edict_t* pEntity);
 int GetUserAccess(edict_t* pEntity);
 BOOL GetUserRecord(const char* sName, const AMAuthId&, const char* IP, char* sPassword, user_struct* ptUserRecord);
@@ -244,6 +244,6 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity);
 int pass_compare( const char* sServerPassword, const char* sPlayerPassword);
 
 
-bool user_ip( int _iIndex, const char** _pcIP, ulong* _plIP = NULL );
+bool user_ip( int _iIndex, const char** _pcIP, ulong* _plIP = nullptr );
 edict_t* get_player_edict( uint32_t ID, uidt type = uid_none );
 edict_t* get_player_edict( const AMAuthId& ID, uidt type = uid_none );

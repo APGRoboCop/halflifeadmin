@@ -94,7 +94,7 @@
 //#  define vsnprintf _vsnprintf
 #  define HAS_SNPRINTF
 #  define sleep(x)	Sleep(x*1000)
-#  define strcasecmp	stricmp
+//#  define strcasecmp	stricmp
 #  define strncasecmp	_strnicmp
 #else
 #  define HAS_SNPRINTF
@@ -144,6 +144,9 @@
   #ifndef min
     #define min(a,b)    (((a) < (b)) ? (a) : (b))
   #endif
+  
+  #undef max
+  #undef min
 
   #define itoa(a,b,c) sprintf(b, "%d", a)
 
@@ -307,16 +310,16 @@ extern int g_msgTextMsg;
 
 
 // users.cpp function prototypes
-void LoadIPs(void);
-void UnloadIPs(void);
-void LoadModels(void);
-void UnloadModels(void);
-void LoadUsers(void);
-void UnloadUsers(void);
-void LoadVault(void);
-void UnloadVault(void);
-void LoadWords(void);
-void UnloadWords(void);
+void LoadIPs();
+void UnloadIPs();
+void LoadModels();
+void UnloadModels();
+void LoadUsers();
+void UnloadUsers();
+void LoadVault();
+void UnloadVault();
+void LoadWords();
+void UnloadWords();
 BOOL IsIPReserved(char *);
 BOOL IsIPValid(const char* );
 
@@ -333,15 +336,15 @@ void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg );
 void ClientCommand (edict_t* pEdict, char* szFmt, ...);
 
 void fix_string(char *str,int len);
-long int get_option_cvar_value( const char* CvarName, const char* Option, long int NumDefault, char* ReturnString, size_t Len, const char* StringDefault = NULL );
+long int get_option_cvar_value( const char* CvarName, const char* Option, long int NumDefault, char* ReturnString, size_t Len, const char* StringDefault = nullptr );
 static inline long int get_option_cvar_value( const char* CvarName, const char* Option, char* ReturnString, size_t Len ) {
-	return get_option_cvar_value( CvarName, Option, 0, ReturnString, Len, NULL );
+	return get_option_cvar_value( CvarName, Option, 0, ReturnString, Len, nullptr );
 }
 static inline long int get_option_cvar_value( const char* CvarName, const char* Option, long int NumDefault ) {
-	return get_option_cvar_value( CvarName, Option, NumDefault, NULL, 0, NULL );
+	return get_option_cvar_value( CvarName, Option, NumDefault, nullptr, 0, nullptr );
 }
 static inline long int get_option_cvar_value( const char* CvarName, const char* Option ) {
-	return get_option_cvar_value( CvarName, Option, 0, NULL, 0, NULL );
+	return get_option_cvar_value( CvarName, Option, 0, nullptr, 0, nullptr );
 }
 
 /* This one is added to check against atempted exploits of the client
@@ -361,7 +364,7 @@ static inline void handle_unprintables( char* _pcString ) {
 int get_file_path( char* Path, char* Filename, int MaxLen, const char* AccessCvarName );
 int GetPlayerIndex(char* PlayerText);
 char* GetModDir();
-int GetPlayerCount( edict_t* pIgnorePlayer = NULL );
+int GetPlayerCount( edict_t* pIgnorePlayer = nullptr );
 //BOOL IsPlayerValid(CBaseEntity* pPlayer);
 int get_player_team( CBaseEntity* );
 int util_kick_player( int sessionID, const char* kickMessage );
@@ -382,22 +385,22 @@ PGresult *admin_pgsql_query(char *, char *);
 // Admin Mod base functions prototypes
 const int RESULT_CONTINUE = 0;
 const int RESULT_HANDLED  = 1;
-void AM_AdminCommand(void);
+void AM_AdminCommand();
 int AM_ClientCommand( edict_t *pEntity );
 BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ], bool );
 BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ] );
 int AM_ClientDisconnect( edict_t *pEntity );
-int AM_StartFrame( void );
+int AM_StartFrame();
 void AM_ClientStart(edict_t *pEntity);
-void AM_Stop( void );
+void AM_Stop();
 int AM_PlayerPreThink(edict_t *pEntity);
 int AM_ClientPutInServer( edict_t* pEntity );
-int AM_ServerDeactivate( void );
+int AM_ServerDeactivate();
 int AM_ClientUserInfoChanged( edict_t *pEntity, char *infobuffer, bool force );
 int AM_GetGameDescription( const char* Description );
 int AM_InconsistentFile( const edict_t *player, const char *filename, char *disconnect_message );
 int AM_DispatchThink( edict_t *pent );
-int AM_GameDLLInit( void );
+int AM_GameDLLInit();
 int AM_Initialize();
 int AM_OnFreeEntPrivateData( edict_t *pent );
 void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity);
@@ -439,8 +442,8 @@ mapcycle_item_s *CurrentMap(mapcycle_t *cycle);
 int  match(const char *string, char *pattern);
 
 
-void AMXAPI core_Init(void);   /* two functions from AMX_CORE.C */
-void AMXAPI core_Exit(void);
+void AMXAPI core_Init();   /* two functions from AMX_CORE.C */
+void AMXAPI core_Exit();
 void ShowMenu (edict_t*, int, int, BOOL, char pszText[1024]);
 void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char pszText[]);
 void ShowMOTD( edict_t* pev, const char* msg);
@@ -485,8 +488,8 @@ inline BOOL IsPlayerValid(edict_t* pPlayer) {
 
 inline bool cvar_string_value_is_set( const char* _pcCvarValueString, bool _bAllowEmptyString = false ) {
 
-	// if the cvar doesn't exist, i.e. the char pointer passed is NULL, return false
-	if ( _pcCvarValueString == NULL ) return false;
+	// if the cvar doesn't exist, i.e. the char pointer passed is nullptr, return false
+	if ( _pcCvarValueString == nullptr ) return false;
 
 	// if the string is empty and we do not allow this case, return false
 	if ( *_pcCvarValueString == '\0' && !_bAllowEmptyString ) return false;
@@ -567,11 +570,11 @@ inline bool cvar_file_is_set( const char* _pcCvarName ) {
 /////////////////////////////////////
 ///
 /// \brief Returns the value of a cvar specifying a string, 
-///        NULL if the cvar is not set according to cvar_string_is_set().
+///        nullptr if the cvar is not set according to cvar_string_is_set().
 ///
 /// This function gets passed the name of a cvar and returns it's value
 /// as a const char*. If the cvar is not set as according to cvar_string_is_set()
-/// the return value is NULL.
+/// the return value is nullptr.
 ///
 /// If the AllowEmptyString parameter is set to "true" a cvar is considered set
 /// even if the cvar value string is empty, i.e. "".
@@ -583,7 +586,7 @@ inline const char* get_cvar_string_value( const char* _pcCvarName, bool _bAllowE
 	// get the CVAR string
 	const char* pcCvarValue = CVAR_GET_STRING( _pcCvarName );
 	if ( cvar_string_value_is_set(pcCvarValue, _bAllowEmptyString) ) return pcCvarValue;
-	else return NULL;
+	else return nullptr;
 }
 
 
@@ -592,11 +595,11 @@ inline const char* get_cvar_string_value( const char* _pcCvarName, bool _bAllowE
 /////////////////////////////////////
 ///
 /// \brief Returns the value of a cvar specifying a file name, 
-///        NULL if the cvar is not set according to cvar_string_is_set().
+///        nullptr if the cvar is not set according to cvar_string_is_set().
 ///
 /// This function gets passed the name of a cvar and returns it's value
 /// as a const char*. If the cvar is not set as according to cvar_string_is_set()
-/// the return value is NULL.
+/// the return value is nullptr.
 ///
 /// \note
 /// This is added really only for readability reasons.
@@ -608,7 +611,7 @@ inline const char* get_cvar_file_value( const char* _pcCvarName ) {
 	// get the CVAR string
 	const char* pcCvarValue = CVAR_GET_STRING( _pcCvarName );
 	if ( cvar_file_value_is_set(pcCvarValue) ) return pcCvarValue;
-	else return NULL;
+	else return nullptr;
 }
 
 
@@ -623,7 +626,7 @@ extern DLL_GLOBAL float* g_pflTimeLimit;
 extern DLL_GLOBAL CGameRules* g_pGameRules;
 
 #ifdef CS_TEAMINFO
-typedef int (*FIV)(void);
+typedef int (*FIV)();
 typedef int (*FII)( int );
 #endif
 

@@ -85,7 +85,7 @@ DLL_GLOBAL enginefuncs_t my_engfuncs;
 extern DLL_GLOBAL edict_t* pTimerEnt;
 
 // CS Timelimit var
-DLL_GLOBAL float* g_pflTimeLimit = NULL;
+DLL_GLOBAL float* g_pflTimeLimit = nullptr;
 
 // this structure contains a list of supported mods and their dlls names
 // To add support for another mod add an entry here, and add all the
@@ -111,7 +111,7 @@ mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/
     { "goldeneye", "goldeneye\\dlls\\mp.dll", "goldeneye/dlls/golden_i386.so" },
     { "oz", "oz\\dlls\\mp.dll", "oz/dlls/mp_i386.so" },
 	//{ "svencoop", "svencoop\\dlls\\hl.dll", "svencoop/dlls/hl_i386.so" },
-	{ "svencoop", "svencoop\\dlls\\server.dll", "svencoop/dlls/server.so" }, // SC 5 support [APG]RoboCop[CL]
+	//{ "svencoop", "svencoop\\dlls\\server.dll", "svencoop/dlls/server.so" }, // SC 5 support [APG]RoboCop[CL]
     { "si", "si\\dlls\\si.dll", "si/dlls/si.so" },
     { "frontline", "frontline\\dlls\\frontline.dll", "frontline/dlls/front_i386.so" },
     { "arg", "arg\\dlls\\hl.dll", "arg/dlls/arg_i386.so" },
@@ -120,7 +120,7 @@ mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/
 	{ "wizwars", "wizwars/dlls/hl.dll", "wizwars\\dlls\\mp_i386.so" },
     { "swarm", "swarm\\dlls\\swarm.dll", "swarm/dlls/swarm_i386.so" },
     { "gearbox", "gearbox\\dlls\\opfor.dll", "gearbox/dlls/opfor.so" },
-    { "dod", "dod\\dlls\\hl.dll", "dod/dlls/dod.so", "dod/dlls/dod_i386.so" },
+    { "dod", "dod\\dlls\\hl.dll", "dod/dlls/dod.so" },
     { "ricochet", "ricochet\\dlls\\mp.dll", "ricochet/dlls/ricochet.so" },
     { "wasteland", "wasteland\\dlls\\hl.dll", "wasteland/dlls/whl_linux.so" },
     { "wantedsp", "wantedsp\\dlls\\wanted.dll", "wantedsp/dlls/wanted.so" },
@@ -227,7 +227,7 @@ mod_struct_type mod_struct[] = { { "cstrike", "cstrike\\dlls\\mp.dll", "cstrike/
 */
 	
     //???? what is the win32 dll name?
-    { NULL, NULL, NULL } };
+    { nullptr, nullptr, nullptr } };
 #endif // !USE_METAMOD
 
 /*
@@ -239,13 +239,13 @@ typedef void (*GIVEFNPTRSTODLL) ( enginefuncs_t* , globalvars_t *  );
 */
 
 #ifdef _WIN32
-HINSTANCE h_Library = NULL;
-HINSTANCE h_AMX = NULL;
-HINSTANCE CS_Library = NULL;
+HINSTANCE h_Library = nullptr;
+HINSTANCE h_AMX = nullptr;
+HINSTANCE CS_Library = nullptr;
 #else
-void* h_Library = NULL;
-void* h_AMX = NULL;
-void* CS_Library = NULL;
+void* h_Library = nullptr;
+void* h_AMX = nullptr;
+void* CS_Library = nullptr;
 #include <dlfcn.h>
 #define GetProcAddress dlsym
 #endif
@@ -253,8 +253,8 @@ void* CS_Library = NULL;
 #ifndef USE_METAMOD
 #ifdef _WIN32
 typedef int(FAR* GETENTITYAPI)(DLL_FUNCTIONS*, int);
-typedef void(DLLEXPORT* GIVEFNPTRSTODLL)(enginefuncs_t*, globalvars_t*);
-typedef int(DLLEXPORT* GETENTITYAPI2)(DLL_FUNCTIONS*, int*);
+typedef void(__declspec(dllexport)* GIVEFNPTRSTODLL)(enginefuncs_t*, globalvars_t*);
+typedef int(__declspec(dllexport)* GETENTITYAPI2)(DLL_FUNCTIONS*, int*);
 typedef int(FAR* GETNEWDLLFUNCTIONS)(NEW_DLL_FUNCTIONS*, int*);
 #else
 typedef int (*GETENTITYAPI)(DLL_FUNCTIONS*, int);
@@ -266,7 +266,7 @@ typedef int (*GETNEWDLLFUNCTIONS)(NEW_DLL_FUNCTIONS*, int*);
 GETENTITYAPI other_GetEntityAPI;
 GIVEFNPTRSTODLL other_GiveFnptrsToDll;
 GETENTITYAPI2 other_GetEntityAPI2;
-GETNEWDLLFUNCTIONS other_GetNewDLLFunctions = NULL;
+GETNEWDLLFUNCTIONS other_GetNewDLLFunctions = nullptr;
 #endif
 
 #ifdef _WIN32
@@ -275,7 +275,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     if(fdwReason == DLL_PROCESS_ATTACH) {
     } else if(fdwReason == DLL_PROCESS_DETACH) {
-        if(h_Library != NULL)
+        if(h_Library != nullptr)
             FreeLibrary(h_Library);
     }
     return TRUE;
@@ -399,7 +399,7 @@ edict_t* am_FindEntityByVars(struct entvars_s* pvars)
 
     if(ent == pTimerEnt) {
         DEBUG_LOG(5, ("Hiding timer entity from FindEntityByVars."));
-        ent = NULL;
+        ent = nullptr;
         DEBUG_LOG(5, ("Returning next entity: %s.", ent ? STRING(ent->v.classname) : "nil"));
 #ifdef USE_METAMOD
         RETURN_META_VALUE(MRES_OVERRIDE, ent);
@@ -444,17 +444,17 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     CVAR_REGISTER(&reserve_slots);
     CVAR_REGISTER(&amv_hide_reserved_slots);
     // CVAR_REGISTER(&amv_keyfiles);
-    ptAM_devel = NULL;
+    ptAM_devel = nullptr;
     ptAM_devel = CVAR_GET_POINTER("admin_devel");
-    ptAM_debug = NULL;
+    ptAM_debug = nullptr;
     ptAM_debug = CVAR_GET_POINTER("admin_debug");
     // ptAM_autoban = 0;
     // ptAM_autoban = CVAR_GET_POINTER( "amv_autoban" );
-    ptAM_botProtection = NULL;
+    ptAM_botProtection = nullptr;
     ptAM_botProtection = CVAR_GET_POINTER("admin_bot_protection");
-    ptAM_reserve_slots = NULL;
+    ptAM_reserve_slots = nullptr;
     ptAM_reserve_slots = CVAR_GET_POINTER("reserve_slots");
-    ptAM_hide_reserved_slots = NULL;
+    ptAM_hide_reserved_slots = nullptr;
     ptAM_hide_reserved_slots = CVAR_GET_POINTER("amv_hide_reserved_slots");
     // ptAM_keyfiles = 0;
     // ptAM_keyfiles = CVAR_GET_POINTER( "amv_keyfiles" );
@@ -496,20 +496,20 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 #ifndef USE_METAMOD
     int length;
     char* pFileList;
-    if(h_Library != NULL) {
+    if(h_Library != nullptr) {
         UTIL_LogPrintf("PLUG-IN Already loaded\n");
     }
 
     GET_GAME_DIR(game_dir);
     char* aFileList = pFileList = (char*)LOAD_FILE_FOR_ME("admin.ini", &length);
 
-    if(pFileList == NULL) {
+    if(pFileList == nullptr) {
         UTIL_LogPrintf("[ADMIN] Autodetecting dll to use\n");
         UTIL_LogPrintf("[ADMIN] Mod Dir: %s\n", GetModDir());
         strcpy(mod_name, GetModDir());
 
         int i = 0;
-        while(mod_struct[i].mod != NULL) {
+        while(mod_struct[i].mod != nullptr) {
             if(!stricmp(mod_name, mod_struct[i].mod)) {
 #ifdef _WIN32
                 strcpy(dll_name, mod_struct[i].windir);
@@ -520,7 +520,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
             }
             i++;
         }
-        if(mod_struct[i].mod == NULL) {
+        if(mod_struct[i].mod == nullptr) {
             UTIL_LogPrintf("[ADMIN] ERROR: Mod %s not supported\n", mod_name);
             am_exit(1);
         }
@@ -541,7 +541,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 #endif
 
     BOOL bSymbolLoaded = FALSE;
-    h_Library = NULL;
+    h_Library = nullptr;
 
 #ifndef USE_METAMOD
     GET_GAME_DIR(game_dir);
@@ -554,7 +554,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     snprintf(script_dll, 2048, "%s/%s", game_dir, SCRIPT_DLL);
     h_AMX = dlopen(script_dll, RTLD_NOW);
 #endif
-    if(h_AMX == NULL) {
+    if(h_AMX == nullptr) {
 #ifdef WIN32
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (%s) %s\n", script_dll, GetLastError());
 #else
@@ -564,55 +564,55 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     }
 
     amx_Init = (AMXINIT)GetProcAddress(h_AMX, "amx_Init");
-    if(amx_Init == NULL) {
+    if(amx_Init == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_Init)\n");
         am_exit(1);
     }
 
     amx_Register = (AMXREGISTER)GetProcAddress(h_AMX, "amx_Register");
-    if(amx_Register == NULL) {
+    if(amx_Register == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_Register)\n");
         am_exit(1);
     }
 
     amx_FindPublic = (AMXFINDPUBLIC)GetProcAddress(h_AMX, "amx_FindPublic");
-    if(amx_FindPublic == NULL) {
+    if(amx_FindPublic == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_FindPublic)\n");
         am_exit(1);
     }
 
     amx_Exec = (AMXEXEC)GetProcAddress(h_AMX, "amx_Exec");
-    if(amx_Exec == NULL) {
+    if(amx_Exec == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_Exec)\n");
         am_exit(1);
     }
 
     amx_GetAddr = (AMXGETADDR)GetProcAddress(h_AMX, "amx_GetAddr");
-    if(amx_GetAddr == NULL) {
+    if(amx_GetAddr == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_GetAddr)\n");
         am_exit(1);
     }
 
     amx_StrLen = (AMXSTRLEN)GetProcAddress(h_AMX, "amx_StrLen");
-    if(amx_StrLen == NULL) {
+    if(amx_StrLen == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_StrLen)\n");
         am_exit(1);
     }
 
     amx_RaiseError = (AMXRAISEERROR)GetProcAddress(h_AMX, "amx_RaiseError");
-    if(amx_RaiseError == NULL) {
+    if(amx_RaiseError == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_RaiseError)\n");
         am_exit(1);
     }
 
     amx_SetString = (AMXSETSTRING)GetProcAddress(h_AMX, "amx_SetString");
-    if(amx_SetString == NULL) {
+    if(amx_SetString == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_SetString)\n");
         am_exit(1);
     }
 
     amx_GetString = (AMXGETSTRING)GetProcAddress(h_AMX, "amx_GetString");
-    if(amx_GetString == NULL) {
+    if(amx_GetString == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Couldn't load scripting engine (amx_GetString)\n");
         am_exit(1);
     }
@@ -623,29 +623,29 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     h_Library = dlopen(dll_name, RTLD_NOW);
 #endif
     UTIL_LogPrintf("[ADMIN] Opening dll:%s\n", dll_name);
-    if(h_Library == NULL) {
+    if(h_Library == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: Failed to load DLL\n");
         am_exit(1);
     }
     other_GetEntityAPI = (GETENTITYAPI)GetProcAddress(h_Library, "GetEntityAPI");
-    if(other_GetEntityAPI == NULL) {
+    if(other_GetEntityAPI == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: no getentityapi stuff\n\n");
         UTIL_LogPrintf("[ADMIN] ERROR: Failed to load DLL\n");
         am_exit(1);
     }
     bSymbolLoaded = TRUE;
     other_GetEntityAPI2 = (GETENTITYAPI2)GetProcAddress(h_Library, "GetEntityAPI2");
-    if(other_GetEntityAPI2 == NULL) {
+    if(other_GetEntityAPI2 == nullptr) {
         UTIL_LogPrintf("[ADMIN] No getentityapi2 stuff (sdk2.0).  This can be ignored.\n\n");
     }
 
     other_GetNewDLLFunctions = (GETNEWDLLFUNCTIONS)GetProcAddress(h_Library, "GetNewDLLFunctions");
-    if(other_GetNewDLLFunctions == NULL) {
+    if(other_GetNewDLLFunctions == nullptr) {
         UTIL_LogPrintf("[ADMIN] No GetNewDLLFunctions stuff (sdk2.0).  This can be ignored.\n\n");
     }
 
     other_GiveFnptrsToDll = (GIVEFNPTRSTODLL)GetProcAddress(h_Library, "GiveFnptrsToDll");
-    if(other_GiveFnptrsToDll == NULL) {
+    if(other_GiveFnptrsToDll == nullptr) {
         UTIL_LogPrintf("[ADMIN] ERROR: no fntptodlls stuff\n\n");
         UTIL_LogPrintf("[ADMIN] ERROR: Failed to load DLL\n");
         am_exit(1);
@@ -660,7 +660,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
         UTIL_LogPrintf("[ADMIN] INFO: Loading extended Counter-Strike functionality.\n");
 #endif
 
-        if(CS_Library == NULL) {
+        if(CS_Library == nullptr) {
 #ifdef _WIN32
             CS_Library = LoadLibrary(dll_name);
 #else
@@ -668,16 +668,16 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 #endif
         } // if
 
-        if(CS_Library == NULL) {
+        if(CS_Library == nullptr) {
 #if(defined LINUX) || (defined EXTDEBUG)
             UTIL_LogPrintf("[ADMIN] INFO: Unable to load Counter-Strike DLL for extended functionality.\n");
 #endif
         } else {
 
-            //char* pcError = NULL;
+            //char* pcError = nullptr;
 
             g_pflTimeLimit = reinterpret_cast<float*>(GetProcAddress(CS_Library, "g_flTimeLimit"));
-            if(g_pflTimeLimit == NULL) {
+            if(g_pflTimeLimit == nullptr) {
 #if(defined LINUX) || (defined EXTDEBUG)
                 UTIL_LogPrintf(
                     "[ADMIN] INFO: Could not find CS' TimeLimit. AM's timeleft may differ from CS' timeleft.\n");

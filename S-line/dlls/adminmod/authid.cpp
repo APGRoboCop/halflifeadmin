@@ -54,7 +54,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 
 	const int BOT = 0x00544f42;
 
-	if ( _pcID == NULL ) return;
+	if ( _pcID == nullptr ) return;
 
 	m_bIdIsSet = false;
 
@@ -116,7 +116,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			return;
 		}  // if
 
-		char* pcEndptr = NULL;
+		char* pcEndptr = nullptr;
 		// parse first number
 		m_uiWonid = strtoul( const_cast<char*>(_pcID+6), &pcEndptr, 10 );
 
@@ -140,7 +140,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			_pcID = pcEndptr + 1;
 			// shift Authid64 up 32 bits since we just read the HIGH two words
 			m_uiAuthid64 <<= 32 ;
-			uint32_t uiAuLow = strtoul( const_cast<char*>(_pcID), &pcEndptr, 10 );
+			const uint32_t uiAuLow = strtoul( const_cast<char*>(_pcID), &pcEndptr, 10 );
 			// join the high and low words
 			m_uiAuthid64 |= uiAuLow;
 
@@ -173,7 +173,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			return;
 		}  // if
 
-		char* pcEndptr = NULL;
+		char* pcEndptr = nullptr;
 		// parse first number
 		m_uiWonid = strtoul( const_cast<char*>(_pcID+6), &pcEndptr, 10 );
 
@@ -197,7 +197,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			_pcID = pcEndptr + 1;
 			// shift Authid64 up 32 bits since we just read the HIGH two words
 			m_uiAuthid64 <<= 32 ;
-			uint32_t uiAuLow = strtoul( const_cast<char*>(_pcID), &pcEndptr, 10 );
+			const uint32_t uiAuLow = strtoul( const_cast<char*>(_pcID), &pcEndptr, 10 );
 			// join the high and low words
 			m_uiAuthid64 |= uiAuLow;
 
@@ -219,7 +219,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 	} else {
 
 		// it is a won id
-		char* pcEndptr = NULL;
+		char* pcEndptr = nullptr;
 		m_uiWonid = strtoul( _pcID, &pcEndptr, 10 );
 		//-- Check if the wonid string was valid.
 		//-- Skip following blanks.
