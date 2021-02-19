@@ -285,7 +285,7 @@ static cell AMX_NATIVE_CALL _getvalue(AMX *amx,cell *params)
       if (c=='\n' && inlist(amx,'\r',params+2,(int)(params[0]/sizeof(cell)-1))!=0)
         c='\r';
     #endif
-    if ((chars>1 || chars>0 && sign>0)
+    if ((chars > 0 && sign > 0 || chars > 1)
         && (n=inlist(amx,c,params+2,(int)(params[0]/sizeof(cell)-1)))!=0)
     {
       if (n>0)

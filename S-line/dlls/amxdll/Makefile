@@ -18,7 +18,6 @@ OBJDIR=obj
 
 BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
 
-
 #safe optimization
 #CFLAGS=$(BASE_CFLAGS) -m486 -O6 -ffast-math -funroll-loops \
 # -fexpensive-optimizations -malign-loops=2  -malign-jumps=2 \
@@ -47,7 +46,6 @@ endif
 
 #INCLUDEDIRS=-I../linux -I.
 INCLUDEDIRS=
-
 
 OBJADD=   
 

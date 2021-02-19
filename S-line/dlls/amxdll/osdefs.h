@@ -56,7 +56,7 @@
   #endif
 #endif
 
-#if defined(_Windows) && !defined(_INC_WINDOWS) && !defined(__WINDOWS_H) && !defined(NOWINDOWS)
+#if defined(_Windows) && !defined(_INC_WINDOWS) && !defined(__WINDOWS__) && !defined(NOWINDOWS)
 #  include <windows.h>
 #  include <windowsx.h>
 #endif

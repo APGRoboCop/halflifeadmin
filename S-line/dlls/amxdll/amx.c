@@ -168,7 +168,7 @@ static int amx_LittleEndian = -1;   /* set to TRUE for Little Endian, and
 static void init_little_endian(void)
 {
   if (amx_LittleEndian < 0) {       /* initialize this variable only once */
-    uint16_t val=0x00ff;
+    u_int16_t val=0x00ff;
     u_char *ptr=(u_char *)&val;
 
     /* "ptr" points to the starting address of "val". If that address
@@ -180,7 +180,7 @@ static void init_little_endian(void)
   } /* if */
 }
 
-static void swap16(uint16_t *v)
+static void swap16(u_int16_t *v)
 {
   unsigned char *s = (unsigned char *)v;
   unsigned char t;
@@ -192,7 +192,7 @@ static void swap16(uint16_t *v)
   s[1]=t;
 }
 
-static void swap32(uint32_t *v)
+static void swap32(u_int32_t *v)
 {
   unsigned char *s = (unsigned char *)v;
   unsigned char t;
@@ -208,7 +208,7 @@ static void swap32(uint32_t *v)
   s[2]=t;
 }
 
-static void swap64(uint64_t *v)
+static void swap64(u_int64_t *v)
 {
   unsigned char *s = (unsigned char *)v;
   unsigned char t;
@@ -232,7 +232,7 @@ static void swap64(uint64_t *v)
   s[4]=t;
 }
 
-uint16_t *amx_Align16(uint16_t *v)
+u_int16_t *amx_Align16(u_int16_t *v)
 {
   assert(sizeof(*v)==2);
   init_little_endian();
@@ -241,7 +241,7 @@ uint16_t *amx_Align16(uint16_t *v)
   return v;
 }
 
-uint32_t *amx_Align32(uint32_t *v)
+u_int32_t *amx_Align32(u_int32_t *v)
 {
   assert(sizeof(cell)==4);
   init_little_endian();
@@ -250,7 +250,7 @@ uint32_t *amx_Align32(uint32_t *v)
   return v;
 }
 
-uint64_t *amx_Align64(uint64_t *v)
+u_int64_t *amx_Align64(u_int64_t *v)
 {
   assert(sizeof(cell)==8);
   init_little_endian();
@@ -274,7 +274,7 @@ uint64_t *amx_Align64(uint64_t *v)
   #define swapcell  swap32
 #endif
 
-int AMXAPI amx_Flags(AMX *amx,uint16_t *flags)
+int AMXAPI amx_Flags(AMX *amx,u_int16_t *flags)
 {
   AMX_HEADER *hdr;
 
@@ -292,7 +292,7 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, cell *params)
 {
   AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   AMX_FUNCSTUB *func=(AMX_FUNCSTUB *)(amx->base+(int)hdr->natives+(int)index*sizeof(AMX_FUNCSTUB));
-  AMX_NATIVE f=(AMX_NATIVE)func->address;
+  const AMX_NATIVE f=(AMX_NATIVE)func->address;
   assert(f!=NULL);
   assert(index<hdr->num_natives);
 
@@ -654,25 +654,25 @@ int AMXAPI amx_Init(AMX *amx,void *program)
   init_little_endian();
   if (!amx_LittleEndian) {
 //printf( "DBG: changing endianess to little endian\n" );
-    amx_Align32((uint32_t*)&hdr->size);
+    amx_Align32((u_int32_t*)&hdr->size);
     amx_Align16(&hdr->magic);
-    amx_Align16((uint16_t*)&hdr->flags);
-    amx_Align16((uint16_t*)&hdr->defsize);
-    amx_Align32((uint32_t*)&hdr->cod);
-    amx_Align32((uint32_t*)&hdr->dat);
-    amx_Align32((uint32_t*)&hdr->hea);
-    amx_Align32((uint32_t*)&hdr->stp);
-    amx_Align32((uint32_t*)&hdr->cip);
-    amx_Align16((uint16_t*)&hdr->num_publics);
-    amx_Align32((uint32_t*)&hdr->publics);
-    amx_Align16((uint16_t*)&hdr->num_natives);
-    amx_Align32((uint32_t*)&hdr->natives);
-    amx_Align16((uint16_t*)&hdr->num_libraries);
-    amx_Align32((uint32_t*)&hdr->libraries);
-    amx_Align16((uint16_t*)&hdr->num_pubvars);
-    amx_Align32((uint32_t*)&hdr->pubvars);
-    amx_Align16((uint16_t*)&hdr->num_tags);
-    amx_Align32((uint32_t*)&hdr->tags);
+    amx_Align16((u_int16_t*)&hdr->flags);
+    amx_Align16((u_int16_t*)&hdr->defsize);
+    amx_Align32((u_int32_t*)&hdr->cod);
+    amx_Align32((u_int32_t*)&hdr->dat);
+    amx_Align32((u_int32_t*)&hdr->hea);
+    amx_Align32((u_int32_t*)&hdr->stp);
+    amx_Align32((u_int32_t*)&hdr->cip);
+    amx_Align16((u_int16_t*)&hdr->num_publics);
+    amx_Align32((u_int32_t*)&hdr->publics);
+    amx_Align16((u_int16_t*)&hdr->num_natives);
+    amx_Align32((u_int32_t*)&hdr->natives);
+    amx_Align16((u_int16_t*)&hdr->num_libraries);
+    amx_Align32((u_int32_t*)&hdr->libraries);
+    amx_Align16((u_int16_t*)&hdr->num_pubvars);
+    amx_Align32((u_int32_t*)&hdr->pubvars);
+    amx_Align16((u_int16_t*)&hdr->num_tags);
+    amx_Align32((u_int32_t*)&hdr->tags);
   } /* if */
 
 //printf( "DBG: hdr=%p, hdr->natives=%d 0x%x\n", hdr, hdr->natives, hdr->natives );
@@ -842,7 +842,7 @@ int AMXAPI amx_NameLength(AMX *amx, int *length)
 {
   AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
-  *length=hdr->defsize - sizeof(uint32_t);
+  *length=hdr->defsize - sizeof(u_int32_t);
   return AMX_ERR_NONE;
 }
 
@@ -1326,10 +1326,10 @@ static void *labels[] = {
       pri= * (data+(int)pri);
       break;
     case 2:
-      pri= * (uint16_t *)(data+(int)pri);
+      pri= * (u_int16_t *)(data+(int)pri);
       break;
     case 4:
-      pri= * (uint32_t *)(data+(int)pri);
+      pri= * (u_int32_t *)(data+(int)pri);
       break;
     } /* switch */
     NEXT(cip);
@@ -1399,10 +1399,10 @@ static void *labels[] = {
       *(data+(int)alt)=(u_char)pri;
       break;
     case 2:
-      *(uint16_t *)(data+(int)alt)=(uint16_t)pri;
+      *(u_int16_t *)(data+(int)alt)=(u_int16_t)pri;
       break;
     case 4:
-      *(uint32_t *)(data+(int)alt)=(uint32_t)pri;
+      *(u_int32_t *)(data+(int)alt)=(u_int32_t)pri;
       break;
     } /* switch */
     NEXT(cip);
@@ -2274,10 +2274,10 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         pri= * (data+(int)pri);
         break;
       case 2:
-        pri= * (uint16_t *)(data+(int)pri);
+        pri= * (u_int16_t *)(data+(int)pri);
         break;
       case 4:
-        pri= * (uint32_t *)(data+(int)pri);
+        pri= * (u_int32_t *)(data+(int)pri);
         break;
       } /* switch */
       break;
@@ -2347,10 +2347,10 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         *(data+(int)alt)=(u_char)pri;
         break;
       case 2:
-        *(uint16_t *)(data+(int)alt)=(uint16_t)pri;
+        *(u_int16_t *)(data+(int)alt)=(u_int16_t)pri;
         break;
       case 4:
-        *(uint32_t *)(data+(int)alt)=(uint32_t)pri;
+        *(u_int32_t *)(data+(int)alt)=(u_int32_t)pri;
         break;
       } /* switch */
       break;
