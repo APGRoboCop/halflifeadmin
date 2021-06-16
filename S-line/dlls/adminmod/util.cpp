@@ -266,8 +266,6 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 }  // get_option_cvar_value()
 
 
-
-
 void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMore, char pszText[1024]) {
 
   int msgShowMenu = 0;
@@ -284,8 +282,6 @@ void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMor
   
   MESSAGE_END();  
 }
-
-
 
 
 // Send menu in chunks (max. 512 chars for menu and 176 for one chunk)
@@ -318,8 +314,6 @@ void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char ps
 	  MESSAGE_END();
   }
 }
-
-
 
 
 void ShowMOTD( edict_t* pev, const char *msg )
@@ -357,13 +351,8 @@ void ShowMOTD( edict_t* pev, const char *msg )
 	WRITE_STRING( chunk );
     MESSAGE_END();
 
-
   }
-
 }
-
-
-
 
 
 edict_t* UTIL_EntityByIndex( int playerIndex ){
@@ -377,7 +366,6 @@ edict_t* UTIL_EntityByIndex( int playerIndex ){
 	}
 	return pPlayerEdict;
 }      
-
 
 
 CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
@@ -521,12 +509,9 @@ void fix_string(char *str,int len)
 }
 
 
-
 /*********************************************************************
  * new map stuff
- * 
  *********************************************************************/
-
 
 /*
   ==============
@@ -591,22 +576,23 @@ char *COM_Parse (char *data)
       goto skipwhite;
     }
   
-  
   // handle quoted strings specially
   if (c == '\"')
     {
       data++;
       while (true)
-	{
-	  c = *data++;
-	  if (c=='\"' || !c)
-	    {
-	      com_token[len] = 0;
-	      return data;
-	    }
-	  com_token[len] = c;
-	  len++;
-	}
+		{
+		c = *data++;
+      	
+		if (c=='\"' || !c)
+			{
+			com_token[len] = 0;
+			 return data;
+			}
+      	
+		com_token[len] = c;
+		len++;
+		}
     }
   
   // parse single characters
@@ -737,9 +723,7 @@ mapcycle_item_s *CurrentMap(mapcycle_t *cycle)
 
 /*********************************************************************************************
  *
- *
  * check_map - check if we are allowed to vote for that map
- *
  *
  **********************************************************************************************/
 int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
@@ -751,7 +735,6 @@ int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
   char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(mapcfile, &length));
   if ( pFileList && length )
     {
-      
       
       // keep pulling mapnames out of the list until we find "map", else return 0
       while ( true )
@@ -796,7 +779,6 @@ int listmaps(edict_t *pAdminEnt) {
 }
 
 
-
 int check_map(char *map, int bypass_allowed_map)
 {
   
@@ -808,7 +790,6 @@ int check_map(char *map, int bypass_allowed_map)
     mapcycle_item_s* item = CurrentMap(&mapcycle);
     strcpy(map,item->mapname);
     return (IS_MAP_VALID(item->mapname));
-    
     
   } else { // they have defined the maps.ini file for us
     
@@ -828,12 +809,9 @@ int check_map(char *map, int bypass_allowed_map)
     
   } // end of maps.ini else check
   
-  
-  
   return 0;
   
 }
-
 
 
 static unsigned short FixedUnsigned16( float value, float scale )
@@ -846,7 +824,6 @@ static unsigned short FixedUnsigned16( float value, float scale )
   
   return static_cast<unsigned short>(output);
 }
-
 
 
 static short FixedSigned16( float value, float scale )
@@ -872,7 +849,6 @@ int ClientCheck(CBaseEntity *pPlayer) {
 		return 0;
 	else
 		return 1;
-
 }
 
 
@@ -885,7 +861,6 @@ int ClientCheck(edict_t *pEntity) {
 		return 0;
 	else
 		return 1;
-
 }
 
 
@@ -899,7 +874,6 @@ int ClientCheck(entvars_t *pEntVars) {
 		return 0;
 	else
 		return 1;
-
 }
 
 
@@ -948,7 +922,6 @@ void UTIL_HudMessage( CBaseEntity *pEntity, const hudtextparms_t &textparms, con
 }
 
 
-
 void UTIL_HudMessageAll( const hudtextparms_t &textparms, const char *pMessage )
 {
 	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
@@ -959,9 +932,6 @@ void UTIL_HudMessageAll( const hudtextparms_t &textparms, const char *pMessage )
 		  UTIL_HudMessage( pPlayer, textparms, pMessage );
     }
 }
-
-
-
 
 
 char* GetModDir() {
@@ -989,7 +959,6 @@ char* GetModDir() {
 /* /CEM */
 
 
-
 /* Rope's stuff */
 void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name, 
 		  const char *param1, const char *param2, const char *param3, 
@@ -1002,8 +971,6 @@ void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name,
   }  // if
  
 
- 
-  
   MESSAGE_BEGIN( MSG_ONE, g_msgTextMsg, nullptr, client );
   WRITE_BYTE( msg_dest );
   WRITE_STRING( msg_name );
@@ -1071,10 +1038,6 @@ void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name,
 }
 
 
-
-
-
-
 //
 // Our own versions of ClientPrintf() and ClientCommand() to try
 // and make them more secure for bots until Valve fixes the engine
@@ -1109,12 +1072,7 @@ void ClientCommand (edict_t* pEdict, char* szFmt, ...) {
 
 }
 
-
-
 extern DLL_GLOBAL  edict_t *pAdminEnt;
-
-
-
 
 // CEM - Rope's version of my GetPlayerIndex, for partial name matching. 
 int GetPlayerIndex(char *PlayerText) {
@@ -1155,9 +1113,7 @@ int GetPlayerIndex(char *PlayerText) {
 	  }  // if
   }  // for
 
-
   const bool bIsId = (oaiAuthID.is_set() || (PlayerNumber != 0));
-
 
   if ( !bVerbatim ) { // Verbatim means a number is a number. Don't match it on a name.
 	  for (i = 1; i <= gpGlobals->maxClients; i++) {
@@ -1201,12 +1157,6 @@ int GetPlayerIndex(char *PlayerText) {
 /* /Rope's stuff */
 
 
-
-
-
-
-
-
 int GetPlayerCount( edict_t* peIgnorePlayer ) {
 	int iPlayerCount = 0;
 	for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
@@ -1217,11 +1167,6 @@ int GetPlayerCount( edict_t* peIgnorePlayer ) {
 	}  // for
 	return iPlayerCount;
 }
-
-
-
-
-
 
 
 /* 
@@ -1293,8 +1238,6 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
 }  // getpath()
 
 
-
-
 int get_player_team( CBaseEntity* poPlayer ) {
 
 	// check for a spectator or the proxy
@@ -1347,7 +1290,6 @@ int get_player_team( CBaseEntity* poPlayer ) {
 }  // get_player_team()
 
 
-
 int util_kick_player( int _iSessionId, const char* _pcKickMsg )
 {
 	if (nullptr == _pcKickMsg ) {
@@ -1369,7 +1311,6 @@ int util_kick_player( edict_t* _peEntity, const char* _pcKickMsg )
 	util_kick_player( iSID, _pcKickMsg );
 	return 1;
 }
-
 
 
 void util_kill_player( CBaseEntity* pPlayer ) {

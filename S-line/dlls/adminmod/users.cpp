@@ -41,7 +41,6 @@
  *
  */
 
-
 #include <cstring>
 
 #ifndef _WIN32
@@ -51,7 +50,6 @@
 #  include "gnuregex.h"
 #  include "ufc_crypt.h"
 #endif
-
 
 
 #if (defined(USE_MYSQL) || defined(USE_PGSQL))
@@ -81,6 +79,7 @@
 #include "amutil.h"
 #include "amlibc.h"
 #include "AmFSNode.h"
+#include "constants.h"
 
 // This is it; the linked lists that we store all of our
 // loaded admin mod data in.  Each list gets initialized in
@@ -101,7 +100,6 @@ CLinkList<word_struct>* m_pWordList   = nullptr;
 // Auth structure array.  +1 so we can go from 0 - MAX_PLAYERS, rather
 // than 0 - MAX_PLAYERS - 1.
 auth_struct g_AuthArray[MAX_PLAYERS + 1];
-
 
 // Second auth struct array to keep a backup of auths. Only needed to overcome
 // the inability of CS to do proper mapchanges
@@ -656,7 +654,7 @@ int match(const char *string, char *pattern) {
     return 0;
     // If we're not using regex, just do a simple case-insensitive comparison.
   } else if ((int)CVAR_GET_FLOAT("use_regex")==0)  {
-    return (!stricmp(string, pattern));
+	  return (~stricmp(string, pattern));
     // Otherwise, do regex stuff.
   } else {
 	  regex_t    re;
@@ -763,7 +761,7 @@ int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
 	DEVEL_LOG(3, ("Comparing server pw '%s' with client pw '%s'", sServerPassword, sEncrypt) );
 
 	// Return the comparison between the two.
-	return( !strncmp(sEncrypt,sServerPassword,PASSWORD_SIZE) );
+	return( ~strncmp(sEncrypt,sServerPassword,PASSWORD_SIZE) );
 }
 
 
@@ -1749,7 +1747,6 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
  if( (int)CVAR_GET_FLOAT("mysql_preload")==0 ) {
 	 
-
 	 //TODO: Why is this here and never used? Looks like a bug to me.
 	 bool bUsersTableIsSet = true;
 	 bool bTagsTableIsSet = true;
@@ -2326,8 +2323,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 
   if( (int)CVAR_GET_FLOAT("pgsql_preload")==0) { // if we didn't preload the users file
 
-
-	  //TODO: WHy is this here and never used? Looks like a bug to me.
+	  //TODO: Why is this here and never used? Looks like a bug to me.
 	 bool bUsersTableIsSet = true;
 	 bool bTagsTableIsSet = true;
 	 const char* pcCVar = get_cvar_string_value( "pgsql_dbtable_users" );

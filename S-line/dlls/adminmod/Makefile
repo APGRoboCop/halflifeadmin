@@ -86,7 +86,10 @@ METASRC= $(METADIR)/metamod
 
 # The standard C++ library for static linking
 #STDCPPLIB=/usr/lib/libstdc++-libc6.2-2.so.3 # Old dir [APG]RoboCop[CL]
-STDCPPLIB=/usr/lib/i386-linux-gnu/libstdc++.so.6
+#STDCPPLIB=/usr/lib/i386-linux-gnu/libstdc++.so.6
+
+# Needed for avoiding CXXABI 1.3.8 not found error?
+STDCPPLIB=-static-libstdc++ 
 
 # The directory of the MySQL include files
 MYSQLINCDIR= /usr/include/mysql
@@ -98,10 +101,8 @@ PGSQLINCDIR= /usr/include/pgsql
 # The directory of the PostgreSQL library
 PGSQLLIBDIR= /usr/lib/pgsql
 
-
 # The directory to test your dll in
 TESTDIR=""
-
 
 # Core team members:
 # you can enter your personal directory setup here

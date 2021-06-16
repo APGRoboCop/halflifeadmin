@@ -1333,7 +1333,6 @@ static cell messageex(AMX *amx, cell *params) {
 }
 
 
-
 // nextmap(map, length) -> If 'length' is 0, prints next map to console.  Otherwise,
 // puts it in 'map' var.
 static cell nextmap(AMX *amx, cell *params) {
@@ -1369,12 +1368,10 @@ static cell nextmap(AMX *amx, cell *params) {
 }
 
 
-
 // playercount() -> returns the current number of players on the server
 static cell playercount(AMX *amx, cell *params) {
   return GetPlayerCount();
 }
-
 
 
 // playerinfo(index,name[],length,userid,wonid,team,dead,authid[]) -> Given 'index', fills the other
@@ -1442,7 +1439,6 @@ static cell playerinfo(AMX *amx, cell *params) {
 }
 
 
-
 // playsound(user, sound) -> plays 'sound' for 'user' (does nothing
 // if user doesn't have that sound.  Works just like execclient(), but
 // ignores allow_client_exec.
@@ -1475,8 +1471,6 @@ static cell playsound(AMX *amx, cell *params) {
   CLIENT_COMMAND ( pPlayer->edict(), UTIL_VarArgs("play %s\n", sCmd) );
   return 1;
 }
-
-
 
 
 // plugin_checkcommand(Command[], &Access)
