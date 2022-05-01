@@ -43,13 +43,13 @@
  *
 ****/
 #include	"extdll.h"
-#include	"util.h"
+//#include	"util.h"
 //#include	"cbase.h"
 #include	"saverestore.h"
-#include	"client.h"
-#include	"decals.h"
+//#include	"client.h"
+//#include	"decals.h"
 //#include	"gamerules.h"
-#include	"game.h"
+//#include	"game.h"
 
 extern "C" void PM_Move ( struct playermove_s *ppmove, int server );
 extern "C" void PM_Init ( struct playermove_s *ppmove  );

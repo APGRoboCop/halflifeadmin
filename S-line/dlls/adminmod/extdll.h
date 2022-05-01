@@ -93,7 +93,7 @@
 //#  define snprintf _snprintf
 //#  define vsnprintf _vsnprintf
 #  define HAS_SNPRINTF
-#  define sleep(x)	Sleep((x)*1000)
+//#  define sleep(x)	Sleep((x)*1000)
 //#  define strcasecmp	stricmp
 #  define strncasecmp	_strnicmp
 #else
@@ -112,13 +112,12 @@
   #define NOIME
 
   #define _WIN32_WINNT 0x0400
-  #include "WINDOWS.H"
-  #include "winbase.h"
+  #include "windows.h"
 
-  // Misc C-runtime library headers
-  #include "STDIO.H"
-  #include "STDLIB.H"
-  #include "MATH.H"
+// Misc C-runtime library headers
+  #include "stdio.h"
+  #include "stdlib.h"
+  #include "math.h"
 
 #else
   #include <stdarg.h>
@@ -220,7 +219,7 @@ typedef float vec_t;				// needed before including progdefs.h
 //#include <nodes.h>
 //#include <plane.h>
 #include <player.h>
-//
+
 //#include "includes/schedule.h"
 //#include "includes/scriptevent.h"
 //#include "includes/skill.h"

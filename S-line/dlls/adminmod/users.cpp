@@ -49,6 +49,8 @@
 #else
 #  include "gnuregex.h"
 #  include "ufc_crypt.h"
+#define stricmp _stricmp
+#define strnicmp _strnicmp
 #endif
 
 
@@ -312,7 +314,7 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
 	if (iPos >= 0)
 	  sLine[iPos + 1] = '\0';
 	
-	if (strlen(sLine) > 0) 
+	if (sLine[0] != '\0') 
 	  pLineList->AddLink(sLine);
 	
       }
@@ -3265,7 +3267,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
     }
   }
   
-  if (sFilter == nullptr || strlen(sFilter) == 0) {
+  if (sFilter == nullptr || sFilter[0] == '\0') {
     strcpy(sFilterText, "");
   } else {
     sprintf(sFilterText, " for '%s'", sFilter);
@@ -3440,7 +3442,7 @@ plugin_result HandleVersion(edict_t* pEntity) {
     strcpy(sDesc, pPlugin->Desc());
     strcpy(sVersion, pPlugin->Version());
     System_Response(UTIL_VarArgs( "* Plugin #%2i: %s (v. %s)\n",i++, sName, sVersion) ,pEntity);
-    if (sDesc != nullptr && strlen(sDesc) > 0)
+    if (sDesc != nullptr && sDesc[0] != '\0')
       System_Response(UTIL_VarArgs("  %s \n", sDesc), pEntity);
     pLink = pLink->NextLink();
   }
@@ -3742,7 +3744,7 @@ void SetVaultData(char* sKey, char* sData) {
     strcpy(tVault->sData, sData);
     m_pVaultList->AddLink(tVault);
   } else {
-    if (sData == nullptr || strlen(sData) == 0) {
+    if (sData == nullptr || sData[0] == '\0') {
       CLinkItem<vault_struct>* pLink = m_pVaultList->FindLink(tVault);
       if (pLink != nullptr) 
 	m_pVaultList->DeleteLink(pLink);

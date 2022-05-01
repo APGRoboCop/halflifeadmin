@@ -43,7 +43,6 @@
 #include "extdll.h"
 #include "users.h"
 #include "amutil.h"
-#include "amlibc.h"
 #include "version.h"
 
 #ifdef USE_METAMOD
@@ -473,7 +472,6 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     }  // if
     */
 
-    char dll_name[2048];
     char mod_name[32];
 
 /*#ifndef EXTMM
@@ -540,7 +538,6 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
     }
 #endif
 
-    BOOL bSymbolLoaded = FALSE;
     h_Library = nullptr;
 
 #ifndef USE_METAMOD
@@ -660,7 +657,9 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
         UTIL_LogPrintf("[ADMIN] INFO: Loading extended Counter-Strike functionality.\n");
 #endif
 
-        if(CS_Library == nullptr) {
+        if(CS_Library == nullptr)
+        {
+	        char dll_name[2048];
 #ifdef _WIN32
             CS_Library = LoadLibrary(dll_name);
 #else
@@ -673,8 +672,9 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
             UTIL_LogPrintf("[ADMIN] INFO: Unable to load Counter-Strike DLL for extended functionality.\n");
 #endif
         } else {
+	        BOOL bSymbolLoaded = FALSE;
 
-            //char* pcError = nullptr;
+	        //char* pcError = nullptr;
 
             g_pflTimeLimit = reinterpret_cast<float*>(GetProcAddress(CS_Library, "g_flTimeLimit"));
             if(g_pflTimeLimit == nullptr) {

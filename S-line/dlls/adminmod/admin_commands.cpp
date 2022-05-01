@@ -44,12 +44,15 @@
 //#include <string.h> //Deprecated [APG]RoboCop[CL]
 #include <cstring>
 
-#ifndef _WIN32
+#ifdef _WIN32
+#define stricmp _stricmp
+#endif
+
+/*#ifndef _WIN32
 #  include <regex.h>
 #else
 #  include "gnuregex.h"
-#endif
-
+#endif*/
 
 #ifdef USE_MYSQL
 #  include <mysql.h>
@@ -75,7 +78,7 @@
 
 #ifdef _WIN32
 #  include <io.h>
-#  include <direct.h>
+//#  include <direct.h>
 #endif
 
 /* OMFG...amx.h includes a #pragma pack directive that caused it to
@@ -189,7 +192,7 @@ static cell access(AMX *amx, cell *params) {
   cell* cStr;
 
 	CHECK_AMX_PARAMS(1);
-	const int iAccess = (int)params[1];
+	const int iAccess = params[1];
   if (iNumParams >= 2) {
     GET_AMX_STRING(2,BUF_SIZE,sUser,0);
   } else {
@@ -239,7 +242,7 @@ static cell auth(AMX *amx, cell *params) {
       return 1; 
     iIndex = ENTINDEX(pAdminEnt);
   } else {
-    iIndex = GetPlayerIndex(static_cast<char*>(sUser));
+    iIndex = GetPlayerIndex(sUser);
   }
   if (iIndex < 1 || iIndex > gpGlobals->maxClients) {
     System_Response(UTIL_VarArgs("[ADMIN] (auth) Unable to find player: %s\n", sUser),pAdminEnt);
@@ -259,7 +262,6 @@ static cell ban(AMX *amx, cell *params) {
   bool bIsIP = false;
   int iLength;
 	const int iNumParams = params[0] / sizeof(cell);
-  int iPlayerIndex = 0;
 	int iSessionID = 0;
   char sCommand[COMMAND_SIZE];
   char sUser[BUF_SIZE];
@@ -279,7 +281,7 @@ static cell ban(AMX *amx, cell *params) {
   
   AMAuthId oaiAuthID( sUser );
 
-  iPlayerIndex = GetPlayerIndex(sUser);
+  int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex > 0) {
     CBaseEntity* pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
     if (IsPlayerValid(pPlayer)) {
@@ -361,12 +363,10 @@ static cell ban(AMX *amx, cell *params) {
 // etc.
 static cell centersay(AMX *amx, cell *params) {
   int iLength;
-  int iLineFeed = -1;
   const int iNumParams = params[0] / sizeof(cell);
   char sText[CENTER_SAY_SIZE];
-  cell* cStr;    
-  hudtextparms_t m_textParms;
-  
+  cell* cStr;
+
   CHECK_AMX_PARAMS(5);
   GET_AMX_STRING(1,CENTER_SAY_SIZE,sText,0);
   
@@ -375,7 +375,7 @@ static cell centersay(AMX *amx, cell *params) {
     return 1;
   }	
   FormatLine(sText);
-  iLineFeed = wrap_lines( sText, CENTER_SAY_LINE_SIZE, SW_WRAP);
+  int iLineFeed = wrap_lines(sText, CENTER_SAY_LINE_SIZE, SW_WRAP);
   if ( !iLineFeed ){
     System_Response(UTIL_VarArgs("[ADMIN] (centersay) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
     if (pAdminEnt != nullptr) {
@@ -385,7 +385,8 @@ static cell centersay(AMX *amx, cell *params) {
   }  // if
   
   if ((int)CVAR_GET_FLOAT("pretty_say") != 0) {
-    m_textParms.r1 = params[3];
+	  hudtextparms_t m_textParms;
+	  m_textParms.r1 = params[3];
     m_textParms.g1 = params[4];
     m_textParms.b1 = params[5];
     m_textParms.a1 = 0;
@@ -400,7 +401,7 @@ static cell centersay(AMX *amx, cell *params) {
     //V636 The 'params[2] / 2' expression was implicitly cast from 'int' type to 'float' type.
   	//Consider utilizing an explicit type cast to avoid the loss of a fractional part.
   	//An example : double A = (double)(X) / Y; //[APG]RoboCop[CL]
-    m_textParms.fxTime = params[2] / 2;
+    m_textParms.fxTime = params[2] / static_cast<float>(2);
   	
     m_textParms.x = -1;
     m_textParms.y = 0.25;
@@ -424,13 +425,11 @@ static cell centersay(AMX *amx, cell *params) {
 // etc.
 static cell centersayex(AMX *amx, cell *params) {
   int iLength;
-  int iLineFeed = 0;
   const int iNumParams = params[0] / sizeof(cell);
   char sText[CENTER_SAY_SIZE];
   char sUser[BUF_SIZE];
-  cell* cStr;    
-  hudtextparms_t m_textParms;
-  
+  cell* cStr;
+
   CHECK_AMX_PARAMS(6);
   GET_AMX_STRING(1,BUF_SIZE,sUser,0);
   GET_AMX_STRING(2,CENTER_SAY_SIZE,sText,0);
@@ -449,22 +448,14 @@ static cell centersayex(AMX *amx, cell *params) {
 
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
   if (!IsPlayerValid(pPlayer)) {
-    System_Response(UTIL_VarArgs( "[ADMIN] (centersayex) Unable to message user %s\n",sUser),pAdminEnt);
+	  int iLineFeed = 0;
+	  System_Response(UTIL_VarArgs( "[ADMIN] (centersayex) Unable to message user %s\n",sUser),pAdminEnt);
     return 0;
-
-  FormatLine(sText);
-  iLineFeed = wrap_lines( sText, CENTER_SAY_LINE_SIZE, SW_WRAP);
-  if ( !iLineFeed ){
-    System_Response(UTIL_VarArgs("[ADMIN] (centersayex) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
-  }
-  if (pAdminEnt != nullptr) {
-    UTIL_LogPrintf("[ADMIN] WARNING: Centersayex line limit size exceeded: %s\n", sText);
-  }  // if
-  return 0;
   }  // if
   
   if ((int)CVAR_GET_FLOAT("pretty_say") != 0) {
-    m_textParms.r1 = params[4];
+	  hudtextparms_t m_textParms;
+	  m_textParms.r1 = params[4];
     m_textParms.g1 = params[5];
     m_textParms.b1 = params[6];
     m_textParms.a1 = 0;
@@ -479,7 +470,7 @@ static cell centersayex(AMX *amx, cell *params) {
     //V636 The 'params[3] / 2' expression was implicitly cast from 'int' type to 'float' type.
 	//Consider utilizing an explicit type cast to avoid the loss of a fractional part.
 	//An example : double A = (double)(X) / Y; //[APG]RoboCop[CL]
-    m_textParms.fxTime = params[3]/2;
+    m_textParms.fxTime = params[3]/static_cast<float>(2);
   	
     m_textParms.x = -1;
     m_textParms.y = 0.25;
@@ -770,10 +761,8 @@ static cell exec(AMX *amx, cell *params) {
     System_Response("[ADMIN] (exec) You must include a command.\n", pAdminEnt);
     return 0;
   }
-  
 
-  //-- put unqouted semicolons in quotes
-  bool bQuoteOn = false;
+
   char* pcCmnd = sCommand + strspn(sCommand, " ");
   char* pcLastSpace = sCommand;
   char* pcPos = sCommand;
@@ -847,6 +836,7 @@ static cell exec(AMX *amx, cell *params) {
 
 
   if ( iSemicolons ) {
+	  bool bQuoteOn = false;
 	  // allocate a larger string if the result string doesn't fit into the original
 	  if ( COMMAND_SIZE < (iLength+(2*iSemicolons)) ) {
 		  pcCmnd = new char[iLength+(2*iSemicolons)+1];
@@ -994,7 +984,6 @@ static cell get_vault_num_data(AMX *amx, cell *params) {
 static cell kick(AMX *amx, cell *params) {
   int iLength;
   const int iNumParams = params[0] / sizeof(cell);
-  int iPlayerIndex = 0;
   char sUser[BUF_SIZE];
   cell* cStr;
   
@@ -1005,7 +994,7 @@ static cell kick(AMX *amx, cell *params) {
     System_Response(  "[ADMIN] (kick) You must enter a name to kick\n",pAdminEnt);
     return 0;
   }
-  iPlayerIndex = GetPlayerIndex(sUser);
+  int iPlayerIndex = GetPlayerIndex(sUser);
   if (iPlayerIndex == 0) {
     System_Response( UTIL_VarArgs("[ADMIN] (kick) Unable to find player: %s\n", sUser),pAdminEnt);
     return 0;
@@ -1286,9 +1275,8 @@ static cell messageex(AMX *amx, cell *params) {
     UTIL_HudMessage( pPlayer, m_textParms, sText );	
 // Wraith, marker
   } else if (iType == print_pretty ) {
-	int i = 0;
-	int iLineFeed = -1;
-	for (i = 0; i < (int)strlen(sText); i++) {
+	  int iLineFeed = -1;
+	for (int i = 0; i < (int)strlen(sText); i++) {
       if ((i - iLineFeed) >= CENTER_SAY_LINE_SIZE) {
         System_Response(UTIL_VarArgs("[ADMIN] (messageex) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
         if (pAdminEnt != nullptr) {
@@ -1378,8 +1366,7 @@ static cell playercount(AMX *amx, cell *params) {
 // parameters with the appropriate player info.
 static cell playerinfo(AMX *amx, cell *params) {
 	const int iNumParams = params[0] / sizeof(cell);
-	char sName[BUF_SIZE];
-  cell *cParam;
+	cell *cParam;
   cell* cStr;
 
   CHECK_AMX_PARAMS(3);
@@ -1397,7 +1384,8 @@ static cell playerinfo(AMX *amx, cell *params) {
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
 
   if (IsPlayerValid(pPlayer)) {
-    strncpy(sName,STRING(pPlayer->pev->netname), BUF_SIZE);
+	  char sName[BUF_SIZE];
+	  strncpy(sName,STRING(pPlayer->pev->netname), BUF_SIZE);
     const int iMaxLength = params[3];
     SET_AMX_STRING(2, iMaxLength, sName);
 
@@ -1405,7 +1393,7 @@ static cell playerinfo(AMX *amx, cell *params) {
 	// Thus we also have to check if a refrence passed points to the stack and not the heap.
     if (iNumParams >= 4 && params[4] > amx->hea ) {
       amx_GetAddr(amx,params[4],&cParam);
-      *cParam = (cell)GETPLAYERUSERID(pPlayer->edict());
+      *cParam = GETPLAYERUSERID(pPlayer->edict());
     }
 
     if (iNumParams >= 5 && params[5] > amx->hea) {
@@ -1415,7 +1403,7 @@ static cell playerinfo(AMX *amx, cell *params) {
 
     if (iNumParams >= 6 && params[6] > amx->hea ) {
       amx_GetAddr(amx,params[6],&cParam);
-      *cParam = (cell)get_player_team( pPlayer );
+      *cParam = get_player_team( pPlayer );
     }
 
     if (iNumParams >= 7 && params[7] > amx->hea ) {
@@ -1446,7 +1434,6 @@ static cell playsound(AMX *amx, cell *params) {
   cell* cStr;    
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char sCmd[BUF_SIZE];
   char sPlayer[BUF_SIZE];
   
@@ -1454,7 +1441,7 @@ static cell playsound(AMX *amx, cell *params) {
   GET_AMX_STRING(1,BUF_SIZE,sPlayer,0);
   GET_AMX_STRING(2,BUF_SIZE,sCmd,0);
   
-  PlayerIndex = GetPlayerIndex(sPlayer);
+  int PlayerIndex = GetPlayerIndex(sPlayer);
   if(PlayerIndex==0) 
   	return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
@@ -1480,7 +1467,6 @@ static cell playsound(AMX *amx, cell *params) {
 static cell plugin_checkcommand(AMX* amx, cell* params) {
   unsigned int iAccess = 0;
   int iLength;
-  int iResult = 0;
   const int iNumParams = params[0] / sizeof(cell);
   char acCommand[PLUGIN_CMD_SIZE];
   cell* cStr;
@@ -1490,13 +1476,13 @@ static cell plugin_checkcommand(AMX* amx, cell* params) {
   GET_AMX_STRING(1, PLUGIN_CMD_SIZE, acCommand, 0);
 
   
-  iResult = CheckCommand( pAdminEnt, acCommand, iAccess, TRUE );
+  int iResult = CheckCommand(pAdminEnt, acCommand, iAccess, TRUE);
   if ( iResult && iNumParams >= 2 && params[2] > amx->hea ) {
 	  amx_GetAddr( amx, params[2], &cParam );
 	  *cParam = iAccess;
   }  // if
 
-  return (cell)iResult;
+  return iResult;
 }
 
 
@@ -1568,8 +1554,6 @@ static cell plugin_exec( AMX* amx, cell* params) {
     */
     return 0;
   }
-
-  return 1;
 }  //plugin_exec()
 
 
@@ -1606,8 +1590,7 @@ static cell plugin_registercmd(AMX* amx, cell* params) {
 	const int iNumParams = params[0] / sizeof(cell);
   char sCmd[PLUGIN_CMD_SIZE];
   char sFunction[BUF_SIZE];
-  char sHelp[PLUGIN_HELP_SIZE];
-  cell* cStr;
+	cell* cStr;
   CPlugin* pPlugin = GetPlugin(amx);
   
   if (pPlugin == nullptr) {
@@ -1621,7 +1604,8 @@ static cell plugin_registercmd(AMX* amx, cell* params) {
   GET_AMX_STRING(2,BUF_SIZE,sFunction,0);
 	const int iAccess = params[3];
   if (iNumParams >= 4) {
-    GET_AMX_STRING(4,PLUGIN_HELP_SIZE,sHelp,1);    
+	  char sHelp[PLUGIN_HELP_SIZE];
+	  GET_AMX_STRING(4, PLUGIN_HELP_SIZE, sHelp, 1);    
     if (sHelp[0] != '\0') {
       AddHelpEntry(sCmd,sHelp,iAccess);
     }
@@ -1828,7 +1812,6 @@ static cell am_speakto(AMX *amx, cell *params) {
   cell* cStr;    
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char sSentence[LARGE_BUF_SIZE];
   char sPlayer[BUF_SIZE];
   
@@ -1836,7 +1819,7 @@ static cell am_speakto(AMX *amx, cell *params) {
   GET_AMX_STRING(1,BUF_SIZE,sPlayer, 0);
   GET_AMX_STRING(2,BUF_SIZE,sSentence, 0);
   
-  PlayerIndex = GetPlayerIndex(sPlayer);
+  int PlayerIndex = GetPlayerIndex(sPlayer);
   if(PlayerIndex==0) 
   	return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
@@ -2088,15 +2071,13 @@ static cell vote_allowed(AMX *amx, cell *params) {
   return (pEntity->VoteAllowed() ? 1 : 0);
 }
 
-
-
 static cell userlist(AMX *amx, cell *params) {
 	int iLength;
 	const int iNumParams = params[0] / sizeof(cell);
   cell *cString;
   char name[BUF_SIZE];
   
-  name[0] = NULL;
+  name[0] = 0;
   if(iNumParams>=1) {
     amx_GetAddr(amx,params[1],&cString); 
     amx_StrLen(cString,&iLength);
@@ -2114,7 +2095,7 @@ static cell userlist(AMX *amx, cell *params) {
   for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
     CBaseEntity *pPlayer = UTIL_PlayerByIndex(i );
     if (pPlayer) {
-      if(iLength==0 || strnicmp(name, STRING(pPlayer->pev->netname), iLength)==0) {
+      if(iLength==0 || _strnicmp(name, STRING(pPlayer->pev->netname), iLength)==0) {
         System_Response(UTIL_VarArgs( "  %-30.30s  <%4i>    %-17s    %7i  %c\n",
           STRING(pPlayer->pev->netname), 
           GETPLAYERUSERID( pPlayer->edict()), 
@@ -2146,7 +2127,7 @@ static cell getvar(AMX *amx, cell *params) {
   char *iszItem=name;
 
   const int value = (int)CVAR_GET_FLOAT(name);
-  return (cell)value;
+  return value;
 }
 
 
@@ -2329,7 +2310,7 @@ static cell strtonum(AMX *amx, cell *params) {
   amx_GetString(name,cStr);  
   len=atoi(name); 
   
-  return (cell)len;
+  return len;
 }
 
 
@@ -2370,7 +2351,7 @@ static cell censor_words(AMX *amx, cell *params) {
       for (i = 1; i <= static_cast<int>(strlen(tWord->sWord)); i++) {
 	sReturnBuffer[iOffset + i] = '*';
       }
-      sWord = strstr(static_cast<char*>(sWord + 1), tWord->sWord);
+      sWord = strstr(sWord + 1, tWord->sWord);
       iRetVal = 0;
     }
     pLink = pLink->NextLink();
@@ -2423,7 +2404,6 @@ static cell get_userindex(AMX *amx, cell *params) {
   cell *Param;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 2) {
@@ -2437,10 +2417,10 @@ static cell get_userindex(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)PlayerIndex;
+  *Param = PlayerIndex;
   return 1;
 }
 
@@ -2461,7 +2441,6 @@ static cell amx_get_userIP( AMX *amx, cell *params ) {
 	cell* cStr;
 	int iLength;
 	const int iNumParams = params[0] / sizeof(cell);
-	int iPlayerIndex = 0;
 	char acPlayerText[BUF_SIZE];
 	const char* pcIP = nullptr;
 	cell* cParam;
@@ -2471,7 +2450,7 @@ static cell amx_get_userIP( AMX *amx, cell *params ) {
 	CHECK_AMX_PARAMS( 3 );
 	GET_AMX_STRING( 1, BUF_SIZE, acPlayerText, 0 );
 
-	iPlayerIndex = GetPlayerIndex( acPlayerText );
+	int iPlayerIndex = GetPlayerIndex(acPlayerText);
 	if ( iPlayerIndex == 0 ) return 0;
 
 	if ( ! user_ip(iPlayerIndex, &pcIP, &ulNBOIP) ) return 0;
@@ -2482,7 +2461,7 @@ static cell amx_get_userIP( AMX *amx, cell *params ) {
 
     if (iNumParams >= 4 && params[4] > amx->hea) {
       amx_GetAddr(amx,params[4],&cParam);
-      *cParam = (cell)g_AuthArray[iPlayerIndex].iPort;
+      *cParam = g_AuthArray[iPlayerIndex].iPort;
     }
 
 	return (cell)ulNBOIP;
@@ -2496,7 +2475,6 @@ static cell get_username(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 3) {
@@ -2511,7 +2489,7 @@ static cell get_username(AMX *amx, cell *params) {
   }
   
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -2577,7 +2555,6 @@ static cell get_userorigin(AMX *amx, cell *params) {
   cell *Param;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 4) {
@@ -2591,7 +2568,7 @@ static cell get_userorigin(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -2603,15 +2580,15 @@ static cell get_userorigin(AMX *amx, cell *params) {
   
   amx_GetAddr(amx,params[2],&Param);
   int intValue = floor(pPlayer->edict()->v.origin.x);
-  *Param = (cell)intValue;
+  *Param = intValue;
   
   amx_GetAddr(amx,params[3],&Param);
   intValue = floor(pPlayer->edict()->v.origin.y);
-  *Param = (cell)intValue;
+  *Param = intValue;
   
   amx_GetAddr(amx,params[4],&Param);
   intValue = floor(pPlayer->edict()->v.origin.z);
-  *Param = (cell)intValue;
+  *Param = intValue;
   
   return 1;
 }
@@ -2623,7 +2600,6 @@ static cell get_userSessionID(AMX *amx, cell *params) {
   cell *Param;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 2) {
@@ -2637,13 +2613,13 @@ static cell get_userSessionID(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)GETPLAYERUSERID(pPlayer->edict());
+  *Param = GETPLAYERUSERID(pPlayer->edict());
   return 1;
 }
 
@@ -2654,7 +2630,6 @@ static cell get_userWONID(AMX *amx, cell *params) {
   cell *Param;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 2) {
@@ -2668,7 +2643,7 @@ static cell get_userWONID(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -2689,7 +2664,6 @@ static cell get_user_authid(AMX *amx, cell *params) {
   cell *Param;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 3) {
@@ -2703,7 +2677,7 @@ static cell get_user_authid(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -2724,7 +2698,6 @@ static cell execclient(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char CmdText[BUF_SIZE];
   char CmdBuf[BUF_SIZE];
   char PlayerText[BUF_SIZE];
@@ -2745,7 +2718,7 @@ static cell execclient(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if (pPlayer== nullptr) return 0;
@@ -2769,12 +2742,10 @@ static cell execclient(AMX *amx, cell *params) {
   // prepare the command to be executed
   BOOL bMoreCmds = FALSE;
   apat* pCmd = nullptr;
-  char* pcStart = nullptr;
   char* pcEnd = nullptr;
-  char* pcEOB = nullptr;
   memcpy( CmdBuf, CmdText, BUF_SIZE );
-  pcEOB = CmdBuf + strlen( CmdBuf );
-  pcStart = CmdBuf;
+  char* pcEOB = CmdBuf + strlen(CmdBuf);
+  char* pcStart = CmdBuf;
   
   while ( pcStart < pcEOB ) {
 	  pcStart = pcStart + strspn( pcStart, " ;\"" );
@@ -2843,7 +2814,6 @@ static cell slay(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 1) {
@@ -2857,7 +2827,7 @@ static cell slay(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if (pPlayer== nullptr) return 0;
@@ -2906,7 +2876,6 @@ static cell teleport(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 4) {
@@ -2920,7 +2889,7 @@ static cell teleport(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerText,cStr);  
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -2976,8 +2945,7 @@ static cell fileexists(AMX *amx, cell *params) {
   int iLen;
   const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
-  FILE* fFile;
-  
+
   CHECK_AMX_PARAMS(1);
   
   amx_GetAddr( amx, params[1], &cStr ); 
@@ -2989,8 +2957,9 @@ static cell fileexists(AMX *amx, cell *params) {
   amx_GetString( acFilename, cStr ); 
   
   char acFilePath[PATH_MAX];
-  if ( get_file_path(acFilePath, acFilename, PATH_MAX, nullptr) > 0 ) {  
-    DEBUG_LOG( 1, ("fileexists looking for file %s", acFilePath) );
+  if ( get_file_path(acFilePath, acFilename, PATH_MAX, nullptr) > 0 ) {
+	  FILE * fFile;
+	  DEBUG_LOG( 1, ("fileexists looking for file %s", acFilePath) );
     
     if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
       return 0;
@@ -3073,11 +3042,9 @@ static cell filesize(AMX *amx, cell *params) {
     switch ( iUnits ) {
     case FSUNIT_BYTES:
       return iNumBytes;
-      break;
-    case FSUNIT_LINES:
+  case FSUNIT_LINES:
       return iNumLines;
-      break;
-    default:
+  default:
       break;
     }  // switch
 
@@ -3098,9 +3065,7 @@ static cell readfile(AMX *amx, cell *params) {
   int iLen;
   const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
-  FILE* fFile;
   char acLine[c_LineLen];
-  char* pcLine = nullptr;
 
   if (iNumParams < 4) {
     amx_RaiseError( amx, AMX_ERR_NATIVE );
@@ -3115,15 +3080,17 @@ static cell readfile(AMX *amx, cell *params) {
   }  // if
   amx_GetString( acFilename, cStr );
 
-  const int line_no=(int)params[3];     
+  const int line_no=params[3];     
   
   memset( acLine, 0x0, c_LineLen );
   
   char acFilePath[PATH_MAX];
 
-  if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_read") > 0 ) {  
-    
-    if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
+  if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_read") > 0 ) {
+	  char * pcLine = nullptr;
+	  FILE * fFile;
+
+	  if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
       return 0;
     }  // if
     
@@ -3175,7 +3142,6 @@ static cell writefile(AMX *amx, cell *params) {
   const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
   char acData[c_LineLen];
-  FILE* fFile;
 #ifdef _WIN32
   // We actually don't need this as long as open mode non-"b" behaves in a way that it
   // translates between DOS EOLs under all Win32 variants. If that isn't the case 
@@ -3211,12 +3177,12 @@ static cell writefile(AMX *amx, cell *params) {
   amx_GetString( acData, cStr ); 
   
   char acFilePath[PATH_MAX];
-  char acLine[c_LineLen];
 
-  if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_write") > 0 ) {  
-    
-      
-    if( (fFile = fopen(acFilePath,"a+")) == nullptr ) {
+  if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_write") > 0 ) {
+	  FILE * fFile;
+
+
+	  if( (fFile = fopen(acFilePath,"a+")) == nullptr ) {
       DEBUG_LOG( 2, ("ERROR:writefile: fopen failed on filename %s: %s.", acFilePath, strerror(errno)) ); 
       amx_RaiseError( amx, AMX_ERR_NATIVE );
       return 0;
@@ -3227,7 +3193,8 @@ static cell writefile(AMX *amx, cell *params) {
       DEBUG_LOG( 2, ("Appending to file") );
       fclose( fFile );
     } else {
-      FILE *tmp_file;
+	    char acLine[c_LineLen];
+	    FILE *tmp_file;
       char acTempFilePath[PATH_MAX];
     
       /*
@@ -3312,8 +3279,7 @@ static cell resetfile(AMX *amx, cell *params) {
   int iLen;
   const int iNumParams = params[0]/sizeof(cell);
   char acFilename[BUF_SIZE];
-  FILE* fFile;
-  
+
   if (iNumParams < 1) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
@@ -3328,7 +3294,8 @@ static cell resetfile(AMX *amx, cell *params) {
   amx_GetString( acFilename, cStr ); 
   
   char acFilePath[PATH_MAX];
-  if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_write") > 0 ) {  
+  if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_write") > 0 ) {
+	  FILE * fFile;
 
 #ifdef _WIN32
     if( (fFile = fopen(acFilePath,"w")) == nullptr ) {
@@ -3392,7 +3359,6 @@ static cell get_userinfo(AMX *amx, cell *params) {
   cell* cStr;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerName[BUF_SIZE];
   char InfoName[BUF_SIZE];
   
@@ -3407,7 +3373,7 @@ static cell get_userinfo(AMX *amx, cell *params) {
     return 0;
   }
   amx_GetString(PlayerName,cStr);
-  PlayerIndex = GetPlayerIndex(PlayerName);
+  int PlayerIndex = GetPlayerIndex(PlayerName);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -3440,7 +3406,7 @@ static cell get_serverinfo(AMX *amx, cell *params) {
   cell* cStr;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
+  
   char InfoName[INFO_KEYVAL_SIZE];
   
   if (iNumParams < 3) {
@@ -3516,7 +3482,6 @@ static cell slap(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 1) {
@@ -3531,7 +3496,7 @@ static cell slap(AMX *amx, cell *params) {
   }
   amx_GetString(PlayerText,cStr);  
   
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
@@ -3602,7 +3567,6 @@ static cell godmode(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 2) {
@@ -3618,12 +3582,12 @@ static cell godmode(AMX *amx, cell *params) {
   }
   amx_GetString(PlayerText,cStr);  
   
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  const int iGodMode = (int)params[2];
+  const int iGodMode = params[2];
   if(iGodMode!=0) {
     pPlayer->edict()->v.solid = SOLID_NOT;
     pPlayer->edict()->v.takedamage = DAMAGE_NO;
@@ -3643,7 +3607,6 @@ static cell noclip(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 2) {
@@ -3659,7 +3622,7 @@ static cell noclip(AMX *amx, cell *params) {
   }
   amx_GetString(PlayerText,cStr);  
   
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(PlayerIndex);
@@ -3672,7 +3635,7 @@ static cell noclip(AMX *amx, cell *params) {
     }  // if 
   }  // if
 
-  const int iMoveType = (int)params[2];
+  const int iMoveType = params[2];
   if(iMoveType!=0) {
     pPlayer->edict()->v.movetype = MOVETYPE_NOCLIP;
   UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs(const_cast<char*>(get_am_string(nullptr,0,statstr[2],statstr_table)),STRING(pPlayer->pev->netname))); 
@@ -3754,7 +3717,7 @@ static cell listspawn(AMX *amx, cell *params) {
   cell* cString;
   char szClassname[BUF_SIZE];
   
-  szClassname[0] = NULL;
+  szClassname[0] = 0;
   
   if(iNumParams>=1) {
     amx_GetAddr(amx,params[1],&cString); 
@@ -3780,7 +3743,7 @@ static cell movespawn(AMX *amx, cell *params) {
     return 0;
   }
 
-	const int iIdentity = (int)params[1];
+	const int iIdentity = params[1];
   spawn_struct* pSpawnEntity = FindSpawnEntity(iIdentity);
   if(pSpawnEntity== nullptr) {
     System_Response( "[ADMIN] movespawn: Could not find matching spawned entity.\n",pAdminEnt);
@@ -3804,7 +3767,7 @@ static cell removespawn(AMX *amx, cell *params) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
-	const int iIdentity = (int)params[1];
+	const int iIdentity = params[1];
   return (RemoveSpawnEntity(iIdentity) ? 1 : 0);
 }
 
@@ -3872,11 +3835,11 @@ static cell maptime(AMX *amx, cell *params) {
 
 static cell servertime(AMX *amx, cell *params) {
   cell* cStr; 
-  int iFormatFound = 0;
+  int iFormatFound;
   int len;
   const int iNumParams = params[0]/sizeof(cell);
   char acFormatString[BUF_SIZE];
-  char* pcTimeString = nullptr;
+  char* pcTimeString;
 
   time_t myTime = time(nullptr);
   struct tm *tmMyTime = localtime( &myTime );
@@ -4179,11 +4142,10 @@ static cell look_in_dir(AMX *amx, cell *params) {
   char array_selection[BUF_SIZE];
   amx_GetString(array_selection, fileselection); // getting fileselection criteria in array
 
-  const int map_place = (int)params[4]; 
+  const int map_place = params[4]; 
   
   char game_dir[200];
-  int i=0;
-  
+
   (*g_engfuncs.pfnGetGameDir)(game_dir); // ==> c:\\sierra\\half-life
   
 #ifdef WIN32
@@ -4212,7 +4174,7 @@ static cell look_in_dir(AMX *amx, cell *params) {
     return 0;   // 0 -> not found
   }
   
-  for (i=0; i<map_place; i++) {
+  for (int i = 0; i<map_place; i++) {
     if(_findnext(hnd,&filestruct) != 0) { // result = 0 => successfull
       amx_SetString(cptr, "", 0);
       return 0;
@@ -4230,7 +4192,6 @@ static cell glow(AMX *amx, cell *params) {
   cell* cStr;
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   if (iNumParams < 4) {
@@ -4246,15 +4207,15 @@ static cell glow(AMX *amx, cell *params) {
   }
   amx_GetString(PlayerText,cStr);  
   
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) 
     return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  int iRed = (int)params[2];
-  int iGreen = (int)params[3];
-  int iBlue = (int)params[4];
+  int iRed = params[2];
+  int iGreen = params[3];
+  int iBlue = params[4];
   
   if (iRed < 0)
     iRed = 0;
@@ -4315,9 +4276,8 @@ static cell gettarget(AMX *amx, cell *params) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
-  
-  CBaseEntity *pPlayer = nullptr;
-  int PlayerIndex = 0;
+
+  int PlayerIndex;
  
   if ( len > 0 ) {
     char speler[BUF_SIZE];
@@ -4342,7 +4302,7 @@ static cell gettarget(AMX *amx, cell *params) {
   
   }  // if-else
 
-  pPlayer = UTIL_PlayerByIndex(PlayerIndex); 
+  CBaseEntity* pPlayer = UTIL_PlayerByIndex(PlayerIndex); 
   if ( pPlayer == nullptr ) 
     return 0; 
 
@@ -4350,7 +4310,7 @@ static cell gettarget(AMX *amx, cell *params) {
   MAKE_VECTORS( pPlayer->pev->v_angle + pPlayer->pev->punchangle );
   
   Vector vecSrc = pPlayer->pev->origin + pPlayer->pev->view_ofs;
-  Vector vecEnd = vecSrc + (gpGlobals->v_forward * (int)params[4]);
+  Vector vecEnd = vecSrc + (gpGlobals->v_forward * params[4]);
   TRACE_LINE( vecSrc, vecEnd, dont_ignore_monsters, pPlayer->edict(), &tr);
   
   if (tr.flFraction != 1.0 && !FNullEnt( tr.pHit ) ) {
@@ -4379,29 +4339,25 @@ static cell gettarget(AMX *amx, cell *params) {
   return 0;
 }
 
-
-
-
-
-static cell pointto(AMX *amx, cell *params) { 
-  int iIndex = 0;
-  const int iNumParams = params[0]/sizeof(cell); 
+static cell pointto(AMX *amx, cell *params) {
+	const int iNumParams = params[0]/sizeof(cell); 
   
   if ( pAdminEnt == nullptr ) {
     UTIL_LogPrintf("[ADMIN] pointto: You cannot use this function from the server console.\n");
     return 0;
   } // if
 
-  iIndex = ENTINDEX( pAdminEnt );
+  int iIndex = ENTINDEX(pAdminEnt);
   if (iNumParams < 1) { 
     amx_RaiseError(amx,AMX_ERR_NATIVE); 
     return 0; 
-  } else if (iIndex < 1) {
-    amx_RaiseError(amx,AMX_ERR_NATIVE);
-    return 0;
   }
-  
-  CBaseEntity *pPlayer = UTIL_PlayerByIndex(iIndex); 
+	if (iIndex < 1) {
+		amx_RaiseError(amx,AMX_ERR_NATIVE);
+		return 0;
+	}
+
+	CBaseEntity *pPlayer = UTIL_PlayerByIndex(iIndex); 
   if ( pPlayer == nullptr ) 
     return 0;
 
@@ -4421,7 +4377,7 @@ static cell pointto(AMX *amx, cell *params) {
 
   Vector vecSrc = pPlayer->pev->origin + pPlayer->pev->view_ofs;
 
-  Vector vecEnd = vecSrc + (gpGlobals->v_forward * (int)params[1]); 
+  Vector vecEnd = vecSrc + (gpGlobals->v_forward * params[1]); 
 
   TRACE_LINE( vecSrc, vecEnd, dont_ignore_monsters, pPlayer->edict(), &tr); 
   
@@ -4442,7 +4398,6 @@ static cell givehealth(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   CHECK_AMX_PARAMS(2);
@@ -4455,12 +4410,12 @@ static cell givehealth(AMX *amx, cell *params) {
   }
   amx_GetString(PlayerText,cStr);  
   
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  const int iHealth = (int)params[2];
+  const int iHealth = params[2];
   if(iHealth>=0) {
     pPlayer->edict()->v.health += iHealth;
     UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs("%s given %i Health\n",STRING(pPlayer->pev->netname),iHealth));  
@@ -4474,7 +4429,6 @@ static cell takehealth(AMX *amx, cell *params) {
   cell* cStr;    
   int len;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   CHECK_AMX_PARAMS(2);
@@ -4487,12 +4441,12 @@ static cell takehealth(AMX *amx, cell *params) {
   }
   amx_GetString(PlayerText,cStr);  
   
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  const int iHealth = (int)params[2];
+  const int iHealth = params[2];
 
   UTIL_ClientPrintAll( HUD_PRINTTALK, UTIL_VarArgs("%s lost %i Health\n",STRING(pPlayer->pev->netname),iHealth));  
   UTIL_LogPrintf("[ADMIN] %s lost %i health\n",STRING(pPlayer->pev->netname),iHealth);
@@ -4516,13 +4470,12 @@ static cell get_userFrags(AMX *amx, cell *params) {
   cell *Param;
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,PlayerText, 0);
 
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -4539,13 +4492,12 @@ static cell get_userHealth(AMX *amx, cell *params) {
   cell *Param;
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,PlayerText, 0);
 
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
@@ -4562,19 +4514,18 @@ static cell get_userTeam(AMX *amx, cell *params) {
   cell *Param;
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,PlayerText, 0);
 
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)(get_player_team(pPlayer));
+  *Param = get_player_team(pPlayer);
   return 1;
 }
 
@@ -4585,13 +4536,12 @@ static cell get_userArmor(AMX *amx, cell *params) {
   cell *Param;
   int iLength;
   const int iNumParams = params[0]/sizeof(cell);
-  int PlayerIndex = 0;
   char PlayerText[BUF_SIZE];
   
   CHECK_AMX_PARAMS(2);
   GET_AMX_STRING(1,BUF_SIZE,PlayerText, 0);
 
-  PlayerIndex = GetPlayerIndex(PlayerText);
+  int PlayerIndex = GetPlayerIndex(PlayerText);
   if(PlayerIndex==0) return 0;
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;

@@ -47,7 +47,7 @@
 apat* pat_search_key( apat* _pPatricia, char* _pcKey ) {
 
   apat *pThis, *pNext;
-  const size_t iKeySize = strlen( _pcKey );
+  const size_t iKeySize = _pcKey[0] == '\0';
 
   if ( _pPatricia == nullptr || _pcKey == nullptr ) return nullptr;
   if ( iKeySize > static_cast<size_t>(PAT_KEY_SIZE) ) return nullptr;
@@ -62,7 +62,7 @@ apat* pat_search_key( apat* _pPatricia, char* _pcKey ) {
 #endif
 
 
-  pThis = pNext =_pPatricia; 
+  pNext =_pPatricia; 
   do { 
     pThis = pNext; 
     pNext = _pPatricia + (pNext->aiSons[(pat_bits(pcKey, iKeySize, pNext->iBitLevel, PAT_RELBITS))]); 
@@ -88,14 +88,12 @@ const char* pat_get_key( apat* _pNode ) {
 #define STACKSIZE 16
 
 const char* get_am_string( char* _pcDest, int _iMaxLen, char* _pucSrc, unsigned char _aucPairTable[128][2] ) {
-
-  static char acStaticBuf[STATSTRING_MAXSIZE];
-  unsigned char stack[STACKSIZE];
-  short c, top = 0;
-  char* pcDest = nullptr;
+	short c, top = 0;
+  char* pcDest;
 
   if ( _pcDest == nullptr ) {
-    _pcDest = acStaticBuf;
+	  static char acStaticBuf[STATSTRING_MAXSIZE];
+	  _pcDest = acStaticBuf;
     _iMaxLen = STATSTRING_MAXSIZE;
     pcDest = acStaticBuf;
   } else {
@@ -103,7 +101,7 @@ const char* get_am_string( char* _pcDest, int _iMaxLen, char* _pucSrc, unsigned 
   }  // if-else
 
   int len = 1;              /* already 1 byte for '\0' */
-  for (;;) {
+  for (unsigned char stack[STACKSIZE];;) {
 
     /* Pop byte from stack or read byte from the input string */
     if (top)

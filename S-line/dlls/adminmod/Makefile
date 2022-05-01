@@ -86,10 +86,7 @@ METASRC= $(METADIR)/metamod
 
 # The standard C++ library for static linking
 #STDCPPLIB=/usr/lib/libstdc++-libc6.2-2.so.3 # Old dir [APG]RoboCop[CL]
-#STDCPPLIB=/usr/lib/i386-linux-gnu/libstdc++.so.6
-
-# Needed for avoiding CXXABI 1.3.8 not found error?
-STDCPPLIB=-static-libstdc++ 
+STDCPPLIB=-L/usr/lib/i386-linux-gnu/libstdc++.so.6
 
 # The directory of the MySQL include files
 MYSQLINCDIR= /usr/include/mysql
@@ -281,7 +278,7 @@ else
 	BETA = -DBETA=\"$(REL)\"
 endif
 
-BASE_CFLAGS=-include apsymbols.h -Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
+BASE_CFLAGS=-include apsymbols.h -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
 	-Wno-unknown-pragmas -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
 	
 XTFLAGS= -DTZONE=\"$(TZONE)\"
@@ -453,8 +450,8 @@ endif
 ##############################################################
 
 
-DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $< 
-DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $< 
+DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu99 -shared-libgcc -o $@ -c $< 
+DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++14 -static-libstdc++ -o $@ -c $< 
 
 
 

@@ -49,14 +49,14 @@ typedef void (*LINK_ENTITY_FUNC)(entvars_t*);
         static int missing = 0;                                                           \
         if(missing == 1)                                                                  \
             return;                                                                       \
-        if(otherClassName == nullptr)                                                        \
-            otherClassName = (LINK_ENTITY_FUNC)GetProcAddress(h_Library, mapClassString); \
-        if(otherClassName == nullptr) {                                                      \
+        if((otherClassName) == nullptr)                                                        \
+            (otherClassName) = (LINK_ENTITY_FUNC)GetProcAddress(h_Library, mapClassString); \
+        if((otherClassName) == nullptr) {                                                      \
             missing = 1;                                                                  \
             UTIL_LogPrintf("[ADMIN] ERROR: couldn't find entity %s\n", mapClassString);   \
             return;                                                                       \
         }                                                                                 \
-        (*otherClassName)(pev);                                                           \
+        (*(otherClassName))(pev);                                                           \
     }
 #else
 #define LINK_ENTITY_TO_FUNC(mapClassName, mapClassString, otherClassName)               \

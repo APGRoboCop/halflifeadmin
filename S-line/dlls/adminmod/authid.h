@@ -80,8 +80,6 @@ namespace nsAuthid {
 	const char LOW  = 0;
 }
 
-
-
 class AMAuthId {
 
  private:
@@ -100,8 +98,6 @@ class AMAuthId {
 	AMAuthId( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); };
 	AMAuthId( const char* _pcID )          { f_parse_id( _pcID ); };
 
-
-
 	// Copy constructor
 	AMAuthId( const AMAuthId& rhs ) {
 		m_uiWonid = rhs.m_uiWonid;
@@ -111,12 +107,8 @@ class AMAuthId {
 		m_bIdIsSet = rhs.m_bIdIsSet;
 	}
 
-
-
 	// Destructor
-	~AMAuthId() {};
-
-
+	~AMAuthId() = default;;
 
 	// Assignment operators
 	AMAuthId& operator=( const AMAuthId& rhs ) {
@@ -183,7 +175,6 @@ class AMAuthId {
 	}
 	operator const char*() const;
 
-
 	// Comparison operators
 	friend bool operator==( const AMAuthId& lhs, const AMAuthId& rhs );
 	friend bool operator==(uint32_t  lhs, const AMAuthId& rhs );
@@ -232,8 +223,6 @@ class AMAuthId {
 	friend bool operator< ( const AMAuthId& lhs, int32_t   rhs ) ;
 	friend bool operator< ( const char*     lhs, const AMAuthId& rhs ) ;
 	friend bool operator< ( const AMAuthId& lhs, const char*     rhs ) ;
-
-
 
 	// Read access functions
 	uint32_t wonid() const    { return m_uiWonid; }
@@ -302,7 +291,6 @@ class AMAuthId {
 				&& (  *(pcI+2) == uLAN                  || (*(pcI+2) == uPEN && *(pcI+3) == DING) ) );
 	};
 
-
 	static bool is_loopid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		const int STEA = 0x41455453;
@@ -317,7 +305,6 @@ class AMAuthId {
 				&& (*(pcI+2) == uLOO) && (*(pcI+3) == PBAC) );
 	};
 
-
 	static bool is_lanid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		const int STEA = 0x41455453;
@@ -331,7 +318,6 @@ class AMAuthId {
 				&& (*(pcI+2) == uLAN) );
 	};
 
-
  protected:	
 	// utility function
 	static bool same_id_type_class ( const AMAuthId& lhs, const AMAuthId& rhs ) {
@@ -341,7 +327,6 @@ class AMAuthId {
 				 || ( lhs.m_cAuthidType == valve  && rhs.m_cAuthidType == valve2 )
 				 || ( lhs.m_cAuthidType == valve2 && rhs.m_cAuthidType == valve  ) );
 	};
-
 
  private:
 
@@ -418,7 +403,6 @@ inline AMAuthId::operator const char*() const {
 	return m_acString;
 }
 
-
 //
 // operator==
 //
@@ -477,9 +461,6 @@ inline  bool operator==( const AMAuthId& lhs, const char* pcRhs ) {
 	}  // else
 }
 
-
-
-
 //
 // operator!=
 //
@@ -537,8 +518,6 @@ inline  bool operator!=( const AMAuthId& lhs, const char* pcRhs ) {
 		return ( lhs != tmp );
 	}  // else
 }
-
-
 
 //
 // operator>=
@@ -599,8 +578,6 @@ inline  bool operator>=( const AMAuthId& lhs, const char* pcRhs ) {
 	}  // else
 }
 
-
-
 //
 // operator<=
 //
@@ -659,8 +636,6 @@ inline  bool operator<=( const AMAuthId& lhs, const char* pcRhs ) {
 		return ( lhs <= tmp );
 	}  // else
 }
-
-
 
 //
 // operator>
@@ -721,8 +696,6 @@ inline  bool operator>( const AMAuthId& lhs, const char* pcRhs ) {
 	}  // else
 }
 
-
-
 //
 // operator<
 //
@@ -781,10 +754,6 @@ inline  bool operator<( const AMAuthId& lhs, const char* pcRhs ) {
 		return ( lhs < tmp );
 	}  // else
 }
-
-
-
-
 
 
 #endif /* AM_AUTHID_H */

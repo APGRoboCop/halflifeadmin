@@ -16,7 +16,7 @@ CC=gcc
 
 OBJDIR=obj
 
-BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT
+BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -std=gnu99 -shared-libgcc
 
 #safe optimization
 #CFLAGS=$(BASE_CFLAGS) -m486 -O6 -ffast-math -funroll-loops \

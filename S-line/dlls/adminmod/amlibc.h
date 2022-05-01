@@ -42,7 +42,8 @@
  *
  */
 
-#ifdef LINUX
+#pragma once
+#ifdef __linux__
 #  include <sys/types.h>
 #  include <stdint.h> /* uint64_t */
 #else

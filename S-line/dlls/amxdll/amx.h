@@ -32,8 +32,8 @@
       typedef unsigned __int32 u_int32_t;
       typedef __int64 int64_t;
       typedef unsigned __int64 u_int64_t;
-      #define INT64_MIN _I64_MIN
-      #define INT64_MAX _I64_MAX
+      //#define INT64_MIN _I64_MIN
+      //#define INT64_MAX _I64_MAX
     #else
       typedef long int          int32_t;	// Conflicting with HLSDK 2015? [APG]RoboCop[CL]
       typedef unsigned long int u_int32_t;

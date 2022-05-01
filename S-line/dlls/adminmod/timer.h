@@ -131,7 +131,7 @@ class CTimer: public CBaseEntity {
   int Illumination( ) override { return 0; };
   BOOL FVisible ( CBaseEntity *pEntity ) override { return FALSE;}
   BOOL FVisible ( const Vector &vecOrigin ) override { return FALSE;}     
-  static CBaseEntity *Create( char *szName, const Vector &vecOrigin, const Vector &vecAngles, edict_t *pentOwner = nullptr );
+  static CBaseEntity *create( char *szName, const Vector &vecOrigin, const Vector &vecAngles, edict_t *pentOwner = nullptr );
   static void    MakeDormant() {};
 
   void SetTimer(int amount) const;

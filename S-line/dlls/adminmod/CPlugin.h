@@ -66,9 +66,10 @@ enum plugin_result {
 };
 
 #include <cstring>
-#include "extdll.h"
+
 #include "amx.h"
 #include "CLinkList.cpp"
+#include "extdll.h"
 
 int GetUserAccess(edict_t* pEntity);
 void System_Response(char *str,edict_t *);
@@ -135,7 +136,7 @@ private :
 
 public:	//Unstable that ~CPlugin is unwanted? [APG]RoboCop[CL]
     CPlugin(); 
-    ~CPlugin(); //AdminMod 2.50.61 fix by Cavey
+    virtual ~CPlugin(); //AdminMod 2.50.61 fix by Cavey
 	
 	AMX* amx() const;
 	BOOL AddCommand(char* Cmd, char* Function, int iAccess);

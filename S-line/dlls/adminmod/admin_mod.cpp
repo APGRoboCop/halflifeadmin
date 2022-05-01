@@ -44,6 +44,10 @@
 //#include <string.h> //Deprecated [APG]RoboCop[CL]
 #include <cstring>
 
+#ifdef _WIN32
+#define stricmp _stricmp
+#endif
+
 #define QUEUEING_DEBUGF(s) 
 
 #ifdef USE_MYSQL
@@ -257,7 +261,6 @@ void AM_AdminCommand() {
 
 int AM_ClientCommand( edict_t *pEntity ) {
   const char *pcmd = CMD_ARGV(0);
-  int iError;
   int iIndex;
   cell cReturn = 0;
   char commandline[255];	
@@ -364,17 +367,17 @@ int AM_ClientCommand( edict_t *pEntity ) {
     return RESULT_HANDLED;
   } else if ( 0 == stricmp(pcmd, "admin_status")) {
 	  // print some information on the requested user
-	  int iIndx = 0;
+	  int i_indx;
 	  if ( admin_command == nullptr || pAdminEnt != nullptr || *admin_command == '\0' || !stricmp(admin_command,"am i") ) {
-		  iIndx = ENTINDEX( pEntity );
+		  i_indx = ENTINDEX( pEntity );
 	  } else {
-		  iIndx = GetPlayerIndex( admin_command );
+		  i_indx = GetPlayerIndex( admin_command );
 	  }  // if-else
 	  char acString[1024];
-	  if ( iIndx == 0 ) {
+	  if ( i_indx == 0 ) {
 		  snprintf( acString, sizeof(acString), "[ADMIN] Status: No such player: '%s'\n", admin_command );
 	  } else {
-		  snprintf( acString, sizeof(acString), "[ADMIN] Status: Name: '%s', Access: %i \n", g_AuthArray[iIndx].sUserName, g_AuthArray[iIndx].iAccess );
+		  snprintf( acString, sizeof(acString), "[ADMIN] Status: Name: '%s', Access: %i \n", g_AuthArray[i_indx].sUserName, g_AuthArray[i_indx].iAccess );
 	  }  // if-else
 	  System_Response( acString, pAdminEnt );
     return RESULT_HANDLED;
@@ -395,7 +398,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
     if(program_file==nullptr|| FStrEq(program_file,"0") || !g_fRunScripts) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");			
     } else {
-      iError = amx_FindPublic(&amx,"client_commands",&iIndex);
+	    int iError = amx_FindPublic(&amx, "client_commands", &iIndex);
       if (iError != AMX_ERR_NONE) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't find 'client_commands' proc, error #%i\n",iError);
       } else { 
@@ -417,22 +420,22 @@ int AM_ClientCommand( edict_t *pEntity ) {
   if  (FStrEq( pcmd, "menuselect") && CMD_ARGC() >= 2) {
     CTimer *pTimer = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
     if (pTimer->VoteInProgress()) {
-      int iIndex;
+      int i_index;
       const int iVote = atoi(CMD_ARGV(1));
       
       if (pAdminEnt == nullptr) {
-				iIndex = 0;
+				i_index = 0;
       } else {
-				iIndex = ENTINDEX(pAdminEnt);
+				i_index = ENTINDEX(pAdminEnt);
       }
-      if (pTimer->GetPlayerVote(iIndex) != 0) {
+      if (pTimer->GetPlayerVote(i_index) != 0) {
 				// This person has either already voted, or
 				// was not shown the vote.  Either way, we ignore it.
 				// Do nothing.
       } else if (iVote > pTimer->GetMaxVoteChoice()) {
 				// The vote is out of range.  Ignore it.
 			} else {
-				pTimer->SetPlayerVote(iIndex, iVote);
+				pTimer->SetPlayerVote(i_index, iVote);
 				System_Response(UTIL_VarArgs("[ADMIN] Vote entered for option #%i\n",atoi(CMD_ARGV(1))),pAdminEnt);
 	
 				if((int)CVAR_GET_FLOAT("admin_vote_echo") != 0) {
@@ -444,7 +447,6 @@ int AM_ClientCommand( edict_t *pEntity ) {
 				}
 				return RESULT_HANDLED;
       }
-      
     }
   }
   
@@ -454,11 +456,6 @@ int AM_ClientCommand( edict_t *pEntity ) {
   } else {
     return RESULT_CONTINUE;
   }
-
-  if ((int)CVAR_GET_FLOAT("developer") != 0) {
-    UTIL_LogPrintf("[ADMIN] DEVEL: AM_ClientCommand finished.\n");
-  }
-
 }
 
 //
@@ -469,15 +466,14 @@ static BOOL bAM_ClientConnectRetval;
 
 BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ], bool bForce ) {    
   char* infobuffer = nullptr;
-  char sIP[IPPORT_SIZE], *p = nullptr;
+  char sIP[IPPORT_SIZE], *p;
   char sModel[MODELNAME_SIZE];
   char sName[USERNAME_SIZE];
   const int iIndex = ENTINDEX(pEntity);
   user_struct tUser;
   // lazy man's pointer :)
-  auto_ptr<AMConnectingPlayer> poPlayerData( new AMConnectingPlayer );
+  unique_ptr<AMConnectingPlayer> poPlayerData( new AMConnectingPlayer );
  
-
   pAdminEnt = pEntity;  
   poPlayerData->pEntity = pEntity;
 
@@ -508,12 +504,10 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
     UTIL_LogPrintf("[ADMIN] Client dropped for security reasons.\n");
     CLIENT_CONNECT_RETURN(FALSE);
   };
-  
 
   if (!g_fInitialized) {
     AM_ClientStart(pEntity);
   }  // if
-
 
   const char* pcAuthId = GETPLAYERAUTHID( pEntity );
   AMAuthId oaiAuthID( pcAuthId );
@@ -524,7 +518,6 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 		  oaiAuthID = "STEAM_ID_LOOPBACK";
 	  }
   }
-
 
   QUEUEING_DEBUGF( ("|---> Queueing check: sv_lan is %u, player authid %s [%s] is found to be %spending.\n", (int)CVAR_GET_FLOAT("sv_lan"), pcAuthId, (const char*)oaiAuthID, AMAuthId::is_pending(pcAuthId)?"":"not ") );
 
@@ -544,14 +537,14 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
           if ( !bQueued ) {
               // Enqueue player
-              g_ovcPendingPlayers.push_back( poPlayerData.release() );
+              g_ovcPendingPlayers.emplace_back( poPlayerData.release() );
               // Set timeout during which we do not dequeue players
               s_uiDequeueTimeout = s_uiFCount + 100000;
         	  QUEUEING_DEBUGF( ("|---> Player Steam Id (ClientConnect) Enqueued player (%p).\n", pEntity) );
           }
 	  } else {
           // Enqueue player
-          g_ovcPendingPlayers.push_back( poPlayerData.release() );
+          g_ovcPendingPlayers.emplace_back( poPlayerData.release() );
           // Set timeout during which we do not dequeue players.
           s_uiDequeueTimeout = s_uiFCount + 100000;
 	      QUEUEING_DEBUGF( ("|---> Player Steam Id (ClientConnect) Enqueued player (%p).\n", pEntity) );
@@ -561,17 +554,11 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 	CLIENT_CONNECT_RETURN(TRUE);
   }  // if
 
-  
-
-
-
   AddUserAuth( sName, sIP, pEntity );
 
   if ( p = strchr(sIP,':') ) {
     *p = '\0';
   }  // if
-
-
 
   char szCommand[128];
   const char* sPasswordField = CVAR_GET_STRING("password_field");
@@ -677,7 +664,6 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 	}  // if-else
 
 
-
   // If we have reserve type one, and this person took the reserve spot,
   // we need to kick the person with the highest ping.
   if (iResType == 1 && iResTaken == 1) {
@@ -696,15 +682,14 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
     if(program_file==nullptr|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");
     } else {
-      int iError;
-      int iIndex;
+	    int i_index;
       cell cReturn = 0;
       
-      iError = amx_FindPublic(&amx,"client_connect",&iIndex);
+      int iError = amx_FindPublic(&amx, "client_connect", &i_index);
       if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't find 'client_connect' proc, error #%i\n",iError);
       } else {
-		iError = amx_Exec(&amx, &cReturn, iIndex, 2, sName,pszAddress);	    
+		iError = amx_Exec(&amx, &cReturn, i_index, 2, sName,pszAddress);	    
 		if (iError != AMX_ERR_NONE) {
 		  UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't run 'client_connect' proc, error #%i\n",iError);
 		}
@@ -725,8 +710,6 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
   CLIENT_CONNECT_RETURN(TRUE);
 }
 
-
-
 BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ] ) {    
   
   pAdminEnt = pEntity;  
@@ -746,8 +729,6 @@ BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *p
 
   return TRUE;
 }
-
-
 
 int AM_ClientDisconnect( edict_t* pEntity ) {
     
@@ -776,14 +757,9 @@ int AM_ClientDisconnect( edict_t* pEntity ) {
 }
 
 
-
-
 void AM_ClientStart(edict_t *pEntity) {
-  int iError;
-  int iIndex;
+	int iIndex;
   cell cReturn = 0;
-
-
 
   if ( g_fInitialized == TRUE) {
     return;
@@ -952,14 +928,11 @@ void AM_ClientStart(edict_t *pEntity) {
 	  am_exit(1);
   }  // if-else		
 
-
-
-
   const char* sPluginFile = get_cvar_file_value( "admin_plugin_file" );
   if ( sPluginFile == nullptr ) {
     const char *program_file = get_cvar_file_value( "script_file" );
     if ( program_file != nullptr ) {
-  /*TBR This isn't used anymore, we allow not using any plugins now
+	    /*TBR This isn't used anymore, we allow not using any plugins now
     if( program_file == nullptr ) {
 #ifdef WIN32
       MessageBox(nullptr,"[ADMIN] ERROR:\n\nYou must define \"admin_plugin_file\" in your adminmod.cfg file before you can use Admin Mod.\nGo to http://www.adminmod.org/help/online/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
@@ -975,13 +948,9 @@ void AM_ClientStart(edict_t *pEntity) {
 		if (program == nullptr) {
 			UTIL_LogPrintf( "[ADMIN] ERROR: Unable to load script file '%s'\n",program_file);
 		}
-		
-		
-		/* Ignore these errors - sometimes, the VM will return error 19
-		   when there's actually nothing wrong.  Dunno why. */
-		iError = amx_Register(&amx, admin_Natives, -1);
-		
-		iError = amx_FindPublic(&amx,"client_start",&iIndex);
+
+
+	    int iError = amx_FindPublic(&amx, "client_start", &iIndex);
 		if (iError != AMX_ERR_NONE) {
 			UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't find 'client_start' proc, error #%i\n", iError);
 			return;
@@ -1006,10 +975,6 @@ void AM_ClientStart(edict_t *pEntity) {
   }
   g_fRunScripts = TRUE;
 }
-
-
-
-
 
 void AM_Stop() {
 
@@ -1041,9 +1006,6 @@ void AM_Stop() {
   }
 #endif
 
-
-
-
   DeleteSpawnEntityList();
   
   UnloadIPs();
@@ -1070,15 +1032,6 @@ void AM_Stop() {
 }
 
 
-
-
-
-
-
-
-
-
-
 int AM_ClientUserInfoChanged( edict_t *pEntity, char *infobuffer, bool bForce ) {
 
   const int c_KICK_MSG_LEN = 250;
@@ -1091,7 +1044,6 @@ int AM_ClientUserInfoChanged( edict_t *pEntity, char *infobuffer, bool bForce ) 
   char sModel[MODELNAME_SIZE];
   char sName[USERNAME_SIZE];
   user_struct tUser;
-  int retval;
 
   memset(szCommand, 0x0, c_SERVER_CMD_LEN);
   memset(sModel, 0x0, MODELNAME_SIZE);
@@ -1114,7 +1066,7 @@ state, pEntity->v.netname) );
   const AMAuthId oaiAuthID( pcAuthId );
 
 
-  retval = make_friendly( sName, TRUE );
+  int retval = make_friendly(sName, TRUE);
   if ( retval == 2 ) {
     // the little brat tries to crash the clients
     UTIL_LogPrintf("[ADMIN] Player '%s' <%s> tried to crash clients with bad name.\n",STRING(pEntity->v.netname),
@@ -1149,14 +1101,14 @@ state, pEntity->v.netname) );
 		  }  // for
           if ( !bQueued ) {
               // Enqueue the player
-              g_ovcPendingPlayers.push_back( pEntity );
+              g_ovcPendingPlayers.emplace_back( pEntity );
               // Set a timeout during which we do not dequeue players.
               s_uiDequeueTimeout = s_uiFCount + 100000;
               //UTIL_LogPrintf( "|---> Player Steam Id (ClientUserInfoChanged) Enqueued player. (%p)", pEntity );
               }
 	  } else {
           // Enqueue the player
-          g_ovcPendingPlayers.push_back( pEntity );
+          g_ovcPendingPlayers.emplace_back( pEntity );
           // Set a timeout during which we do not dequeue players.
           s_uiDequeueTimeout = s_uiFCount + 100000;
           //UTIL_LogPrintf( "|---> Player Steam Id (ClientUserInfoChanged) Enqueued player. (%p)", pEntity );
@@ -1279,8 +1231,7 @@ state, pEntity->v.netname) );
       return RESULT_HANDLED;
     }
   } else if (g_fRunScripts) {
-    int iError;
-    int iIndex;
+	  int i_index;
     cell cReturn = 0;
     
     char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
@@ -1288,11 +1239,11 @@ state, pEntity->v.netname) );
     if(program_file==nullptr|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");		
     } else {
-      iError = amx_FindPublic(&amx,"client_info",&iIndex);
+      int iError = amx_FindPublic(&amx, "client_info", &i_index);
       if (iError != AMX_ERR_NONE) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't find 'client_info' proc, error #%i\n",iError);
       } else {
-	iError = amx_Exec(&amx, &cReturn, iIndex, 4, STRING(pEntity->v.netname), sName, GETPLAYERUSERID(pEntity), GETPLAYERAUTHID(pEntity));
+	iError = amx_Exec(&amx, &cReturn, i_index, 4, STRING(pEntity->v.netname), sName, GETPLAYERUSERID(pEntity), GETPLAYERAUTHID(pEntity));
 	
 	if (iError != AMX_ERR_NONE) {
 	  UTIL_LogPrintf( "[ADMIN] ERROR: Couldn't run 'client_info' proc, error %i\n",iError);
@@ -1441,14 +1392,12 @@ int AM_ServerDeactivate() {
 
 
 unsigned int me_log_fix( bool _bLog, bool _bFix ) {
-
-	// This code is courtesy of Tom Simpson.
-	edict_t *pent = nullptr;
 	unsigned int uiMECount = 0;
-	unsigned int uiECount = 0;
-		
+
 	if ( _bLog || _bFix ) {
-			
+		unsigned int uiECount = 0;
+		edict_t *pent = nullptr;
+
 		DEBUG_LOG(2, ("Checking for broken entities (frame %u).", s_uiFCount) );
 		
 		//while ((pent = FIND_ENTITY_BY_STRING( pent, "classname","trigger_multiple" )) != nullptr && (!FNullEnt(pent)))
@@ -1479,9 +1428,8 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 							pent->v.absmax = pent->v.absmax + pent->v.maxs;
 						} else {
 							int max=0;
-							int t=0;
-							
-							t = pent->v.mins.x;
+
+							int t = pent->v.mins.x;
 							if ( t<0 ) t=-t;
 							if ( t>max ) max=t;
 							
@@ -1555,7 +1503,7 @@ int AM_StartFrame() {
 
 			if ( AMAuthId::is_pending(pcAuthId) ) {
 				// Steamid still pending, add him to the queue again
-				g_ovcPendingPlayers.push_back(pePPlayer);
+				g_ovcPendingPlayers.emplace_back(pePPlayer);
 
 			} else {
 				// Update the auth entry with the validated auth id
@@ -1686,10 +1634,9 @@ int AM_StartFrame() {
 				// Try to read it from a default location and return so that this check is run again
 				if ( !s_bConfigRead ) {
 					char cfgfile[PATH_MAX];
-					int pos;
 					snprintf( cfgfile, PATH_MAX-1, "exec %s/adminmod.cfg", CVAR_GET_STRING("amv_default_config_dir") );
 					UTIL_LogPrintf( "Trying to load default Admin Mod config file: %s.\n", cfgfile );
-					pos = strlen(cfgfile);
+					int pos = strlen(cfgfile);
 					cfgfile[pos] = '\n';
 					cfgfile[pos+1] = '\0';
 					SERVER_COMMAND( cfgfile );
@@ -1881,13 +1828,11 @@ int AM_OnFreeEntPrivateData( edict_t *pent ) {
 }
 
 void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity) {
-  int iAccess;
-  int iLoss = 0;
+	int iLoss = 0;
   int iMaxPing = -1;
   int iPing = 0;
   int iPlayerIndex = 0;
-  char name[USERNAME_SIZE];
-  CBaseEntity* pPlayer;
+	CBaseEntity* pPlayer;
   
   for (int i = 1; i <= gpGlobals->maxClients; i++) {
     pPlayer = UTIL_PlayerByIndex(i);
@@ -1897,12 +1842,13 @@ void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity) {
     
     PLAYER_CNX_STATS(pPlayer->edict(),&iPing,&iLoss);
     if ( iPing > iMaxPing) {
-      iAccess = GetUserAccess(pPlayer->edict());
+      int iAccess = GetUserAccess(pPlayer->edict());
       if (!(IsIPReserved(g_AuthArray[i].sIP) 
 	    || ((iAccess & ACCESS_RESERVE_SPOT) == ACCESS_RESERVE_SPOT) 
 	    || ((iAccess & ACCESS_IMMUNITY) == ACCESS_IMMUNITY 
 		&& (int)CVAR_GET_FLOAT("admin_ignore_immunity") == 0))) {
-	iPlayerIndex = i;
+	      char name[USERNAME_SIZE];
+	      iPlayerIndex = i;
 	iMaxPing = iPing;
 	strcpy(name,STRING(pPlayer->pev->netname));
       }
@@ -1934,9 +1880,9 @@ void* LoadScript(AMX *amx, const char *filename) {
   
   if ( (fp = fopen( filename, "rb" )) != nullptr ) {
     fread(&hdr, sizeof hdr, 1, fp);
-    if ( (program = calloc(1, (int)hdr.stp)) != nullptr ) {
+    if ( (program = calloc(1, hdr.stp)) != nullptr ) {
       rewind( fp );
-      fread( program, 1, (int)hdr.size, fp );
+      fread( program, 1, hdr.size, fp );
       fclose( fp );
       memset(amx, 0, sizeof(AMX));
       if ( amx_Init( amx, program ) != AMX_ERR_NONE ) {

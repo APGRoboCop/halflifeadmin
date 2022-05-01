@@ -49,6 +49,10 @@
 #include "amlibc.h"
 #include <amxconv_l.h>
 
+#ifdef _WIN32
+#define stricmp _stricmp
+#endif
+
 extern AMXINIT amx_Init;
 extern AMXREGISTER amx_Register;
 extern AMXFINDPUBLIC amx_FindPublic;
@@ -188,7 +192,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   if ( sCmd == nullptr ) {
 	  sCmd = "";
   } else {
-	  char* pcCR = nullptr;
+	  char* pcCR;
 	  // check if the first '\r' from right is the last ("\r\0") or second to last (prob. "\r\l\0") character. If yes, end the string there.
 	  if ( (pcCR = strrchr(sCmd, '\r')) != nullptr  && (*(pcCR+1) == '\0' || *(pcCR+2) == '\0') ) *pcCR = '\0';
   }  // if
@@ -196,7 +200,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   if ( sData == nullptr ) {
 	  sData = "";
   } else {
-	  char* pcCR = nullptr;
+	  char* pcCR;
 	  // check if the first '\r' from right is the last ("\r\0") or second to last (prob. "\r\l\0") character. If yes, end the string there.
 	  if ( (pcCR = strrchr(sData, '\r')) != nullptr && (*(pcCR+1) == '\0' || *(pcCR+2) == '\0') ) *pcCR = '\0';
   }  // if
@@ -240,7 +244,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   // Otherwise, check to see if we actually handle this command; loop through
   // all commands in our list until we find a match, or run out.
   CLinkItem<command_struct>* pLink = m_pCommands->FirstLink();
-  command_struct* pCmd;
+  command_struct* pCmd = nullptr;
   
   while (pLink != nullptr) {
     pCmd = pLink->Data();
@@ -256,20 +260,21 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
     return PLUGIN_INVAL_CMD;
     // Then, unless this command is ACCESS_ALL or we're the console, we need to check for
     // valid access.
-  } else if (pCmd->iAccess != ACCESS_ALL && pEntity != nullptr) {
-    if ((GetUserAccess(pEntity) & pCmd->iAccess) != pCmd->iAccess) {
-      char* sRejectMsg = const_cast<char*>(CVAR_GET_STRING("admin_reject_msg"));
-      
-      if (sRejectMsg == nullptr || FStrEq(sRejectMsg,"0")) {
-		  CLIENT_PRINTF(pEntity, print_console, "You do not have access to this command.\n");
-      } else {
-		  CLIENT_PRINTF(pEntity, print_console, UTIL_VarArgs("%s\n", sRejectMsg));
-      }
-      UTIL_LogPrintf( "[ADMIN] INFO: '%s' attempted to use command '%s' without proper access.\n", STRING(pEntity->v.netname), pCmd->sCmd);
-      return PLUGIN_NO_ACCESS;
-    }
   }
-  
+  if (pCmd->iAccess != ACCESS_ALL && pEntity != nullptr) {
+	  if ((GetUserAccess(pEntity) & pCmd->iAccess) != pCmd->iAccess) {
+		  char* sRejectMsg = const_cast<char*>(CVAR_GET_STRING("admin_reject_msg"));
+      
+		  if (sRejectMsg == nullptr || FStrEq(sRejectMsg,"0")) {
+			  CLIENT_PRINTF(pEntity, print_console, "You do not have access to this command.\n");
+		  } else {
+			  CLIENT_PRINTF(pEntity, print_console, UTIL_VarArgs("%s\n", sRejectMsg));
+		  }
+		  UTIL_LogPrintf( "[ADMIN] INFO: '%s' attempted to use command '%s' without proper access.\n", STRING(pEntity->v.netname), pCmd->sCmd);
+		  return PLUGIN_NO_ACCESS;
+	  }
+  }
+
   // Otherwise, call the procedure this command is associated with.
   // The implementation of an exported command is:
   // command(Command[], Data[], UserName[], UserIndex);
@@ -445,17 +450,15 @@ void CPlugin::InitValues() {
 	m_iEventLogIndex = INVALID_INDEX;
 	m_iInitIndex = INVALID_INDEX;
 
-	m_sFile[0] = NULL;
-	m_sName[0] = NULL;
-	m_sDesc[0] = NULL;
-	m_sVersion[0] = NULL;
+	m_sFile[0] = 0;
+	m_sName[0] = 0;
+	m_sDesc[0] = 0;
+	m_sVersion[0] = 0;
 }
 
 // Given a file name (relative to the game's mod dir), attempts to load 
 // that file into an AMX virtual machine.  Returns 1 if successful, 0 otherwise.
 int CPlugin::LoadFile(char* sFilename) {
-	bool bFileNeedsConv;
-	int iAMXsize;
 	FILE *fp;
 	AMX_LINUX_HEADER hdr;
 
@@ -467,6 +470,8 @@ int CPlugin::LoadFile(char* sFilename) {
 
 	// Attempt to open the file
 	if ( (fp = fopen( sFilename, "rb" )) != nullptr ) {
+		int iAMXsize;
+		bool bFileNeedsConv;
 
 		// If we opened it, read the puppy in
 		fread(&hdr, sizeof hdr, 1, fp);
@@ -617,7 +622,6 @@ int CPlugin::LoadFile(char* sFilename) {
 // Given a file name (relative to the game's mod dir), attempts to load
 // and initialize that plugin.  Returns TRUE if successful, FALSE otherwise.
 BOOL CPlugin::LoadPlugin(char* sFilename) {
-	int iError = AMX_ERR_NONE;
 	int iIndex = 0;
 
 	// Make sure everything is in a pristine state before we start
@@ -634,7 +638,7 @@ BOOL CPlugin::LoadPlugin(char* sFilename) {
 
 	// Register the Admin Mod native functions. If the amx_Register() call returns an error,
 	// there are unresolved native calls in the plugin so execution is not possible.
-	iError = amx_Register(m_pAmx, admin_Natives, -1);
+	int iError = amx_Register(m_pAmx, admin_Natives, -1);
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] WARNING: Plugin %s could not register all native functions.\n",m_sFile);
 		Cleanup();
@@ -684,7 +688,6 @@ BOOL CPlugin::LoadPlugin(char* sFilename) {
 }
 
 plugin_result CPlugin::StartPlugin() {
-	int iError = AMX_ERR_NONE;
 	cell iResult = PLUGIN_CONTINUE;
 
 	// Verify that we're a loaded plugin
@@ -699,7 +702,7 @@ plugin_result CPlugin::StartPlugin() {
 
 	// Call plugin_init.  We know the plugin has to implement plugin_init,
 	// because we check for this in LoadPlugin.
-	iError = amx_Exec(m_pAmx, &iResult, m_iInitIndex, 0);
+	int iError = amx_Exec(m_pAmx, &iResult, m_iInitIndex, 0);
 
 	// Restore the pAdminEnt pointer.
 	pAdminEnt = const_cast<edict_t*>(pTempEnt);

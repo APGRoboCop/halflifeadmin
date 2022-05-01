@@ -46,8 +46,14 @@
  */
 
 #pragma once
+
+#ifdef _WIN32
+#include "stdlib.h"
+#include "stdio.h"
+#else
 #include <cstdlib>
 #include <cstdio>
+#endif
 
 template<class T, bool isArray = false> class CLinkItem {
 

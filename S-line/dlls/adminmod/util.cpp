@@ -41,6 +41,10 @@
  *
  */   
 
+#ifdef _WIN32
+#define stricmp _stricmp
+#endif
+
 #ifdef USE_MYSQL
   #include <mysql.h>
   #include <errmsg.h>
@@ -294,12 +298,12 @@ void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char ps
 
   char *pMenuList = pszText;
   char *aMenuList = pszText;
-  
-  char szChunk[MAX_MENU_CHUNK+1];
+
   int iCharCount = 0;
   
   while ( pMenuList && *pMenuList ) 
   {
+	  char szChunk[MAX_MENU_CHUNK+1];
 	  am_strncpy( szChunk, pMenuList, MAX_MENU_CHUNK );
 
 	  iCharCount += strlen( szChunk );//Move text to next chunk
@@ -650,19 +654,19 @@ int COM_TokenWaiting( char *buffer )
 */
 int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 {
-	char szBuffer[ MAX_RULE_BUFFER ];
-	char szMap[ MAP_NAME_LENGTH ];
 	int length;
 	char *pFileList;
 	char *aFileList = pFileList = reinterpret_cast<char*>(LOAD_FILE_FOR_ME(filename, &length));
-	mapcycle_item_s *item = nullptr, *last = nullptr;
+	mapcycle_item_s *item = nullptr;
 	
 	if (aFileList == nullptr || pFileList == nullptr ) return 0;
 	
 	if ( pFileList && length ) {
+		mapcycle_item_s *last = nullptr;
 		// the first map name in the file becomes the default
 		while ( true ) {
-			int hasbuffer = 0;
+			char szMap[ MAP_NAME_LENGTH ];
+			char szBuffer[ MAX_RULE_BUFFER ];
 			memset( szBuffer, 0, MAX_RULE_BUFFER );
 			
 			pFileList = COM_Parse( pFileList );
@@ -673,7 +677,8 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 			// Any more tokens on this line?
 			if ( COM_TokenWaiting( pFileList ) ) {
 				pFileList = COM_Parse( pFileList );
-				if ( strlen( com_token ) > 0 ) {
+				if ( com_token[0]  != '\0') {
+					int hasbuffer = 0;
 					hasbuffer = 1;
 					am_strncpy( szBuffer, com_token, sizeof(szMap) );
 				}  // if
@@ -808,9 +813,6 @@ int check_map(char *map, int bypass_allowed_map)
 		}
     
   } // end of maps.ini else check
-  
-  return 0;
-  
 }
 
 
@@ -1079,7 +1081,6 @@ int GetPlayerIndex(char *PlayerText) {
   int PlayerNumber = 0;
   int i;
   int found = 0;
-  int index = 0;
   bool bVerbatim = false;
 
   // if the string is empty, return failure
@@ -1115,7 +1116,9 @@ int GetPlayerIndex(char *PlayerText) {
 
   const bool bIsId = (oaiAuthID.is_set() || (PlayerNumber != 0));
 
-  if ( !bVerbatim ) { // Verbatim means a number is a number. Don't match it on a name.
+  if ( !bVerbatim ) {
+	  int index = 0;
+	  // Verbatim means a number is a number. Don't match it on a name.
 	  for (i = 1; i <= gpGlobals->maxClients; i++) {
 		  CBaseEntity *pPlayer = UTIL_PlayerByIndex(i);
 		  if ( IsPlayerValid(pPlayer) ) {
@@ -1251,7 +1254,7 @@ int get_player_team( CBaseEntity* poPlayer ) {
 	}  // if
 
 
-  char* pcMod = GetModDir();
+	const char* pcMod = GetModDir();
 
   if ( strcmp(pcMod, "cstrike") == 0 ) {
     

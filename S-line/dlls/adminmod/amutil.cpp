@@ -83,20 +83,15 @@ int make_friendly(char *name, bool check) {
 //
 void strtolower( char* string ) {
 	const int length = strlen ( string );
-  char character = 0;
 
-  for ( int i = 0; i < length; i++ ) {
-    character = tolower( string[i] );
+	for ( int i = 0; i < length; i++ ) {
+    char character = tolower(string[i]);
     string[i] = character;
   }  // for
 
   return;
 
 }  // strtolower()
-
-
-
-
 
 //
 // stristr: This is a crude version of strtsr ignoring case.
@@ -107,18 +102,14 @@ void strtolower( char* string ) {
 char* stristr( const char* haystack, const char* needle ) {
 	const int iLength = strlen( haystack );
 	const int iNeedleLen = strlen( needle );
-  char* pcBegin = nullptr;
 
-  int iH = 0;
-  int iN = 0;
-
-  if ( iNeedleLen > iLength ) return nullptr;
+	if ( iNeedleLen > iLength ) return nullptr;
 
   for ( int iStart = 0; iStart < iLength-iNeedleLen+1; iStart++ ) {
-    pcBegin = const_cast<char*>(haystack + iStart);
+    char* pcBegin = const_cast<char*>(haystack + iStart);
 
-    iH = iStart;
-    iN = 0;
+    int iH = iStart;
+    int iN = 0;
 
     while ( (iH < iLength) && (iN < iNeedleLen) && (tolower(haystack[iH]) == tolower(needle[iN])) ) {
       iH++;
@@ -141,7 +132,7 @@ char* stristr( const char* haystack, const char* needle ) {
 // Formats the string-literals '\n' and '^n' into line feeds (ASCII 10)
 //
 void FormatLine(char* sLine) {
-	int iOffset = 0;
+	
 	char* sNewChar = sLine;
 	char* sOldChar = sLine;
 	
@@ -194,7 +185,7 @@ int wrap_lines( char* _pcString, int _iLineLen, int _iWrap ) {
 	int retval = 1;
 
 	// find the first newline
-	if ( !(pcLineEnd = strchr(pcLineStart, '\n')) ) pcLineEnd = pcStringEnd;
+	if ( !((pcLineEnd = strchr(pcLineStart, '\n'))) ) pcLineEnd = pcStringEnd;
 
 	// while we're not finished with the string
 	while ( pcLineStart < pcStringEnd ) {
@@ -220,7 +211,7 @@ int wrap_lines( char* _pcString, int _iLineLen, int _iWrap ) {
 
 		// find the next newline
 		pcLineStart = pcLineEnd + 1;
-		if ( !(pcLineEnd = strchr(pcLineStart, '\n')) ) pcLineEnd = pcStringEnd;
+		if ( !((pcLineEnd = strchr(pcLineStart, '\n'))) ) pcLineEnd = pcStringEnd;
 
 	}  // while
 

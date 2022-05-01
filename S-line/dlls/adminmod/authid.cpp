@@ -42,7 +42,7 @@
 
 
 #include <cstdlib>
-#include <cerrno>
+//#include <cerrno>
 #include "authid.h"
 #include "amlibc.h"
 

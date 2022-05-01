@@ -152,7 +152,7 @@ AmDir* AmFSNode::get_directory_handle()
 }
 
 void AmFSNode::m_stat_node() {
-	int retval = 0;
+	int retval;
 	if ( 0 != m_iFiledes ) {
 		retval = fstat( m_iFiledes, &m_oStat );
 	} else {
