@@ -133,7 +133,7 @@ char* INVALID_TIMER_PARAM = nullptr;
 //
 // 'Required' should be the required number of params; eg, 2.
 #define CHECK_AMX_PARAMS(Required) \
-	if (iNumParams < Required) { \
+	if (iNumParams < (Required)) { \
 		System_Error(UTIL_VarArgs("[ADMIN] ERROR: Missing required parameters.  Required %i, has %i.\n", Required, iNumParams),pAdminEnt); \
 		amx_RaiseError(amx,AMX_ERR_NATIVE); \
 		return 0; \
@@ -151,8 +151,8 @@ char* INVALID_TIMER_PARAM = nullptr;
 #define GET_AMX_STRING(Param,MaxLength,String,Truncate) \
 	amx_GetAddr(amx,params[Param],&cStr); \
 	amx_StrLen(cStr,&iLength); \
-	if (iLength >= MaxLength) { \
-          if ( Truncate == 0 ) { \
+	if (iLength >= (MaxLength)) { \
+          if ( (Truncate) == 0 ) { \
 	    System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too large.  Max size %i, is %i.\n", MaxLength, iLength),pAdminEnt); \
 	    amx_RaiseError(amx,AMX_ERR_NATIVE); \
 	    return 0; \
@@ -161,9 +161,9 @@ char* INVALID_TIMER_PARAM = nullptr;
             char* longString = new char[iLength+1]; \
             amx_GetString(longString,cStr); \
             memcpy( String, longString, MaxLength ); \
-            String[MaxLength-1] = 0; \
+            (String)[(MaxLength)-1] = 0; \
             delete[] longString; \
-            iLength = MaxLength-1; \
+            iLength = (MaxLength)-1; \
            } \
 	} else { \
 	amx_GetString(String,cStr); \
@@ -172,9 +172,9 @@ char* INVALID_TIMER_PARAM = nullptr;
 
 #define SET_AMX_STRING(Param,MaxLength,String) \
 	amx_GetAddr(amx,params[Param],&cStr); \
-	if (String == nullptr) { \
+	if ((String) == nullptr) { \
 		amx_SetString(cStr, "", 0); \
-	} else if((int)strlen(String) > MaxLength) { \
+	} else if((int)strlen(String) > (MaxLength)) { \
 		System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too small.  Required size %i, is %i.\n", strlen(String), MaxLength),pAdminEnt); \
 		amx_RaiseError(amx,AMX_ERR_NATIVE); \
 		return 0; \
@@ -384,7 +384,7 @@ static cell centersay(AMX *amx, cell *params) {
     return 0;
   }  // if
   
-  if ((int)CVAR_GET_FLOAT("pretty_say") != 0) {
+  if (int(CVAR_GET_FLOAT("pretty_say")) != 0) {
 	  hudtextparms_t m_textParms;
 	  m_textParms.r1 = params[3];
     m_textParms.g1 = params[4];
@@ -453,7 +453,7 @@ static cell centersayex(AMX *amx, cell *params) {
     return 0;
   }  // if
   
-  if ((int)CVAR_GET_FLOAT("pretty_say") != 0) {
+  if (int(CVAR_GET_FLOAT("pretty_say")) != 0) {
 	  hudtextparms_t m_textParms;
 	  m_textParms.r1 = params[4];
     m_textParms.g1 = params[5];
@@ -972,7 +972,7 @@ static cell get_vault_num_data(AMX *amx, cell *params) {
 		if (sData == nullptr) return 0;
 
 		amx_GetAddr(amx,params[2],&cStr);
-		*cStr = (cell)strtol( sData, nullptr, 0 );
+		*cStr = cell(strtol(sData, nullptr, 0));
 		return 1;
 	}
 	return 0;
@@ -1093,7 +1093,7 @@ static cell log(AMX *amx, cell *params) {
     return 0;
   }
   
-  for(int i = 0; i < (int)strlen(sText); i++) {
+  for(int i = 0; i < int(strlen(sText)); i++) {
     if(sText[i] == 10 || sText[i] == 13) {
       sText[i] = '@';
     }
@@ -1142,7 +1142,7 @@ static cell menu(AMX *amx, cell *params) {
   }
 
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(iPlayerIndex); 
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) { //Protection agains bots
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) { //Protection agains bots
     if ( IsPlayerValid(pPlayer) && GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot show menu to this player: client is a bot.\n",pAdminEnt);
       return 0; 
@@ -1184,7 +1184,7 @@ static cell message(AMX *amx, cell *params) {
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
 
 
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( IsPlayerValid(pPlayer) && GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot message this player: client is a bot.\n",pAdminEnt);
       return 0; 
@@ -1221,7 +1221,7 @@ static cell messageex(AMX *amx, cell *params) {
   }
 
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( IsPlayerValid(pPlayer) && GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot messageex this player: client is a bot.\n",pAdminEnt);
       return 0; 
@@ -1264,19 +1264,19 @@ static cell messageex(AMX *amx, cell *params) {
     m_textParms.g2 = 255;
     m_textParms.b2 = 250;                                                            
     m_textParms.a2 = 0;   
-    m_textParms.fadeinTime = 0.02;
+    m_textParms.fadeinTime = 0.02f;
     m_textParms.fadeoutTime = 0;
     m_textParms.holdTime = 7;
-    m_textParms.fxTime = 0.07;
+    m_textParms.fxTime = 0.07f;
     m_textParms.effect = 2;
-    m_textParms.x = 0.05;
-    m_textParms.y = 0.7;
+    m_textParms.x = 0.05f;
+    m_textParms.y = 0.7f;
     m_textParms.channel = 1;
     UTIL_HudMessage( pPlayer, m_textParms, sText );	
 // Wraith, marker
   } else if (iType == print_pretty ) {
 	  int iLineFeed = -1;
-	for (int i = 0; i < (int)strlen(sText); i++) {
+	for (int i = 0; i < int(strlen(sText)); i++) {
       if ((i - iLineFeed) >= CENTER_SAY_LINE_SIZE) {
         System_Response(UTIL_VarArgs("[ADMIN] (messageex) The maximum size for any one line in a centersay is %i.\n",CENTER_SAY_LINE_SIZE),pAdminEnt);
         if (pAdminEnt != nullptr) {
@@ -1289,7 +1289,7 @@ static cell messageex(AMX *amx, cell *params) {
 	  }
 	}
   
-    if ((int)CVAR_GET_FLOAT("pretty_say") != 0) {
+    if (int(CVAR_GET_FLOAT("pretty_say")) != 0) {
 	  hudtextparms_t m_textParms;
       m_textParms.r1 = 10;
       m_textParms.g1 = 255;
@@ -1398,7 +1398,7 @@ static cell playerinfo(AMX *amx, cell *params) {
 
     if (iNumParams >= 5 && params[5] > amx->hea) {
       amx_GetAddr(amx,params[5],&cParam);
-      *cParam = (cell)GETPLAYERWONID(pPlayer->edict());
+      *cParam = cell(GETPLAYERWONID(pPlayer->edict()));
     }
 
     if (iNumParams >= 6 && params[6] > amx->hea ) {
@@ -1448,7 +1448,7 @@ static cell playsound(AMX *amx, cell *params) {
   if (pPlayer== nullptr) 
   	return 0;
     
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot play sound to client: client is a bot.\n",pAdminEnt);
       return 0; // they don't allow client exec on this server
@@ -1826,7 +1826,7 @@ static cell am_speakto(AMX *amx, cell *params) {
   if (pPlayer== nullptr) 
   	return 0;
     
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot speak to client: client is a bot.\n",pAdminEnt);
       return 0; // they don't allow client exec on this server
@@ -1851,18 +1851,18 @@ static cell timeleft(AMX *amx, cell *params) {
   float flTimeLimit;
 
   if ( g_pflTimeLimit == nullptr ) {
-	  flTimeLimit = CVAR_GET_FLOAT("mp_timelimit") * 60.0; // map timelimit in sec
+	  flTimeLimit = CVAR_GET_FLOAT("mp_timelimit") * 60.0f; // map timelimit in sec
   } else {
 	  flTimeLimit = *g_pflTimeLimit;  // Counterstrike's timelimit value
   }  // if-else
 
   if (iNumParams == 0 || params[1] == 1) {
-	  const int timeleft = (int)(flTimeLimit - gpGlobals->time);
+	  const int timeleft = int(flTimeLimit - gpGlobals->time);
 	  const int minleft = timeleft / 60;
 	  const int secleft = timeleft % 60;
     System_Response(UTIL_VarArgs( "[ADMIN] Time left on map: %02d:%02d.\n",minleft, secleft), pAdminEnt);
   }  // if
-  return (cell)(flTimeLimit - gpGlobals->time);
+  return cell(flTimeLimit - gpGlobals->time);
 }           
 
 
@@ -1902,13 +1902,13 @@ static cell typesay(AMX *amx, cell *params) {
 	m_textParms.g2 = 255;
 	m_textParms.b2 = 250;
 	m_textParms.a2 = 0;
-	m_textParms.fadeinTime = 0.02;
+    m_textParms.fadeinTime = 0.02f;
 	m_textParms.fadeoutTime = 0;
 	m_textParms.holdTime = params[2];
-	m_textParms.fxTime = 0.06;
+	m_textParms.fxTime = 0.06f;
 	m_textParms.effect = 2;
-	m_textParms.x = 0.05;
-	m_textParms.y = 0.65;
+	m_textParms.x = 0.05f;
+	m_textParms.y = 0.65f;
 	m_textParms.channel=1;
 	UTIL_HudMessageAll( m_textParms,sText );
 	UTIL_LogPrintfFNL( "[ADMIN] (typesay) %s\n", sText);
@@ -2059,7 +2059,7 @@ static cell vote_multiple(AMX *amx, cell *params) {
 
 // vote_allowed() -> Returns 1 if a call to vote_multiple is allowed right now.
 static cell vote_allowed(AMX *amx, cell *params) {
-	const int iVoteFreq = (int)CVAR_GET_FLOAT("vote_freq" );
+	const int iVoteFreq = int(CVAR_GET_FLOAT("vote_freq"));
   
   if (iVoteFreq <= 0) 
     return 0;
@@ -2126,7 +2126,7 @@ static cell getvar(AMX *amx, cell *params) {
   amx_GetString(name,cStr);    
   char *iszItem=name;
 
-  const int value = (int)CVAR_GET_FLOAT(name);
+  const int value = int(CVAR_GET_FLOAT(name));
   return value;
 }
 
@@ -2250,7 +2250,7 @@ static cell setvar(AMX *amx, cell *params) {
   }  // if
 
 
-  CVAR_SET_FLOAT(name,(float)params[2]);
+  CVAR_SET_FLOAT(name,float(params[2]));
   return 1;
 }
 
@@ -2339,7 +2339,7 @@ static cell censor_words(AMX *amx, cell *params) {
   amx_GetString(sBuffer,cStr);
   strcpy(sReturnBuffer, sBuffer);
   
-  for (i = 0; i < (int)strlen(sBuffer); i++)
+  for (i = 0; i < int(strlen(sBuffer)); i++)
     sBuffer[i] = tolower(sBuffer[i]);
   
   CLinkItem<word_struct>* pLink = m_pWordList->FirstLink();
@@ -2382,7 +2382,7 @@ static cell check_words(AMX *amx, cell *params) {
   }
   amx_GetString(sBuffer,cStr);  
   
-  for (int i = 0; i < (int)strlen(sBuffer); i++)
+  for (int i = 0; i < int(strlen(sBuffer)); i++)
     sBuffer[i] = tolower(sBuffer[i]);
   
   CLinkItem<word_struct>* pLink = m_pWordList->FirstLink();
@@ -2464,7 +2464,7 @@ static cell amx_get_userIP( AMX *amx, cell *params ) {
       *cParam = g_AuthArray[iPlayerIndex].iPort;
     }
 
-	return (cell)ulNBOIP;
+	return cell(ulNBOIP);
 
 }  // amx_get_userIP()
 
@@ -2495,7 +2495,7 @@ static cell get_username(AMX *amx, cell *params) {
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&cptr);
-  if(params[3] < (int)strlen(STRING(pPlayer->pev->netname))) {
+  if(params[3] < int(strlen(STRING(pPlayer->pev->netname)))) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
@@ -2649,7 +2649,7 @@ static cell get_userWONID(AMX *amx, cell *params) {
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)GETPLAYERWONID(pPlayer->edict());
+  *Param = cell(GETPLAYERWONID(pPlayer->edict()));
   return 1;
 }
 
@@ -2683,7 +2683,7 @@ static cell get_user_authid(AMX *amx, cell *params) {
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  if(params[3] < (int)strlen(GETPLAYERAUTHID(pPlayer->edict()))) {
+  if(params[3] < int(strlen(GETPLAYERAUTHID(pPlayer->edict())))) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
@@ -2702,7 +2702,7 @@ static cell execclient(AMX *amx, cell *params) {
   char CmdBuf[BUF_SIZE];
   char PlayerText[BUF_SIZE];
   
-  if ((int)CVAR_GET_FLOAT("allow_client_exec")!=1) {
+  if (int(CVAR_GET_FLOAT("allow_client_exec"))!=1) {
     System_Response("Cannot execute client command: allow_client_exec is not set to 1.\n",pAdminEnt);
     return 0; // they don't allow client exec on this server
   }
@@ -2723,7 +2723,7 @@ static cell execclient(AMX *amx, cell *params) {
   CBaseEntity *pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if (pPlayer== nullptr) return 0;
   
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot execute client command: client is a bot.\n",pAdminEnt);
       return 0; // they don't allow client exec on this server
@@ -2787,7 +2787,7 @@ static cell execclient(AMX *amx, cell *params) {
       return 0;
     }
 
-    if((int)CVAR_GET_FLOAT("admin_fx") != 0) {
+    if(int(CVAR_GET_FLOAT("admin_fx")) != 0) {
     	MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pPlayer->pev->origin);
     	WRITE_BYTE(TE_TAREXPLOSION);
     	WRITE_COORD(pPlayer->edict()->v.origin.x);
@@ -2833,7 +2833,7 @@ static cell slay(AMX *amx, cell *params) {
   if (pPlayer== nullptr) return 0;
   
   
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot execute slay command: client is a bot.\n",pAdminEnt);
       return 0; // they don't allow client exec on this server
@@ -2846,7 +2846,7 @@ static cell slay(AMX *amx, cell *params) {
     return 0;
   }
   
-  if((int)CVAR_GET_FLOAT("admin_fx") != 0) {
+  if(int(CVAR_GET_FLOAT("admin_fx")) != 0) {
     MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pPlayer->pev->origin);
     WRITE_BYTE(TE_TAREXPLOSION);
     WRITE_COORD(pPlayer->edict()->v.origin.x);
@@ -2896,7 +2896,7 @@ static cell teleport(AMX *amx, cell *params) {
 
   BOOL bFx = TRUE;
 
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       bFx = FALSE;
     }  // if
@@ -2904,7 +2904,7 @@ static cell teleport(AMX *amx, cell *params) {
 
   if ( bFx ) {
       // Show teleport effect at where the teleportee is (code courtesy of Abraxus)  
-      if ((int)CVAR_GET_FLOAT("admin_fx") != 0) {
+      if (int(CVAR_GET_FLOAT("admin_fx")) != 0) {
 	MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pPlayer->pev->origin);
 	WRITE_BYTE(TE_TELEPORT);
 	WRITE_COORD(pPlayer->edict()->v.origin.x);
@@ -2916,13 +2916,13 @@ static cell teleport(AMX *amx, cell *params) {
       CLIENT_PRINTF( pPlayer->edict(), print_console,"You have been teleported by the server administrator.\n");
     }
   
-  pPlayer->edict()->v.origin.x = (float)params[2];
-  pPlayer->edict()->v.origin.y = (float)params[3];
-  pPlayer->edict()->v.origin.z = (float)params[4];
+  pPlayer->edict()->v.origin.x = float(params[2]);
+  pPlayer->edict()->v.origin.y = float(params[3]);
+  pPlayer->edict()->v.origin.z = float(params[4]);
 
   if ( bFx ) {
     // Show teleport effect at where the teleportee goes
-    if ((int)CVAR_GET_FLOAT("admin_fx") != 0) {
+    if (int(CVAR_GET_FLOAT("admin_fx")) != 0) {
       MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pPlayer->pev->origin);
       WRITE_BYTE(TE_TELEPORT);
       WRITE_COORD(pPlayer->edict()->v.origin.x);
@@ -3111,7 +3111,7 @@ static cell readfile(AMX *amx, cell *params) {
 	
     if ( strlen(acLine) >= 0 ) {
       amx_GetAddr( amx, params[2], &cptr );
-      if( params[4] < (cell)strlen(acLine) ) {
+      if( params[4] < cell(strlen(acLine)) ) {
 		  // amx_RaiseError( amx, AMX_ERR_NATIVE );
 		return 0;
       }  // if
@@ -3391,7 +3391,7 @@ static cell get_userinfo(AMX *amx, cell *params) {
   char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(pPlayer->edict());
   char *value=g_engfuncs.pfnInfoKeyValue( infobuffer,InfoName );
   
-  if(params[4] < (int)strlen(value)) {
+  if(params[4] < int(strlen(value))) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
@@ -3427,7 +3427,7 @@ static cell get_serverinfo(AMX *amx, cell *params) {
   char *infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(nullptr);
   char *value=g_engfuncs.pfnInfoKeyValue( infobuffer,InfoName );
   
-  if(params[3] < (int)strlen(value)) {
+  if(params[3] < int(strlen(value))) {
     amx_RaiseError(amx,AMX_ERR_NATIVE);
     return 0;
   }
@@ -3522,27 +3522,27 @@ static cell slap(AMX *amx, cell *params) {
   strcpy(strMod, GetModDir());
   if(!stricmp(strMod, "tfc")) {
     // TFC pain sounds
-    if ( flRndSound <= 0.33 ) {
+    if ( flRndSound <= 0.33f ) {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "player/pain2.wav", 1, ATTN_NORM, 0, PITCH_NORM);
-    } else if ( flRndSound <= 0.66 ) {
+    } else if ( flRndSound <= 0.66f ) {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "player/pain4.wav", 1, ATTN_NORM, 0, PITCH_NORM);
     } else {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "player/pain6.wav", 1, ATTN_NORM, 0, PITCH_NORM);
     }
   } else if (!stricmp(strMod, "cstrike")) {
     // Counterstrike pain sounds, suggested by Da Rope
-    if ( flRndSound <= 0.33 ) {
+    if ( flRndSound <= 0.33f ) {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "player/bhit_flesh-3.wav", 1, ATTN_NORM, 0, PITCH_NORM);
-    } else if ( flRndSound <= 0.66 ) {
+    } else if ( flRndSound <= 0.66f ) {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "player/bhit_flesh-2.wav", 1, ATTN_NORM, 0, PITCH_NORM);
     } else {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "player/pl_die1.wav", 1, ATTN_NORM, 0, PITCH_NORM);
     }
   } else {
     // Default sounds - crowbar hitting flesh sounds
-    if ( flRndSound <= 0.33 ) {
+    if ( flRndSound <= 0.33f ) {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM, 0, PITCH_NORM);
-    } else if ( flRndSound <= 0.66 ) {
+    } else if ( flRndSound <= 0.66f ) {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM, 0, PITCH_NORM);
     } else {
       EMIT_SOUND_DYN2(ENT(pPlayer->pev), CHAN_VOICE, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM, 0, PITCH_NORM);
@@ -3628,7 +3628,7 @@ static cell noclip(AMX *amx, cell *params) {
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(PlayerIndex);
   if( !IsPlayerValid(pPlayer) ) return 0;
 
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot noclip this player: client is a bot.\n",pAdminEnt);
       return 0; 
@@ -3669,7 +3669,7 @@ static cell spawn(AMX *amx, cell *params) {
   }
   amx_GetString(szClassname,cString);  
   
-  for(int i = 0; i < (int)strlen(szClassname); i++) 
+  for(int i = 0; i < int(strlen(szClassname)); i++) 
     szClassname[i] = tolower(szClassname[i]);
   
   CBaseEntity* pCheckEntity = UTIL_FindEntityByClassname(nullptr, szClassname);
@@ -3692,12 +3692,12 @@ static cell spawn(AMX *amx, cell *params) {
 
   CBaseEntity* pEntity = static_cast<CBaseEntity *>(GET_PRIVATE(pEnt));
   pEntity->edict()->v.owner = pOwner;
-  pEntity->edict()->v.origin.x = (float)params[2];
-  pEntity->edict()->v.origin.y = (float)params[3];
-  pEntity->edict()->v.origin.z = (float)params[4];
-  pEntity->edict()->v.angles.x = (float)params[5];
-  pEntity->edict()->v.angles.y = (float)params[6];
-  pEntity->edict()->v.angles.z = (float)params[7];
+  pEntity->edict()->v.origin.x = float(params[2]);
+  pEntity->edict()->v.origin.y = float(params[3]);
+  pEntity->edict()->v.origin.z = float(params[4]);
+  pEntity->edict()->v.angles.x = float(params[5]);
+  pEntity->edict()->v.angles.y = float(params[6]);
+  pEntity->edict()->v.angles.z = float(params[7]);
   GameDispatchSpawn( pEntity->edict() );
 
 	const int iIdentity = AddSpawnEntity(szClassname, pEntity);
@@ -3750,12 +3750,12 @@ static cell movespawn(AMX *amx, cell *params) {
     return 0;
   }
   CBaseEntity* pEntity = pSpawnEntity->pEntity;
-  pEntity->edict()->v.origin.x = (float)params[2];
-  pEntity->edict()->v.origin.y = (float)params[3];
-  pEntity->edict()->v.origin.z = (float)params[4];
-  pEntity->edict()->v.angles.x = (float)params[5];
-  pEntity->edict()->v.angles.y = (float)params[6];
-  pEntity->edict()->v.angles.z = (float)params[7];
+  pEntity->edict()->v.origin.x = float(params[2]);
+  pEntity->edict()->v.origin.y = float(params[3]);
+  pEntity->edict()->v.origin.z = float(params[4]);
+  pEntity->edict()->v.angles.x = float(params[5]);
+  pEntity->edict()->v.angles.y = float(params[6]);
+  pEntity->edict()->v.angles.z = float(params[7]);
   return 1;
 }
 
@@ -3775,7 +3775,7 @@ static cell removespawn(AMX *amx, cell *params) {
 
 //CEM - 12/27/2000 - System time. Useful for timestamps, more stable than timeleft.
 static cell systemtime(AMX *amx, cell *params) {
-  return (cell)time(nullptr);
+  return cell(time(nullptr));
 }
 
 /************************************************************************************************
@@ -3807,22 +3807,22 @@ static cell maptime(AMX *amx, cell *params) {
 	  const float timeleft = flTimeLimit - gpGlobals->time;
 
     if ( params[2] == 1 ) {
-	    const int minleft = (int)(timeleft) / 60;
-	    const int secleft = (int)(timeleft) % 60;
+	    const int minleft = int(timeleft) / 60;
+	    const int secleft = int(timeleft) % 60;
       System_Response(UTIL_VarArgs( "timeleft on map: %d:%d\n",minleft, secleft),pAdminEnt);
     }  // if
 
-    return (cell)(timeleft);
+    return cell(timeleft);
   }  else {
     // we return the map time
 
     if ( params[2] == 1 ) {
-	    const int min = (int)(gpGlobals->time / 60);
-	    const int sec = (int)(gpGlobals->time) % 60;
+	    const int min = int(gpGlobals->time / 60);
+	    const int sec = int(gpGlobals->time) % 60;
       System_Response(UTIL_VarArgs( "time into map: %d:%d\n",min, sec),pAdminEnt);
     }  // if
 
-    return (cell)(gpGlobals->time);
+    return cell(gpGlobals->time);
   }  // if-else
     
 }  // maptime()
@@ -3847,7 +3847,7 @@ static cell servertime(AMX *amx, cell *params) {
 
   // just return time in seconds if no parameters are given
   if (iNumParams  < 1) {
-    return (cell)myTime;
+    return cell(myTime);
   }  // if
 
 
@@ -3903,7 +3903,7 @@ static cell servertime(AMX *amx, cell *params) {
     pcTimeString = nullptr;
   }  // if
 
-  return (cell) myTime;
+  return cell(myTime);
 
 }  // servertime()
 /* /FZ */
@@ -4317,7 +4317,7 @@ static cell gettarget(AMX *amx, cell *params) {
 	  CBaseEntity *pEntity = CBaseEntity::Instance( tr.pHit );
 
 	  if ( params[3] > 0 ) {
-		  if ( params[3] > (int)strlen(STRING(pEntity->pev->netname)) ) {
+		  if ( params[3] > int(strlen(STRING(pEntity->pev->netname))) ) {
 			  amx_GetAddr(amx,params[2],&cpReturnedUser);
 			  amx_SetString(cpReturnedUser,const_cast<char*>(STRING(pEntity->pev->netname)),0);
 		  } else {
@@ -4481,7 +4481,7 @@ static cell get_userFrags(AMX *amx, cell *params) {
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)(pPlayer->edict()->v.frags);
+  *Param = cell(pPlayer->edict()->v.frags);
   return 1;
 }
 
@@ -4503,7 +4503,7 @@ static cell get_userHealth(AMX *amx, cell *params) {
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)(pPlayer->edict()->v.health);
+  *Param = cell(pPlayer->edict()->v.health);
   return 1;
 }
 
@@ -4547,7 +4547,7 @@ static cell get_userArmor(AMX *amx, cell *params) {
   if( !IsPlayerValid(pPlayer) ) return 0;
 
   amx_GetAddr(amx,params[2],&Param);
-  *Param = (cell)(pPlayer->edict()->v.armorvalue);
+  *Param = cell(pPlayer->edict()->v.armorvalue);
   return 1;
 }
 // end of CD addins
@@ -4572,7 +4572,7 @@ static cell motd(AMX *amx, cell *params) {
   CBaseEntity* pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
 
 
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( IsPlayerValid(pPlayer) && GETPLAYERWONID(pPlayer->edict()) == 0 ) {
       System_Response("Cannot motd this player: client is a bot.\n",pAdminEnt);
       return 0;

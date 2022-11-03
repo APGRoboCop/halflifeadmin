@@ -118,7 +118,7 @@ const char* get_am_string( char* _pcDest, int _iMaxLen, char* _pucSrc, unsigned 
     else {
       len++;
       if (_iMaxLen > 1) { /* reserve one byte for the '\0' */
-        *pcDest++ = (char)c;
+        *pcDest++ = char(c);
         _iMaxLen--;
       }
     }

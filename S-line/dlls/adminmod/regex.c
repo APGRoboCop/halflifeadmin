@@ -528,7 +528,7 @@ extract_number (dest, source)
 
 #ifndef EXTRACT_MACROS /* To debug the macros.  */
 #undef EXTRACT_NUMBER
-#define EXTRACT_NUMBER(dest, src) extract_number (&dest, src)
+#define EXTRACT_NUMBER(dest, src) extract_number (&(dest), src)
 #endif /* not EXTRACT_MACROS */
 
 #endif /* DEBUG */
@@ -557,7 +557,7 @@ extract_number_and_incr (destination, source)
 #ifndef EXTRACT_MACROS
 #undef EXTRACT_NUMBER_AND_INCR
 #define EXTRACT_NUMBER_AND_INCR(dest, src) \
-  extract_number_and_incr (&dest, &src)
+  extract_number_and_incr (&(dest), &(src))
 #endif /* not EXTRACT_MACROS */
 
 #endif /* DEBUG */
@@ -1159,7 +1159,7 @@ typedef struct
   ((FAIL_STACK_FULL ()							\
     && !DOUBLE_FAIL_STACK (FAIL_STACK))					\
    ? 0									\
-   : ((FAIL_STACK).stack[(FAIL_STACK).avail++].pointer = POINTER,	\
+   : ((FAIL_STACK).stack[(FAIL_STACK).avail++].pointer = (POINTER),	\
       1))
 
 /* Push a pointer value onto the failure stack.
@@ -1346,44 +1346,44 @@ typedef struct
      saved NULL, thus retaining our current position in the string.  */	\
   string_temp = POP_FAILURE_POINTER ();					\
   if (string_temp != NULL)						\
-    str = (const char *) string_temp;					\
+    (str) = (const char *) string_temp;					\
 									\
   DEBUG_PRINT2 ("  Popping string 0x%x: `", str);			\
   DEBUG_PRINT_DOUBLE_STRING (str, string1, size1, string2, size2);	\
   DEBUG_PRINT1 ("'\n");							\
 									\
-  pat = (unsigned char *) POP_FAILURE_POINTER ();			\
+  (pat) = (unsigned char *) POP_FAILURE_POINTER ();			\
   DEBUG_PRINT2 ("  Popping pattern 0x%x:\n", pat);			\
   DEBUG_PRINT_COMPILED_PATTERN (bufp, pat, pend);			\
 									\
   /* Restore register info.  */						\
-  high_reg = (active_reg_t) POP_FAILURE_INT ();				\
+  (high_reg) = (active_reg_t) POP_FAILURE_INT ();				\
   DEBUG_PRINT2 ("  Popping high active reg: %d\n", high_reg);		\
 									\
-  low_reg = (active_reg_t) POP_FAILURE_INT ();				\
+  (low_reg) = (active_reg_t) POP_FAILURE_INT ();				\
   DEBUG_PRINT2 ("  Popping  low active reg: %d\n", low_reg);		\
 									\
   if (1)								\
-    for (this_reg = high_reg; this_reg >= low_reg; this_reg--)		\
+    for (this_reg = high_reg; this_reg >= (low_reg); this_reg--)		\
       {									\
 	DEBUG_PRINT2 ("    Popping reg: %d\n", this_reg);		\
 									\
-	reg_info[this_reg].word = POP_FAILURE_ELT ();			\
-	DEBUG_PRINT2 ("      info: 0x%x\n", reg_info[this_reg]);	\
+	(reg_info)[this_reg].word = POP_FAILURE_ELT ();			\
+	DEBUG_PRINT2 ("      info: 0x%x\n", (reg_info)[this_reg]);	\
 									\
-	regend[this_reg] = (const char *) POP_FAILURE_POINTER ();	\
-	DEBUG_PRINT2 ("      end: 0x%x\n", regend[this_reg]);		\
+	(regend)[this_reg] = (const char *) POP_FAILURE_POINTER ();	\
+	DEBUG_PRINT2 ("      end: 0x%x\n", (regend)[this_reg]);		\
 									\
-	regstart[this_reg] = (const char *) POP_FAILURE_POINTER ();	\
-	DEBUG_PRINT2 ("      start: 0x%x\n", regstart[this_reg]);	\
+	(regstart)[this_reg] = (const char *) POP_FAILURE_POINTER ();	\
+	DEBUG_PRINT2 ("      start: 0x%x\n", (regstart)[this_reg]);	\
       }									\
   else									\
     {									\
-      for (this_reg = highest_active_reg; this_reg > high_reg; this_reg--) \
+      for (this_reg = highest_active_reg; this_reg > (high_reg); this_reg--) \
 	{								\
-	  reg_info[this_reg].word.integer = 0;				\
-	  regend[this_reg] = 0;						\
-	  regstart[this_reg] = 0;					\
+	  (reg_info)[this_reg].word.integer = 0;				\
+	  (regend)[this_reg] = 0;						\
+	  (regstart)[this_reg] = 0;					\
 	}								\
       highest_active_reg = high_reg;					\
     }									\
@@ -1483,8 +1483,8 @@ static reg_errcode_t compile_range _RE_ARGS ((const char **p_ptr,
 #ifndef PATFETCH
 #define PATFETCH(c)							\
   do {if (p == pend) return REG_EEND;					\
-    c = (unsigned char) *p++;						\
-    if (translate) c = (unsigned char) translate[c];			\
+    (c) = (unsigned char) *p++;						\
+    if (translate) (c) = (unsigned char) translate[c];			\
   } while (0)
 #endif
 
@@ -1492,7 +1492,7 @@ static reg_errcode_t compile_range _RE_ARGS ((const char **p_ptr,
    translation.  */
 #define PATFETCH_RAW(c)							\
   do {if (p == pend) return REG_EEND;					\
-    c = (unsigned char) *p++; 						\
+    (c) = (unsigned char) *p++; 						\
   } while (0)
 
 /* Go backwards one character in the pattern.  */
@@ -1660,7 +1660,7 @@ typedef struct
 /* Set the bit for character C in a list.  */
 #define SET_LIST_BIT(c)                               \
   (b[((unsigned char) (c)) / BYTEWIDTH]               \
-   |= 1 << (((unsigned char) c) % BYTEWIDTH))
+   |= 1 << (((unsigned char) (c)) % BYTEWIDTH))
 
 
 /* Get the next unsigned number in the uncompiled pattern.  */
@@ -1670,9 +1670,9 @@ typedef struct
        PATFETCH (c); 							\
        while (ISDIGIT (c)) 						\
          { 								\
-           if (num < 0)							\
-              num = 0;							\
-           num = num * 10 + c - '0'; 					\
+           if ((num) < 0)							\
+              (num) = 0;							\
+           (num) = (num) * 10 + c - '0'; 					\
            if (p == pend) 						\
               break; 							\
            PATFETCH (c);						\
@@ -3624,7 +3624,7 @@ re_search_2 (bufp, string1, size1, string2, size2, startpos, range, regs, stop)
 
 /* Free everything we malloc.  */
 #ifdef MATCH_MAY_ALLOCATE
-#define FREE_VAR(var) if (var) REGEX_FREE (var); var = NULL
+#define FREE_VAR(var) if (var) REGEX_FREE (var); (var) = NULL
 #define FREE_VARIABLES()						\
   do {									\
     REGEX_FREE_STACK (fail_stack.stack);				\

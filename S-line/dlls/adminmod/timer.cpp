@@ -119,7 +119,7 @@ int CTimer::DeleteTimer(int iTimer, int iForceDelete = 0) {
   if (!ValidTimerIndex(iTimer)) 
     return 0;
   if(timers[iTimer].iRepeatCount <= 1 || iForceDelete) {
-    if ((int)CVAR_GET_FLOAT("admin_debug") >=4) {
+    if (int(CVAR_GET_FLOAT("admin_debug")) >=4) {
       if (iForceDelete) {
 	UTIL_LogPrintf("[ADMIN] DEBUG: CTimer::DeleteTimer: Timer #%i force-deleted.\n", iTimer);
       } else {
@@ -164,7 +164,7 @@ void CTimer::SetPlayerVote(int iIndex, int iVote) {
 }
 
 BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char* sFunction, char* sParam, edict_t *pEntity) {
-	int iDuration = (int)CVAR_GET_FLOAT("amv_vote_duration");
+	int iDuration = int(CVAR_GET_FLOAT("amv_vote_duration"));
 
 	if (!VoteAllowed())
     return FALSE;
@@ -181,7 +181,7 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
   m_iVote = iTimer;
   // The next time a vote can start is now, plus iDuration seconds (for when
   // this vote is over) plus the frequency.
-  m_iNextVoteTime = time(nullptr) + iDuration + (int)CVAR_GET_FLOAT("vote_freq");
+  m_iNextVoteTime = time(nullptr) + iDuration + int(CVAR_GET_FLOAT("vote_freq"));
   
   // Initialize the array to -1 (invalid vote)
   memset(m_iPlayerVotes,-1,(MAX_PLAYERS + 1) * sizeof(int));
@@ -191,7 +191,7 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
 	  // send the vote to everyone
     CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
 	// If it is a valid player and no bot when bot_protection is turned on.
-    if ( IsPlayerValid(pPlayer) && !((GETPLAYERWONID(pPlayer->edict()) == 0) && ptAM_botProtection && ((int)ptAM_botProtection->value == 1)) ) {
+    if ( IsPlayerValid(pPlayer) && !((GETPLAYERWONID(pPlayer->edict()) == 0) && ptAM_botProtection && (int(ptAM_botProtection->value) == 1)) ) {
       ShowMenu_Large (ENT(pPlayer->pev), iBits, MENU_SHOW, sText);
       // Initialize to no vote
       m_iPlayerVotes[i] = 0;

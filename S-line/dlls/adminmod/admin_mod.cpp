@@ -438,7 +438,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
 				pTimer->SetPlayerVote(i_index, iVote);
 				System_Response(UTIL_VarArgs("[ADMIN] Vote entered for option #%i\n",atoi(CMD_ARGV(1))),pAdminEnt);
 	
-				if((int)CVAR_GET_FLOAT("admin_vote_echo") != 0) {
+				if(int(CVAR_GET_FLOAT("admin_vote_echo")) != 0) {
 					if (pAdminEnt == nullptr) {
 						UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s voted for option #%i\n","Admin",atoi(CMD_ARGV(1))));
 					} else {
@@ -521,7 +521,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
   QUEUEING_DEBUGF( ("|---> Queueing check: sv_lan is %u, player authid %s [%s] is found to be %spending.\n", (int)CVAR_GET_FLOAT("sv_lan"), pcAuthId, (const char*)oaiAuthID, AMAuthId::is_pending(pcAuthId)?"":"not ") );
 
-  if ( (!(int)CVAR_GET_FLOAT("sv_lan")) &&  AMAuthId::is_pending(pcAuthId) ) {
+  if ( (!int(CVAR_GET_FLOAT("sv_lan"))) &&  AMAuthId::is_pending(pcAuthId) ) {
 	  QUEUEING_DEBUGF( ("|---> Player Steam Id (ClientConnect) is pending.\n") );
 	  // check if we have him already queued
 	  if ( !g_ovcPendingPlayers.empty() ) {
@@ -569,7 +569,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
   // check if we restrict access only to users who are in users.ini or ips.ini
   // Listenserver users are not restricted
-  if ( !oaiAuthID.is_loopid() && (int)CVAR_GET_FLOAT("amv_private_server") != 0 ) {
+  if ( !oaiAuthID.is_loopid() && int(CVAR_GET_FLOAT("amv_private_server")) != 0 ) {
 
 	  // check if the user is listed in our user list
 	  // or if his IP is listed in our IPs list
@@ -629,7 +629,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
   }
 
   const int iFreeSlots = GetFreeSlots( pEntity );
-  const int iResType = (int)CVAR_GET_FLOAT("reserve_type");
+  const int iResType = int(CVAR_GET_FLOAT("reserve_type"));
 	int iResTaken = 0;
 	DEBUG_LOG(1, ("%i players / %i free spots / %i max spots.", GetPlayerCount(), iFreeSlots, gpGlobals->maxClients) );
 
@@ -650,7 +650,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 			// still might get here with some free spots open, if we have
 			// reserve type 2).  If there are no free spots, kick 'em.
 			const char* sReserveMsg = get_cvar_string_value( "reserve_slots_msg", true );
-			const int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
+			const int iResSlots = int(CVAR_GET_FLOAT("reserve_slots"));
 			
 			if ( sReserveMsg == nullptr ) {
 				snprintf(szRejectReason, 128, "\n[ADMIN] %d of the %d slots on this server are reserved,\n[ADMIN] and no unreserved slots are left. Try again later.\n", iResSlots, gpGlobals->maxClients);
@@ -717,7 +717,7 @@ BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *p
   DEBUG_LOG(3, ("AM_ClientConnect_Post") );
 
   // Notify connecting players when allow_client_exec is set
-  if ( TRUE == bAM_ClientConnectRetval && (int)CVAR_GET_FLOAT("allow_client_exec") == 1 ) {
+  if ( TRUE == bAM_ClientConnectRetval && int(CVAR_GET_FLOAT("allow_client_exec")) == 1 ) {
 	  //System_Response( "**\n", pAdminEnt );	  
 	  System_Response( "************** NOTICE >>>>>>>>>>>>\n", pAdminEnt );	  
 	  System_Response( const_cast<char*>(get_am_string(nullptr,0,statstr[9],statstr_table)), pAdminEnt );
@@ -1085,7 +1085,7 @@ state, pEntity->v.netname) );
 
 
 
-  if ( (!(int)CVAR_GET_FLOAT("sv_lan")) && AMAuthId::is_pending(pcAuthId) ) {
+  if ( (!int(CVAR_GET_FLOAT("sv_lan"))) && AMAuthId::is_pending(pcAuthId) ) {
 /*TBR: Don't queue anything in here. We simply return and let CLientConnect handle the queueing.
 	  //UTIL_LogPrintf( "|---> Player Steam Id (ClientUserInfoChanged) is pending.\n" );
 	  // check if we have him already queued
@@ -1128,7 +1128,7 @@ state, pEntity->v.netname) );
   if(!FStrEq(sName, STRING(pEntity->v.netname)) || bForce) {
       // check if we restrict access only to users who are in users.ini or ips.ini
       // Listenserver users are not restricted
-      if ( !oaiAuthID.is_loopid() && (int)CVAR_GET_FLOAT("amv_private_server") != 0 ) {
+      if ( !oaiAuthID.is_loopid() && int(CVAR_GET_FLOAT("amv_private_server")) != 0 ) {
 
 	      // check if the user is listed in our user list
 	      // or if his IP is listed in our IPs list
@@ -1280,12 +1280,12 @@ int AM_GetGameDescription( const char* _pcDescription ) {
 
   _pcDescription = nullptr;
 
-  int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
-  const int iResType = (int)CVAR_GET_FLOAT("reserve_type");
-  const int iHideSlots = (int)CVAR_GET_FLOAT("amv_hide_reserved_slots");
+  int iResSlots = int(CVAR_GET_FLOAT("reserve_slots"));
+  const int iResType = int(CVAR_GET_FLOAT("reserve_type"));
+  const int iHideSlots = int(CVAR_GET_FLOAT("amv_hide_reserved_slots"));
   const int iPlayerCnt = GetPlayerCount();
-  const int iFreeSlots = (int)CVAR_GET_FLOAT("public_slots_free");
-  const int iVisMaxPlayers = (int)CVAR_GET_FLOAT("sv_visiblemaxplayers");
+  const int iFreeSlots = int(CVAR_GET_FLOAT("public_slots_free"));
+  const int iVisMaxPlayers = int(CVAR_GET_FLOAT("sv_visiblemaxplayers"));
 
   if ( iResType == 1 ) iResSlots = 1;
 
@@ -1413,7 +1413,7 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 					if ( _bLog ) {
 						UTIL_LogPrintf( "[ADMIN] Found suspicious entity '%s/%s/%s' at (%i,%i,%i) in map %s.\n",
 										STRING(pent->v.classname), STRING(pent->v.targetname), STRING(pent->v.model),
-										(int)pent->v.origin.x, (int)pent->v.origin.y, (int)pent->v.origin.z,
+										int(pent->v.origin.x), int(pent->v.origin.y), int(pent->v.origin.z),
 										STRING(gpGlobals->mapname) );
 					}  // if
 					
@@ -1846,7 +1846,7 @@ void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity) {
       if (!(IsIPReserved(g_AuthArray[i].sIP) 
 	    || ((iAccess & ACCESS_RESERVE_SPOT) == ACCESS_RESERVE_SPOT) 
 	    || ((iAccess & ACCESS_IMMUNITY) == ACCESS_IMMUNITY 
-		&& (int)CVAR_GET_FLOAT("admin_ignore_immunity") == 0))) {
+		&& int(CVAR_GET_FLOAT("admin_ignore_immunity")) == 0))) {
 	      char name[USERNAME_SIZE];
 	      iPlayerIndex = i;
 	iMaxPing = iPing;

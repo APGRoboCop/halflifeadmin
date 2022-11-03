@@ -68,7 +68,7 @@ endif
 
 
 # The default target to build
-DEFTARGET=Ometamod
+DEFTARGET=metamod
 
 # The version number 
 include Version.mk
@@ -326,7 +326,7 @@ endif
 
 # debug build (WONT WORK WITH omit-frame-pointer !!!!!)
 
-CFDBG= -g -ggdb -m32
+CFDBG= -g -ggdb3 -m32
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization // -O1 works best? [APG]RoboCop[CL]

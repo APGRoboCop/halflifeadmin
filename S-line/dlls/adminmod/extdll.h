@@ -112,7 +112,7 @@
   #define NOIME
 
   #define _WIN32_WINNT 0x0400
-  #include "windows.h"
+  #include "Windows.h"
 
 // Misc C-runtime library headers
   #include "stdio.h"
@@ -414,6 +414,7 @@ New map stuff
 
 ********************************************************************/
 
+//Mapcycle unstable and needs recoded for Blatt Map Management? [APG]RoboCop[CL]
 #define MAX_RULE_BUFFER 1024
 #define MAP_NAME_LENGTH 32
 typedef struct mapcycle_item_s

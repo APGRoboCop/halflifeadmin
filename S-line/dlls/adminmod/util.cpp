@@ -83,7 +83,7 @@ DLL_GLOBAL const Vector     g_vecZero = Vector(0,0,0);
 void System_Error(char* str, edict_t* pEntity) {
   UTIL_LogPrintf( "%s", str);
   if (pEntity != nullptr) {
-    if ((int)CVAR_GET_FLOAT("admin_debug") != 0) {
+    if (int(CVAR_GET_FLOAT("admin_debug")) != 0) {
       CLIENT_PRINTF(pEntity, print_chat, str);
     } else {
       CLIENT_PRINTF(pEntity, print_console, str);
@@ -144,7 +144,7 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 	int iNumEscapes = 0;
 
 	// TODO: add a check for unprintable characters here
-
+	
 	// count the number of characters to escape.
 	const char* pcPos = _pcString;
 	while ( (pcPos = strpbrk(pcPos,_pcChars)) != nullptr ) {
@@ -296,8 +296,8 @@ void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char ps
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
 
-  char *pMenuList = pszText;
-  char *aMenuList = pszText;
+  const char *pMenuList = pszText;
+  const char *aMenuList = pszText;
 
   int iCharCount = 0;
   
@@ -715,7 +715,7 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 	return 1;
 }
 
-mapcycle_item_s *CurrentMap(mapcycle_t *cycle)
+mapcycle_item_s *CurrentMap(mapcycle_t *cycle) //Unstable when mapcycle.txt is empty [APG]RoboCop[CL]
 {
   mapcycle_item_s *item;
   for ( item = mapcycle.next_item; item->next != mapcycle.next_item; item = item->next )	{
@@ -838,13 +838,13 @@ static short FixedSigned16( float value, float scale )
   if ( output < -32768 )
     output = -32768;
   
-  return (short)output;
+  return short(output);
 }
 
 
 int ClientCheck(CBaseEntity *pPlayer) {
 	if ( !pPlayer  
-		 || ((int)GETPLAYERWONID(pPlayer->edict()) == 0)
+		 || (int(GETPLAYERWONID(pPlayer->edict())) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
 		 //||  (pPlayer->pev->flags&FL_PROXY) 
 		 )
@@ -856,7 +856,7 @@ int ClientCheck(CBaseEntity *pPlayer) {
 
 int ClientCheck(edict_t *pEntity) {
 	if ( !pEntity
-		 || ((int)GETPLAYERWONID(pEntity) == 0)
+		 || (int(GETPLAYERWONID(pEntity)) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
 		 //||  (pPlayer->pev->flags&FL_PROXY) 
 		 )
@@ -869,7 +869,7 @@ int ClientCheck(edict_t *pEntity) {
 int ClientCheck(entvars_t *pEntVars) {
 	edict_t* pEntity = FIND_ENTITY_BY_VARS( pEntVars );
 	if ( !pEntity
-		 || ((int)GETPLAYERWONID(pEntity) == 0)
+		 || (int(GETPLAYERWONID(pEntity)) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
 		 //||  (pPlayer->pev->flags&FL_PROXY) 
 		 )
@@ -1045,7 +1045,7 @@ void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name,
 // and make them more secure for bots until Valve fixes the engine
 //
 void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg ) {
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( pEdict && GETPLAYERWONID(pEdict) == 0 ) {
       return; 
     }  // if 
@@ -1057,7 +1057,7 @@ void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg ) {
 
 void ClientCommand (edict_t* pEdict, char* szFmt, ...) {
 
-  if ( ptAM_botProtection && (int)ptAM_botProtection->value == 1 ) {
+  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
     if ( pEdict && GETPLAYERWONID(pEdict) == 0 ) {
       return; 
     }  // if 
@@ -1195,7 +1195,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
   const char c_cDirSep = '/';
 #endif
   
-  if ( pcAccessCvar == nullptr || (int)CVAR_GET_FLOAT(pcAccessCvar) == 1 ) {  
+  if ( pcAccessCvar == nullptr || int(CVAR_GET_FLOAT(pcAccessCvar)) == 1 ) {  
 
     char acFilePath[PATH_MAX];
     memset( acFilePath, 0, PATH_MAX );

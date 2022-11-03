@@ -71,17 +71,17 @@ extern cvar_t* ptAM_keyfiles;
  *  some macros to be used around
  */
 
-#define DEBUG_LOG( level, args )   do{  if ( ptAM_debug && ptAM_debug->value >= level ) \
+#define DEBUG_LOG( level, args )   do{  if ( ptAM_debug && ptAM_debug->value >= (level) ) \
                  UTIL_LogPrintf( "[ADMIN] DEBUG(%i): %s\n", level, UTIL_VarArgs args );} while(0)
 
-#define DEVEL_LOG( level, args )   do{  if ( ptAM_devel && ptAM_devel->value >= level ) \
+#define DEVEL_LOG( level, args )   do{  if ( ptAM_devel && ptAM_devel->value >= (level) ) \
                  UTIL_LogPrintf( "[ADMIN] DEVEL(%i): %s\n", level, UTIL_VarArgs args );} while(0)
 
 /* debugging and devel macros for conditional execution */
-#define DEBUG_DO( level, commands ) do{ if ( ptAM_debug && ptAM_debug->value >= level ) \
+#define DEBUG_DO( level, commands ) do{ if ( ptAM_debug && ptAM_debug->value >= (level) ) \
                  { commands } } while(0)
 
-#define DEVEL_DO( level, commands ) do{ if ( ptAM_devel && ptAM_devel->value >= level ) \
+#define DEVEL_DO( level, commands ) do{ if ( ptAM_devel && ptAM_devel->value >= (level) ) \
                  { commands } } while(0)
 
 

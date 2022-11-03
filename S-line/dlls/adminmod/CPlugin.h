@@ -49,7 +49,7 @@
 #define PLUGIN_CMD_SIZE 100
 #define PLUGIN_HELP_SIZE 150
 
-#define INVALID_INDEX -1
+#define INVALID_INDEX (-1)
 #define INT_MAX_PLAYERS 32
 
 const int ACCESS_ALL = 0;

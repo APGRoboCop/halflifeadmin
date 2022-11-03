@@ -44,7 +44,7 @@
 #define _TIMER_H_
 
 #define BUF_SIZE 100                // max size in general (default)
-#define INVALID_TIMER -1
+#define INVALID_TIMER (-1)
 #define MAX_PLAYERS 64              // max number of users allowed on a hl server. Its 32 but lets be safe :)
 #define NUM_TIMERS 512
 

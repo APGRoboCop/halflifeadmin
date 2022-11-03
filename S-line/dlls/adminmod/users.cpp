@@ -335,7 +335,7 @@ inline CLinkList<char, true>* GetFile(char* sFilename) {
 // entity is disconnecting, for example).
 int GetFreeSlots(edict_t* pEntityIgnore) {
 	const int iPlayerCount = GetPlayerCount( pEntityIgnore );
-	const int iResType = (int)CVAR_GET_FLOAT("reserve_type");
+	const int iResType = int(CVAR_GET_FLOAT("reserve_type"));
 	int iResSlots = 0;
 	
 	// If we're ignoring someone, then we should decrement our player
@@ -351,14 +351,14 @@ int GetFreeSlots(edict_t* pEntityIgnore) {
 	// Determine the number of reserved slots.
 	// For reserved type 0, just get the reserve_slots cvar.
 	if (iResType == 0) {
-		iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
+		iResSlots = int(CVAR_GET_FLOAT("reserve_slots"));
 		// For reserve type 1, the number of reserved slots is always going to be 1.
 	} else if (iResType == 1) {
 		iResSlots = 1;
 		// For reserve type 2, the number of reserved slots is the cvar, decremented
 		// by one for each slot actually taken already.
 	} else if (iResType == 2) {
-		iResSlots = (int)CVAR_GET_FLOAT("reserve_slots");
+		iResSlots = int(CVAR_GET_FLOAT("reserve_slots"));
 
 		for (int i = 1; i <= gpGlobals->maxClients; i++) {
 			CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
@@ -426,7 +426,7 @@ void InitAdminModData(BOOL fFull = FALSE, BOOL fRun = FALSE) {
     LoadWords();
   }
 
-  int iResSlots = (int)CVAR_GET_FLOAT("reserve_slots"); 
+  int iResSlots = int(CVAR_GET_FLOAT("reserve_slots")); 
   if ( iResSlots <= 0 ) {
 	iResSlots = 0;
   } else if ( iResSlots >= gpGlobals->maxClients ) {
@@ -435,8 +435,8 @@ void InitAdminModData(BOOL fFull = FALSE, BOOL fRun = FALSE) {
  
   CVAR_SET_FLOAT( "public_slots_free", GetFreeSlots(nullptr) );
 
-  if ( (int)CVAR_GET_FLOAT("amv_hide_reserved_slots") != 0 && iResSlots > 0 ) {
-	CVAR_SET_FLOAT( "sv_visiblemaxplayers", (gpGlobals->maxClients - iResSlots) );
+  if ( int(CVAR_GET_FLOAT("amv_hide_reserved_slots")) != 0 && iResSlots > 0 ) {
+	CVAR_SET_FLOAT( "sv_visiblemaxplayers", float(gpGlobals->maxClients - iResSlots) );
   }  // if
 
   // If we get called from admin_reload, we should update the user auth info, 
@@ -473,7 +473,7 @@ template<class T, bool isArray> void LoadFile(char* sType, CLinkList<T,isArray>*
 	DEBUG_LOG(1, ("LoadFile::%s cvar not set.  No %ss loaded.\n", sFileVar, sType) );
     return;
   }
-  if ((int)CVAR_GET_FLOAT("admin_debug") >= 2) {
+  if (int(CVAR_GET_FLOAT("admin_debug")) >= 2) {
 	  char acFile[PATH_MAX];
 	  (*g_engfuncs.pfnGetGameDir)(acFile);
 	  if ( (strlen(acFile) + strlen(sFile)) >= PATH_MAX ) {
@@ -655,7 +655,7 @@ int match(const char *string, char *pattern) {
   } else if ( string[0] != '\0' && pattern[0] == '\0' ) {
     return 0;
     // If we're not using regex, just do a simple case-insensitive comparison.
-  } else if ((int)CVAR_GET_FLOAT("use_regex")==0)  {
+  } else if (int(CVAR_GET_FLOAT("use_regex"))==0)  {
 	  return (~stricmp(string, pattern));
     // Otherwise, do regex stuff.
   } else {
@@ -687,7 +687,7 @@ const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 	static char acEncryptPw[PASSWORD_SIZE];
 	const char* pcEncryptPw = nullptr;
 
-	const int iEncryptMethod = (int)CVAR_GET_FLOAT( "encrypt_password" );
+	const int iEncryptMethod = int(CVAR_GET_FLOAT("encrypt_password"));
  
 	if ( _pcPassword == nullptr ) {
 		UTIL_LogPrintf("[ADMIN] ERROR: pass_encrypt called with nullptr pointer\n");
@@ -828,7 +828,7 @@ BOOL GetModelRecord(char* sModel, char* sPassword, model_struct* tModelRecord) {
   
   // We got a match
   if (pModel != nullptr) {
-    if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+    if (int(CVAR_GET_FLOAT("admin_debug"))!=0) {
       UTIL_LogPrintf( "[ADMIN] DEBUG: Model '%s' matches model entry '%s'\n",sModel,tModel->sModelName);
     }
     memcpy(tModelRecord,tModel,sizeof(model_struct));
@@ -855,14 +855,14 @@ BOOL ParseModel(char* sLine) {
   char* sNameToken = strtok(sLine, sDelimiter);
   if (sNameToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No Model name found: '%s'\n", sLine);
-  } else if ((int)strlen(sNameToken) > USERNAME_SIZE) {
+  } else if (int(strlen(sNameToken)) > USERNAME_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: Model name too long: '%s'\n", sNameToken);
   } else {
     char* sPasswordToken = strtok(nullptr, sDelimiter);
     if (sPasswordToken == nullptr) {
       UTIL_LogPrintf("[ADMIN] ERROR: No Model password found: '%s'\n", sLine);
-    } else if ((int)strlen(sPasswordToken) > PASSWORD_SIZE) {
-		if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
+    } else if (int(strlen(sPasswordToken)) > PASSWORD_SIZE) {
+		if ( int(CVAR_GET_FLOAT("amv_log_passwords")) == 1 ) {
 			UTIL_LogPrintf("[ADMIN] ERROR: Model password too long: '%s'\n", sPasswordToken);
 		} else {
 			UTIL_LogPrintf("[ADMIN] ERROR: Model password too long.\n");
@@ -878,7 +878,7 @@ BOOL ParseModel(char* sLine) {
       strcpy(tModel->sPassword,sPasswordToken);
       m_pModelList->AddLink(tModel);
       
-      if((int)CVAR_GET_FLOAT("amv_log_passwords") == 1) {
+      if(int(CVAR_GET_FLOAT("amv_log_passwords")) == 1) {
 		  DEBUG_LOG(1, ("Model loaded: Name '%s', Password '%s'",tModel->sModelName, tModel->sPassword) );
 	  } else {
 		  DEBUG_LOG(1, ("Model loaded: Name '%s', Password '********'",tModel->sModelName) );		  
@@ -995,7 +995,7 @@ void IPStringToBits(char* sIP, ulong* lIP) {
 
 // Given an unsigned long (32-bit) IP, returns it in string format (xxx.xxx.xxx.xxx)
 void IPBitsToString(ulong lNbo, char* sIP) {
-  sprintf(sIP, "%d.%d.%d.%d", (int)((lNbo>>24)&0xFF),(int)((lNbo>>16)&0xFF),(int)((lNbo>>8)&0xFF),(int)((lNbo)&0xFF));
+  sprintf(sIP, "%d.%d.%d.%d", int((lNbo >> 24) & 0xFF),int((lNbo >> 16) & 0xFF),int((lNbo >> 8) & 0xFF),int((lNbo) & 0xFF));
 }
 
 // Returns TRUE if a given string is in a valid IP format, FALSE otherwise.
@@ -1008,7 +1008,7 @@ BOOL IsIPValid( const char* sIP ) {
   if (sIP == nullptr) {
     return FALSE;
     // If the string is too big, it's invalid.
-  } else if ((int)strlen(sIP) > IP_SIZE) {
+  } else if (int(strlen(sIP)) > IP_SIZE) {
     return FALSE;
   } else {
 	  while (*sChar != '\0') {
@@ -1079,7 +1079,7 @@ BOOL ParseIP(char* sLine) {
 	char* sIPToken = strtok(sLine, sDelimiter);
   if (sIPToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No IP found: '%s'\n", sLine);
-  } else if ((int)strlen(sIPToken) > IP_SIZE) {
+  } else if (int(strlen(sIPToken)) > IP_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: IP too long: '%s'\n", sIPToken);
   } else if (!IsIPValid(sIPToken)) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Invalid IP address: %s\n", sIPToken);
@@ -1088,7 +1088,7 @@ BOOL ParseIP(char* sLine) {
     int iHasMask = 0;
     char* sMaskToken = strtok(nullptr, sDelimiter);
     if (sMaskToken != nullptr) {
-      if ((int)strlen(sMaskToken) > IP_SIZE) {
+      if (int(strlen(sMaskToken)) > IP_SIZE) {
 	UTIL_LogPrintf("[ADMIN] ERROR: IP mask too long: '%s'\n", sMaskToken);
       } else if (!IsIPValid(sMaskToken)) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Invalid IP Mask: %s\n", sMaskToken);
@@ -1113,7 +1113,7 @@ BOOL ParseIP(char* sLine) {
     IPStringToBits(tIP->sMask, &tIP->lMask);
     m_pIPList->AddLink(tIP);
     
-    if((int)CVAR_GET_FLOAT("admin_debug") != 0) {
+    if(int(CVAR_GET_FLOAT("admin_debug")) != 0) {
       UTIL_LogPrintf( "[ADMIN] DEBUG: IP loaded: IP '%s', Mask '%s'\n",tIP->sIP, tIP->sMask);
     }
     return TRUE;
@@ -1240,12 +1240,12 @@ BOOL ParseWord(char* sLine) {
   memset(tWord,0x0,sizeof(word_struct));
   strcpy(tWord->sWord,sLine);
 
-  for (int i = 0; i < (int)strlen(tWord->sWord); i++)
+  for (int i = 0; i < int(strlen(tWord->sWord)); i++)
     tWord->sWord[i] = tolower(tWord->sWord[i]);
 
   m_pWordList->AddLink(tWord);
   
-  if((int)CVAR_GET_FLOAT("admin_debug") != 0) {
+  if(int(CVAR_GET_FLOAT("admin_debug")) != 0) {
     UTIL_LogPrintf( "[ADMIN] DEBUG: Word loaded: '%s'\n",tWord->sWord);
   }
   return TRUE;
@@ -1376,7 +1376,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
   int iPort = 0;
   AMAuthId oaiAuthID;
   int iReconnTime = 300;
-  int iReconnectWindow = (int)CVAR_GET_FLOAT("amv_reconnect_time");
+  int iReconnectWindow = int(CVAR_GET_FLOAT("amv_reconnect_time"));
   auth_struct* poPrevAuth = nullptr;
   auth_struct* poPrevAuthBak = nullptr;
 	const time_t ttiNow = time(nullptr);
@@ -1389,7 +1389,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
     return;
   }
 
-  if ( (int)CVAR_GET_FLOAT("sv_lan") ) {
+  if ( int(CVAR_GET_FLOAT("sv_lan")) ) {
     oaiAuthID = nsAuthid::LAN_ID;
   } else {
     oaiAuthID = GETPLAYERAUTHID( pEntity );
@@ -1397,7 +1397,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 
 	const int iSessionID = GETPLAYERUSERID(pEntity); 
   
-  iReconnTime = (int)CVAR_GET_FLOAT( "admin_reconnect_timeout" );
+  iReconnTime = int(CVAR_GET_FLOAT("admin_reconnect_timeout"));
 
 
   DEVEL_LOG(2, ("Prv(idx:%i): Index: %i, SessionID: %i, AuthID: %s, Time: %i, IP: '%s:%i', Name: '%s', Access: %i", 
@@ -1637,7 +1637,7 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
   if ( pIgnoreEntity != nullptr ) iIgnoreIndex = ENTINDEX( pIgnoreEntity );
 
   // If admin_highlander is 0, there is no highlander.
-  if((int)CVAR_GET_FLOAT("admin_highlander")==0) {
+  if(int(CVAR_GET_FLOAT("admin_highlander"))==0) {
     return 0;
   }
   // Otherwise, get the highest access with the smallest user index.
@@ -1656,7 +1656,7 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
   }
   // If the highlander we found is different from the last one...
   if (iHighlanderIndex != m_iHighlanderIndex) {
-    if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+    if (int(CVAR_GET_FLOAT("admin_debug"))!=0) {
       UTIL_LogPrintf("[ADMIN] DEBUG: Old Highlander index: %i\n", m_iHighlanderIndex);
     }
     // If there is an old highlander, try to let him know he's no longer.
@@ -1667,7 +1667,7 @@ int GetHighlanderIndex( edict_t* pIgnoreEntity ) {
 		  CLIENT_PRINTF( pPlayer->edict(), print_console, "You are no longer the Admin Highlander!\n");
       }
     }
-    if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+    if (int(CVAR_GET_FLOAT("admin_debug"))!=0) {
       UTIL_LogPrintf("[ADMIN] DEBUG: New Highlander index: %i\n", iHighlanderIndex);
     }
     // If there is a new highlander, try to let him know he's the new one.
@@ -1699,8 +1699,7 @@ int GetUserAccess(edict_t* pEntity) {
   // highlander should only get reserve-name, reserve-spot, immunity, and default access.
 	const int iHighlanderIndex = GetHighlanderIndex();
   if (iHighlanderIndex != 0 && iHighlanderIndex != iIndex) {
-    return (g_AuthArray[iIndex].iAccess & (ACCESS_RESERVE_NICK | ACCESS_RESERVE_SPOT | ACCESS_IMMUNITY | (int)
-	    CVAR_GET_FLOAT("default_access")));
+    return (g_AuthArray[iIndex].iAccess & (ACCESS_RESERVE_NICK | ACCESS_RESERVE_SPOT | ACCESS_IMMUNITY | int(CVAR_GET_FLOAT("default_access"))));
     // Otherwise, return the person's access.
   } else {
 	// for a listenserver user we add reserved nick and slot access
@@ -2126,7 +2125,7 @@ BOOL GetUserRecord(const char* sName, const AMAuthId& oaiAuthID, const char* sIP
 
   // We got a match.
   if (pUser != nullptr) {
-    if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+    if (int(CVAR_GET_FLOAT("admin_debug"))!=0) {
       UTIL_LogPrintf("[ADMIN] DEBUG: Name '%s' / AUTHID '%s' matches user entry '%s'\n", sName,
                      static_cast<const char*>(oaiAuthID),
                      ptUser->sUserName);
@@ -2476,7 +2475,7 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 			  if ((ptUser->iAccess & ACCESS_RESERVE_NICK) == ACCESS_RESERVE_NICK) {
 				  memcpy(ptUserRecord,ptUser,sizeof(user_struct));
 				  
-				  if((int)CVAR_GET_FLOAT("admin_debug") != 0) {
+				  if(int(CVAR_GET_FLOAT("admin_debug")) != 0) {
 					  UTIL_LogPrintf( "[ADMIN] DEBUG: Name is reserved: Name '%s',  Access '%i'\n",ptUser->sUserName, ptUser->iAccess);
 				  }  // if
 				  
@@ -2550,7 +2549,7 @@ BOOL ParseUser(char* pcLine) {
 
   if (sNameToken == nullptr) {
 	  UTIL_LogPrintf("[ADMIN] ERROR: No user name found: '%s'\n", sLine);
-  } else if ((int)strlen(sNameToken) > USERNAME_SIZE) {
+  } else if (int(strlen(sNameToken)) > USERNAME_SIZE) {
 	  UTIL_LogPrintf("[ADMIN] ERROR: User name too long: '%s'\n", sNameToken);
   } else {
 	  if ( *pcDelim == ':' ) {
@@ -2574,8 +2573,8 @@ BOOL ParseUser(char* pcLine) {
 
 	  if (sPasswordToken == nullptr) {
 		  UTIL_LogPrintf("[ADMIN] ERROR: No user password found: '%s'\n", sLine);
-	  } else if ((int)strlen(sPasswordToken) > PASSWORD_SIZE) {
-		  if ( (int)CVAR_GET_FLOAT("amv_log_passwords") == 1 ) {
+	  } else if (int(strlen(sPasswordToken)) > PASSWORD_SIZE) {
+		  if ( int(CVAR_GET_FLOAT("amv_log_passwords")) == 1 ) {
 			  UTIL_LogPrintf("[ADMIN] ERROR: User password too long: '%s'\n", sPasswordToken);
 		  } else {
 			  UTIL_LogPrintf("[ADMIN] ERROR: User password too long: %i\n", strlen(sPasswordToken));
@@ -2610,7 +2609,7 @@ BOOL ParseUser(char* pcLine) {
 			  tUser->iIndex = m_iUserIndex++;
 			  m_pUserList->AddLink(tUser);
 			  
-			  if((int)CVAR_GET_FLOAT("amv_log_passwords") == 1) {
+			  if(int(CVAR_GET_FLOAT("amv_log_passwords")) == 1) {
 				  DEBUG_LOG(1, ("User loaded: Index: %i, Name '%s', Password '%s', Access '%i'", tUser->iIndex, tUser->sUserName, tUser->sPassword, tUser->iAccess) );
 			  } else {
 				  DEBUG_LOG(1, ("User loaded: Index: %i, Name '%s', Password '********', Access '%i'",tUser->iIndex, tUser->sUserName, tUser->iAccess) );
@@ -2797,13 +2796,13 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
     strncpy(g_AuthArray[iIndex].sPassword, sPassword, PASSWORD_SIZE);
 	if ( iSetPassword < 3 ) {
 		DEBUG_DO(1, System_Response("[ADMIN] Password received. Authentication pending...\n", pEntity); );
-		if ( (int)CVAR_GET_FLOAT("amv_log_passwords") ) {
+		if ( int(CVAR_GET_FLOAT("amv_log_passwords")) ) {
 			DEBUG_LOG(1, ("SetUserPassword: User '%s' entered password '%s'.",sName,sPassword) );
 		} else {
 			DEBUG_LOG(1, ("SetUserPassword: User '%s' entered password '********'.", sName) );
 		}  // if
 	} else {
-		if ( (int)CVAR_GET_FLOAT("amv_log_passwords") ) {
+		if ( int(CVAR_GET_FLOAT("amv_log_passwords")) ) {
 			DEBUG_LOG(1, ("SetUserPassword: Used previously entered password '%s' for user '%s'.", sPassword, sName) );
 		} else {
 			DEBUG_LOG(1, ("SetUserPassword: Used previously entered password '********' for user '%s'.", sName) );
@@ -2850,16 +2849,16 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
     g_AuthArray[iIndex].iAccess = tUser.iAccess;
     g_AuthArray[iIndex].iUserIndex = tUser.iIndex;
     System_Response(UTIL_VarArgs("[ADMIN] Password accepted for user '%s'. Access granted: %i\n",tUser.sUserName,tUser.iAccess), pEntity);
-    if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+    if (int(CVAR_GET_FLOAT("admin_debug"))!=0) {
       UTIL_LogPrintf("[ADMIN] DEBUG: VerifyUserAuth: User '%s' matched correct password for entry '%s'.\n",sName,tUser.sUserName);
     }
     fResult = TRUE;
     // Otherwise, reset their access
   } else {
-    g_AuthArray[iIndex].iAccess = (int)CVAR_GET_FLOAT("default_access");
+    g_AuthArray[iIndex].iAccess = int(CVAR_GET_FLOAT("default_access"));
     g_AuthArray[iIndex].iUserIndex = 0;
     DEBUG_DO(1, System_Response(UTIL_VarArgs("[ADMIN] Wrong or no password for user '%s'.\n[ADMIN] Only default access granted (%i).\n",sName, g_AuthArray[iIndex].iAccess), pEntity); );
-    if ((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+    if (int(CVAR_GET_FLOAT("admin_debug"))!=0) {
       UTIL_LogPrintf("[ADMIN] DEBUG: VerifyUserAuth: User '%s' did not match correct password for any entry.\n",sName);
     }
     fResult = FALSE;
@@ -3034,7 +3033,7 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
     } else if (iCompare == 0) {
       if (!stricmp(sHelp, tHelp->sHelp)) {
 	// The entries are identical, we don't need to add anything.
-	if((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+	if(int(CVAR_GET_FLOAT("admin_debug"))!=0) {
 	  UTIL_LogPrintf("[ADMIN] WARNING: Ignoring duplicate help entry for '%s'.\n", sCmd);
 	}
 	return TRUE;
@@ -3538,7 +3537,7 @@ BOOL LoadPlugins() {
   // Debug: Print out the game dir
   char sPluginDir[PATH_MAX];
 
-  if((int)CVAR_GET_FLOAT("admin_debug")!=0) {
+  if(int(CVAR_GET_FLOAT("admin_debug"))!=0) {
     (*g_engfuncs.pfnGetGameDir)(sPluginDir);
 	FormatPath(sPluginDir);
     UTIL_LogPrintf("[ADMIN] LoadPlugins: Game dir is '%s'\n", sPluginDir);
@@ -3645,7 +3644,7 @@ BOOL ParseVault(char* sLine) {
   sKeyToken = strtok(sLine,sDelimiter);
   if (sKeyToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No vault key found: '%s'\n", sLine);
-  } else if ((int)strlen(sKeyToken) > BUF_SIZE) {
+  } else if (int(strlen(sKeyToken)) > BUF_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: Vault key too long: '%s'\n", sKeyToken);
   } else {
 
@@ -3658,7 +3657,7 @@ BOOL ParseVault(char* sLine) {
     }  // if
     if (sDataToken == nullptr) {
       UTIL_LogPrintf("[ADMIN] ERROR: No vault data found: '%s'\n", sLine);
-    } else if ((int)strlen(sDataToken) > BUF_SIZE) {
+    } else if (int(strlen(sDataToken)) > BUF_SIZE) {
       UTIL_LogPrintf("[ADMIN] ERROR: Vault data too long: '%s'\n", sDataToken);
     } else {
       vault_struct* tVault = new vault_struct;
