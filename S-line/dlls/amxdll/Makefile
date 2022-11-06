@@ -24,10 +24,10 @@ BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -std=gnu99 -sh
 # -malign-functions=2 -Wall
 
 # full debug flags
-# CFLAGS=$(BASE_CFLAGS) -g -ggdb  -Wall -Wconversion
+# CFLAGS=$(BASE_CFLAGS) -g -ggdb3  -Wall -Wconversion
 
 #small optimization flags
-CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -mmmx -msse -msse2 -mfpmath=sse -pipe
+CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -mmmx -msse -msse2 -mfpmath=sse -s
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \

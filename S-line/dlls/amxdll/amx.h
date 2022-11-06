@@ -261,8 +261,8 @@ enum {
 #define AMX_FLAG_CELLSIZE(f) (8 << AMX_FLAG_CELL_VAL((f)))
 
 
-#define AMX_EXEC_MAIN   -1      /* start at program entry point */
-#define AMX_EXEC_CONT   -2      /* continue from last address */
+#define AMX_EXEC_MAIN   (-1)      /* start at program entry point */
+#define AMX_EXEC_CONT   (-2)      /* continue from last address */
 
 #define AMX_USERTAG(a,b,c,d)    ((a) | ((b)<<8) | ((int32_t)(c)<<16) | ((int32_t)(d)<<24))
 

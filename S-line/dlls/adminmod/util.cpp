@@ -83,7 +83,7 @@ DLL_GLOBAL const Vector     g_vecZero = Vector(0,0,0);
 void System_Error(char* str, edict_t* pEntity) {
   UTIL_LogPrintf( "%s", str);
   if (pEntity != nullptr) {
-    if (int(CVAR_GET_FLOAT("admin_debug")) != 0) {
+    if (static_cast<int>(CVAR_GET_FLOAT("admin_debug")) != 0) {
       CLIENT_PRINTF(pEntity, print_chat, str);
     } else {
       CLIENT_PRINTF(pEntity, print_console, str);
@@ -97,7 +97,7 @@ void System_Error(char* str, edict_t* pEntity) {
  *
  *
  */
-void System_Response(char *str,edict_t *pAdminEnt) {
+void System_Response(char* str, edict_t *pAdminEnt) {
   
   if(pAdminEnt== nullptr) {
     UTIL_LogPrintf( "%s", str);
@@ -140,7 +140,7 @@ int make_friendly(char *name, BOOL check) {
 const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 	static char* pcResultString = nullptr;
 	const int iLength = strlen( _pcString );
-	int iNumChars = strlen( _pcChars );
+	int iNumChars = strlen( _pcChars ); //iNumChars not used? [APG]RoboCop[CL]
 	int iNumEscapes = 0;
 
 	// TODO: add a check for unprintable characters here
@@ -398,7 +398,7 @@ CBaseEntity* UTIL_PlayerByName( const char *name ) {
 }
 
 
-char* UTIL_VarArgs( char *format, ... ) {
+char* UTIL_VarArgs( char* format, ... ) {
   va_list         argptr;
   static char             acString[1024];
   
@@ -818,7 +818,7 @@ int check_map(char *map, int bypass_allowed_map)
 
 static unsigned short FixedUnsigned16( float value, float scale )
 {
-	int output = value * scale;
+	int output = static_cast<int>(value * scale);
   if ( output < 0 )
     output = 0;
   if ( output > 0xFFFF )
@@ -830,7 +830,7 @@ static unsigned short FixedUnsigned16( float value, float scale )
 
 static short FixedSigned16( float value, float scale )
 {
-	int output = value * scale;
+	int output = static_cast<int>(value * scale);
   
   if ( output > 32767 )
     output = 32767;
@@ -838,13 +838,13 @@ static short FixedSigned16( float value, float scale )
   if ( output < -32768 )
     output = -32768;
   
-  return short(output);
+  return static_cast<short>(output);
 }
 
 
 int ClientCheck(CBaseEntity *pPlayer) {
 	if ( !pPlayer  
-		 || (int(GETPLAYERWONID(pPlayer->edict())) == 0)
+		 || (static_cast<int>(GETPLAYERWONID(pPlayer->edict())) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
 		 //||  (pPlayer->pev->flags&FL_PROXY) 
 		 )
@@ -856,7 +856,7 @@ int ClientCheck(CBaseEntity *pPlayer) {
 
 int ClientCheck(edict_t *pEntity) {
 	if ( !pEntity
-		 || (int(GETPLAYERWONID(pEntity)) == 0)
+		 || (static_cast<int>(GETPLAYERWONID(pEntity)) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
 		 //||  (pPlayer->pev->flags&FL_PROXY) 
 		 )
@@ -869,7 +869,7 @@ int ClientCheck(edict_t *pEntity) {
 int ClientCheck(entvars_t *pEntVars) {
 	edict_t* pEntity = FIND_ENTITY_BY_VARS( pEntVars );
 	if ( !pEntity
-		 || (int(GETPLAYERWONID(pEntity)) == 0)
+		 || (static_cast<int>(GETPLAYERWONID(pEntity)) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
 		 //||  (pPlayer->pev->flags&FL_PROXY) 
 		 )
@@ -1045,7 +1045,7 @@ void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name,
 // and make them more secure for bots until Valve fixes the engine
 //
 void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg ) {
-  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
+  if ( ptAM_botProtection && static_cast<int>(ptAM_botProtection->value) == 1 ) {
     if ( pEdict && GETPLAYERWONID(pEdict) == 0 ) {
       return; 
     }  // if 
@@ -1057,7 +1057,7 @@ void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg ) {
 
 void ClientCommand (edict_t* pEdict, char* szFmt, ...) {
 
-  if ( ptAM_botProtection && int(ptAM_botProtection->value) == 1 ) {
+  if ( ptAM_botProtection && static_cast<int>(ptAM_botProtection->value) == 1 ) {
     if ( pEdict && GETPLAYERWONID(pEdict) == 0 ) {
       return; 
     }  // if 
@@ -1189,13 +1189,13 @@ int GetPlayerCount( edict_t* peIgnorePlayer ) {
 int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAccessCvar ) {
 #ifdef WIN32
   const char c_acDirSep[] = "\\";
-  const char c_cDirSep = '\\';
+  const char c_cDirSep = '\\'; //c_cDirSep not used? [APG]RoboCop[CL]
 #else
   const char c_acDirSep[] = "/";
   const char c_cDirSep = '/';
 #endif
   
-  if ( pcAccessCvar == nullptr || int(CVAR_GET_FLOAT(pcAccessCvar)) == 1 ) {  
+  if ( pcAccessCvar == nullptr || static_cast<int>(CVAR_GET_FLOAT(pcAccessCvar)) == 1 ) {  
 
     char acFilePath[PATH_MAX];
     memset( acFilePath, 0, PATH_MAX );

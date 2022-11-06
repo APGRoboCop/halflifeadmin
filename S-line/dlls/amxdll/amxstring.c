@@ -29,10 +29,10 @@
 
 /************************  SOME CONFIGURATION  ***********************************************************/
 
-#define AMXFAIL -1
+#define AMXFAIL (-1)
 #define AMXNULL 0
 #define AMXOK 1
-#define AMXNULLP -1
+#define AMXNULLP (-1)
 
 // #define DEBUG
 
@@ -643,14 +643,14 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcFrom, params[2], &iFromLength, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   if ( params[3] ) {
@@ -661,7 +661,7 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
   err = bind_string( amx, &pcTo, params[1], NULL, iFromLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -669,7 +669,7 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
   pcRetVal = strcpy( pcTo, pcFrom );
   if ( pcRetVal == NULL ) {
     NATIVE_ERROR;
-    return Return((cell)AMXNULL);
+    return Return(AMXNULL);
   }  // if
 
 
@@ -677,11 +677,11 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
   err = set_string( amx, params[1], pcTo, iMaxLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
-  return Return((cell)AMXOK);
+  return Return(AMXOK);
 
 }  // amx_strcpy()
 
@@ -715,14 +715,14 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source to determine the length */
   err = get_string( amx, &pcFrom, params[2], &iFromLength, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* lets not get things beyond the string boundary */
@@ -735,7 +735,7 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
   err = bind_string( amx, &pcTo, params[1], NULL, iFromLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -743,18 +743,18 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
   pcRetVal = strncpy( pcTo, pcFrom, iToLength );
   if ( pcRetVal == NULL ) {
     NATIVE_ERROR;
-    return Return((cell)AMXNULL);
+    return Return(AMXNULL);
   }  // if
 
   /* set the string in the VM */
   err = set_string( amx, params[1], pcTo, iMaxLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
-  return Return((cell)AMXOK);
+  return Return(AMXOK);
 
 }  // amx_strncpy()
 
@@ -789,21 +789,21 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source */
   err = get_string( amx, &pcFrom, params[2], &iFromLength, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   /* get the size of the destination */
   err = string_len( amx, params[1], &iToLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
@@ -819,13 +819,13 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
   err = get_string( amx, &pcTo, params[1], &iToLength, iNewLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* not enough memory? */
   if( str_space( pcTo ) <= iNewLength ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -833,7 +833,7 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
   pcRetVal = strcat( pcTo, pcFrom );
   if ( pcRetVal == NULL ) {
     NATIVE_ERROR;
-    return Return((cell)AMXNULL);
+    return Return(AMXNULL);
   }  // if
 
 
@@ -841,11 +841,11 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
   err = set_string( amx, params[1], pcTo, iMaxLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
-  return Return((cell)AMXOK);
+  return Return(AMXOK);
 
 }  // amx_strcat()
 
@@ -883,21 +883,21 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source */
   err = get_string( amx, &pcFrom, params[2], &iFromLength, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   /* get the size of the destination */
   err = string_len( amx, params[1], &iToLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
@@ -913,20 +913,20 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
   err = get_string( amx, &pcTo, params[1], &iToLength, iNewLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   if( str_space(pcTo) <= iNewLength ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
-  pcRetVal = strncat( pcTo, pcFrom, (size_t)params[3] );
+  pcRetVal = strncat( pcTo, pcFrom, params[3] );
   if ( pcRetVal == NULL ) {
     NATIVE_ERROR;
-    return Return((cell)AMXNULL);
+    return Return(AMXNULL);
   }  // if
 
 
@@ -934,11 +934,11 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
   err = set_string( amx, params[1], pcTo, iMaxLength );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
-  return Return((cell)AMXOK);
+  return Return(AMXOK);
 
 }  // amx_strncat()
 
@@ -968,28 +968,28 @@ static cell AMX_NATIVE_CALL amx_strcmp( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString2, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* allocate memory long enough for the source!! */
   err = get_string( amx, &pcString1, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
   iRetVal = strcmp( pcString1, pcString2 );
 
-  return Return((cell)iRetVal);
+  return Return(iRetVal);
 
 }  // amx_strcmp()
 
@@ -1023,28 +1023,28 @@ static cell AMX_NATIVE_CALL amx_strncmp( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString2, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* allocate memory long enough for the source!! */
   err = get_string( amx, &pcString1, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
-  iRetVal = strncmp( pcString1, pcString2, (size_t)params[3] );
+  iRetVal = strncmp( pcString1, pcString2, params[3] );
 
-  return Return((cell)iRetVal);
+  return Return(iRetVal);
 
 }  // amx_strncmp()
 
@@ -1077,21 +1077,21 @@ static cell AMX_NATIVE_CALL amx_strcasecmp( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString2, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* allocate memory long enough for the source!! */
   err = get_string( amx, &pcString1, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -1099,7 +1099,7 @@ static cell AMX_NATIVE_CALL amx_strcasecmp( AMX* amx, cell* params )
   iRetVal = strcasecmp( pcString1, pcString2 );
 
 
-  return Return((cell)iRetVal);
+  return Return(iRetVal);
 
 }  // amx_strcasecmp()
 
@@ -1133,29 +1133,29 @@ static cell AMX_NATIVE_CALL amx_strncasecmp( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString2, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* allocate memory long enough for the source!! */
   err = get_string( amx, &pcString1, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
 
   /* call the standard string function */
-  iRetVal = strncasecmp( pcString1, pcString2, (size_t)params[3] );
+  iRetVal = strncasecmp( pcString1, pcString2, params[3] );
 
-  return Return((cell)iRetVal);
+  return Return(iRetVal);
 
 }  // amx_strncasecmp()
 
@@ -1186,25 +1186,25 @@ static cell AMX_NATIVE_CALL amx_strchr( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
-  pcRetVal = strchr( pcString, (int)params[2] );
+  pcRetVal = strchr( pcString, params[2] );
   
   if ( pcRetVal == NULL ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   } else {
-    iRetVal = (int)(pcRetVal - pcString);
-    return Return((cell)iRetVal);
+    iRetVal = pcRetVal - pcString;
+    return Return(iRetVal);
   }  // if-else
 
 }  // amx_strchr()
@@ -1238,25 +1238,25 @@ static cell AMX_NATIVE_CALL amx_strrchr( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
-  pcRetVal = strrchr( pcString, (int)params[2] );
+  pcRetVal = strrchr( pcString, params[2] );
   
   if ( pcRetVal == NULL ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   } else {
-    iRetVal = (int)(pcRetVal - pcString);
-    return Return((cell)iRetVal);
+    iRetVal = pcRetVal - pcString;
+    return Return(iRetVal);
   }  // if-else
 
 }  // amx_strrchr()
@@ -1292,21 +1292,21 @@ static cell AMX_NATIVE_CALL amx_strstr( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the haystack */
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the needle */
   err = get_string( amx, &pcSubString, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -1314,10 +1314,10 @@ static cell AMX_NATIVE_CALL amx_strstr( AMX* amx, cell* params )
   pcRetVal = strstr( pcString, pcSubString );
   
   if ( pcRetVal == NULL ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   } else {
     iRetVal = pcRetVal - pcString;
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
   }  // if-else
 
 }  // amx_strstr()
@@ -1355,35 +1355,35 @@ static cell AMX_NATIVE_CALL amx_strstrx( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the haystack */
   err = get_string( amx, &pcString, params[1], &iStringLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the needle */
   err = get_string( amx, &pcSubString, params[2], &iSubStringLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   if ( iStringLen != 0 && iSubStringLen == 0 ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   }  // if
 
   /* call the standard string function */
   pcRetVal = strstr( pcString, pcSubString );
   
   if ( pcRetVal == NULL ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   } else {
     iRetVal = pcRetVal - pcString;
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
   }  // if-else
 
 }  // amx_strstrx()
@@ -1418,21 +1418,21 @@ static cell AMX_NATIVE_CALL amx_strcasestr( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the haystack */
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the needle */
   err = get_string( amx, &pcSubString, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* transform the both strings into lower case */
@@ -1451,10 +1451,10 @@ static cell AMX_NATIVE_CALL amx_strcasestr( AMX* amx, cell* params )
   pcRetVal = strstr( pcString, pcSubString );
   
   if ( pcRetVal == NULL ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   } else {
     iRetVal = pcRetVal - pcString;
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
   }  // if-else
 
 }  // amx_strcasestr()
@@ -1492,25 +1492,25 @@ static cell AMX_NATIVE_CALL amx_strcasestrx( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the haystack */
   err = get_string( amx, &pcString, params[1], &iStringLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the needle */
   err = get_string( amx, &pcSubString, params[2], &iSubStringLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   if ( iStringLen != 0 && iSubStringLen == 0 ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   }  // if
 
   /* transform the both strings into lower case */
@@ -1529,10 +1529,10 @@ static cell AMX_NATIVE_CALL amx_strcasestrx( AMX* amx, cell* params )
   pcRetVal = strstr( pcString, pcSubString );
   
   if ( pcRetVal == NULL ) {
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
   } else {
     iRetVal = pcRetVal - pcString;
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
   }  // if-else
 
 }  // amx_strcasestrx()
@@ -1568,28 +1568,28 @@ static cell AMX_NATIVE_CALL amx_strspn( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the string */
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the skipset */
   err = get_string( amx, &pcSkipSet, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
   tSubStringLen = strspn( pcString, pcSkipSet );
   
-  return Return((cell)tSubStringLen);
+  return Return(tSubStringLen);
 
 
 }  // amx_strspn()
@@ -1624,28 +1624,28 @@ static cell AMX_NATIVE_CALL amx_strcspn( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the string */
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the stopset */
   err = get_string( amx, &pcStopSet, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
   /* call the standard string function */
   tSubStringLen = strcspn( pcString, pcStopSet );
   
-  return Return((cell)tSubStringLen);
+  return Return(tSubStringLen);
 
 
 }  // amx_strcspn()
@@ -1684,27 +1684,27 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* clear the token */
   err = clear_string( amx, params[3], 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   /* check if this is an intialising or a subsequent call */
   err = string_len( amx, params[1], &tStringLen );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   /* if this is a subsequent call without a intial call return an error */
   if ( tStringLen == 0 && g_cTokenStringInitialized == 0 ) {
     //NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -1714,18 +1714,18 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
     /* if the token string is too large for the TokenBuffer return an error */
     if ( tStringLen >= TOKEN_STRING_LEN ) {
       NATIVE_ERROR;
-      return Return((cell)AMXFAIL);
+      return Return(AMXFAIL);
     }  // if
 
     /* get the token string */
     err = get_string( amx, &pcString, params[1], NULL, 0L );
     if ( err != AMX_ERR_NONE ) {
       RAISE_ERROR(err);
-      return Return((cell)AMXFAIL);
+      return Return(AMXFAIL);
     }  // if
 
     /* put the token string in our static buffer */
-    memset( g_acTokenString, 0, (size_t)TOKEN_STRING_LEN );
+    memset( g_acTokenString, 0, TOKEN_STRING_LEN);
     memcpy( g_acTokenString, pcString, tStringLen );
     g_cTokenStringInitialized = 1;
     pcTokenString = g_acTokenString;
@@ -1742,7 +1742,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
   err = get_string( amx, &pcDelimiters, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -1752,15 +1752,15 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
   if ( pcRetVal == NULL ) {
     /* no tokens are left */
     g_cTokenStringInitialized = 0;
-    memset( g_acTokenString, 0, (size_t)TOKEN_STRING_LEN );
+    memset( g_acTokenString, 0, TOKEN_STRING_LEN);
     // set_string( amx, params[3], g_acTokenString, 0 );
     g_pcTokenStringPos = NULL;
     g_pcTokenStringEnd = g_acTokenString;
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
 
   } else {
     /* set the return string and return the length of the token */
-    set_string( amx, params[3], pcRetVal, (size_t)params[4] );
+    set_string( amx, params[3], pcRetVal, params[4] );
     iRetVal = strlen( pcRetVal );
 
     /* move the static position pointer to point after the token */
@@ -1774,7 +1774,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
       g_cTokenStringInitialized = 0;
     }  // if
 
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
 
   }  // if-else
 
@@ -1806,7 +1806,7 @@ static cell AMX_NATIVE_CALL amx_strtokrest( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   clear_string( amx, params[1], 0L );
@@ -1814,19 +1814,19 @@ static cell AMX_NATIVE_CALL amx_strtokrest( AMX* amx, cell* params )
   /* if this is a call without an intial call to strtok() return an error */
   if ( g_cTokenStringInitialized == 0 ) {
     //NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   if ( g_pcTokenStringPos == NULL ) {
     /* no rest is left */
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
 
   } else {
     /* set the return string and return the length of the token */
-    set_string( amx, params[1], g_pcTokenStringPos, (size_t)params[2] );
+    set_string( amx, params[1], g_pcTokenStringPos, params[2] );
     iRetVal = strlen( g_pcTokenStringPos );
 
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
 
   }  // if-else
 
@@ -1872,27 +1872,27 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* clear the token */
   err = clear_string( amx, params[4], 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   /* check if this is an intialising or a subsequent call */
   err = string_len( amx, params[1], &tStringLen );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   /* if this is a subsequent call without a intial call return an error */
   if ( tStringLen == 0 && g_cGTokenStringInitialized == 0 ) {
     //NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -1902,18 +1902,18 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
     /* if the token string is too large for the TokenBuffer return an error */
     if ( tStringLen >= GTOKEN_STRING_LEN ) {
       NATIVE_ERROR;
-      return Return((cell)AMXFAIL);
+      return Return(AMXFAIL);
     }  // if
 
     /* get the token string */
     err = get_string( amx, &pcString, params[1], NULL, 0L );
     if ( err != AMX_ERR_NONE ) {
       RAISE_ERROR(err);
-      return Return((cell)AMXFAIL);
+      return Return(AMXFAIL);
     }  // if
 
     /* put the token string in our static buffer */
-    memset( g_acGTokenString, 0, (size_t)GTOKEN_STRING_LEN );
+    memset( g_acGTokenString, 0, GTOKEN_STRING_LEN);
     memcpy( g_acGTokenString, pcString, tStringLen );
     g_cGTokenStringInitialized = 1;
     pcTokenString = g_acGTokenString;
@@ -1930,14 +1930,14 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
   err = get_string( amx, &pcDelimiters, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the grouping */
   err = get_string( amx, &pcGrouping, params[3], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -1947,15 +1947,15 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
   if ( pcRetVal == NULL ) {
     /* no tokens are left */
     g_cGTokenStringInitialized = 0;
-    memset( g_acGTokenString, 0, (size_t)GTOKEN_STRING_LEN );
+    memset( g_acGTokenString, 0, GTOKEN_STRING_LEN);
     // set_string( amx, params[4], g_acGTokenString, 0 );
     g_pcGTokenStringPos = NULL;
     g_pcGTokenStringEnd = g_acGTokenString;
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
 
   } else {
     /* set the return string and return the length of the token */
-    set_string( amx, params[4], pcRetVal, (size_t)params[5] );
+    set_string( amx, params[4], pcRetVal, params[5] );
     iRetVal = strlen( pcRetVal );
 
     /* move the static position pointer to point after the token */
@@ -1969,7 +1969,7 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
       g_cGTokenStringInitialized = 0;
     }  // if
 
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
 
   }  // if-else
 
@@ -2001,7 +2001,7 @@ static cell AMX_NATIVE_CALL amx_strgtokrest( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   clear_string( amx, params[1], 0L );
@@ -2009,19 +2009,19 @@ static cell AMX_NATIVE_CALL amx_strgtokrest( AMX* amx, cell* params )
   /* if this is a call without an intial call to strtok() return an error */
   if ( g_cGTokenStringInitialized == 0 ) {
     //NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   if ( g_pcGTokenStringPos == NULL ) {
     /* no rest is left */
-    return Return((cell)AMXNULLP);
+    return Return(AMXNULLP);
 
   } else {
     /* set the return string and return the length of the token */
-    set_string( amx, params[1], g_pcGTokenStringPos, (size_t)params[2] );
+    set_string( amx, params[1], g_pcGTokenStringPos, params[2] );
     iRetVal = strlen( g_pcGTokenStringPos );
 
-    return Return((cell)iRetVal);
+    return Return(iRetVal);
 
   }  // if-else
 
@@ -2062,13 +2062,13 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
 
   if ( iNumArgs < REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* check if we have a length for each token */
   if ( iNumArgs % 2 ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
@@ -2076,7 +2076,7 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
@@ -2084,7 +2084,7 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
   err = get_string( amx, &pcDelimiters, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2097,7 +2097,7 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
     err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
     if ( err != AMX_ERR_NONE ) {
       RAISE_ERROR(err);
-      return Return((cell)AMXFAIL);
+      return Return(AMXFAIL);
     }  // if 
 
     // set string to token but with maximum length -1 (for '\0') 
@@ -2109,7 +2109,7 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
 
   } // while
 
-  return Return((cell)iNumTokens);
+  return Return(iNumTokens);
 
 }  // amx_strsplit()
 
@@ -2158,13 +2158,13 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 
   if ( iNumArgs < REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* check if we have a length for each token */
   if ( ! (iNumArgs % 2) ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 #ifdef DEBUG
@@ -2175,7 +2175,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
   err = get_string( amx, &pcString, params[1], &tStringSize, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   pcEndOfString = pcString + tStringSize;
@@ -2184,7 +2184,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
   err = get_string( amx, &pcDelimiters, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2192,7 +2192,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
   err = get_string( amx, &pcGroupingSet, params[3], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2218,7 +2218,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if
 	
 #ifdef DEBUG
@@ -2235,7 +2235,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 	
       } // while
       
-      return Return((cell)iNumTokens);
+      return Return(iNumTokens);
 
     } else if ( pcGrouper == pcStart ) {
       
@@ -2263,7 +2263,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if
 	
 #ifdef DEBUG
@@ -2280,7 +2280,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 	  *pcGrouper = cLastGrouper;
 	}  // if
 	pcStart = pcGrouper + 1;
-	if ( pcStart >= pcEndOfString ) return Return((cell)iNumTokens);
+	if ( pcStart >= pcEndOfString ) return Return(iNumTokens);
 	
     } else if ( pcGrouper > pcStart ) {  
       
@@ -2300,7 +2300,7 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if 
 	
 #ifdef DEBUG
@@ -2319,17 +2319,17 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
       /* carry on with the group */
       *pcGrouper = cLastGrouper;
       pcStart = pcGrouper;
-      if ( pcStart >= pcEndOfString ) return Return((cell)iNumTokens);
+      if ( pcStart >= pcEndOfString ) return Return(iNumTokens);
 
     } else {
       /* this case should not occur */
-      return Return((cell)iNumTokens);
+      return Return(iNumTokens);
     }  // if-else
     
   }  // while
   
 
-  return Return((cell)iNumTokens);
+  return Return(iNumTokens);
 }  // amx_strgsplit()
 
 
@@ -2374,13 +2374,13 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
 
   if ( iNumArgs < REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* check if we have a length for each token */
   if ( iNumArgs % 2 ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
@@ -2388,7 +2388,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
   err = get_string( amx, &pcString, params[1], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   tStringLen = strlen( pcString );
@@ -2397,7 +2397,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
   err = get_string( amx, &pcDelimiters, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2414,7 +2414,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
     err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
     if ( err != AMX_ERR_NONE ) {
       RAISE_ERROR(err);
-      return Return((cell)AMXFAIL);
+      return Return(AMXFAIL);
     }  // if 
 
     // set string to token but with maximum length -1 (for '\0') 
@@ -2433,7 +2433,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
   err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if 
   if ( pcRest != NULL ) {
     set_string( amx, params[iNumArgs-1], pcRest, ((size_t)*ptCell)-1 );
@@ -2442,7 +2442,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
     set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
   }  // if-else
 
-  return Return((cell)iNumTokens);
+  return Return(iNumTokens);
 
 }  // amx_strsep()
 
@@ -2498,13 +2498,13 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 
   if ( iNumArgs < REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* check if we have a length for each token */
   if ( ! (iNumArgs % 2) ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 #ifdef DEBUG
@@ -2515,7 +2515,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
   err = get_string( amx, &pcString, params[1], &tStringSize, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   pcEndOfString = pcString + tStringSize;
@@ -2524,7 +2524,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
   err = get_string( amx, &pcDelimiters, params[2], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2532,7 +2532,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
   err = get_string( amx, &pcGroupingSet, params[3], NULL, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2562,7 +2562,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if
 	
 #ifdef DEBUG
@@ -2586,7 +2586,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
       err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
       if ( err != AMX_ERR_NONE ) {
 	RAISE_ERROR(err);
-	return Return((cell)AMXFAIL);
+	return Return(AMXFAIL);
       }  // if 
       /* return the rest of the string */
       if ( pcRest != NULL ) {	
@@ -2596,7 +2596,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
       }  // if-else
 
-      return Return((cell)iNumTokens);
+      return Return(iNumTokens);
 
     } else if ( pcGrouper == pcStart ) {
       
@@ -2626,7 +2626,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if
 	
 #ifdef DEBUG
@@ -2649,7 +2649,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	  err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
 	  if ( err != AMX_ERR_NONE ) {
 	    RAISE_ERROR(err);
-	    return Return((cell)AMXFAIL);
+	    return Return(AMXFAIL);
 	  }  // if 
 	  /* return the rest of the string */
 	  if ( pcRest != NULL ) {	
@@ -2659,7 +2659,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	    set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
 	  }  // if-else
 
-	  return Return((cell)iNumTokens);
+	  return Return(iNumTokens);
 	}  // if
 	
     } else if ( pcGrouper > pcStart ) {  
@@ -2684,7 +2684,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if 
 	
 #ifdef DEBUG
@@ -2710,7 +2710,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
 	if ( err != AMX_ERR_NONE ) {
 	  RAISE_ERROR(err);
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // if 
 	/* return the rest of the string */
 	if ( pcRest != NULL ) {	
@@ -2720,12 +2720,12 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 	  set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
 	}  // if-else
 
-	return Return((cell)iNumTokens);
+	return Return(iNumTokens);
       }  // if
 
     } else {
       /* this case should not occur */
-      return Return((cell)iNumTokens);
+      return Return(iNumTokens);
     }  // if-else
     
   }  // while
@@ -2735,7 +2735,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
   err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if 
   /* return the rest of the string */
   if ( pcRest != NULL ) {	
@@ -2745,7 +2745,7 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
     set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
   }  // if-else
 
-  return Return((cell)iNumTokens);
+  return Return(iNumTokens);
 }  // amx_strgsep()
 
 
@@ -2782,17 +2782,17 @@ static cell AMX_NATIVE_CALL amx_strcount( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the source!! */
   err = get_string( amx, &pcString, params[1], &iCount, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
-  iChar = (int)params[2];
+  iChar = params[2];
   pcEndOfString = pcString + iCount;
 
   iCount = 0;
@@ -2803,7 +2803,7 @@ static cell AMX_NATIVE_CALL amx_strcount( AMX* amx, cell* params )
   }  // while
   
   iRetVal = iCount;
-  return Return((cell)iRetVal);
+  return Return(iRetVal);
 
 }  // amx_strcount()
 
@@ -2841,21 +2841,21 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the string */
   err = get_string( amx, &pcString, params[1], &tiStringLength, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* get the trim set */
   err = get_string( amx, &pcTrim, params[2], &tiNumTrims, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
 
@@ -2888,11 +2888,11 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
   err = set_string( amx, params[1], pcString, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
-  return Return((cell)tiCharsTrimmed);
+  return Return(tiCharsTrimmed);
 
 }  // amx_strtrim()
 
@@ -2939,14 +2939,14 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
 
   if ( iNumArgs != REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* first get the string */
   err = get_string( amx, &pcString, params[1], &tiStringLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   pcPos = pcString;
@@ -2957,19 +2957,19 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
   err = get_string( amx, &pcSearch, params[2], &iSearchLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* ignore empty search string or we end up in an infinite loop */
   if ( iSearchLen == 0 ) {
-    return Return((cell)0);
+    return Return(0);
   }  // if
 
   /* get the substitution string */
   err = get_string( amx, &pcSubst, params[3], &iSubstLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   // calculate length of new string
@@ -2989,10 +2989,10 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
   */
 
   /* get space for the new string */
-  err = bind_string( amx, &pcNew, params[1], NULL, (size_t)params[4] );
+  err = bind_string( amx, &pcNew, params[1], NULL, params[4] );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   /* write the new string */
@@ -3018,11 +3018,11 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
   err = set_string( amx, params[1], pcNew, iMaxLen );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
 
-  return Return((cell)iReplaced);
+  return Return(iReplaced);
 
 }  // amx_strsubst()
 
@@ -3091,7 +3091,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 
   if ( iNumArgs < REQNUMARGS ) {
     NATIVE_ERROR;
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   iMaxLen = (size_t)(params[2] - 1);
@@ -3102,7 +3102,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
   err = get_string( amx, &pcFormat, params[3], &tStrLen, 0L );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
   
   pcEndOfString = pcFormat + tStrLen;
@@ -3111,7 +3111,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
   err = bind_string( amx, &pcString, params[1], NULL, iMaxLen );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
   pcStart = pcFormat;
@@ -3159,7 +3159,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 	  err = get_string( amx, &pcStringArg, vlist[iNextParam], NULL, 0L );
 	  if ( err != AMX_ERR_NONE ) {
 	    RAISE_ERROR(err);
-	    return Return((cell)AMXFAIL);
+	    return Return(AMXFAIL);
 	  }  // if
 	  
 	  pcEnd++;
@@ -3194,7 +3194,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 	  err = amx_GetAddr( amx, vlist[iNextParam], &ptCell );
 	  if ( err != AMX_ERR_NONE ) {
 	    RAISE_ERROR(err);
-	    return Return((cell)AMXFAIL);
+	    return Return(AMXFAIL);
 	  }  // if
 
 	  pcEnd++;
@@ -3219,7 +3219,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 	default:
 	  /* wrong format. abort */
 	  NATIVE_ERROR;
-	  return Return((cell)AMXFAIL);
+	  return Return(AMXFAIL);
 	}  // switch
 
       cInFormat = 0;
@@ -3263,10 +3263,10 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
   err = set_string( amx, params[1], pcString, iMaxLen );
   if ( err != AMX_ERR_NONE ) {
     RAISE_ERROR(err);
-    return Return((cell)AMXFAIL);
+    return Return(AMXFAIL);
   }  // if
 
-  return Return((cell)tCharsWritten);
+  return Return(tCharsWritten);
 
 }  // amx_snprintf()
 

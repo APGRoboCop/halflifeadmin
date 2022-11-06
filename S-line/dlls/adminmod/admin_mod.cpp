@@ -273,7 +273,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
 
   DEBUG_LOG(4, ("ClientCommand: '%s' - '%s'", pcmd, CMD_ARGS()) );
 
-  const char* pcAuthId = GETPLAYERAUTHID( pEntity );
+  const char* pcAuthId = GETPLAYERAUTHID( pEntity ); // pcAuthId not used? [APG]RoboCop[CL]
 
   commandline[0] = 0;
   if ( CMD_ARGS() ) strncpy( commandline, CMD_ARGS(), 255 );
@@ -393,7 +393,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
 		  return RESULT_HANDLED;
 	  }  // if
   } else {
-    char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
+	  const char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     
     if(program_file==nullptr|| FStrEq(program_file,"0") || !g_fRunScripts) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");			
@@ -438,7 +438,7 @@ int AM_ClientCommand( edict_t *pEntity ) {
 				pTimer->SetPlayerVote(i_index, iVote);
 				System_Response(UTIL_VarArgs("[ADMIN] Vote entered for option #%i\n",atoi(CMD_ARGV(1))),pAdminEnt);
 	
-				if(int(CVAR_GET_FLOAT("admin_vote_echo")) != 0) {
+				if(static_cast<int>(CVAR_GET_FLOAT("admin_vote_echo")) != 0) {
 					if (pAdminEnt == nullptr) {
 						UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s voted for option #%i\n","Admin",atoi(CMD_ARGV(1))));
 					} else {
@@ -521,7 +521,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
   QUEUEING_DEBUGF( ("|---> Queueing check: sv_lan is %u, player authid %s [%s] is found to be %spending.\n", (int)CVAR_GET_FLOAT("sv_lan"), pcAuthId, (const char*)oaiAuthID, AMAuthId::is_pending(pcAuthId)?"":"not ") );
 
-  if ( (!int(CVAR_GET_FLOAT("sv_lan"))) &&  AMAuthId::is_pending(pcAuthId) ) {
+  if ( (!static_cast<int>(CVAR_GET_FLOAT("sv_lan"))) &&  AMAuthId::is_pending(pcAuthId) ) {
 	  QUEUEING_DEBUGF( ("|---> Player Steam Id (ClientConnect) is pending.\n") );
 	  // check if we have him already queued
 	  if ( !g_ovcPendingPlayers.empty() ) {
@@ -569,7 +569,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
   // check if we restrict access only to users who are in users.ini or ips.ini
   // Listenserver users are not restricted
-  if ( !oaiAuthID.is_loopid() && int(CVAR_GET_FLOAT("amv_private_server")) != 0 ) {
+  if ( !oaiAuthID.is_loopid() && static_cast<int>(CVAR_GET_FLOAT("amv_private_server")) != 0 ) {
 
 	  // check if the user is listed in our user list
 	  // or if his IP is listed in our IPs list
@@ -629,7 +629,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
   }
 
   const int iFreeSlots = GetFreeSlots( pEntity );
-  const int iResType = int(CVAR_GET_FLOAT("reserve_type"));
+  const int iResType = static_cast<int>(CVAR_GET_FLOAT("reserve_type"));
 	int iResTaken = 0;
 	DEBUG_LOG(1, ("%i players / %i free spots / %i max spots.", GetPlayerCount(), iFreeSlots, gpGlobals->maxClients) );
 
@@ -650,7 +650,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 			// still might get here with some free spots open, if we have
 			// reserve type 2).  If there are no free spots, kick 'em.
 			const char* sReserveMsg = get_cvar_string_value( "reserve_slots_msg", true );
-			const int iResSlots = int(CVAR_GET_FLOAT("reserve_slots"));
+			const int iResSlots = static_cast<int>(CVAR_GET_FLOAT("reserve_slots"));
 			
 			if ( sReserveMsg == nullptr ) {
 				snprintf(szRejectReason, 128, "\n[ADMIN] %d of the %d slots on this server are reserved,\n[ADMIN] and no unreserved slots are left. Try again later.\n", iResSlots, gpGlobals->maxClients);
@@ -717,7 +717,7 @@ BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *p
   DEBUG_LOG(3, ("AM_ClientConnect_Post") );
 
   // Notify connecting players when allow_client_exec is set
-  if ( TRUE == bAM_ClientConnectRetval && int(CVAR_GET_FLOAT("allow_client_exec")) == 1 ) {
+  if ( TRUE == bAM_ClientConnectRetval && static_cast<int>(CVAR_GET_FLOAT("allow_client_exec")) == 1 ) {
 	  //System_Response( "**\n", pAdminEnt );	  
 	  System_Response( "************** NOTICE >>>>>>>>>>>>\n", pAdminEnt );	  
 	  System_Response( const_cast<char*>(get_am_string(nullptr,0,statstr[9],statstr_table)), pAdminEnt );
@@ -735,7 +735,7 @@ int AM_ClientDisconnect( edict_t* pEntity ) {
   DEBUG_LOG(1, ("AM_ClientDisconnect: %s\n", STRING(pEntity->v.netname)) );
 
   const int iIndex = ENTINDEX( pEntity ); 
-  const char* pcAuthId = GETPLAYERAUTHID( pEntity );
+  const char* pcAuthId = GETPLAYERAUTHID( pEntity ); // pcAuthId not used? [APG]RoboCop[CL]
 
   if(g_fRunPlugins) {
     // We should never not pass this back to the engine,
@@ -765,7 +765,7 @@ void AM_ClientStart(edict_t *pEntity) {
     return;
   }  // if
 
-  const char* pcAuthId = GETPLAYERAUTHID( pEntity );
+  const char* pcAuthId = GETPLAYERAUTHID( pEntity );// pcAuthId not used? [APG]RoboCop[CL]
 
   g_fInitialized = TRUE;
  
@@ -1085,7 +1085,7 @@ state, pEntity->v.netname) );
 
 
 
-  if ( (!int(CVAR_GET_FLOAT("sv_lan"))) && AMAuthId::is_pending(pcAuthId) ) {
+  if ( (!static_cast<int>(CVAR_GET_FLOAT("sv_lan"))) && AMAuthId::is_pending(pcAuthId) ) {
 /*TBR: Don't queue anything in here. We simply return and let CLientConnect handle the queueing.
 	  //UTIL_LogPrintf( "|---> Player Steam Id (ClientUserInfoChanged) is pending.\n" );
 	  // check if we have him already queued
@@ -1128,7 +1128,7 @@ state, pEntity->v.netname) );
   if(!FStrEq(sName, STRING(pEntity->v.netname)) || bForce) {
       // check if we restrict access only to users who are in users.ini or ips.ini
       // Listenserver users are not restricted
-      if ( !oaiAuthID.is_loopid() && int(CVAR_GET_FLOAT("amv_private_server")) != 0 ) {
+      if ( !oaiAuthID.is_loopid() && static_cast<int>(CVAR_GET_FLOAT("amv_private_server")) != 0 ) {
 
 	      // check if the user is listed in our user list
 	      // or if his IP is listed in our IPs list
@@ -1233,8 +1233,8 @@ state, pEntity->v.netname) );
   } else if (g_fRunScripts) {
 	  int i_index;
     cell cReturn = 0;
-    
-    char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
+
+	  const char *program_file=const_cast<char *>(CVAR_GET_STRING("script_file"));
     //if(g_fRunScripts==TRUE) {
     if(program_file==nullptr|| FStrEq(program_file,"0")) {
       UTIL_LogPrintf( "[ADMIN] Scripting is disabled. (No mono-script file defined. (cvar script_file))\n");		
@@ -1280,12 +1280,12 @@ int AM_GetGameDescription( const char* _pcDescription ) {
 
   _pcDescription = nullptr;
 
-  int iResSlots = int(CVAR_GET_FLOAT("reserve_slots"));
-  const int iResType = int(CVAR_GET_FLOAT("reserve_type"));
-  const int iHideSlots = int(CVAR_GET_FLOAT("amv_hide_reserved_slots"));
+  int iResSlots = static_cast<int>(CVAR_GET_FLOAT("reserve_slots"));
+  const int iResType = static_cast<int>(CVAR_GET_FLOAT("reserve_type"));
+  const int iHideSlots = static_cast<int>(CVAR_GET_FLOAT("amv_hide_reserved_slots"));
   const int iPlayerCnt = GetPlayerCount();
-  const int iFreeSlots = int(CVAR_GET_FLOAT("public_slots_free"));
-  const int iVisMaxPlayers = int(CVAR_GET_FLOAT("sv_visiblemaxplayers"));
+  const int iFreeSlots = static_cast<int>(CVAR_GET_FLOAT("public_slots_free"));
+  const int iVisMaxPlayers = static_cast<int>(CVAR_GET_FLOAT("sv_visiblemaxplayers"));
 
   if ( iResType == 1 ) iResSlots = 1;
 
@@ -1413,7 +1413,7 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 					if ( _bLog ) {
 						UTIL_LogPrintf( "[ADMIN] Found suspicious entity '%s/%s/%s' at (%i,%i,%i) in map %s.\n",
 										STRING(pent->v.classname), STRING(pent->v.targetname), STRING(pent->v.model),
-										int(pent->v.origin.x), int(pent->v.origin.y), int(pent->v.origin.z),
+										static_cast<int>(pent->v.origin.x), static_cast<int>(pent->v.origin.y), static_cast<int>(pent->v.origin.z),
 										STRING(gpGlobals->mapname) );
 					}  // if
 					
@@ -1562,7 +1562,7 @@ int AM_StartFrame() {
 	//-- Every Y frames check if all slots are full despite of reserve_type 1
 	//-- being set. This is an invalid configuration.
 	if ( (s_uiFCount % 4000) == 0 ) {
-		if ( (int)CVAR_GET_FLOAT("reserve_type") == 1 ) {
+		if ( static_cast<int>(CVAR_GET_FLOAT("reserve_type")) == 1 ) {
 			//DEBUG_LOG(4, ("Checking for overfull server on reserve type 1. Player count is %i vs maxplayers %i", 
 			//				GetPlayerCount(), gpGlobals->maxClients) );
 			if ( GetPlayerCount() >= gpGlobals->maxClients ) {
@@ -1636,7 +1636,7 @@ int AM_StartFrame() {
 					char cfgfile[PATH_MAX];
 					snprintf( cfgfile, PATH_MAX-1, "exec %s/adminmod.cfg", CVAR_GET_STRING("amv_default_config_dir") );
 					UTIL_LogPrintf( "Trying to load default Admin Mod config file: %s.\n", cfgfile );
-					int pos = strlen(cfgfile);
+					const int pos = strlen(cfgfile);
 					cfgfile[pos] = '\n';
 					cfgfile[pos+1] = '\0';
 					SERVER_COMMAND( cfgfile );
@@ -1842,11 +1842,11 @@ void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity) {
     
     PLAYER_CNX_STATS(pPlayer->edict(),&iPing,&iLoss);
     if ( iPing > iMaxPing) {
-      int iAccess = GetUserAccess(pPlayer->edict());
+	    const int iAccess = GetUserAccess(pPlayer->edict());
       if (!(IsIPReserved(g_AuthArray[i].sIP) 
 	    || ((iAccess & ACCESS_RESERVE_SPOT) == ACCESS_RESERVE_SPOT) 
 	    || ((iAccess & ACCESS_IMMUNITY) == ACCESS_IMMUNITY 
-		&& int(CVAR_GET_FLOAT("admin_ignore_immunity")) == 0))) {
+		&& static_cast<int>(CVAR_GET_FLOAT("admin_ignore_immunity")) == 0))) {
 	      char name[USERNAME_SIZE];
 	      iPlayerIndex = i;
 	iMaxPing = iPing;

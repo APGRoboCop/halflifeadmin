@@ -68,7 +68,7 @@ endif
 
 
 # The default target to build
-DEFTARGET=metamod
+DEFTARGET=Ometamod
 
 # The version number 
 include Version.mk
@@ -279,7 +279,7 @@ else
 endif
 
 BASE_CFLAGS=-include apsymbols.h -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
-	-Wno-unknown-pragmas -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
+	-Wno-unknown-pragmas -Wno-macro-redefined -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
 	
 XTFLAGS= -DTZONE=\"$(TZONE)\"
 
@@ -330,8 +330,8 @@ CFDBG= -g -ggdb3 -m32
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization // -O1 works best? [APG]RoboCop[CL]
-CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -mmmx -msse -msse2 -pipe \
-	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
+CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -mmmx -msse -msse2 -s \
+#	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
 

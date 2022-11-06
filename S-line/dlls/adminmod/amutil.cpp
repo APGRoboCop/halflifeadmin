@@ -85,7 +85,7 @@ void strtolower( char* string ) {
 	const int length = strlen ( string );
 
 	for ( int i = 0; i < length; i++ ) {
-    char character = tolower(string[i]);
+		const char character = tolower(string[i]);
     string[i] = character;
   }  // for
 

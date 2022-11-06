@@ -54,7 +54,7 @@ static int dochar(AMX *amx,char ch,cell param)
     return 0;
   case 'c':
     amx_GetAddr(amx,param,&cptr);
-    amx_putchar((int)*cptr);
+    amx_putchar(*cptr);
     return 1;
   case 'd':
     amx_GetAddr(amx,param,&cptr);
@@ -70,7 +70,7 @@ static int dochar(AMX *amx,char ch,cell param)
   #define FIXEDMULT 1000
   case 'r': /* 32-bit fixed point number */
     amx_GetAddr(amx,param,&cptr);
-    amx_printf("%ld.%03d",(long)(*cptr/FIXEDMULT), (int)((*cptr%FIXEDMULT+FIXEDMULT)%FIXEDMULT));
+    amx_printf("%ld.%03d",(long)(*cptr/FIXEDMULT), (*cptr%FIXEDMULT+FIXEDMULT)%FIXEDMULT);
     return 1;
 #endif
   case 's':
@@ -116,15 +116,15 @@ static int printstring(AMX *amx,cell *cstr,cell *params,int num)
     for (i=0; cstr[i]!=0; i++) {
       if (informat) {
         assert(params!=NULL);
-        paramidx+=dochar(amx,(char)cstr[i],params[paramidx]);
+        paramidx+=dochar(amx,cstr[i],params[paramidx]);
         informat=0;
-      } else if (params!=NULL && (int)cstr[i]=='%') {
+      } else if (params!=NULL && cstr[i]=='%') {
         if (paramidx<num)
           informat=1;
         else
           amx_RaiseError(amx, AMX_ERR_NATIVE);
       } else {
-        amx_putchar((int)cstr[i]);
+        amx_putchar(cstr[i]);
       } /* if */
     } /* for */
   } /* if */
@@ -137,9 +137,9 @@ static cell AMX_NATIVE_CALL _print(AMX *amx,cell *params)
 
   /* do the colour codes with ANSI strings */
   if (params[2]>=0)
-    amx_printf("\x1b[%dm",(int)params[2]+30);
+    amx_printf("\x1b[%dm",params[2]+30);
   if (params[3]>=0)
-    amx_printf("\x1b[%dm",(int)params[3]+40);
+    amx_printf("\x1b[%dm",params[3]+40);
 
   amx_GetAddr(amx,params[1],&cstr);
   printstring(amx,cstr,NULL,0);
@@ -185,7 +185,7 @@ static cell AMX_NATIVE_CALL _getstring(AMX *amx,cell *params)
 
   if (params[2]<=0)
     return 0;
-  str=(char *)malloc((size_t)params[2]);
+  str=(char *)malloc(params[2]);
   if (str==NULL)
     return 0;
 
@@ -204,7 +204,7 @@ static cell AMX_NATIVE_CALL _getstring(AMX *amx,cell *params)
   str[chars]='\0';
 
   amx_GetAddr(amx,params[1],&cptr);
-  amx_SetString(cptr,str,(int)params[3]);
+  amx_SetString(cptr,str,params[3]);
 
   free(str);
   return chars;
@@ -241,11 +241,11 @@ static int inlist(AMX *amx,int c,cell *params,int num)
   for (i=0; i<num; i++) {
     if (i==0) {
       /* first key is passed by value, others are passed by reference */
-      key = (int)params[i];
+      key = params[i];
     } else {
       cell *cptr;
       amx_GetAddr(amx,params[i],&cptr);
-      key=(int)*cptr;
+      key=*cptr;
     } /* if */
     if (c==key || c==-key)
       return key;
@@ -259,7 +259,7 @@ static cell AMX_NATIVE_CALL _getvalue(AMX *amx,cell *params)
   int base,sign,c,d;
   int chars,n;
 
-  base=(int)params[1];
+  base=params[1];
   if (base<2 || base>36)
     return 0;
 
@@ -286,7 +286,7 @@ static cell AMX_NATIVE_CALL _getvalue(AMX *amx,cell *params)
         c='\r';
     #endif
     if ((chars > 0 && sign > 0 || chars > 1)
-        && (n=inlist(amx,c,params+2,(int)(params[0]/sizeof(cell)-1)))!=0)
+        && (n=inlist(amx,c,params+2,params[0]/sizeof(cell)-1))!=0)
     {
       if (n>0)
         acceptchar(c,&chars);

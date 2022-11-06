@@ -291,7 +291,7 @@ int AMXAPI amx_Flags(AMX *amx,u_int16_t *flags)
 int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, cell *params)
 {
   AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
-  AMX_FUNCSTUB *func=(AMX_FUNCSTUB *)(amx->base+(int)hdr->natives+(int)index*sizeof(AMX_FUNCSTUB));
+  AMX_FUNCSTUB *func=(AMX_FUNCSTUB *)(amx->base+hdr->natives+index*sizeof(AMX_FUNCSTUB));
   AMX_NATIVE f=(AMX_NATIVE)func->address;
   assert(f!=NULL);
   assert(index<hdr->num_natives);
@@ -324,8 +324,8 @@ int AMXAPI amx_Debug(AMX *amx)
   #define JUMPABS(base,ip)      ((cell *)(base+*ip))
   #define RELOC_ABS(base, off)
 #else
-  #define JUMPABS(base, ip)     ((cell *)*ip)
-  #define RELOC_ABS(base, off)  *(ucell *)(base+(long)off) += (ucell)base
+  #define JUMPABS(base, ip)     ((cell *)*(ip))
+  #define RELOC_ABS(base, off)  *(ucell *)((base)+(long)(off)) += (ucell)base
 #endif
 
 #define DBGPARAM(v)     ( (v)=*(cell *)(code+(long)cip), cip+=sizeof(cell) )
@@ -349,7 +349,7 @@ static int amx_BrowseRelocate(AMX *amx)
 
 
   hdr=(AMX_HEADER *)amx->base;
-  code=amx->base+(int)hdr->cod;
+  code=amx->base+hdr->cod;
   codesize=hdr->dat - hdr->cod;
 
   /* sanity checks */
@@ -377,7 +377,7 @@ static int amx_BrowseRelocate(AMX *amx)
 
   /* start browsing code */
   for (cip=0; cip<codesize; ) {
-    op=(OPCODE) *(ucell *)(code+(int)cip);
+    op=(OPCODE) *(ucell *)(code+cip);
 //printf( "DBG: the opcode should be %p and we get here %p\n", *(ucell *)(code+(int)cip),op );
     assert(op>0 );
     assert( op<OP_NUM_OPCODES);
@@ -537,7 +537,7 @@ static int amx_BrowseRelocate(AMX *amx)
       cell num;
       DBGPARAM(num);
       DBGPARAM(amx->curfile);
-      amx->dbgname=(char *)(code+(int)cip);
+      amx->dbgname=(char *)(code+cip);
       cip+=num - sizeof(cell);
       if (debug) {
         assert(amx->flags==(AMX_FLAG_DEBUG | AMX_FLAG_BROWSE));
@@ -560,7 +560,7 @@ static int amx_BrowseRelocate(AMX *amx)
       DBGPARAM(num);
       DBGPARAM(amx->dbgaddr);
       DBGPARAM(amx->dbgparam);
-      amx->dbgname=(char *)(code+(int)cip);
+      amx->dbgname=(char *)(code+cip);
       cip+=num - 2*sizeof(cell);
       last_sym_global = (amx->dbgparam >> 8)==0;
       if (debug && last_sym_global) { /* do global symbols only */
@@ -624,11 +624,11 @@ static void expand(unsigned char *code, int32_t codesize, int32_t memsize)
       /* we work from the end of a sequence backwards; the final code in
        * a sequence may not have the continuation bit set */
       assert(shift>0 || (code[(int)codesize] & 0x80)==0);
-      c|=(ucell)(code[(int)codesize] & 0x7f) << shift;
+      c|=(ucell)(code[codesize] & 0x7f) << shift;
       shift+=7;
-    } while (codesize>0 && (code[(int)codesize-1] & 0x80)!=0);
+    } while (codesize>0 && (code[codesize-1] & 0x80)!=0);
     /* sign expand */
-    if ((code[(int)codesize] & 0x40)!=0) {
+    if ((code[codesize] & 0x40)!=0) {
       while (shift < 8*sizeof(cell)) {
         c|=(ucell)0xff << shift;
         shift+=8;
@@ -637,7 +637,7 @@ static void expand(unsigned char *code, int32_t codesize, int32_t memsize)
     /* store */
     memsize -= sizeof(cell);
     assert(memsize>=0);
-    *(ucell *)(code+(int)memsize)=c;
+    *(ucell *)(code+memsize)=c;
   } /* while */
   /* when all bytes have been expanded, the complete memory block should be done */
   assert(memsize==0);
@@ -691,7 +691,7 @@ int AMXAPI amx_Init(AMX *amx,void *program)
   assert((hdr->flags & AMX_FLAG_COMPACT)!=0 || hdr->hea == hdr->size);
   if ((hdr->flags & AMX_FLAG_COMPACT)!=0) {
 //printf( "DBG: Expanding program\n" );
-    expand((unsigned char *)program+(int)hdr->cod,
+    expand((unsigned char *)program+hdr->cod,
            hdr->size - hdr->cod, hdr->hea - hdr->cod);
   }
 
@@ -701,7 +701,7 @@ int AMXAPI amx_Init(AMX *amx,void *program)
    * as a sentinel for strings.
    */
   hdr->stp -= sizeof(cell);
-  * (cell *)(amx->base+(int)hdr->stp) = 0;
+  * (cell *)(amx->base+hdr->stp) = 0;
 
   /* set initial values */
   amx->hlw=hdr->hea - hdr->dat; /* stack and heap relative to data segment */
@@ -722,17 +722,17 @@ int AMXAPI amx_Init(AMX *amx,void *program)
     AMX_FUNCSTUB *fs;
     int i;
 
-    fs=(AMX_FUNCSTUB *)(amx->base + (int)hdr->publics);
+    fs=(AMX_FUNCSTUB *)(amx->base + hdr->publics);
     for (i=0; i<hdr->num_publics; i++) {
       amx_AlignFP(&fs->address);
       fs++;
     } /* for */
-    fs=(AMX_FUNCSTUB *)(amx->base + (int)hdr->pubvars);
+    fs=(AMX_FUNCSTUB *)(amx->base + hdr->pubvars);
     for (i=0; i<hdr->num_pubvars; i++) {
       amx_AlignFP(&fs->address);
       fs++;
     } /* for */
-    fs=(AMX_FUNCSTUB *)(amx->base + (int)hdr->tags);
+    fs=(AMX_FUNCSTUB *)(amx->base + hdr->tags);
     for (i=0; i<hdr->num_tags; i++) {
       amx_AlignFP(&fs->address);
       fs++;
@@ -864,7 +864,7 @@ int AMXAPI amx_GetPublic(AMX *amx, int index, char *funcname)
   if (index>=hdr->num_publics)
     return AMX_ERR_INDEX;
 
-  func=(AMX_FUNCSTUB *)(amx->base+(int)hdr->publics+index*sizeof(AMX_FUNCSTUB));
+  func=(AMX_FUNCSTUB *)(amx->base+hdr->publics+index*sizeof(AMX_FUNCSTUB));
   strcpy(funcname,func->name);
   return AMX_ERR_NONE;
 }
@@ -914,7 +914,7 @@ int AMXAPI amx_GetPubVar(AMX *amx, int index, char *varname, cell *amx_addr)
   if (index>=hdr->num_pubvars)
     return AMX_ERR_INDEX;
 
-  var=(AMX_FUNCSTUB *)(amx->base+(int)hdr->pubvars+index*sizeof(AMX_FUNCSTUB));
+  var=(AMX_FUNCSTUB *)(amx->base+hdr->pubvars+index*sizeof(AMX_FUNCSTUB));
   strcpy(varname,var->name);
   *amx_addr=var->address;
   return AMX_ERR_NONE;
@@ -976,7 +976,7 @@ int AMXAPI amx_GetTag(AMX *amx, int index, char *tagname, cell *tag_id)
   if (index>=hdr->num_tags)
     return AMX_ERR_INDEX;
 
-  tag=(AMX_FUNCSTUB *)(amx->base+(int)hdr->tags+index*sizeof(AMX_FUNCSTUB));
+  tag=(AMX_FUNCSTUB *)(amx->base+hdr->tags+index*sizeof(AMX_FUNCSTUB));
   strcpy(tagname,tag->name);
   *tag_id=tag->address;
   return AMX_ERR_NONE;
@@ -1080,7 +1080,7 @@ int AMXAPI amx_Register(AMX *amx, AMX_NATIVE_INFO *list, int number)
 //printf( "hdr=%p, hdr->natives=%d\n", hdr, hdr->natives );
 
   err=AMX_ERR_NONE;
-  func=(AMX_FUNCSTUB *)(amx->base+(int)hdr->natives);
+  func=(AMX_FUNCSTUB *)(amx->base+hdr->natives);
 //printf( "func=%p\n", func );
   for (i=0; i<hdr->num_natives; i++) {
     if (func->address==0) {
@@ -1104,9 +1104,9 @@ AMX_NATIVE_INFO * AMXAPI amx_NativeInfo(char *name,AMX_NATIVE func)
   return &n;
 }
 
-#define GETPARAM(v)     ( v=*(cell *)cip++ )
-#define PUSH(v)         ( stk-=sizeof(cell), *(cell *)(data+(int)stk)=v )
-#define POP(v)          ( v=*(cell *)(data+(int)stk), stk+=sizeof(cell) )
+#define GETPARAM(v)     ( (v)=*(cell *)cip++ )
+#define PUSH(v)         ( stk-=sizeof(cell), *(cell *)(data+(int)stk)=(v) )
+#define POP(v)          ( (v)=*(cell *)(data+(int)stk), stk+=sizeof(cell) )
 #define ABORT(amx,v)    { (amx)->stk=reset_stk; (amx)->hea=reset_hea; return v; }
 
 #define STKMARGIN       ((cell)(16*sizeof(cell)))
@@ -2107,8 +2107,8 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
 
   /* set up the registers */
   hdr=(AMX_HEADER *)amx->base;
-  code=amx->base+(int)hdr->cod;
-  data=amx->base+(int)hdr->dat;
+  code=amx->base+hdr->cod;
+  data=amx->base+hdr->dat;
   hea=amx->hea;
   stk=amx->stk;
   reset_stk=stk;
@@ -2119,7 +2119,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
   if (index==AMX_EXEC_MAIN) {
     if (hdr->cip<0)
       return AMX_ERR_INDEX;
-    cip=(cell *)(code + (int)hdr->cip);
+    cip=(cell *)(code + hdr->cip);
   } else if (index==AMX_EXEC_CONT) {
     /* all registers: pri, alt, frm, cip, hea, stk, reset_stk, reset_hea */
     frm=amx->frm;
@@ -2129,13 +2129,13 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
     alt=amx->alt;
     reset_stk=amx->reset_stk;
     reset_hea=amx->reset_hea;
-    cip=(cell *)(code + (int)amx->cip);
+    cip=(cell *)(code + amx->cip);
   } else if (index<0) {
     return AMX_ERR_INDEX;
   } else {
     if (index>=hdr->num_publics)
       return AMX_ERR_INDEX;
-    func=(AMX_FUNCSTUB *)(amx->base + (int)hdr->publics + index*sizeof(AMX_FUNCSTUB));
+    func=(AMX_FUNCSTUB *)(amx->base + hdr->publics + index*sizeof(AMX_FUNCSTUB));
     cip=(cell *)(code + (int)func->address);
   } /* if */
   /* check values just copied */
@@ -2175,12 +2175,12 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
 	  params = va_arg(ap,cell*);
 	  va_end(ap);
 	  for (i=0; i<numparams; i++)
-	    *(cell *)(data+(int)stk+i*sizeof(cell))=params[i];
+	    *(cell *)(data+stk+i*sizeof(cell))=params[i];
     } else {
       stk-=numparams*sizeof(cell);
       va_start(ap,numparams);
       for (i=0; i<numparams; i++)
-        *(cell *)(data+(int)stk+i*sizeof(cell))=va_arg(ap,cell);
+        *(cell *)(data+stk+i*sizeof(cell))=va_arg(ap,cell);
       va_end(ap);
     } /* if */
     PUSH(numparams*sizeof(cell));
@@ -2224,45 +2224,45 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
     switch (op) {
     case OP_LOAD_PRI:
       GETPARAM(offs);
-      pri= * (cell *)(data+(int)offs);
+      pri= * (cell *)(data+offs);
       break;
     case OP_LOAD_ALT:
       GETPARAM(offs);
-      alt= * (cell *)(data+(int)offs);
+      alt= * (cell *)(data+offs);
       break;
     case OP_LOAD_S_PRI:
       GETPARAM(offs);
-      pri= * (cell *)(data+(int)frm+(int)offs);
+      pri= * (cell *)(data+frm+offs);
       break;
     case OP_LOAD_S_ALT:
       GETPARAM(offs);
-      alt= * (cell *)(data+(int)frm+(int)offs);
+      alt= * (cell *)(data+frm+offs);
       break;
     case OP_LREF_PRI:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)offs);
-      pri= * (cell *)(data+(int)offs);
+      offs= * (cell *)(data+offs);
+      pri= * (cell *)(data+offs);
       break;
     case OP_LREF_ALT:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)offs);
-      alt= * (cell *)(data+(int)offs);
+      offs= * (cell *)(data+offs);
+      alt= * (cell *)(data+offs);
       break;
     case OP_LREF_S_PRI:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)frm+(int)offs);
-      pri= * (cell *)(data+(int)offs);
+      offs= * (cell *)(data+frm+offs);
+      pri= * (cell *)(data+offs);
       break;
     case OP_LREF_S_ALT:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)frm+(int)offs);
-      alt= * (cell *)(data+(int)offs);
+      offs= * (cell *)(data+frm+offs);
+      alt= * (cell *)(data+offs);
       break;
     case OP_LOAD_I:
       /* verify address */
       if (pri>=hea && pri<stk || pri>=amx->stp)
         ABORT(amx,AMX_ERR_MEMACCESS);
-      pri= * (cell *)(data+(int)pri);
+      pri= * (cell *)(data+pri);
       break;
     case OP_LODB_I:
       GETPARAM(offs);
@@ -2271,13 +2271,13 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         ABORT(amx,AMX_ERR_MEMACCESS);
       switch (offs) {
       case 1:
-        pri= * (data+(int)pri);
+        pri= * (data+pri);
         break;
       case 2:
-        pri= * (u_int16_t *)(data+(int)pri);
+        pri= * (u_int16_t *)(data+pri);
         break;
       case 4:
-        pri= * (u_int32_t *)(data+(int)pri);
+        pri= * (u_int32_t *)(data+pri);
         break;
       } /* switch */
       break;
@@ -2297,45 +2297,45 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_STOR_PRI:
       GETPARAM(offs);
-      *(cell *)(data+(int)offs)=pri;
+      *(cell *)(data+offs)=pri;
       break;
     case OP_STOR_ALT:
       GETPARAM(offs);
-      *(cell *)(data+(int)offs)=alt;
+      *(cell *)(data+offs)=alt;
       break;
     case OP_STOR_S_PRI:
       GETPARAM(offs);
-      *(cell *)(data+(int)frm+(int)offs)=pri;
+      *(cell *)(data+frm+offs)=pri;
       break;
     case OP_STOR_S_ALT:
       GETPARAM(offs);
-      *(cell *)(data+(int)frm+(int)offs)=alt;
+      *(cell *)(data+frm+offs)=alt;
       break;
     case OP_SREF_PRI:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)offs);
-      *(cell *)(data+(int)offs)=pri;
+      offs= * (cell *)(data+offs);
+      *(cell *)(data+offs)=pri;
       break;
     case OP_SREF_ALT:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)offs);
-      *(cell *)(data+(int)offs)=alt;
+      offs= * (cell *)(data+offs);
+      *(cell *)(data+offs)=alt;
       break;
     case OP_SREF_S_PRI:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)frm+(int)offs);
-      *(cell *)(data+(int)offs)=pri;
+      offs= * (cell *)(data+frm+offs);
+      *(cell *)(data+offs)=pri;
       break;
     case OP_SREF_S_ALT:
       GETPARAM(offs);
-      offs= * (cell *)(data+(int)frm+(int)offs);
-      *(cell *)(data+(int)offs)=alt;
+      offs= * (cell *)(data+frm+offs);
+      *(cell *)(data+offs)=alt;
       break;
     case OP_STOR_I:
       /* verify address */
       if (alt>=hea && alt<stk || alt>=amx->stp)
         ABORT(amx,AMX_ERR_MEMACCESS);
-      *(cell *)(data+(int)alt)=pri;
+      *(cell *)(data+alt)=pri;
       break;
     case OP_STRB_I:
       GETPARAM(offs);
@@ -2344,13 +2344,13 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         ABORT(amx,AMX_ERR_MEMACCESS);
       switch (offs) {
       case 1:
-        *(data+(int)alt)=(u_char)pri;
+        *(data+alt)=(u_char)pri;
         break;
       case 2:
-        *(u_int16_t *)(data+(int)alt)=(u_int16_t)pri;
+        *(u_int16_t *)(data+alt)=(u_int16_t)pri;
         break;
       case 4:
-        *(u_int32_t *)(data+(int)alt)=(u_int32_t)pri;
+        *(u_int32_t *)(data+alt)=(u_int32_t)pri;
         break;
       } /* switch */
       break;
@@ -2359,22 +2359,22 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       /* verify address */
       if (offs>=hea && offs<stk || offs>=amx->stp)
         ABORT(amx,AMX_ERR_MEMACCESS);
-      pri= * (cell *)(data+(int)offs);
+      pri= * (cell *)(data+offs);
       break;
     case OP_LIDX_B:
       GETPARAM(offs);
-      offs=(pri << (int)offs)+alt;
+      offs=(pri << offs)+alt;
       /* verify address */
       if (offs>=hea && offs<stk || offs>=amx->stp)
         ABORT(amx,AMX_ERR_MEMACCESS);
-      pri= * (cell *)(data+(int)offs);
+      pri= * (cell *)(data+offs);
       break;
     case OP_IDXADDR:
       pri=pri*sizeof(cell)+alt;
       break;
     case OP_IDXADDR_B:
       GETPARAM(offs);
-      pri=(pri << (int)offs)+alt;
+      pri=(pri << offs)+alt;
       break;
     case OP_ALIGN_PRI:
       GETPARAM(offs);
@@ -2408,7 +2408,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         pri=frm;
         break;
       case 6:
-        pri=(cell)((u_char *)cip - code);
+        pri=(u_char *)cip - code;
         break;
       } /* switch */
       break;
@@ -2430,7 +2430,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         frm=pri;
         break;
       case 6:
-        cip=(cell *)(code + (int)pri);
+        cip=(cell *)(code + pri);
         break;
       } /* switch */
       break;
@@ -2462,11 +2462,11 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_PUSH:
       GETPARAM(offs);
-      PUSH(* (cell *)(data+(int)offs));
+      PUSH(* (cell *)(data+offs));
       break;
     case OP_PUSH_S:
       GETPARAM(offs);
-      PUSH(* (cell *)(data+(int)frm+(int)offs));
+      PUSH(* (cell *)(data+frm+offs));
       break;
     case OP_POP_PRI:
       POP(pri);
@@ -2502,7 +2502,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
     case OP_RET:
       POP(frm);
       POP(offs);
-      cip=(cell *)(code+(int)offs);
+      cip=(cell *)(code+offs);
       if (offs==0) {
         /* entry function returns -> end of program */
         if (retval!=NULL)
@@ -2528,8 +2528,8 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
     case OP_RETN:
       POP(frm);
       POP(offs);
-      cip=(cell *)(code+(int)offs);
-      stk+= *(cell *)(data+(int)stk) + sizeof(cell); /* remove parameters from the stack */
+      cip=(cell *)(code+offs);
+      stk+= *(cell *)(data+stk) + sizeof(cell); /* remove parameters from the stack */
       amx->stk=stk;
       amx->hea=hea;
       if (offs==0) {
@@ -2566,7 +2566,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_CALL_PRI:
       PUSH((u_char *)cip-code);
-      cip=(cell *)(code+(int)pri);
+      cip=(cell *)(code+pri);
       if (debug) {
         amx->dbgcode=DBG_CALL;
         amx->dbgaddr=pri;
@@ -2580,7 +2580,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_JREL:
       offs=*cip;
-      cip=(cell *)((u_char *)cip + (int)offs + sizeof(cell));
+      cip=(cell *)((u_char *)cip + offs + sizeof(cell));
       break;
     case OP_JZER:
       if (pri==0)
@@ -2658,7 +2658,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       pri<<=alt;
       break;
     case OP_SHR:
-      pri=(ucell)pri >> (int)alt;
+      pri=(ucell)pri >> alt;
       break;
     case OP_SSHR:
       pri>>=alt;
@@ -2673,11 +2673,11 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_SHR_C_PRI:
       GETPARAM(offs);
-      pri=(ucell)pri >> (int)offs;
+      pri=(ucell)pri >> offs;
       break;
     case OP_SHR_C_ALT:
       GETPARAM(offs);
-      alt=(ucell)alt >> (int)offs;
+      alt=(ucell)alt >> offs;
       break;
     case OP_SMUL:
       pri*=alt;
@@ -2762,11 +2762,11 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_ZERO:
       GETPARAM(offs);
-      *(cell *)(data+(int)offs)=0;
+      *(cell *)(data+offs)=0;
       break;
     case OP_ZERO_S:
       GETPARAM(offs);
-      *(cell *)(data+(int)frm+(int)offs)=0;
+      *(cell *)(data+frm+offs)=0;
       break;
     case OP_SIGN_PRI:
       if ((pri & 0xff)>=0x80)
@@ -2822,14 +2822,14 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_INC:
       GETPARAM(offs);
-      *(cell *)(data+(int)offs) += 1;
+      *(cell *)(data+offs) += 1;
       break;
     case OP_INC_S:
       GETPARAM(offs);
-      *(cell *)(data+(int)frm+(int)offs) += 1;
+      *(cell *)(data+frm+offs) += 1;
       break;
     case OP_INC_I:
-      *(cell *)(data+(int)pri) += 1;
+      *(cell *)(data+pri) += 1;
       break;
     case OP_DEC_PRI:
       pri--;
@@ -2839,26 +2839,26 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_DEC:
       GETPARAM(offs);
-      *(cell *)(data+(int)offs) -= 1;
+      *(cell *)(data+offs) -= 1;
       break;
     case OP_DEC_S:
       GETPARAM(offs);
-      *(cell *)(data+(int)frm+(int)offs) -= 1;
+      *(cell *)(data+frm+offs) -= 1;
       break;
     case OP_DEC_I:
-      *(cell *)(data+(int)pri) -= 1;
+      *(cell *)(data+pri) -= 1;
       break;
     case OP_MOVS:
       GETPARAM(offs);
-      memcpy(data+(int)alt, data+(int)pri, (int)offs);
+      memcpy(data+alt, data+pri, offs);
       break;
     case OP_CMPS:
       GETPARAM(offs);
-      pri=memcmp(data+(int)alt, data+(int)pri, (int)offs);
+      pri=memcmp(data+alt, data+pri, offs);
       break;
     case OP_FILL:
       GETPARAM(offs);
-      for (i=(int)alt; (size_t)offs>=sizeof(cell); i+=sizeof(cell), offs-=sizeof(cell))
+      for (i=alt; (size_t)offs>=sizeof(cell); i+=sizeof(cell), offs-=sizeof(cell))
         *(cell *)(data+i) = pri;
       break;
     case OP_HALT:
@@ -2871,19 +2871,19 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       amx->hea=hea;
       amx->pri=pri;
       amx->alt=alt;
-      amx->cip=(cell)((u_char*)cip-code);
+      amx->cip=(u_char*)cip-code;
       if (debug) {
         amx->dbgcode=DBG_TERMINATE;
-        amx->dbgaddr=(cell)((u_char *)cip-code);
+        amx->dbgaddr=(u_char *)cip-code;
         amx->dbgparam=offs;
         amx->debug(amx);
       } /* if */
       if (offs==AMX_ERR_SLEEP) {
         amx->reset_stk=reset_stk;
         amx->reset_hea=reset_hea;
-        return (int)offs;
+        return offs;
       } /* if */
-      ABORT(amx,(int)offs);
+      ABORT(amx,offs);
     case OP_BOUNDS:
       GETPARAM(offs);
       if (pri>offs || pri<0)
@@ -2891,28 +2891,28 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_SYSREQ_PRI:
       /* save a few registers */
-      amx->cip=(cell)((u_char *)cip-code);
+      amx->cip=(u_char *)cip-code;
       amx->hea=hea;
       amx->frm=frm;
       amx->stk=stk;
-      num=amx->callback(amx,pri,&pri,(cell *)(data+(int)stk));
+      num=amx->callback(amx,pri,&pri,(cell *)(data+stk));
       if (num!=AMX_ERR_NONE)
         ABORT(amx,num);
       break;
     case OP_SYSREQ_C:
       GETPARAM(offs);
       /* save a few registers */
-      amx->cip=(cell)((u_char *)cip-code);
+      amx->cip=(u_char *)cip-code;
       amx->hea=hea;
       amx->frm=frm;
       amx->stk=stk;
-      num=amx->callback(amx,offs,&pri,(cell *)(data+(int)stk));
+      num=amx->callback(amx,offs,&pri,(cell *)(data+stk));
       if (num!=AMX_ERR_NONE)
         ABORT(amx,num);
       break;
     case OP_FILE:
       GETPARAM(offs);
-      cip=(cell *)((u_char *)cip+(int)offs);
+      cip=(cell *)((u_char *)cip+offs);
       assert(0);        /* this code should not occur during execution */
       break;
     case OP_LINE:
@@ -2935,7 +2935,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       GETPARAM(amx->dbgaddr);
       GETPARAM(amx->dbgparam);
       amx->dbgname=(char *)cip;
-      cip=(cell *)((u_char *)cip + (int)offs - 2*sizeof(cell));
+      cip=(cell *)((u_char *)cip + offs - 2*sizeof(cell));
       assert((amx->dbgparam >> 8)>0);         /* local symbols only */
       if (debug) {
         amx->frm=frm;   /* debugger needs this to relocate the symbols */
@@ -2954,14 +2954,14 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       } /* if */
       break;
     case OP_JUMP_PRI:
-      cip=(cell *)(code+(int)pri);
+      cip=(cell *)(code+pri);
       break;
     case OP_SWITCH: {
       cell *cptr;
 
       cptr=(cell *)*cip + 1;    /* +1, to skip the "casetbl" opcode */
       cip=(cell *)*(cptr+1);    /* preset to "none-matched" case */
-      num=(int)*cptr;           /* number of records in the case table */
+      num=*cptr;           /* number of records in the case table */
       for (cptr+=2; num>0 && *cptr!=pri; num--,cptr+=2)
         /* nothing */;
       if (num>0)
@@ -2969,13 +2969,13 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     } /* case */
     case OP_SWAP_PRI:
-      offs=*(cell *)(data+(int)stk);
-      *(cell *)(data+(int)stk)=pri;
+      offs=*(cell *)(data+stk);
+      *(cell *)(data+stk)=pri;
       pri=offs;
       break;
     case OP_SWAP_ALT:
-      offs=*(cell *)(data+(int)stk);
-      *(cell *)(data+(int)stk)=alt;
+      offs=*(cell *)(data+stk);
+      *(cell *)(data+stk)=alt;
       alt=offs;
       break;
     case OP_PUSHADDR:
@@ -3031,7 +3031,7 @@ int AMXAPI amx_GetAddr(AMX *amx,cell amx_addr,cell **phys_addr)
 
   if (amx_addr>=amx->hea && amx_addr<amx->stk || amx_addr<0 || amx_addr>=amx->stp)
     return AMX_ERR_MEMACCESS;
-  *phys_addr=(cell *)(amx->base + (int)(hdr->dat + amx_addr));
+  *phys_addr=(cell *)(amx->base + (hdr->dat + amx_addr));
   return AMX_ERR_NONE;
 }
 
@@ -3044,7 +3044,7 @@ int AMXAPI amx_Allot(AMX *amx,int cells,cell *amx_addr,cell **phys_addr)
   assert(amx_addr!=NULL);
   assert(phys_addr!=NULL);
   *amx_addr=amx->hea;
-  *phys_addr=(cell *)(amx->base + (int)(hdr->dat + amx->hea));
+  *phys_addr=(cell *)(amx->base + (hdr->dat + amx->hea));
   amx->hea += cells*sizeof(cell);
   return AMX_ERR_NONE;
 }
@@ -3110,7 +3110,7 @@ int AMXAPI amx_SetString(cell *dest, const char *source,int pack)
     size_t i;
     for (i=0; i<len; i++)
       dest[i]=(cell)source[i];
-    dest[len]=(cell)0;
+    dest[len]=0;
   } /* if */
   return AMX_ERR_NONE;
 }

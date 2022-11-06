@@ -100,9 +100,9 @@ static cell AMX_NATIVE_CALL numargs(AMX *amx, cell *params)
   cell bytes;
 
   hdr=(AMX_HEADER *)amx->base;
-  data=amx->base+(int)hdr->dat;
+  data=amx->base+hdr->dat;
   /* the number of bytes is on the stack, at "frm + 2*cell" */
-  bytes= * (cell *)(data+(int)amx->frm+2*sizeof(cell));
+  bytes= * (cell *)(data+amx->frm+2*sizeof(cell));
   /* the number of arguments is the number of bytes divided
    * by the size of a cell */
   return bytes/sizeof(cell);
@@ -115,13 +115,13 @@ static cell AMX_NATIVE_CALL getarg(AMX *amx, cell *params)
   cell value;
 
   hdr=(AMX_HEADER *)amx->base;
-  data=amx->base+(int)hdr->dat;
+  data=amx->base+hdr->dat;
   /* get the base value */
-  value= * (cell *)(data+(int)amx->frm+((int)params[1]+3)*sizeof(cell));
+  value= * (cell *)(data+amx->frm+(params[1]+3)*sizeof(cell));
   /* adjust the address in "value" in case of an array access */
   value+=params[2]*sizeof(cell);
   /* get the value indirectly */
-  value= * (cell *)(data+(int)value);
+  value= * (cell *)(data+value);
   return value;
 }
 
@@ -132,16 +132,16 @@ static cell AMX_NATIVE_CALL setarg(AMX *amx, cell *params)
   cell value;
 
   hdr=(AMX_HEADER *)amx->base;
-  data=amx->base+(int)hdr->dat;
+  data=amx->base+hdr->dat;
   /* get the base value */
-  value= * (cell *)(data+(int)amx->frm+((int)params[1]+3)*sizeof(cell));
+  value= * (cell *)(data+amx->frm+(params[1]+3)*sizeof(cell));
   /* adjust the address in "value" in case of an array access */
   value+=params[2]*sizeof(cell);
   /* verify the address */
   if (value >= amx->hea && value < amx->stk || value < 0)
     return 0;
   /* set the value indirectly */
-  * (cell *)(data+(int)value) = params[3];
+  * (cell *)(data+value) = params[3];
   return 1;
 }
 
@@ -258,7 +258,7 @@ static cell AMX_NATIVE_CALL strpack(AMX *amx,cell *params)
   needed=(len+sizeof(cell))/sizeof(cell);     /* # of cells needed */
   assert(needed>0);
   lastaddr=params[1]+sizeof(cell)*needed-1;
-  if (verify_addr(amx,(cell)lastaddr)!=AMX_ERR_NONE)
+  if (verify_addr(amx,lastaddr)!=AMX_ERR_NONE)
     return 0;
 
   amx_GetAddr(amx,params[1],&cdest);
@@ -279,7 +279,7 @@ static cell AMX_NATIVE_CALL strunpack(AMX *amx,cell *params)
   amx_StrLen(csrc,&len);
   assert(len>=0);
   lastaddr=params[1]+sizeof(cell)*(len+1)-1;
-  if (verify_addr(amx,(cell)lastaddr)!=AMX_ERR_NONE)
+  if (verify_addr(amx,lastaddr)!=AMX_ERR_NONE)
     return 0;
 
   amx_GetAddr(amx,params[1],&cdest);
@@ -328,7 +328,7 @@ static cell AMX_NATIVE_CALL swapchars(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL core_tolower(AMX *amx,cell *params)
 {
   assert((size_t)params[0]==sizeof(cell));
-  return tolower((int)params[1]);
+  return tolower(params[1]);
 }
 
 #if defined __BORLANDC__ || defined __WATCOMC__
@@ -337,7 +337,7 @@ static cell AMX_NATIVE_CALL core_tolower(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL core_toupper(AMX *amx,cell *params)
 {
   assert((size_t)params[0]==sizeof(cell));
-  return toupper((int)params[1]);
+  return toupper(params[1]);
 }
 
 #if defined __BORLANDC__ || defined __WATCOMC__
@@ -392,7 +392,7 @@ static cell AMX_NATIVE_CALL getproperty(AMX *amx,cell *params)
   /* if list_finditem() found the value, store the name */
   if (item!=NULL && item->value==params[3] && name[0]=='\0') {
 	  const int needed=(strlen(item->name)+sizeof(cell)-1)/sizeof(cell);     /* # of cells needed */
-    if (verify_addr(amx,(cell)(params[4]+needed))!=AMX_ERR_NONE) {
+    if (verify_addr(amx,params[4]+needed)!=AMX_ERR_NONE) {
       free(name);
       return 0;
     } /* if */

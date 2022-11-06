@@ -290,7 +290,7 @@ C_DLLEXPORT int Meta_Detach(PLUG_LOADTIME now, PL_UNLOAD_REASON reason) {
 C_DLLEXPORT int Meta_Query(char *ifvers, plugin_info_t **pPlugInfo,
 		mutil_funcs_t *pMetaUtilFuncs) 
 {
-  if (int(CVAR_GET_FLOAT("developer")) != 0) 
+  if (static_cast<int>(CVAR_GET_FLOAT("developer")) != 0) 
     UTIL_LogPrintf("[%s] DEBUG: called: Meta_Query; version=%s, ours=%s\n", 
 		   Plugin_info.logtag, ifvers, Plugin_info.ifvers);
 
@@ -332,7 +332,7 @@ C_DLLEXPORT int Meta_Query(char *ifvers, plugin_info_t **pPlugInfo,
 
 C_DLLEXPORT int GetEngineFunctions_Post(enginefuncs_t *pengfuncsFromEngine, int *interfaceVersion ) 
 {
-  if (int(CVAR_GET_FLOAT("developer")) != 0)
+  if (static_cast<int>(CVAR_GET_FLOAT("developer")) != 0)
     UTIL_LogPrintf("[%s] DEBUG: called: GetEngineFunctions_Post; version=%d\n", Plugin_info.logtag, *interfaceVersion);
   if(!pengfuncsFromEngine) {
     UTIL_LogPrintf("[%s] ERROR: GetEngineFunctions_Post called with null pengfuncsFromEngine\n", Plugin_info.logtag);
@@ -363,7 +363,7 @@ void SetMetaResult(int iResult) {
 void DispatchObjectCollsionBox( edict_t *pent ) {
 
   if(pent==pTimerEnt) {
-    if (int(CVAR_GET_FLOAT("admin_debug")) >= 4)
+    if (static_cast<int>(CVAR_GET_FLOAT("admin_debug")) >= 4)
       UTIL_LogPrintf("[ADMIN] DEBUG: Hiding timer entity from DispatchObjectCollsionBox\n");
 
 #ifdef USE_METAMOD
@@ -909,7 +909,7 @@ int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion ) {
 extern "C" _declspec( dllexport) int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion ) {
 #endif
 	// this is just so that the version string doesn't get optimised away.
-	if ( strncmp(vstring+1, "Pg", 2) ) printf("");
+	if ( strncmp(vstring+1, "Pg", 2) != 0) printf("");
 
 #ifdef USE_METAMOD
   if ( !pFunctionTable || interfaceVersion != INTERFACE_VERSION ) {

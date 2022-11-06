@@ -213,13 +213,13 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
     // The implementation of plugin_command is:
     // plugin_command(Command[], Data[], UserName[], UserIndex);
     if (pEntity == nullptr) {
-      iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, (cell)sCmd, (cell)sData, (cell)"Admin", (cell)0);
+      iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, reinterpret_cast<cell>(sCmd), reinterpret_cast<cell>(sData), reinterpret_cast<cell>("Admin"), 0);
     } else {
 		char name[USERNAME_SIZE];
 		am_strncpy(name,STRING(pEntity->v.netname),USERNAME_SIZE);
 		make_friendly(name,TRUE);
-		iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, (cell)sCmd, (cell)sData, (cell)name,
-		                  (cell)ENTINDEX(pEntity));
+		iError = amx_Exec(m_pAmx, &iResult, m_iEventCommandIndex, 4, reinterpret_cast<cell>(sCmd), reinterpret_cast<cell>(sData), reinterpret_cast<cell>(name),
+		                  ENTINDEX(pEntity));
     }
     // Check for errors.
     if (iError != AMX_ERR_NONE) {
@@ -231,7 +231,7 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
     }
     // If we get PLUGIN_HANDLED back, we should not process this further.
     if (iResult == PLUGIN_HANDLED) 
-      return (plugin_result)iResult;
+      return static_cast<plugin_result>(iResult);
   }
   
 
@@ -279,21 +279,22 @@ plugin_result CPlugin::HandleCommand(edict_t* pEntity, char* sCmd, char* sData) 
   // The implementation of an exported command is:
   // command(Command[], Data[], UserName[], UserIndex);
   if (pEntity == nullptr) {
-    iError = amx_Exec(m_pAmx, &iResult, pCmd->iIndex, 4, (cell)sCmd, (cell)sData, (cell)"Admin", (cell)0);
+    iError = amx_Exec(m_pAmx, &iResult, pCmd->iIndex, 4, reinterpret_cast<cell>(sCmd), reinterpret_cast<cell>(sData), reinterpret_cast<cell>("Admin"), 0);
   } else {
 	// Possible instabilty error for 2.50 Linux SteamPipe build [APG]RoboCop[CL]
-    iError = amx_Exec(m_pAmx, &iResult, pCmd->iIndex, 4, (cell)sCmd, (cell)sData, (cell)STRING(pEntity->v.netname), (cell)ENTINDEX(pEntity));
+    iError = amx_Exec(m_pAmx, &iResult, pCmd->iIndex, 4, reinterpret_cast<cell>(sCmd), reinterpret_cast<cell>(sData), reinterpret_cast<cell>(STRING(pEntity->v.netname)), ENTINDEX(pEntity));
   }
   
   // Check for errors.
   if (iError != AMX_ERR_NONE) {
     UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing command %s\n",m_sFile,iError,sCmd);
     if (pEntity != nullptr) {
-      CLIENT_PRINTF(pEntity, print_console, UTIL_VarArgs("[ADMIN] ERROR: Plugin %s returned error %i when executing command %s\n",m_sFile,iError,sCmd));
+      CLIENT_PRINTF(pEntity, print_console,
+                    UTIL_VarArgs("[ADMIN] ERROR: Plugin %s returned error %i when executing command %s\n", m_sFile, iError, sCmd));
     }
     return PLUGIN_ERROR;
   }
-  return (plugin_result)iResult;
+  return static_cast<plugin_result>(iResult);
 }
 
 // Handles the connect event; calls plugin_connect, if this plugin implements it.
@@ -324,13 +325,15 @@ plugin_result CPlugin::HandleConnect(edict_t* pEntity, char* sName, char* IPAddr
 	// Otherwise, call the procedure.
 	// The implementation of plugin_connect is:
 	// plugin_connect(UserName[], IP[], UserIndex);
-	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventConnectIndex, 3, (cell)sName, (cell)IPAddress, (cell)iIndex);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventConnectIndex, 3, reinterpret_cast<cell>(sName),
+	                            reinterpret_cast<cell>(IPAddress),
+	                            static_cast<cell>(iIndex));
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_connect\n",m_sFile,iError);
 		return PLUGIN_ERROR;
 	}
-	return (plugin_result)iResult;
+	return static_cast<plugin_result>(iResult);
 }
 
 // Handles the disconnect event; calls plugin_disconnect, if this plugin implements it.
@@ -361,14 +364,15 @@ plugin_result CPlugin::HandleDisconnect(edict_t* pEntity) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_disconnect is:
 	// plugin_disconnect(UserName[], UserIndex);
-	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventDisconnectIndex, 2, (cell)STRING(pEntity->v.netname), (cell)iIndex);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventDisconnectIndex, 2,
+	                            reinterpret_cast<cell>(STRING(pEntity->v.netname)), static_cast<cell>(iIndex));
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_disconnect\n",m_sFile,iError);
 		return PLUGIN_ERROR;
 	}
 
-	return (plugin_result)iResult;
+	return static_cast<plugin_result>(iResult);
 }
 
 // Handles the info change event; calls plugin_info, if this plugin implements it.  Note
@@ -401,14 +405,15 @@ plugin_result CPlugin::HandleInfo(edict_t* pEntity, char* sNewName) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_info is:
 	// plugin_info(OldUserName[],NewUserName[],UserIndex);
-	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventInfoIndex, 3, (cell)STRING(pEntity->v.netname), (cell)sNewName,
-	                            (cell)iIndex);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventInfoIndex, 3,
+	                            reinterpret_cast<cell>(STRING(pEntity->v.netname)), reinterpret_cast<cell>(sNewName),
+	                            static_cast<cell>(iIndex));
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_info\n",m_sFile,iError);
 		return PLUGIN_ERROR;
 	}
-	return (plugin_result)iResult;
+	return static_cast<plugin_result>(iResult);
 }
 
 // Handles the log event; calls plugin_log, if this plugin implements it.
@@ -428,14 +433,14 @@ plugin_result CPlugin::HandleLog(char* sLog) {
 	// Otherwise, call the procedure.
 	// The implementation of plugin_log is:
 	// plugin_log(Log[]);
-	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventLogIndex, 1, (cell)sLog);
+	const int iError = amx_Exec(m_pAmx, &iResult, m_iEventLogIndex, 1, reinterpret_cast<cell>(sLog));
 	// Check for errors.
 	if (iError != AMX_ERR_NONE) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: Plugin %s returned error %i when executing plugin_log\n",m_sFile,iError);
 		return PLUGIN_ERROR;
 	}
 
-	return (plugin_result)iResult;
+	return static_cast<plugin_result>(iResult);
 }
 
 // Initialize various values, for when we're instantiated, or need
@@ -721,7 +726,7 @@ plugin_result CPlugin::StartPlugin() {
         return PLUGIN_ERROR;
     } 
 
-	return (plugin_result)iResult;
+	return static_cast<plugin_result>(iResult);
 }
 
 // The file name of the plugin; relative to the game's mod dir

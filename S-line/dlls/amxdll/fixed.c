@@ -183,7 +183,7 @@ static cell AMX_NATIVE_CALL fmul(AMX *amx,cell *params)
 
   __int64 a=(__int64)params[1] * (__int64)params[2];
   a /= MULTIPLIER;
-  return (cell)a;
+  return a;
 
 #elif defined __BORLANDC__  && __BORLANDC__ >= 0x500 && defined __32BIT__
 
@@ -275,7 +275,7 @@ static cell AMX_NATIVE_CALL fdiv(AMX *amx,cell *params)
 
   __int64 a=(__int64)params[1] * (__int64)MULTIPLIER;
   a /= (__int64)params[2];
-  return (cell)a;
+  return a;
 
 #elif defined __BORLANDC__  && __BORLANDC__ >= 0x500  && defined __32BIT__
 

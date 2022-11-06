@@ -210,7 +210,7 @@ void AmDir::sort()
 	m_free_dir_entries();
 
 	if ( (m_iNumDirEntries = scandir(m_acFullpath, &m_ppoDirEntries, nullptr, alphasort)) < 0 ) {
-		m_ppoDirEntries == nullptr;
+		m_ppoDirEntries; //nullptr or 0 not needed? [APG]RoboCop[CL]
 	} else {
 		m_iCurrDirEntryNum = 0;
 	}
@@ -268,7 +268,7 @@ void AmDir::m_free_dir_entries()
 #ifdef WIN32
 static int __cdecl alphasort_finddata(const void *elem1, const void *elem2 ) 
 {
-	return _stricmp( ((struct _finddata_t*)elem1)->name, ((struct _finddata_t*)elem2)->name );
+	return _stricmp( ((_finddata_t*)elem1)->name, ((_finddata_t*)elem2)->name );
 }
 
 void AmDir::set( const char* _fullpath )

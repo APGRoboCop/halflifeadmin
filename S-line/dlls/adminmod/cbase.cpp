@@ -132,7 +132,7 @@ int	CBaseEntity :: Intersects( CBaseEntity *pOther )
 
 void CBaseEntity :: MakeDormant()
 {
-  
+	
 }
 
 int CBaseEntity :: IsDormant()
@@ -146,7 +146,7 @@ BOOL CBaseEntity :: IsInWorld()
   return TRUE;
 }
 
-int CBaseEntity::ShouldToggle( USE_TYPE useType, BOOL currentState )
+int CBaseEntity::ShouldToggle( USE_TYPE /*useType*/, BOOL /*currentState*/ )
 {
   
   return 1;
@@ -157,11 +157,7 @@ int	CBaseEntity :: DamageDecal( int bitsDamageType )
 {
   
   return -1;
-  
 }
-
-
-
 
 
 // NOTE: szName must be a pointer to constant memory, e.g. "monster_class" because the entity

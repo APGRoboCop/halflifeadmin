@@ -119,7 +119,7 @@ int CTimer::DeleteTimer(int iTimer, int iForceDelete = 0) {
   if (!ValidTimerIndex(iTimer)) 
     return 0;
   if(timers[iTimer].iRepeatCount <= 1 || iForceDelete) {
-    if (int(CVAR_GET_FLOAT("admin_debug")) >=4) {
+    if (static_cast<int>(CVAR_GET_FLOAT("admin_debug")) >=4) {
       if (iForceDelete) {
 	UTIL_LogPrintf("[ADMIN] DEBUG: CTimer::DeleteTimer: Timer #%i force-deleted.\n", iTimer);
       } else {
@@ -164,7 +164,7 @@ void CTimer::SetPlayerVote(int iIndex, int iVote) {
 }
 
 BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char* sFunction, char* sParam, edict_t *pEntity) {
-	int iDuration = int(CVAR_GET_FLOAT("amv_vote_duration"));
+	int iDuration = static_cast<int>(CVAR_GET_FLOAT("amv_vote_duration"));
 
 	if (!VoteAllowed())
     return FALSE;
@@ -181,7 +181,7 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
   m_iVote = iTimer;
   // The next time a vote can start is now, plus iDuration seconds (for when
   // this vote is over) plus the frequency.
-  m_iNextVoteTime = time(nullptr) + iDuration + int(CVAR_GET_FLOAT("vote_freq"));
+  m_iNextVoteTime = time(nullptr) + iDuration + static_cast<int>(CVAR_GET_FLOAT("vote_freq"));
   
   // Initialize the array to -1 (invalid vote)
   memset(m_iPlayerVotes,-1,(MAX_PLAYERS + 1) * sizeof(int));
@@ -191,7 +191,9 @@ BOOL CTimer::StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char*
 	  // send the vote to everyone
     CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
 	// If it is a valid player and no bot when bot_protection is turned on.
-    if ( IsPlayerValid(pPlayer) && !((GETPLAYERWONID(pPlayer->edict()) == 0) && ptAM_botProtection && (int(ptAM_botProtection->value) == 1)) ) {
+    if (IsPlayerValid(pPlayer) && !((GETPLAYERWONID(pPlayer->edict()) == 0) && ptAM_botProtection && (static_cast<int>(
+	    ptAM_botProtection->value) == 1)))
+    {
       ShowMenu_Large (ENT(pPlayer->pev), iBits, MENU_SHOW, sText);
       // Initialize to no vote
       m_iPlayerVotes[i] = 0;
@@ -290,8 +292,8 @@ void CTimer::Think() {
 	  const edict_t* pTempEnt = pAdminEnt;
 	  pAdminEnt = nullptr;
 
-	  iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, (cell)iWinningVote, (cell)(timers[iTimer].sParam),
-                                                                 (cell)iVotes[iWinningVote], (cell)iMaxPossibleVotes);
+	  iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, iWinningVote, reinterpret_cast<cell>(timers[iTimer].sParam),
+                                                                 iVotes[iWinningVote], iMaxPossibleVotes);
 
 	  // Restore the pAdminEnt pointer.
 	  pAdminEnt = const_cast<edict_t*>(pTempEnt);
@@ -311,12 +313,12 @@ void CTimer::Think() {
 	  // because we don't want to feed an index 0 timer (hard to
 	  // distinguish that from an error)
 	  if(timers[iTimer].pEntity!= nullptr) {
-	    iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, (cell)(iTimer + 1), (cell)(timers[iTimer].iRepeatCount),
-                                                                   (cell)(STRING(timers[iTimer].pEntity->v.netname)), 
-                                                                   (cell)(timers[iTimer].sParam));
+	    iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, iTimer + 1, timers[iTimer].iRepeatCount,
+                                                                   reinterpret_cast<cell>((STRING(timers[iTimer].pEntity->v.netname))), 
+                                                                   reinterpret_cast<cell>(timers[iTimer].sParam));
 	  } else {
-	    iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, (cell)(iTimer + 1), (cell)(timers[iTimer].iRepeatCount), 
-                                                                   (cell)"Admin", (cell)(timers[iTimer].sParam));
+	    iError = amx_Exec(timers[iTimer].amx, &iReturn, iIndex, 4, iTimer + 1, timers[iTimer].iRepeatCount, 
+                                                                   reinterpret_cast<cell>("Admin"), reinterpret_cast<cell>(timers[iTimer].sParam));
 	  }
 	  if (iError != AMX_ERR_NONE) {
 	    UTIL_LogPrintf( "[ADMIN] ERROR: Calling timer function %s returned error %i\n",timers[iTimer].sFunction,iError);
