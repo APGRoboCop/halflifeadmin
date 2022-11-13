@@ -16,7 +16,7 @@ CC=gcc
 
 OBJDIR=obj
 
-BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -std=gnu99 -shared-libgcc
+BASE_CFLAGS= -DLINUX -m32 -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -std=gnu99 -shared-libgcc
 
 #safe optimization
 #CFLAGS=$(BASE_CFLAGS) -m486 -O6 -ffast-math -funroll-loops \
@@ -27,7 +27,7 @@ BASE_CFLAGS= -DLINUX -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT -std=gnu99 -sh
 # CFLAGS=$(BASE_CFLAGS) -g -ggdb3  -Wall -Wconversion
 
 #small optimization flags
-CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -mmmx -msse -msse2 -mfpmath=sse -s
+CFLAGS=$(BASE_CFLAGS) -O2 -march=i686 -mtune=generic -mmmx -msse -msse2 -mfpmath=sse -s
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \
@@ -38,11 +38,11 @@ CFLAGS=$(BASE_CFLAGS) -O2 -m32 -march=i686 -mtune=generic -mmmx -msse -msse2 -mf
 
 MODARCH=
 MARCH = $(shell uname -m)
-ifeq "$(MARCH)" "x86_64"
-	CFLAGS += -DTARGET_64BIT
-	OBJDIR := $(OBJDIR)64
-	MODARCH = _amd64
-endif
+#ifeq "$(MARCH)" "x86_64"
+#	CFLAGS += -DTARGET_64BIT
+#	OBJDIR := $(OBJDIR)64
+#	MODARCH = _amd64
+#endif
 
 #INCLUDEDIRS=-I../linux -I.
 INCLUDEDIRS=

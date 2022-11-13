@@ -253,15 +253,15 @@ ifeq "$(OS)" "linux"
 	#TARGET_FILE=$(TARGET_LINUX)
 	ARCHD = $(shell uname -m)
 	ifeq "$(ARCHD)" "x86_64"
-		ARCH=x86_64
-		ARCHD=.amd64
-		#MODARCH=amd64
-		#MODARCH=i386
-		#STDCPPLIB = /usr/lib/gcc-lib/x86_64-pc-linux-gnu/3.3.3/libstdc++_pic.a
-		STDCPPLIB = -lstdc++
+	#	ARCH=x86_64
+	    ARCHD=
+	#   MODARCH=amd64
+	#   MODARCH=i386
+	#   STDCPPLIB = /usr/lib/gcc-lib/x86_64-pc-linux-gnu/3.3.3/libstdc++_pic.a
+	#	STDCPPLIB = -lstdc++
 	else
 		ARCHD=
-		#MODARCH=i386
+	    #MODARCH=i386
 	endif
 else    ## windows
 	INSTALL=cp
@@ -278,7 +278,7 @@ else
 	BETA = -DBETA=\"$(REL)\"
 endif
 
-BASE_CFLAGS=-include apsymbols.h -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
+BASE_CFLAGS=-include apsymbols.h -m32 -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
 	-Wno-unknown-pragmas -Wno-macro-redefined -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
 	
 XTFLAGS= -DTZONE=\"$(TZONE)\"
@@ -326,11 +326,11 @@ endif
 
 # debug build (WONT WORK WITH omit-frame-pointer !!!!!)
 
-CFDBG= -g -ggdb3 -m32
+CFDBG= -g -ggdb3
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization // -O1 works best? [APG]RoboCop[CL]
-CFOPT = -O2 -mtune=generic -m32 -mfpmath=sse -mmmx -msse -msse2 -s \
+CFOPT = -O2 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -s \
 #	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
