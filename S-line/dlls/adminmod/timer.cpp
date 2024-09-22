@@ -238,7 +238,7 @@ void CTimer::SetTimer(int amount) const
   if (amount==-1) {
     pev->nextthink = gpGlobals->time + 10000;
   } else {
-    pev->nextthink = gpGlobals->time + amount;
+    pev->nextthink = gpGlobals->time + static_cast<float>(amount);
   }
   DEBUG_LOG( 4, ( "CTimer::SetTimer: Timer will next fire in %f seconds.",pev->nextthink - gpGlobals->time) );
 }

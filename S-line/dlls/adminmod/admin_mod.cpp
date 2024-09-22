@@ -472,7 +472,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
   const int iIndex = ENTINDEX(pEntity);
   user_struct tUser;
   // lazy man's pointer :)
-  unique_ptr<AMConnectingPlayer> poPlayerData( new AMConnectingPlayer );
+  unique_ptr<AMConnectingPlayer> poPlayerData = std::make_unique<AMConnectingPlayer>(); //TODO: Experimental [APG]RoboCop[CL]
  
   pAdminEnt = pEntity;  
   poPlayerData->pEntity = pEntity;

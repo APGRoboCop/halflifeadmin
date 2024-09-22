@@ -74,3 +74,5 @@ S-line/dlls/adminmod/amutil.PVS-Studio.i
 /halflifeadmin
 /halflifeadmin_sdk2.0
 /sdal_beta
+S-line/scripting/compiler/msvc6/.vs
+apg-load

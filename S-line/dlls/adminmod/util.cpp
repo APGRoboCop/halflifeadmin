@@ -529,7 +529,7 @@ void DestroyMapCycle( mapcycle_t *cycle )
 	mapcycle_item_t* p = cycle->items;
   if ( p )
     {
-      mapcycle_item_t* start = p;
+  	  const mapcycle_item_t* start = p;
       p = p->next;
       while ( p != start )
 	{
@@ -632,7 +632,7 @@ char *COM_Parse (char *data)
 */
 int COM_TokenWaiting( char *buffer )
 {
-	char* p = buffer;
+	const char* p = buffer;
   while ( *p && *p!='\n')
     {
       if ( !isspace( *p ) || isalnum( *p ) )
@@ -1094,7 +1094,7 @@ int GetPlayerIndex(char *PlayerText) {
   if ( *PlayerText == '\\' ) {
 	  // cut off the first backslash
 	  ++PlayerText;
-	  if ( ! (*PlayerText == '\\') ) {
+	  if ( *PlayerText != '\\' ) {
 		  // the backslash did not escape another backslash. Switch on verbatim mode
 		  bVerbatim = true;
 	  }  // if

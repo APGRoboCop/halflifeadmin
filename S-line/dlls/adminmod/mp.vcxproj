@@ -207,6 +207,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <PlatformToolset>v143</PlatformToolset>
+    <SpectreMitigation>Spectre</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release MM|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -831,7 +832,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <AdditionalIncludeDirectories>..\..\commonlib\include;..\..\..\..\hlsdk-2.3-p4\multiplayer\engine;..\..\..\..\hlsdk-2.3-p4\multiplayer\common;..\..\..\..\hlsdk-2.3-p4\multiplayer\pm_shared;..\..\..\..\hlsdk-2.3-p4\multiplayer\dlls;..\..\..\..\metamod-p\metamod;..\amxdll;..\..\tools\amxconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -843,6 +844,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <DisableSpecificWarnings>4028;4058;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>

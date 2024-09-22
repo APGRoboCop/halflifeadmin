@@ -129,10 +129,10 @@ ifeq "$(USER)" "flori"
 endif
 
 #make sure this is the correct compiler for your system
-#CC=gcc-4.8
-#CXX=g++-4.8
-CC=gcc
-CXX=g++
+#CC=gcc
+#CXX=g++
+CC=gcc -m32
+CXX=g++ -m32
 
 # !! If you only want to compile and go you shouldn't need to edit anything below this line !!
 ###############################################################################################
@@ -319,9 +319,9 @@ endif
 
 ifeq "$(ARCH)" "x86_64"
     # K8 targets only available from gcc 3.4 on.
-	CFOPT = -march=i686 
+	CFOPT = -march=x86-64
 else
-	CFOPT = -march=i686 
+	CFOPT = -march=i686
 endif
 
 # debug build (WONT WORK WITH omit-frame-pointer !!!!!)
@@ -330,7 +330,8 @@ CFDBG= -g -ggdb3
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization // -O1 works best? [APG]RoboCop[CL]
-CFOPT = -O2 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -s \
+CFOPT = -O2 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -pipe \
+	-msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mfpmath=sse -pipe \
 #	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
@@ -419,7 +420,7 @@ DEP+=$(addprefix $(OBJDIR)/,$(subst .c,.dep,$(CSRC)))
 #
 # Libraries
 #
-LDFLAGS=-ldl -lcrypt -lm
+LDFLAGS=-ldl -lcrypt -lm -m32
 LIBADD=   
 
 ifeq "$(ARCH)" "x86_64"
@@ -451,7 +452,7 @@ endif
 
 
 DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu99 -shared-libgcc -o $@ -c $< 
-DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++14 -static-libstdc++ -o $@ -c $< 
+DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++17 -static-libstdc++ -o $@ -c $< 
 
 
 

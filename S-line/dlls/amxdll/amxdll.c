@@ -1,4 +1,4 @@
- /*  Abstract Machine DLL interface functions
+/*  Abstract Machine DLL interface functions
  *
  *  Copyright (c) ITB CompuPhase, 1999-2000
  *  This file may be freely used. No warranties of any kind.

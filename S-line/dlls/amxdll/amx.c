@@ -169,7 +169,7 @@ static void init_little_endian(void)
 {
   if (amx_LittleEndian < 0) {       /* initialize this variable only once */
     u_int16_t val=0x00ff;
-    u_char *ptr=(u_char *)&val;
+    const u_char *ptr=(u_char *)&val;
 
     /* "ptr" points to the starting address of "val". If that address
      * holds the byte "0xff", the computer stored the low byte of "val"
@@ -290,9 +290,9 @@ int AMXAPI amx_Flags(AMX *amx,u_int16_t *flags)
 
 int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, cell *params)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
-  AMX_FUNCSTUB *func=(AMX_FUNCSTUB *)(amx->base+hdr->natives+index*sizeof(AMX_FUNCSTUB));
-  AMX_NATIVE f=(AMX_NATIVE)func->address;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_FUNCSTUB *func=(AMX_FUNCSTUB *)(amx->base+hdr->natives+index*sizeof(AMX_FUNCSTUB));
+  const AMX_NATIVE f=(AMX_NATIVE)func->address;
   assert(f!=NULL);
   assert(index<hdr->num_natives);
 
@@ -840,7 +840,7 @@ int AMXAPI amx_InitJIT(AMX *amx,void *compiled_program,void *reloc_table)
 
 int AMXAPI amx_NameLength(AMX *amx, int *length)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
   *length=hdr->defsize - sizeof(u_int32_t);
   return AMX_ERR_NONE;
@@ -848,7 +848,7 @@ int AMXAPI amx_NameLength(AMX *amx, int *length)
 
 int AMXAPI amx_NumPublics(AMX *amx, int *number)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
   *number=hdr->num_publics;
   return AMX_ERR_NONE;
@@ -898,7 +898,7 @@ int AMXAPI amx_FindPublic(AMX *amx, char *name, int *index)
 
 int AMXAPI amx_NumPubVars(AMX *amx, int *number)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
   *number=hdr->num_pubvars;
   return AMX_ERR_NONE;
@@ -950,7 +950,7 @@ int AMXAPI amx_FindPubVar(AMX *amx, char *varname, cell *amx_addr)
 
 int AMXAPI amx_NumTags(AMX *amx, int *number)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
   if (hdr->file_version<5) {    /* the tagname table appeared in file format 5 */
     *number=0;
@@ -1058,9 +1058,7 @@ int AMXAPI amx_SetUserData(AMX *amx, int32_t tag, void *ptr)
 
 static AMX_NATIVE findfunction(char *name, AMX_NATIVE_INFO *list, int number)
 {
-  int i;
-
-  for (i=0; list[i].name!=NULL && (i<number || number==-1); i++)
+  for (int i=0; list[i].name!=NULL && (i<number || number==-1); i++)
     if (strcmp(name,list[i].name)==0)
       return list[i].func;
   return NULL;
@@ -2123,8 +2121,8 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
   } else if (index==AMX_EXEC_CONT) {
     /* all registers: pri, alt, frm, cip, hea, stk, reset_stk, reset_hea */
     frm=amx->frm;
-    stk=amx->stk;
-    hea=amx->hea;
+    //stk=amx->stk;
+    //hea=amx->hea;
     pri=amx->pri;
     alt=amx->alt;
     reset_stk=amx->reset_stk;
@@ -2517,13 +2515,13 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         amx->stk=reset_stk;
          amx->hea=reset_hea;
         return AMX_ERR_NONE;
-      } else {
-        if (debug) {
-          amx->dbgcode=DBG_RETURN;
-          amx->dbgparam=pri;  /* store "return value" */
-          amx->debug(amx);
-        } /* if */
+      }
+      if (debug) {
+	      amx->dbgcode=DBG_RETURN;
+	      amx->dbgparam=pri;  /* store "return value" */
+	      amx->debug(amx);
       } /* if */
+  /* if */
       break;
     case OP_RETN:
       POP(frm);
@@ -2543,13 +2541,13 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         } /* if */
         assert(amx->stk==reset_stk);
         return AMX_ERR_NONE;
-      } else {
-        if (debug) {
-          amx->dbgcode=DBG_RETURN;
-          amx->dbgparam=pri;  /* store "return value" */
-          amx->debug(amx);
-        } /* if */
+      }
+      if (debug) {
+	      amx->dbgcode=DBG_RETURN;
+	      amx->dbgparam=pri;  /* store "return value" */
+	      amx->debug(amx);
       } /* if */
+  /* if */
       if (debug) {
         amx->dbgcode=DBG_CLRSYM;
         amx->debug(amx);
@@ -3027,7 +3025,7 @@ int AMXAPI amx_RaiseError(AMX *amx, int error)
 
 int AMXAPI amx_GetAddr(AMX *amx,cell amx_addr,cell **phys_addr)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
 
   if (amx_addr>=amx->hea && amx_addr<amx->stk || amx_addr<0 || amx_addr>=amx->stp)
     return AMX_ERR_MEMACCESS;
@@ -3037,7 +3035,7 @@ int AMXAPI amx_GetAddr(AMX *amx,cell amx_addr,cell **phys_addr)
 
 int AMXAPI amx_Allot(AMX *amx,int cells,cell *amx_addr,cell **phys_addr)
 {
-  AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
 
   if (amx->stk - amx->hea - cells*sizeof(cell) < STKMARGIN)
     return AMX_ERR_MEMORY;

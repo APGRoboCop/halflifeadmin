@@ -13,7 +13,7 @@
  *
  ****************************************************************/
 
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -113,7 +113,7 @@ static int get_space( char** _string, size_t _iMinLen, size_t* _piStrLen )
   int iLocalFree = 0;
   int iStaticFree = 0;
   int iLsIndex = -1;
-  int err = AMX_ERR_NONE;
+  const int err = AMX_ERR_NONE;
 
   if ( _string == NULL ) {
     return AMX_ERR_NATIVE;
@@ -458,10 +458,9 @@ static cell Return( cell _iReturnValue )
  
 
 static const char* _strgtok( char* _pcString, char* _pcDelimiter, char* _pcGrouping ) {
-
-  char* pcDelimiters = NULL;
-  char* pcGroupingSet = NULL;
-  char* pcToken = NULL;
+	const char* pcDelimiters = NULL;
+	const char* pcGroupingSet = NULL;
+	const char* pcToken = NULL;
 
   static char* pcString;
   static char* pcStart;
@@ -632,12 +631,12 @@ static cell AMX_NATIVE_CALL amx_strcpy( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t iMaxLength = 0;
   size_t iFromLength = 0;
   char* pcTo = NULL;
   char* pcFrom = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 3;
 
@@ -703,13 +702,13 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t iToLength = 0;
   size_t iFromLength = 0;
   size_t iMaxLength = 0;
   char* pcTo = NULL;
   char* pcFrom = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 4;
 
@@ -776,14 +775,14 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t iToLength = 0;
   size_t iFromLength = 0;
   size_t iNewLength = 0;
   size_t iMaxLength = 0;
   char* pcTo = NULL;
   char* pcFrom = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 3;
 
@@ -870,14 +869,14 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t iToLength = 0;
   size_t iFromLength = 0;
   size_t iNewLength = 0;
   size_t iMaxLength = 0;
   char* pcTo = NULL;
   char* pcFrom = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 4;
 
@@ -958,7 +957,7 @@ static cell AMX_NATIVE_CALL amx_strcmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -1013,7 +1012,7 @@ static cell AMX_NATIVE_CALL amx_strncmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -1067,7 +1066,7 @@ static cell AMX_NATIVE_CALL amx_strcasecmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -1123,7 +1122,7 @@ static cell AMX_NATIVE_CALL amx_strncasecmp( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString1 = NULL;
@@ -1176,11 +1175,11 @@ static cell AMX_NATIVE_CALL amx_strchr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 2;
 
@@ -1202,10 +1201,10 @@ static cell AMX_NATIVE_CALL amx_strchr( AMX* amx, cell* params )
   
   if ( pcRetVal == NULL ) {
     return Return(AMXNULLP);
-  } else {
-    iRetVal = pcRetVal - pcString;
-    return Return(iRetVal);
-  }  // if-else
+  }
+  iRetVal = pcRetVal - pcString;
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strchr()
 
@@ -1228,11 +1227,11 @@ static cell AMX_NATIVE_CALL amx_strrchr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 2;
 
@@ -1254,10 +1253,10 @@ static cell AMX_NATIVE_CALL amx_strrchr( AMX* amx, cell* params )
   
   if ( pcRetVal == NULL ) {
     return Return(AMXNULLP);
-  } else {
-    iRetVal = pcRetVal - pcString;
-    return Return(iRetVal);
-  }  // if-else
+  }
+  iRetVal = pcRetVal - pcString;
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strrchr()
 
@@ -1280,12 +1279,12 @@ static cell AMX_NATIVE_CALL amx_strstr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
   char* pcSubString = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
 
   const int REQNUMARGS = 2;
@@ -1315,10 +1314,10 @@ static cell AMX_NATIVE_CALL amx_strstr( AMX* amx, cell* params )
   
   if ( pcRetVal == NULL ) {
     return Return(AMXNULLP);
-  } else {
-    iRetVal = pcRetVal - pcString;
-    return Return(iRetVal);
-  }  // if-else
+  }
+  iRetVal = pcRetVal - pcString;
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strstr()
 
@@ -1341,14 +1340,14 @@ static cell AMX_NATIVE_CALL amx_strstrx( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
   size_t iStringLen = 0;
   size_t iSubStringLen = 0;
 
   char* pcString = NULL;
   char* pcSubString = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
 
   const int REQNUMARGS = 2;
@@ -1381,10 +1380,10 @@ static cell AMX_NATIVE_CALL amx_strstrx( AMX* amx, cell* params )
   
   if ( pcRetVal == NULL ) {
     return Return(AMXNULLP);
-  } else {
-    iRetVal = pcRetVal - pcString;
-    return Return(iRetVal);
-  }  // if-else
+  }
+  iRetVal = pcRetVal - pcString;
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strstrx()
 
@@ -1406,7 +1405,7 @@ static cell AMX_NATIVE_CALL amx_strcasestr( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   char* pcString = NULL;
@@ -1452,10 +1451,10 @@ static cell AMX_NATIVE_CALL amx_strcasestr( AMX* amx, cell* params )
   
   if ( pcRetVal == NULL ) {
     return Return(AMXNULLP);
-  } else {
-    iRetVal = pcRetVal - pcString;
-    return Return(iRetVal);
-  }  // if-else
+  }
+  iRetVal = pcRetVal - pcString;
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strcasestr()
 
@@ -1478,7 +1477,7 @@ static cell AMX_NATIVE_CALL amx_strcasestrx( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
   size_t iStringLen = 0;
   size_t iSubStringLen = 0;
@@ -1530,10 +1529,10 @@ static cell AMX_NATIVE_CALL amx_strcasestrx( AMX* amx, cell* params )
   
   if ( pcRetVal == NULL ) {
     return Return(AMXNULLP);
-  } else {
-    iRetVal = pcRetVal - pcString;
-    return Return(iRetVal);
-  }  // if-else
+  }
+  iRetVal = pcRetVal - pcString;
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strcasestrx()
 
@@ -1557,7 +1556,7 @@ static cell AMX_NATIVE_CALL amx_strspn( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t tSubStringLen = 0;
 
   char* pcString = NULL;
@@ -1613,7 +1612,7 @@ static cell AMX_NATIVE_CALL amx_strcspn( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t tSubStringLen = 0;
 
   char* pcString = NULL;
@@ -1669,7 +1668,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   size_t tStringLen = 0;
@@ -1758,25 +1757,24 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
     g_pcTokenStringEnd = g_acTokenString;
     return Return(AMXNULLP);
 
-  } else {
-    /* set the return string and return the length of the token */
-    set_string( amx, params[3], pcRetVal, params[4] );
-    iRetVal = strlen( pcRetVal );
+  }
+  /* set the return string and return the length of the token */
+  set_string( amx, params[3], pcRetVal, params[4] );
+  iRetVal = strlen( pcRetVal );
 
-    /* move the static position pointer to point after the token */
-    g_pcTokenStringPos += strlen( g_pcTokenStringPos );
-    g_pcTokenStringPos++; /* blame strtok */
-    /* move it beyond any delimiter characters */
-    // g_pcTokenStringPos += strspn( g_pcTokenStringPos, pcDelimiters );
-    if ( g_pcTokenStringPos >= g_pcTokenStringEnd ) {
-      g_pcTokenStringPos = NULL;
-      g_pcTokenStringEnd = g_acTokenString;
-      g_cTokenStringInitialized = 0;
-    }  // if
+  /* move the static position pointer to point after the token */
+  g_pcTokenStringPos += strlen( g_pcTokenStringPos );
+  g_pcTokenStringPos++; /* blame strtok */
+  /* move it beyond any delimiter characters */
+  // g_pcTokenStringPos += strspn( g_pcTokenStringPos, pcDelimiters );
+  if ( g_pcTokenStringPos >= g_pcTokenStringEnd ) {
+	  g_pcTokenStringPos = NULL;
+	  g_pcTokenStringEnd = g_acTokenString;
+	  g_cTokenStringInitialized = 0;
+  }  // if
 
-    return Return(iRetVal);
-
-  }  // if-else
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strtok()
 
@@ -1797,8 +1795,7 @@ static cell AMX_NATIVE_CALL amx_strtok( AMX* amx, cell* params )
 
 static cell AMX_NATIVE_CALL amx_strtokrest( AMX* amx, cell* params )
 {
-
-  int iNumArgs = params[0] / sizeof(cell);
+	const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
 
@@ -1821,14 +1818,13 @@ static cell AMX_NATIVE_CALL amx_strtokrest( AMX* amx, cell* params )
     /* no rest is left */
     return Return(AMXNULLP);
 
-  } else {
-    /* set the return string and return the length of the token */
-    set_string( amx, params[1], g_pcTokenStringPos, params[2] );
-    iRetVal = strlen( g_pcTokenStringPos );
+  }
+	/* set the return string and return the length of the token */
+	set_string( amx, params[1], g_pcTokenStringPos, params[2] );
+	iRetVal = strlen( g_pcTokenStringPos );
 
-    return Return(iRetVal);
-
-  }  // if-else
+	return Return(iRetVal);
+	// if-else
 
 }  // amx_strtokrest()
 
@@ -1856,7 +1852,7 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
   size_t tStringLen = 0;
@@ -1953,25 +1949,24 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
     g_pcGTokenStringEnd = g_acGTokenString;
     return Return(AMXNULLP);
 
-  } else {
-    /* set the return string and return the length of the token */
-    set_string( amx, params[4], pcRetVal, params[5] );
-    iRetVal = strlen( pcRetVal );
+  }
+  /* set the return string and return the length of the token */
+  set_string( amx, params[4], pcRetVal, params[5] );
+  iRetVal = strlen( pcRetVal );
 
-    /* move the static position pointer to point after the token */
-    g_pcGTokenStringPos += strlen( g_pcGTokenStringPos );
-    g_pcGTokenStringPos++; /* blame strtok */
-    /* move it beyond any delimiter characters */
-    // g_pcTokenStringPos += strspn( g_pcTokenStringPos, pcDelimiters );
-    if ( g_pcGTokenStringPos >= g_pcGTokenStringEnd ) {
-      g_pcGTokenStringPos = NULL;
-      g_pcGTokenStringEnd = g_acGTokenString;
-      g_cGTokenStringInitialized = 0;
-    }  // if
+  /* move the static position pointer to point after the token */
+  g_pcGTokenStringPos += strlen( g_pcGTokenStringPos );
+  g_pcGTokenStringPos++; /* blame strtok */
+  /* move it beyond any delimiter characters */
+  // g_pcTokenStringPos += strspn( g_pcTokenStringPos, pcDelimiters );
+  if ( g_pcGTokenStringPos >= g_pcGTokenStringEnd ) {
+	  g_pcGTokenStringPos = NULL;
+	  g_pcGTokenStringEnd = g_acGTokenString;
+	  g_cGTokenStringInitialized = 0;
+  }  // if
 
-    return Return(iRetVal);
-
-  }  // if-else
+  return Return(iRetVal);
+  // if-else
 
 }  // amx_strgtok()
 
@@ -1992,8 +1987,7 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
 
 static cell AMX_NATIVE_CALL amx_strgtokrest( AMX* amx, cell* params )
 {
-
-  int iNumArgs = params[0] / sizeof(cell);
+	const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
 
 
@@ -2016,14 +2010,13 @@ static cell AMX_NATIVE_CALL amx_strgtokrest( AMX* amx, cell* params )
     /* no rest is left */
     return Return(AMXNULLP);
 
-  } else {
-    /* set the return string and return the length of the token */
-    set_string( amx, params[1], g_pcGTokenStringPos, params[2] );
-    iRetVal = strlen( g_pcGTokenStringPos );
+  }
+	/* set the return string and return the length of the token */
+	set_string( amx, params[1], g_pcGTokenStringPos, params[2] );
+	iRetVal = strlen( g_pcGTokenStringPos );
 
-    return Return(iRetVal);
-
-  }  // if-else
+	return Return(iRetVal);
+	// if-else
 
 }  // amx_strgtokrest()
 
@@ -2048,7 +2041,7 @@ static cell AMX_NATIVE_CALL amx_strsplit( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iNumTokens = 0;
   int iNextToken = 3;
 
@@ -2237,50 +2230,51 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
       
       return Return(iNumTokens);
 
-    } else if ( pcGrouper == pcStart ) {
+    }
+    if ( pcGrouper == pcStart ) {
       
 #ifdef DEBUG
       fprintf( stderr, "Start of group\n" );
 #endif
 
-      /* a group starts */
-      cInGroup = 1;
+	    /* a group starts */
+	    cInGroup = 1;
 
-      /* set the start to the start of the group */
-      pcStart++;
+	    /* set the start to the start of the group */
+	    pcStart++;
 
-      /* get the end of the group */
-      pcGrouper = strpbrk( pcStart, pcGroupingSet );
-      if ( pcGrouper == NULL ) {
-	pcGrouper = pcEndOfString;
-      } else {
-	cLastGrouper = *pcGrouper;
-	*pcGrouper = 0;
-      }  // if-else
+	    /* get the end of the group */
+	    pcGrouper = strpbrk( pcStart, pcGroupingSet );
+	    if ( pcGrouper == NULL ) {
+		    pcGrouper = pcEndOfString;
+	    } else {
+		    cLastGrouper = *pcGrouper;
+		    *pcGrouper = 0;
+	    }  // if-else
       
 
-      /* get the memory address of the Small string size reference */
-	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
-	if ( err != AMX_ERR_NONE ) {
-	  RAISE_ERROR(err);
-	  return Return(AMXFAIL);
-	}  // if
+	    /* get the memory address of the Small string size reference */
+	    err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
+	    if ( err != AMX_ERR_NONE ) {
+		    RAISE_ERROR(err);
+		    return Return(AMXFAIL);
+	    }  // if
 	
 #ifdef DEBUG
 	fprintf( stderr, "token %d: %s\n", iNumTokens, pcStart );
 	fprintf( stderr, "set_string( amx, params[%d]=%d, %s, *params[%d]=%d\n", iNextToken,  params[iNextToken], pcStart, iNextToken+1, (int)*ptCell );
 #endif
 	
-	/* set the Small string */
-	set_string( amx, params[iNextToken], pcStart, ((size_t)*ptCell)-1 );
-	iNextToken += 2;
-	iNumTokens++;
+	    /* set the Small string */
+	    set_string( amx, params[iNextToken], pcStart, ((size_t)*ptCell)-1 );
+	    iNextToken += 2;
+	    iNumTokens++;
 	
-	if ( pcGrouper != pcEndOfString ) {
-	  *pcGrouper = cLastGrouper;
-	}  // if
-	pcStart = pcGrouper + 1;
-	if ( pcStart >= pcEndOfString ) return Return(iNumTokens);
+	    if ( pcGrouper != pcEndOfString ) {
+		    *pcGrouper = cLastGrouper;
+	    }  // if
+	    pcStart = pcGrouper + 1;
+	    if ( pcStart >= pcEndOfString ) return Return(iNumTokens);
 	
     } else if ( pcGrouper > pcStart ) {  
       
@@ -2288,43 +2282,44 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
       fprintf( stderr, "Tokenizing before group\n" );
 #endif
 
-      /* tokenize the part before the group */
-      cLastGrouper = *pcGrouper;
-      *pcGrouper = 0;
-      /* initial call to strtok */
-      pcRetVal = strtok( pcStart, pcDelimiters );
+	    /* tokenize the part before the group */
+	    cLastGrouper = *pcGrouper;
+	    *pcGrouper = 0;
+	    /* initial call to strtok */
+	    pcRetVal = strtok( pcStart, pcDelimiters );
       
-      while ( pcRetVal != NULL && iNextToken < iNumArgs) {
+	    while ( pcRetVal != NULL && iNextToken < iNumArgs) {
 	
-	/* get the memory address of the Small string size reference */
-	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
-	if ( err != AMX_ERR_NONE ) {
-	  RAISE_ERROR(err);
-	  return Return(AMXFAIL);
-	}  // if 
+		    /* get the memory address of the Small string size reference */
+		    err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
+		    if ( err != AMX_ERR_NONE ) {
+			    RAISE_ERROR(err);
+			    return Return(AMXFAIL);
+		    }  // if 
 	
 #ifdef DEBUG
 	fprintf( stderr, "token %d: %s\n", iNumTokens, pcRetVal );
 	fprintf( stderr, "set_string( amx, params[%d]=%d, %s, *params[%d]=%d\n", iNextToken,  params[iNextToken], pcRetVal, iNextToken+1, (int)*ptCell );
 #endif
 	
-	set_string( amx, params[iNextToken], pcRetVal, ((size_t)*ptCell)-1 );
-	iNextToken += 2;
-	iNumTokens++;
-	/* subsequent call to strtok */
-	pcRetVal = strtok( NULL, pcDelimiters );
+		    set_string( amx, params[iNextToken], pcRetVal, ((size_t)*ptCell)-1 );
+		    iNextToken += 2;
+		    iNumTokens++;
+		    /* subsequent call to strtok */
+		    pcRetVal = strtok( NULL, pcDelimiters );
 	
-      } // while
+	    } // while
       
-      /* carry on with the group */
-      *pcGrouper = cLastGrouper;
-      pcStart = pcGrouper;
-      if ( pcStart >= pcEndOfString ) return Return(iNumTokens);
+	    /* carry on with the group */
+	    *pcGrouper = cLastGrouper;
+	    pcStart = pcGrouper;
+	    if ( pcStart >= pcEndOfString ) return Return(iNumTokens);
 
     } else {
-      /* this case should not occur */
-      return Return(iNumTokens);
-    }  // if-else
+	    /* this case should not occur */
+	    return Return(iNumTokens);
+    }
+    // if-else
     
   }  // while
   
@@ -2355,7 +2350,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iNumTokens = 0;
   int iNextToken = 3;
 
@@ -2598,69 +2593,70 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 
       return Return(iNumTokens);
 
-    } else if ( pcGrouper == pcStart ) {
+    }
+    if ( pcGrouper == pcStart ) {
       
 #ifdef DEBUG
       fprintf( stderr, "Start of group\n" );
 #endif
 
-      /* a group starts */
-      cInGroup = 1;
+	    /* a group starts */
+	    cInGroup = 1;
 
-      /* set the start to the start of the group */
-      pcStart++;
+	    /* set the start to the start of the group */
+	    pcStart++;
 
-      /* get the end of the group */
-      pcGrouper = strpbrk( pcStart, pcGroupingSet );
-      if ( pcGrouper == NULL ) {
-	pcGrouper = pcEndOfString;
-	pcRest = NULL;
-      } else {
-	cLastGrouper = *pcGrouper;
-	*pcGrouper = 0;
-	pcRest = pcGrouper + 1 ;
-      }  // if-else
+	    /* get the end of the group */
+	    pcGrouper = strpbrk( pcStart, pcGroupingSet );
+	    if ( pcGrouper == NULL ) {
+		    pcGrouper = pcEndOfString;
+		    pcRest = NULL;
+	    } else {
+		    cLastGrouper = *pcGrouper;
+		    *pcGrouper = 0;
+		    pcRest = pcGrouper + 1 ;
+	    }  // if-else
       
 
-      /* get the memory address of the Small string size reference */
-	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
-	if ( err != AMX_ERR_NONE ) {
-	  RAISE_ERROR(err);
-	  return Return(AMXFAIL);
-	}  // if
+	    /* get the memory address of the Small string size reference */
+	    err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
+	    if ( err != AMX_ERR_NONE ) {
+		    RAISE_ERROR(err);
+		    return Return(AMXFAIL);
+	    }  // if
 	
 #ifdef DEBUG
 	fprintf( stderr, "token %d: %s\n", iNumTokens, pcStart );
 	fprintf( stderr, "set_string( amx, params[%d]=%d, %s, *params[%d]=%d\n", iNextToken,  params[iNextToken], pcStart, iNextToken+1, (int)*ptCell );
 #endif
 	
-	/* set the Small string */
-	set_string( amx, params[iNextToken], pcStart, ((size_t)*ptCell)-1 );
-	iNextToken += 2;
-	iNumTokens++;
+	    /* set the Small string */
+	    set_string( amx, params[iNextToken], pcStart, ((size_t)*ptCell)-1 );
+	    iNextToken += 2;
+	    iNumTokens++;
 	
-	if ( pcGrouper != pcEndOfString ) {
-	  *pcGrouper = cLastGrouper;
-	}  // if
-	pcStart = pcGrouper + 1;
+	    if ( pcGrouper != pcEndOfString ) {
+		    *pcGrouper = cLastGrouper;
+	    }  // if
+	    pcStart = pcGrouper + 1;
 
-	if ( pcStart >= pcEndOfString ) {
-	  /* get the memory address of the Small string size reference */
-	  err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
-	  if ( err != AMX_ERR_NONE ) {
-	    RAISE_ERROR(err);
-	    return Return(AMXFAIL);
-	  }  // if 
-	  /* return the rest of the string */
-	  if ( pcRest != NULL ) {	
-	    set_string( amx, params[iNumArgs-1], pcRest, ((size_t)*ptCell)-1 );
-	    pcRest = NULL;
-	  } else {
-	    set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
-	  }  // if-else
+	    if ( pcStart >= pcEndOfString ) {
+		    /* get the memory address of the Small string size reference */
+		    err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
+		    if ( err != AMX_ERR_NONE ) {
+			    RAISE_ERROR(err);
+			    return Return(AMXFAIL);
+		    }  // if 
+		    /* return the rest of the string */
+		    if ( pcRest != NULL ) {	
+			    set_string( amx, params[iNumArgs-1], pcRest, ((size_t)*ptCell)-1 );
+			    pcRest = NULL;
+		    } else {
+			    set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
+		    }  // if-else
 
-	  return Return(iNumTokens);
-	}  // if
+		    return Return(iNumTokens);
+	    }  // if
 	
     } else if ( pcGrouper > pcStart ) {  
       
@@ -2668,65 +2664,66 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
       fprintf( stderr, "Tokenizing before group\n" );
 #endif
 
-      /* tokenize the part before the group */
-      cLastGrouper = *pcGrouper;
-      *pcGrouper = 0;
-      /* initial call to strtok */
-      pcRetVal = strtok( pcStart, pcDelimiters );
+	    /* tokenize the part before the group */
+	    cLastGrouper = *pcGrouper;
+	    *pcGrouper = 0;
+	    /* initial call to strtok */
+	    pcRetVal = strtok( pcStart, pcDelimiters );
       
-      while ( pcRetVal != NULL && iNextToken < (iNumArgs - 2) ) {
+	    while ( pcRetVal != NULL && iNextToken < (iNumArgs - 2) ) {
 	
-	pcRest = pcRetVal + strlen(pcRetVal) + 1;
-	pcRest += strspn( pcRest, pcDelimiters );
-	if ( pcRest >= pcEndOfString ) pcRest = NULL;
+		    pcRest = pcRetVal + strlen(pcRetVal) + 1;
+		    pcRest += strspn( pcRest, pcDelimiters );
+		    if ( pcRest >= pcEndOfString ) pcRest = NULL;
 
-	/* get the memory address of the Small string size reference */
-	err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
-	if ( err != AMX_ERR_NONE ) {
-	  RAISE_ERROR(err);
-	  return Return(AMXFAIL);
-	}  // if 
+		    /* get the memory address of the Small string size reference */
+		    err = amx_GetAddr( amx, params[iNextToken+1], &ptCell );
+		    if ( err != AMX_ERR_NONE ) {
+			    RAISE_ERROR(err);
+			    return Return(AMXFAIL);
+		    }  // if 
 	
 #ifdef DEBUG
 	fprintf( stderr, "token %d: %s\n", iNumTokens, pcRetVal );
 	fprintf( stderr, "set_string( amx, params[%d]=%d, %s, *params[%d]=%d\n", iNextToken,  params[iNextToken], pcRetVal, iNextToken+1, (int)*ptCell );
 #endif
 	
-	set_string( amx, params[iNextToken], pcRetVal, ((size_t)*ptCell)-1 );
-	iNextToken += 2;
-	iNumTokens++;
-	/* subsequent call to strtok */
-	if ( iNextToken < (iNumArgs - 2) ) {
-	  pcRetVal = strtok( NULL, pcDelimiters );
-	}  // if
+		    set_string( amx, params[iNextToken], pcRetVal, ((size_t)*ptCell)-1 );
+		    iNextToken += 2;
+		    iNumTokens++;
+		    /* subsequent call to strtok */
+		    if ( iNextToken < (iNumArgs - 2) ) {
+			    pcRetVal = strtok( NULL, pcDelimiters );
+		    }  // if
 
-      } // while
+	    } // while
       
-      /* carry on with the group */
-      *pcGrouper = cLastGrouper;
-      pcStart = pcGrouper;
-      if ( pcStart >= pcEndOfString ) {
-	/* get the memory address of the Small string size reference */
-	err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
-	if ( err != AMX_ERR_NONE ) {
-	  RAISE_ERROR(err);
-	  return Return(AMXFAIL);
-	}  // if 
-	/* return the rest of the string */
-	if ( pcRest != NULL ) {	
-	  set_string( amx, params[iNumArgs-1], pcRest, ((size_t)*ptCell)-1 );
-	  pcRest = NULL;
-	} else {
-	  set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
-	}  // if-else
+	    /* carry on with the group */
+	    *pcGrouper = cLastGrouper;
+	    pcStart = pcGrouper;
+	    if ( pcStart >= pcEndOfString ) {
+		    /* get the memory address of the Small string size reference */
+		    err = amx_GetAddr( amx, params[iNumArgs], &ptCell );
+		    if ( err != AMX_ERR_NONE ) {
+			    RAISE_ERROR(err);
+			    return Return(AMXFAIL);
+		    }  // if 
+		    /* return the rest of the string */
+		    if ( pcRest != NULL ) {	
+			    set_string( amx, params[iNumArgs-1], pcRest, ((size_t)*ptCell)-1 );
+			    pcRest = NULL;
+		    } else {
+			    set_string( amx, params[iNumArgs-1], "", ((size_t)*ptCell)-1 );
+		    }  // if-else
 
-	return Return(iNumTokens);
-      }  // if
+		    return Return(iNumTokens);
+	    }  // if
 
     } else {
-      /* this case should not occur */
-      return Return(iNumTokens);
-    }  // if-else
+	    /* this case should not occur */
+	    return Return(iNumTokens);
+    }
+    // if-else
     
   }  // while
   
@@ -2768,15 +2765,15 @@ static cell AMX_NATIVE_CALL amx_strcount( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t iCount = 0;
   int iChar = 0;
   int iRetVal = 0;
 
   
   char* pcString = NULL;
-  char* pcEndOfString = NULL;
-  char* pcRetVal = NULL;
+  const char* pcEndOfString = NULL;
+  const char* pcRetVal = NULL;
 
   const int REQNUMARGS = 2;
 
@@ -2827,7 +2824,7 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t iRetVal = 0;
   size_t tiCharsTrimmed = 0;
   size_t tiStringLength = 0;
@@ -2916,7 +2913,7 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   size_t tiStringLen = 0;
   size_t iSearchLen = 0;
   size_t iSubstLen  = 0;
@@ -2924,13 +2921,13 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
   int iNewLen  = 0;
   size_t iCopy = 0;
   int iReplaced = 0;
-  size_t iMaxLen = (size_t)params[4] - 1;
+  const size_t iMaxLen = (size_t)params[4] - 1;
 
   char* pcString = NULL;
   char* pcSearch = NULL;
   char* pcSubst = NULL;
   char* pcNew = NULL;
-  char* pcStart = NULL;
+  const char* pcStart = NULL;
   char* pcAdd = NULL;
   char* pcEOS = NULL;
   char* pcPos = NULL;
@@ -3059,7 +3056,7 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 {
 
   int err = 0;
-  int iNumArgs = params[0] / sizeof(cell);
+  const int iNumArgs = params[0] / sizeof(cell);
   int iRetVal = 0;
   int iNextParam = 0;
   int iNumParams = 0;
@@ -3081,10 +3078,10 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
   char* pcOutput = NULL;
   char* pcFormat = NULL;
   char* pcStringArg = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
   cell* ptCell = NULL;
-  cell* vlist = params + 3;
+  const cell* vlist = params + 3;
   
 
   const int REQNUMARGS = 3;

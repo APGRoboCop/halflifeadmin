@@ -118,7 +118,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 
 		char* pcEndptr = nullptr;
 		// parse first number
-		m_uiWonid = strtoul( const_cast<char*>(_pcID+6), &pcEndptr, 10 );
+		m_uiWonid = strtoul( _pcID+6, &pcEndptr, 10 );
 
 		// check if string was valid steamid format
 		if ( *pcEndptr != ':' ) {
@@ -140,7 +140,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			_pcID = pcEndptr + 1;
 			// shift Authid64 up 32 bits since we just read the HIGH two words
 			m_uiAuthid64 <<= 32 ;
-			const uint32_t uiAuLow = strtoul( const_cast<char*>(_pcID), &pcEndptr, 10 );
+			const uint32_t uiAuLow = strtoul( _pcID, &pcEndptr, 10 );
 			// join the high and low words
 			m_uiAuthid64 |= uiAuLow;
 
@@ -175,7 +175,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 
 		char* pcEndptr = nullptr;
 		// parse first number
-		m_uiWonid = strtoul( const_cast<char*>(_pcID+6), &pcEndptr, 10 );
+		m_uiWonid = strtoul( _pcID+6, &pcEndptr, 10 );
 
 		// check if string was valid valveid format
 		if ( *pcEndptr != ':' ) {
@@ -197,7 +197,7 @@ void AMAuthId::f_parse_id( const char* _pcID ) {
 			_pcID = pcEndptr + 1;
 			// shift Authid64 up 32 bits since we just read the HIGH two words
 			m_uiAuthid64 <<= 32 ;
-			const uint32_t uiAuLow = strtoul( const_cast<char*>(_pcID), &pcEndptr, 10 );
+			const uint32_t uiAuLow = strtoul( _pcID, &pcEndptr, 10 );
 			// join the high and low words
 			m_uiAuthid64 |= uiAuLow;
 

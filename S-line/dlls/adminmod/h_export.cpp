@@ -460,7 +460,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(enginefuncs_t* pengfuncsFromEngine, gl
 
     // Greetings, earthling!
     UTIL_LogPrintf("[ADMIN] Admin Mod, the HLDS admin's choice\n");
-    UTIL_LogPrintf("[ADMIN] by Alfred Reynolds (http://www.adminmod.org)\n");
+    UTIL_LogPrintf("[ADMIN] by Alfred Reynolds (www.adminmod.org)\n");
     UTIL_LogPrintf("[ADMIN] Version: %s\n", MOD_VERSION);
     UTIL_LogPrintf("[ADMIN] Compiled: %s %s (%s)\n", COMPILE_DTTM, TZONE, OPT_TYPE);
     /*

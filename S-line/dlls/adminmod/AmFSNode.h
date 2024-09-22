@@ -115,7 +115,7 @@ public:
 	AmDir();
 	AmDir( const char* fullpath );
 	AmDir( const char* path, const char* dirname );
-	virtual ~AmDir();
+	~AmDir() override;
 
 	void set( const char* fullpath ) override;
 	void set( const char* path, const char* nodename ) override;

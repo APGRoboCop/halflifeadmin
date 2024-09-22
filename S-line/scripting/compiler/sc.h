@@ -13,8 +13,10 @@
  */
 #ifndef __SC_H
 #define __SC_H
+
 #include <stdarg.h>
 #include <stdio.h>
+
 #if defined __BORLANDC__ && defined _Windows && !(defined __32BIT__ || defined __WIN32__)
   /* setjmp() and longjmp() not well supported in 16-bit windows */
   #include <windows.h>
@@ -24,6 +26,9 @@
 #else
   #include <setjmp.h>
 #endif
+
+#include <stdint.h>
+
 #include "osdefs.h"
 #include "amx.h"
 

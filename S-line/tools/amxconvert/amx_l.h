@@ -188,8 +188,8 @@ extern  "C" {
 
 #define AMX_MAGIC       0xf1e0
 
-#define AMX_EXEC_MAIN   -1      /* start at program entry point */
-#define AMX_EXEC_CONT   -2      /* continue from last address */
+#define AMX_EXEC_MAIN   (-1)      /* start at program entry point */
+#define AMX_EXEC_CONT   (-2)      /* continue from last address */
 
 
 #ifdef  __cplusplus

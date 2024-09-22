@@ -1,6 +1,6 @@
-CC      =gcc-4.8
+CC      =gcc
 CFLAGS	=-DLINUX -Wall
-LINK    =gcc-4.8
+LINK    =gcc
 LINKFLAGS=
 TARGET	=sc
 OBJDIR= obj

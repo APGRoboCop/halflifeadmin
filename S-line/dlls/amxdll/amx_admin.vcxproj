@@ -100,8 +100,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <WarningLevel>Level2</WarningLevel>
-      <PreprocessorDefinitions>NDEBUG;WIN32;amx_Init=amx_InitAMX;AMXDLL;FIXEDPOINT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;WIN32;amx_Init=amx_InitAMX;AMXDLL;FIXEDPOINT;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release/obj\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Release/obj\amx_admin.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release/obj\</ObjectFileName>

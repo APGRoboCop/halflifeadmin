@@ -44,7 +44,7 @@
 #define AM_AUTHID_H
 
 #ifdef LINUX
-#  include <stdint.h>  /* uintXX_T */
+#  include <cstdint>  /* uintXX_T */
 #else
 #  if defined(_MSC_VER)
 typedef __int32 int32_t;
