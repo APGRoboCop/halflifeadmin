@@ -27,6 +27,7 @@
 #ifndef ENGINECALLBACK_H
 #include "enginecallback.h"
 #endif
+#include <progdefs.h>
 
 extern globalvars_t	*gpGlobals;
 
