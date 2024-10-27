@@ -51,8 +51,7 @@ using namespace nsAuthid;
 char AMAuthId::m_acString[STATIC_LEN] = "";
 
 void AMAuthId::f_parse_id( const char* _pcID ) {
-
-	const int BOT = 0x00544f42;
+	constexpr int BOT = 0x00544f42;
 
 	if ( _pcID == nullptr ) return;
 

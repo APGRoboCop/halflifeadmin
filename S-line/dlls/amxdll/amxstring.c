@@ -155,9 +155,9 @@ static int get_space( char** _string, size_t _iMinLen, size_t* _piStrLen )
     if ( pcNewstr == 0 ) {
       return AMX_ERR_MEMORY;
     }  // if
-    if ( g_sLstring[iLsIndex].pcString != 0 ) {
-      free( g_sLstring[iLsIndex].pcString );
-    }  // if
+
+    free(g_sLstring[iLsIndex].pcString);
+    
     g_sLstring[iLsIndex].pcString = pcNewstr;
     g_sLstring[iLsIndex].cDynamic = 1;
     g_sLstring[iLsIndex].tSpace = _iMinLen +1 ;
@@ -2930,7 +2930,7 @@ static cell AMX_NATIVE_CALL amx_strsubst( AMX* amx, cell* params )
   const char* pcStart = NULL;
   char* pcAdd = NULL;
   char* pcEOS = NULL;
-  char* pcPos = NULL;
+  const char* pcPos = NULL;
   
   const int REQNUMARGS = 4;
 

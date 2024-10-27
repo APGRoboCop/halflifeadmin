@@ -76,14 +76,14 @@ class CTimer: public CBaseEntity {
   int  ObjectCaps() override { return FCAP_ACROSS_TRANSITION; }    
   void Activate() override {}
   void SetObjectCollisionBox() override {}
-  int  Classify () override { return CLASS_NONE; };      
+  int  Classify () override { return CLASS_NONE; }
   void DeathNotice ( entvars_t *pevChild ) override {}// monster maker children use 
-  void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType) override {}
+  void TraceAttack( entvars_t *pevAttacker, float flDamage, const Vector& vecDir, TraceResult *ptr, int bitsDamageType) override {}
   int  TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType ) override {return -1;}
   int  TakeHealth( float flHealth, int bitsDamageType ) override {return -1;}
   void Killed( entvars_t *pevAttacker, int iGib ) override {}
   int  BloodColor() override { return DONT_BLEED; }
-  void TraceBleed( float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType ) override {}
+  void TraceBleed( float flDamage, const Vector& vecDir, TraceResult *ptr, int bitsDamageType ) override {}
   BOOL IsTriggered( CBaseEntity *pActivator ) override {return TRUE;}
   //  CBaseMonster *MyMonsterPointer() { return nullptr;}
   //CSquadMonster *MySquadMonsterPointer() { return nullptr;}
@@ -92,7 +92,7 @@ class CTimer: public CBaseEntity {
   void  AddPointsToTeam( int score, BOOL bAllowNegativeScore ) override {}
   BOOL  AddPlayerItem( CBasePlayerItem *pItem ) override { return 0; }
   BOOL  RemovePlayerItem( CBasePlayerItem *pItem ) override { return 0; }
-  int   GiveAmmo( int iAmount, char *szName, int iMax ) override { return -1; };
+  int   GiveAmmo( int iAmount, char *szName, int iMax ) override { return -1; }
   float GetDelay() override { return 0; }
   int   IsMoving() override { return pev->velocity != g_vecZero; }
   void  OverrideReset() override {}
@@ -115,31 +115,32 @@ class CTimer: public CBaseEntity {
 
   void Think() override;
 
-  void Touch( CBaseEntity *pOther ) override {  };
+  void Touch( CBaseEntity *pOther ) override {  }
+
   void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value ) override
   {
   }
-  void Blocked( CBaseEntity *pOther ) override { };          
+  void Blocked( CBaseEntity *pOther ) override { }
   CBaseEntity *Respawn() override { return this; }  
-  void UpdateOwner() override { return; };    
-  BOOL FBecomeProne() override {return FALSE;};   
-  Vector Center( ) override { return (pev->absmax + pev->absmin) * 0.5; }; // center point of entity
-  Vector EyePosition( ) override { return pev->origin + pev->view_ofs; };                  // position of eyes
-  Vector EarPosition( ) override { return pev->origin + pev->view_ofs; };                  // position of ears
-  Vector BodyTarget( const Vector &posSrc ) override { return Center( ); };                // position to shoot at
+  void UpdateOwner() override { return; }
+  BOOL FBecomeProne() override {return FALSE;}
+  Vector Center( ) override { return (pev->absmax + pev->absmin) * 0.5f; } // center point of entity
+  Vector EyePosition( ) override { return pev->origin + pev->view_ofs; } // position of eyes
+  Vector EarPosition( ) override { return pev->origin + pev->view_ofs; } // position of ears
+  Vector BodyTarget( const Vector &posSrc ) override { return Center( ); } // position to shoot at
   
-  int Illumination( ) override { return 0; };
+  int Illumination( ) override { return 0; }
   BOOL FVisible ( CBaseEntity *pEntity ) override { return FALSE;}
   BOOL FVisible ( const Vector &vecOrigin ) override { return FALSE;}     
   static CBaseEntity *create( char *szName, const Vector &vecOrigin, const Vector &vecAngles, edict_t *pentOwner = nullptr );
-  static void    MakeDormant() {};
+  static void    MakeDormant() {}
 
   void SetTimer(int amount) const;
   int AddTimer(AMX* amx, int iWait, int iRepeat, char* sFunction, char* sParam, edict_t *pEntity);
   void CalcNextTimer();
   int DeleteTimer(int iTimer, int iForceDelete);
 	int GetMaxVoteChoice() const;
-  int GetPlayerVote(int iIndex);
+  int GetPlayerVote(int iIndex) const;
   void SetPlayerVote(int iIndex, int iVote);
   BOOL StartVote(AMX* amx, char* sText, int iChoiceCount, int iBits, char* sFunction, char* sParam, edict_t *pEntity);
   static BOOL ValidTimerIndex(int iTimer);
@@ -152,11 +153,11 @@ class CTimer: public CBaseEntity {
   }
   
  private:
-	int m_iMaxVoteChoice;
-  int m_iNextTimer;
-  int m_iNextVoteTime;
-  int m_iVote;
-  int m_iPlayerVotes[MAX_PLAYERS + 1];
+	int m_iMaxVoteChoice = 0;
+  int m_iNextTimer = 0;
+  int m_iNextVoteTime = 0;
+  int m_iVote = 0;
+  int m_iPlayerVotes[MAX_PLAYERS + 1] = {};
   timer_struct timers[NUM_TIMERS];                                            
 };
 

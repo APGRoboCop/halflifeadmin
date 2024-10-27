@@ -118,17 +118,17 @@ BOOL CPlugin::AddCommand(char* sCmd, char* sFunction, int iAccess) {
 // re-initialize ourselves
 void CPlugin::Cleanup() {
 	if (m_pAmx != nullptr) {
-		delete(m_pAmx);
+		delete m_pAmx;
 		m_pAmx = nullptr;
 	}
 
 	if (m_pProgram != nullptr) {
-		delete[] m_pProgram;
+		delete[] static_cast<char*>(m_pProgram);
 		m_pProgram = nullptr;
 	}
 
 	if (m_pCommands != nullptr) {
-		delete(m_pCommands);
+		delete m_pCommands;
 		m_pCommands = nullptr;
 	}
 }
@@ -467,9 +467,8 @@ int CPlugin::LoadFile(char* sFilename) {
 	FILE *fp;
 	AMX_LINUX_HEADER hdr;
 
-	if ( m_pProgram != nullptr ) {
-		delete[] m_pProgram ;
-	}
+	delete[] static_cast<char*>(m_pProgram);
+
 	m_pProgram = nullptr;
 	m_pAmx = new AMX;
 
@@ -558,7 +557,7 @@ int CPlugin::LoadFile(char* sFilename) {
 				long lCodeSize;
 				if ( pTmpMemFile == nullptr ) {
 					UTIL_LogPrintf( "[ADMIN] ERROR: CPlugin::LoadFile: Loading file '%s' to memory failed: not enough memory (%i)\n", sFilename, hdr.size );
-					delete[] m_pProgram;
+					delete[] static_cast<char*>(m_pProgram);
 					fclose( fp );
 					return 0;
 				}  // if
@@ -606,7 +605,7 @@ int CPlugin::LoadFile(char* sFilename) {
 			const int iError = amx_Init(m_pAmx, m_pProgram);
 			if ( iError != AMX_ERR_NONE && iError != AMX_ERR_NOTFOUND ) {
 				UTIL_LogPrintf("[ADMIN] ERROR: CPlugin::LoadFile: Call to amx_Init on plugin '%s' returned error #%i.\n",sFilename, iError);
-				delete[] m_pProgram;
+				delete[] static_cast<char*>(m_pProgram);
 				return 0;
 			}
 			

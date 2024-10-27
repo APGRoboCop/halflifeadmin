@@ -62,7 +62,8 @@ private :
 	T* m_pData;
 
 public:
-	CLinkItem(){ m_pNext = 0; m_pData = 0;};
+	CLinkItem(){ m_pNext = 0; m_pData = 0;}
+
 	~CLinkItem(){
        if (m_pData != nullptr) {
          if ( isArray ) {
@@ -72,7 +73,8 @@ public:
 		 }
 	   }
        m_pData = 0; 
-	};
+	}
+
 	T* Data();
 	void SetData(T* pData);
 	CLinkItem<T,isArray>* NextLink();
@@ -85,8 +87,8 @@ private:
 	CLinkItem<T,isArray>* m_pFirst;
 
 public:
-	CLinkList(){ m_pFirst = 0; };
-	~CLinkList(){ Init(); };
+	CLinkList(){ m_pFirst = 0; }
+	~CLinkList(){ Init(); }
 	int AddLink(T* pData, CLinkItem<T,isArray>* pInsertBefore = nullptr);
 	int Count();
 	int DeleteLink(CLinkItem<T,isArray>* pLink);

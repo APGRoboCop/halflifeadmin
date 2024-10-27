@@ -77,10 +77,10 @@
 
 extern mapcycle_t mapcycle;
 
-DLL_GLOBAL const Vector     g_vecZero = Vector(0,0,0);   
+DLL_GLOBAL const Vector g_vecZero = Vector(0,0,0);   
 
 /* Like System_Response, but will _always_ log. */
-void System_Error(char* str, edict_t* pEntity) {
+void System_Error(const char* str, edict_t* pEntity) {
   UTIL_LogPrintf( "%s", str);
   if (pEntity != nullptr) {
     if (static_cast<int>(CVAR_GET_FLOAT("admin_debug")) != 0) {
@@ -97,7 +97,7 @@ void System_Error(char* str, edict_t* pEntity) {
  *
  *
  */
-void System_Response(char* str, edict_t *pAdminEnt) {
+void System_Response(const char* str, edict_t *pAdminEnt) {
   
   if(pAdminEnt== nullptr) {
     UTIL_LogPrintf( "%s", str);
@@ -112,7 +112,7 @@ void System_Response(char* str, edict_t *pAdminEnt) {
   stop malformed names stuffing up checking
 */
 int make_friendly(char *name, BOOL check) {
-	const int iLen = strlen(name);
+	const size_t iLen = strlen(name);
 	
 	
 	if(check && (g_NameCrashAction > 0 ) && ( iLen<=0 )  ) return 2; // the name is zero length....  
@@ -139,8 +139,8 @@ int make_friendly(char *name, BOOL check) {
  */
 const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 	static char* pcResultString = nullptr;
-	const int iLength = strlen( _pcString );
-	int iNumChars = strlen( _pcChars ); //iNumChars not used? [APG]RoboCop[CL]
+	const size_t iLength = strlen( _pcString );
+	size_t iNumChars = strlen( _pcChars ); //iNumChars not used? [APG]RoboCop[CL]
 	int iNumEscapes = 0;
 
 	// TODO: add a check for unprintable characters here
@@ -157,7 +157,7 @@ const char* escape_chars( const char* _pcString, const char* _pcChars ) {
 		return _pcString;
 	}  // if
 
-	if ( pcResultString != nullptr ) delete[] pcResultString;
+	delete[] pcResultString;
 	pcResultString = new char[iLength + iNumEscapes + 1];
 	if ( pcResultString == nullptr ) return nullptr;
 
@@ -272,7 +272,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 
 void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMore, char pszText[1024]) {
 
-  int msgShowMenu = 0;
+  int msgShowMenu;
   if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", nullptr)) == 0 ) {
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
@@ -291,7 +291,7 @@ void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMor
 // Send menu in chunks (max. 512 chars for menu and 176 for one chunk)
 void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char pszText[]) {
   
-  int msgShowMenu = 0;
+  int msgShowMenu;
   if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", nullptr)) == 0 ) {
 	  msgShowMenu = REG_USER_MSG( "ShowMenu", -1 );
   }  // if
@@ -299,7 +299,7 @@ void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char ps
   const char *pMenuList = pszText;
   const char *aMenuList = pszText;
 
-  int iCharCount = 0;
+  size_t iCharCount = 0;
   
   while ( pMenuList && *pMenuList ) 
   {
@@ -324,7 +324,7 @@ void ShowMOTD( edict_t* pev, const char *msg )
 {
   int char_count = 0;
 
-  int msgShowMOTD = 0;
+  int msgShowMOTD;
   if ( (msgShowMOTD = GET_USER_MSG_ID(PLID, "MOTD", nullptr)) == 0 ) {
 	  msgShowMOTD = REG_USER_MSG( "MOTD", -1 );
   }  // if
@@ -398,7 +398,7 @@ CBaseEntity* UTIL_PlayerByName( const char *name ) {
 }
 
 
-char* UTIL_VarArgs( char* format, ... ) {
+char* UTIL_VarArgs(const char* format, ...) {
   va_list         argptr;
   static char             acString[1024];
   
@@ -413,7 +413,7 @@ char* UTIL_VarArgs( char* format, ... ) {
 // UTIL_LogPrintf - Prints a logged message to console.
 // Preceded by LOG: ( timestamp ) < message >
 //=========================================================
-void UTIL_LogPrintf( char *fmt, ... ) {
+void UTIL_LogPrintf( const char *fmt, ... ) {
   va_list                 argptr;
   static char             acString[1024];
   
@@ -429,7 +429,7 @@ void UTIL_LogPrintf( char *fmt, ... ) {
 // UTIL_LogPrintfFNL - Prints a logged message to console but filter out newlines.
 // Preceded by LOG: ( timestamp ) < message >
 //=========================================================
-void UTIL_LogPrintfFNL( char *fmt, ... ) {
+void UTIL_LogPrintfFNL( const char *fmt, ... ) {
   va_list                 argptr;
   static char             acString[1024];
   
@@ -437,7 +437,7 @@ void UTIL_LogPrintfFNL( char *fmt, ... ) {
   vsnprintf ( acString, sizeof(acString), fmt, argptr );
   va_end   ( argptr );
   
-  int iNumChar = strlen(acString);
+  size_t iNumChar = strlen(acString);
   char* pcBufPos = acString;
   while ( (pcBufPos = strchr(pcBufPos, '\n')) ) {
     if ( *(pcBufPos + 1) == '\0' ) break;
@@ -664,43 +664,36 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 	if ( pFileList && length ) {
 		mapcycle_item_s *last = nullptr;
 		// the first map name in the file becomes the default
-		while ( true ) {
-			char szMap[ MAP_NAME_LENGTH ];
-			char szBuffer[ MAX_RULE_BUFFER ];
-			memset( szBuffer, 0, MAX_RULE_BUFFER );
-			
-			pFileList = COM_Parse( pFileList );
-			if ( strlen( com_token ) <= 0 ) break;
-	  
-			am_strncpy( szMap, com_token, sizeof(szMap) );
-			
-			// Any more tokens on this line?
-			if ( COM_TokenWaiting( pFileList ) ) {
-				pFileList = COM_Parse( pFileList );
-				if ( com_token[0]  != '\0') {
-					int hasbuffer = 0;
-					hasbuffer = 1;
-					am_strncpy( szBuffer, com_token, sizeof(szMap) );
-				}  // if
-			}  // if
-	  
-			// Check map
-			if ( IS_MAP_VALID( szMap ) ) {
-	     
-				item = new mapcycle_item_s;
-				// only set when first item
-				if ( !last ) cycle->items = item;
-				if ( !last ) last = item;
-				
-				strcpy( item->mapname, szMap );
-				item->next = cycle->items;
-				last->next = item;
-				last = item;
-			} else {
-				ALERT( at_console, "Skipping %s from mapcycle, not a valid map\n", szMap );
-			}  // if-else
-
-		}  // while
+		while (true) {
+    char szMap[MAP_NAME_LENGTH];
+    char szBuffer[MAX_RULE_BUFFER];
+    memset(szBuffer, 0, MAX_RULE_BUFFER);
+    pFileList = COM_Parse(pFileList);
+    size_t tokenLength = strlen(com_token); // Store the result of strlen in a variable
+    if (tokenLength <= 0) break;
+    am_strncpy(szMap, com_token, sizeof(szMap));
+    // Any more tokens on this line?
+    if (COM_TokenWaiting(pFileList)) {
+        pFileList = COM_Parse(pFileList);
+        if (com_token[0] != '\0') {
+            am_strncpy(szBuffer, com_token, sizeof(szMap));
+        }
+    }
+    // Check map
+    if (IS_MAP_VALID(szMap)) {
+        item = new mapcycle_item_s;
+        // only set when first item
+        if (!last) cycle->items = item;
+        if (!last) last = item;
+        strcpy(item->mapname, szMap);
+        item->next = cycle->items;
+        last->next = item;
+        last = item;
+    } else {
+        ALERT(at_console, "Skipping %s from mapcycle, not a valid map\n", szMap);
+    }
+}
+  // while
       
 		FREE_FILE( aFileList );
     }  // if
@@ -940,7 +933,7 @@ char* GetModDir() {
 	static char strGameDir[2048];
   
   (*g_engfuncs.pfnGetGameDir)(strGameDir);
-  int iPos = strlen(strGameDir) - 1;
+  size_t iPos = strlen(strGameDir) - 1;
 
  if(strchr(strGameDir,'/') )
   {  
@@ -1055,7 +1048,7 @@ void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg ) {
 }
 
 
-void ClientCommand (edict_t* pEdict, char* szFmt, ...) {
+void ClientCommand (edict_t* pEdict, const char* szFmt, ...) {
 
   if ( ptAM_botProtection && static_cast<int>(ptAM_botProtection->value) == 1 ) {
     if ( pEdict && GETPLAYERWONID(pEdict) == 0 ) {
@@ -1202,7 +1195,7 @@ int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAc
 
     GET_GAME_DIR(acFilePath);
 
-    int iPathLen = strlen( acFilePath );
+    size_t iPathLen = strlen( acFilePath );
 
     /* check if the file path is too long for our buffer */
     iPathLen += 1 + strlen( pcFilename );

@@ -50,7 +50,7 @@
 #  include "meta_api.h"
 #endif
 
-static char const vstring[] = "\n$Pg: Admin Mod -- " MOD_VERSION " | " __DATE__ " - " __TIME__ " $\n";
+static constexpr char vstring[] = "\n$Pg: Admin Mod -- " MOD_VERSION " | " __DATE__ " - " __TIME__ " $\n";
 
 extern AMXINIT amx_Init;
 extern AMXREGISTER amx_Register;

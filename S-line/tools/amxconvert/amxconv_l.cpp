@@ -1,13 +1,12 @@
 #include "amxconv_l.h"
 #include "amx_l.h"
 
-const char OFFSET_DIFF_V5 = 12;
-const char OFFSET_DIFF_V4 = 8;
+constexpr char OFFSET_DIFF_V5 = 12;
+constexpr char OFFSET_DIFF_V4 = 8;
 
 int check_header_type(const AMX_LINUX_HEADER& _oLinHeader, int& _iSizeChange)
 {
-
-    const long c_lShortMax = 0xffff;
+	constexpr long c_lShortMax = 0xffff;
 
     if(_oLinHeader.magic != AMX_MAGIC) {
         return INVAL_AMX_HDR;
@@ -41,7 +40,8 @@ int check_header_type(const AMX_LINUX_HEADER& _oLinHeader, int& _iSizeChange)
 
     } // if-else
 
-    return INVAL_AMX;
+    //return INVAL_AMX;
+
 } // check_header_type(amx_linux_header&)
 
 // convert header from Windows to Linux format

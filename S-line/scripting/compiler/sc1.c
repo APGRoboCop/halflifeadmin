@@ -758,15 +758,14 @@ static void parserespf(char *filename,char *iname,char *oname,
 {
 #define MAX_OPTIONS     100
   FILE *fp;
-  char *string, *ptr, **argv;
+  char *string, **argv;
   int argc;
-  long size;
 
   if ((fp=fopen(filename,"rt"))==NULL)
     error(100,filename);        /* error reading input file */
   /* load the complete file into memory */
   fseek(fp,0L,SEEK_END);
-  size=ftell(fp);
+  const long size = ftell(fp);
   fseek(fp,0L,SEEK_SET);
   assert(size<INT_MAX);
   if ((string=(char *)malloc((int)size+1))==NULL)
@@ -781,7 +780,7 @@ static void parserespf(char *filename,char *iname,char *oname,
   if ((argv=(char **)malloc(MAX_OPTIONS*sizeof(char*)))==NULL)
     error(103);                 /* insufficient memory */
   /* fill the options table */
-  ptr=strtok(string," \t\r\n");
+  char* ptr = strtok(string, " \t\r\n");
   for (argc=1; argc<MAX_OPTIONS && ptr!=NULL; argc++) {
     /* note: the routine skips argv[0], for compatibility with main() */
     argv[argc]=ptr;

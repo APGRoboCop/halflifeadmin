@@ -57,10 +57,12 @@
 #endif
 
 AmFSNode::AmFSNode()
+	: m_acFullpath(""),
+	  m_bIsSet(false),
+	  m_iFiledes(0),
+	  m_oStat(), // Assuming m_acFullpath is a string or similar type [APG]RoboCop[CL]
+	  m_poDirectoryObject(nullptr) // Assuming m_oStat has a default constructor
 {
-	m_iFiledes = 0;
-	m_bIsSet = false;
-	m_poDirectoryObject = nullptr;
 }
 
 AmFSNode::AmFSNode(const char* _fullpath)
@@ -87,15 +89,15 @@ AmFSNode::AmFSNode(int _filedes) : m_iFiledes(_filedes)
 
 AmFSNode::~AmFSNode()
 {
-	if (nullptr != m_poDirectoryObject) delete m_poDirectoryObject;
+	delete m_poDirectoryObject;
 }
 
 void AmFSNode::set(const char* _fullpath)
 {
 	m_iFiledes = 0;
-	strncpy(m_acFullpath, _fullpath, PATH_MAX);
+	strncpy(m_acFullpath, _fullpath, PATH_MAX - 1); // Copy up to PATH_MAX - 1 characters [APG]RoboCop[CL]
+	m_acFullpath[PATH_MAX - 1] = '\0'; // Null-terminate within bounds
 	m_stat_node();
-	m_acFullpath[PATH_MAX] = '\0';
 }
 
 void AmFSNode::set(const char* _path, const char* _nodename)

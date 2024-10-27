@@ -20,10 +20,9 @@ SC_FUNC int strexpand(char *dest, unsigned char *source, int maxlen, unsigned ch
 {
   unsigned char stack[STACKSIZE];
   short c, top = 0;
-  int len;
 
   assert(maxlen > 0);
-  len = 1;              /* already 1 byte for '\0' */
+  int len = 1;              /* already 1 byte for '\0' */
   for (;;) {
 
     /* Pop byte from stack or read byte from the input string */

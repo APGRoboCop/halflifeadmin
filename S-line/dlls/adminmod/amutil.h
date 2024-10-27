@@ -150,12 +150,12 @@ void sprintmd5( char* _pcTarget, const unsigned char* _pucMD5Src );
  
 // Returns true if this line should be a comment, false otherwise. 
 inline bool is_comment(char cChar) {
-	return ((cChar == '#' || cChar == '/' || cChar == ';') ? true : false);
+	return ((cChar == '#' || cChar == '/' || cChar == ';'));
 } 
 
 
 inline bool is_comment(char* pcChar) {
-	return ((*pcChar == '#' || (*pcChar == '/' && *(pcChar+1) == '/') || *pcChar == ';') ? true : false);
+	return ((*pcChar == '#' || (*pcChar == '/' && *(pcChar+1) == '/') || *pcChar == ';'));
 } 
 
 #endif /* _AMUTIL_H_ */

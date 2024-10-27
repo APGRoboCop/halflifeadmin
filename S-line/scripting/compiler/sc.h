@@ -27,6 +27,16 @@
   #include <setjmp.h>
 #endif
 
+#ifdef _WIN32
+#define unlink _unlink
+#define chdir _chdir
+#define access _access
+#define getch _getch
+
+#define strdup _strdup
+#define stricmp _stricmp
+#endif
+
 #include <stdint.h>
 
 #include "osdefs.h"

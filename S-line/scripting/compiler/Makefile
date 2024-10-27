@@ -10,7 +10,7 @@ INCDIRS = -I $(AMXINCD)
 
 # debug mode
 #CFLAGS += -g -ggdb
-CFLAGS += -O2 -msse2
+CFLAGS += -O2 -msse2 -std=gnu99
 
 ifeq "$(MARCH)" "x86_64"
 	CFLAGS += -DTARGET_64BIT

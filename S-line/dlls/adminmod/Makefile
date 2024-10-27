@@ -145,7 +145,7 @@ CXX=g++ -m32
 OPT=dbg
 SQL=no
 MM=mm
-REL=beta6
+REL=beta7
 
 default: $(DEFTARGET)
 
@@ -278,7 +278,7 @@ else
 	BETA = -DBETA=\"$(REL)\"
 endif
 
-BASE_CFLAGS=-include apsymbols.h -m32 -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
+BASE_CFLAGS=-include apsymbols.h -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Wno-write-strings -Wno-attributes \
 	-Wno-unknown-pragmas -Wno-macro-redefined -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp -DLINUX -DVERSION=\"$(VERSION)\" $(BETA)
 	
 XTFLAGS= -DTZONE=\"$(TZONE)\"
@@ -420,7 +420,7 @@ DEP+=$(addprefix $(OBJDIR)/,$(subst .c,.dep,$(CSRC)))
 #
 # Libraries
 #
-LDFLAGS=-ldl -lcrypt -lm -m32
+LDFLAGS=-ldl -lcrypt -lm
 LIBADD=   
 
 ifeq "$(ARCH)" "x86_64"

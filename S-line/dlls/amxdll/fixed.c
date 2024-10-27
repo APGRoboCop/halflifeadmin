@@ -27,8 +27,8 @@ static cell AMX_NATIVE_CALL fixed(AMX *amx,cell *params)
 
 static cell AMX_NATIVE_CALL fixedstr(AMX *amx,cell *params)
 {
-  char str[50],*ptr;
-  cell *cstr,intpart,decimals,mult;
+  char str[50];
+  cell *cstr;
   int len;
 
   amx_GetAddr(amx,params[1],&cstr);
@@ -38,10 +38,10 @@ static cell AMX_NATIVE_CALL fixedstr(AMX *amx,cell *params)
     return 0;
   } /* if */
   amx_GetString(str,cstr);
-  ptr=str;
-  intpart=0;
-  decimals=0;
-  mult=1;
+  const char* ptr = str;
+  cell intpart = 0;
+  cell decimals = 0;
+  cell mult = 1;
   while (isdigit(*ptr)) {
     intpart=intpart*10 + (*ptr-'0');
     ptr++;

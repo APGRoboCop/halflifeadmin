@@ -40,6 +40,6 @@
  *
  */
 
-char* COMPILE_DTTM = __DATE__;
+const char* COMPILE_DTTM = __DATE__;
 
-char* COMPILE_DATE = __DATE__;
+const char* COMPILE_DATE = __DATE__;

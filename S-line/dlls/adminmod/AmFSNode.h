@@ -137,7 +137,7 @@ protected:
 	
 private:
 
-	AmDir( int dirdes ) {};
+	AmDir( int dirdes ) {}
 	void set( int filedes ) override;
 
     int m_iNumDirEntries;
@@ -194,27 +194,39 @@ inline AmDir::~AmDir()
 
 
 #ifdef WIN32
-inline AmDir::AmDir() : AmFSNode() 
+inline AmDir::AmDir()
+	:
+	m_pcDirEntryName(nullptr),
+	m_iNumDirEntries(0),
+	m_iCurrDirEntryNum(0),
+	m_liDirHandle(-1),
+	m_oDirEntry(),
+	m_poDirEntries(nullptr) // Assuming m_oDirEntry has a default constructor
 {
-    m_liDirHandle = -1; 
-	m_pcDirEntryName = nullptr;
-	m_poDirEntries = nullptr;
 }
 
 
-inline AmDir::AmDir( const char* fullpath ) : AmFSNode(fullpath) 
+inline AmDir::AmDir(const char* fullpath)
+	: AmFSNode(fullpath),
+	  m_pcDirEntryName(nullptr),
+	  m_iNumDirEntries(0),
+	  m_iCurrDirEntryNum(0),
+	  m_liDirHandle(-1), // Initialize m_iNumDirEntries
+	  m_oDirEntry(), // Initialize m_iCurrDirEntryNum
+	  m_poDirEntries(nullptr) // Initialize m_oDirEntry (assuming it has a default constructor)
 {
-    m_liDirHandle = -1; 
-	m_pcDirEntryName = nullptr;
-	m_poDirEntries = nullptr;
 }
 
 
-inline AmDir::AmDir( const char* path, const char* dirname ) : AmFSNode(path, dirname) 
+inline AmDir::AmDir(const char* path, const char* dirname)
+	: AmFSNode(path, dirname),
+	m_pcDirEntryName(nullptr),
+	m_iNumDirEntries(0),
+	m_iCurrDirEntryNum(0),
+	m_liDirHandle(-1), // Initialize m_iNumDirEntries
+	m_oDirEntry(), // Initialize m_iCurrDirEntryNum
+	m_poDirEntries(nullptr) // Initialize m_oDirEntry (assuming it has a default constructor)
 {
-    m_liDirHandle = -1; 
-	m_pcDirEntryName = nullptr;
-	m_poDirEntries = nullptr;
 }
 
 inline AmDir::~AmDir() 

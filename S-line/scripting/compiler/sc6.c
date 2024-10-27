@@ -316,19 +316,17 @@ static cell do_symbol(FILE *fbin,char *params,cell opcode)
 {
   char *endptr;
   ucell offset, clen, flags;
-  int len;
-  unsigned char mclass,type;
 
-  for (endptr=params; !isspace(*endptr) && endptr!='\0'; endptr++)
+  for (endptr=params; !isspace(*endptr) && endptr!= (void*)0; endptr++)
     /* nothing */;
   assert(*endptr==' ');
 
-  len=(int)(endptr-params);
+  int len = (int)(endptr - params);
   assert(len>0 && len<sNAMEMAX);
   /* first get the other parameters from the line */
   offset=hex2long(endptr,&endptr);
-  mclass=(unsigned char)hex2long(endptr,&endptr);
-  type=(unsigned char)hex2long(endptr,NULL);
+  unsigned char mclass = (unsigned char)hex2long(endptr, &endptr);
+  unsigned char type = (unsigned char)hex2long(endptr,NULL);
   flags=type + 256*mclass;
   /* now finish up the name (overwriting the input line) */
   params[len++]='\0';           /* zero-terminate */
@@ -355,10 +353,9 @@ static cell do_symbol(FILE *fbin,char *params,cell opcode)
 
 static cell do_switch(FILE *fbin,char *params,cell opcode)
 {
-  int i;
-  ucell p;
+	ucell p;
 
-  i=(int)hex2long(params,NULL);
+	const int i = (int)hex2long(params,NULL);
   assert(i>=0 && i<labnum);
 
   if (fbin!=NULL) {
@@ -375,11 +372,10 @@ static cell do_switch(FILE *fbin,char *params,cell opcode)
 #endif
 static cell do_case(FILE *fbin,char *params,cell opcode)
 {
-  int i;
-  ucell p,v;
+	ucell p,v;
 
   v=hex2long(params,&params);
-  i=(int)hex2long(params,NULL);
+	const int i = (int)hex2long(params,NULL);
   assert(i>=0 && i<labnum);
 
   if (fbin!=NULL) {
@@ -548,8 +544,7 @@ static OPCODE opcodelist[] = {
 #define MAX_INSTR_LEN   30
 static int findopcode(char *instr,int maxlen)
 {
-  int low,high,mid,cmp;
-  char str[MAX_INSTR_LEN];
+	char str[MAX_INSTR_LEN];
 
   if (maxlen>=MAX_INSTR_LEN)
     return 0;
@@ -559,12 +554,12 @@ static int findopcode(char *instr,int maxlen)
    * the assembler is case insensitive to instructions (but case sensitive
    * to symbols)
    */
-  low=1;                /* entry 0 is reserved (for "not found") */
-  high=(sizeof opcodelist / sizeof opcodelist[0])-1;
+  int low = 1;                /* entry 0 is reserved (for "not found") */
+  int high = (sizeof opcodelist / sizeof opcodelist[0]) - 1;
   while (low<high) {
-    mid=(low+high)/2;
+	  const int mid = (low + high) / 2;
     assert(opcodelist[mid].name!=NULL);
-    cmp=stricmp(str,opcodelist[mid].name);
+	  const int cmp = stricmp(str, opcodelist[mid].name);
     if (cmp>0)
       low=mid+1;
     else
@@ -584,7 +579,7 @@ SC_FUNC void assemble(FILE *fout,FILE *fin)
   int numpublics,numnatives,numlibraries,numpubvars,numtags;
   char line[300],*instr,*params;
   int i,pass,len;
-  symbol *sym, **nativelist;
+  symbol *sym;
   constval *constptr;
   cell mainaddr;
 
@@ -727,7 +722,8 @@ SC_FUNC void assemble(FILE *fout,FILE *fin)
    * have all native functions in sorted order.
    */
   if (numnatives>0) {
-    nativelist=(symbol **)malloc(numnatives*sizeof(symbol *));
+	  symbol **nativelist;
+	  nativelist=(symbol **)malloc(numnatives*sizeof(symbol *));
     if (nativelist==NULL)
       error(103);               /* insufficient memory */
     #if !defined NDEBUG

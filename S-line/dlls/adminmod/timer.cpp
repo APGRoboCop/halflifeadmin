@@ -147,7 +147,8 @@ int CTimer::GetMaxVoteChoice() const
 	}
 }
 
-int CTimer::GetPlayerVote(int iIndex) {
+int CTimer::GetPlayerVote(int iIndex) const
+{
   if (m_iVote == INVALID_TIMER) {
     return INVALID_TIMER;
   } else if (iIndex < 0 || iIndex > MAX_PLAYERS) {
@@ -268,7 +269,7 @@ void CTimer::Think() {
 	if (iTimer == m_iVote) {
 	  int iMaxPossibleVotes = 0;
 	  int iMaxVotes = 0;
-	  int iVotes[11] = {0};
+	  int iVotes[11] = {};
 	  int iWinningVote = 0;
 	  
 	  DEBUG_LOG( 4, ("CTimer::Think: Vote ended.") );

@@ -64,7 +64,7 @@ extern char g_acNextMap[BUF_SIZE];
 
 
 struct auth_struct {
-	enum { dirty = 0, clean };      // Possible player states
+	enum : std::uint8_t { dirty = 0, clean };      // Possible player states
 	int state;                      // State of the player: dirty: not put in server yet, clean: put in server
 	char sUserName[USERNAME_SIZE];  // User name of the player
 	char sPassword[PASSWORD_SIZE];  // Password the player used
@@ -131,7 +131,7 @@ typedef struct {
 #endif
 
 
-enum uidt {uid_none = 0, uid_invalid, uid_index, uid_sessionID, uid_wonID};
+enum uidt : std::uint8_t {uid_none = 0, uid_invalid, uid_index, uid_sessionID, uid_wonID};
 
 
 #ifdef USE_METAMOD
@@ -223,8 +223,8 @@ plugin_result HandleVersion(edict_t* pEntity);
 CPlugin* GetPlugin(AMX* amx);
 ///CEM
 
-void System_Error(char* str, edict_t* pEntity);
-void System_Response(char *str,edict_t *);
+void System_Error(const char* str, edict_t* pEntity);
+void System_Response(const char* str, edict_t*);
 
 void AddUserAuth(char* sName, char* sIP, edict_t* pEntity);
 int GetFreeSlots(edict_t* pEntityIgnore = nullptr);

@@ -44,6 +44,8 @@
  *
  */
 
+#include <cstdint>
+
 #pragma once
 #define BUF_SIZE 100 // general buffer size
 #define PLUGIN_CMD_SIZE 100
@@ -52,12 +54,12 @@
 #define INVALID_INDEX (-1)
 #define INT_MAX_PLAYERS 32
 
-const int ACCESS_ALL = 0;
-const int ACCESS_IMMUNITY = 4096;
-const int ACCESS_RESERVE_NICK = 16384;
-const int ACCESS_RESERVE_SPOT = 32768;
+constexpr int ACCESS_ALL = 0;
+constexpr int ACCESS_IMMUNITY = 4096;
+constexpr int ACCESS_RESERVE_NICK = 16384;
+constexpr int ACCESS_RESERVE_SPOT = 32768;
 
-enum plugin_result {
+enum plugin_result : std::int8_t {
 	PLUGIN_HANDLED = -1,            // Handled successfully.  Do not continue.
 	PLUGIN_ERROR = 0,               // Error.  Continue.
 	PLUGIN_CONTINUE = 1,            // Handled successfully.  Continue.
@@ -72,7 +74,7 @@ enum plugin_result {
 #include "extdll.h"
 
 int GetUserAccess(edict_t* pEntity);
-void System_Response(char *str,edict_t *);
+void System_Response(const char *str,edict_t *);
 
 /* Yeah, it's kludgy to redefine this stuff here, but I
 didn't feel like messing with users.h. */
@@ -99,7 +101,7 @@ didn't feel like messing with users.h. */
 	typedef int (*AMXSETSTRING)(cell *,char *,int);
 #endif
 
-void UTIL_LogPrintf( char *fmt, ... );
+void UTIL_LogPrintf( const char *fmt, ... );
 
 typedef struct {
 	char sCmd[PLUGIN_CMD_SIZE];

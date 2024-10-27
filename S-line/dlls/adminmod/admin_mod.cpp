@@ -503,7 +503,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
     UTIL_LogPrintf("[ADMIN] Client with non printing characters in name connected: '%s'.\n", sName);
     UTIL_LogPrintf("[ADMIN] Client dropped for security reasons.\n");
     CLIENT_CONNECT_RETURN(FALSE);
-  };
+  }
 
   if (!g_fInitialized) {
     AM_ClientStart(pEntity);
@@ -1033,9 +1033,8 @@ void AM_Stop() {
 
 
 int AM_ClientUserInfoChanged( edict_t *pEntity, char *infobuffer, bool bForce ) {
-
-  const int c_KICK_MSG_LEN = 250;
-  const int c_SERVER_CMD_LEN= 256;
+	constexpr int c_KICK_MSG_LEN = 250;
+	constexpr int c_SERVER_CMD_LEN= 256;
 
   int iKick = 0;
   const int iIndex = ENTINDEX(pEntity);
@@ -1636,7 +1635,7 @@ int AM_StartFrame() {
 					char cfgfile[PATH_MAX];
 					snprintf( cfgfile, PATH_MAX-1, "exec %s/adminmod.cfg", CVAR_GET_STRING("amv_default_config_dir") );
 					UTIL_LogPrintf( "Trying to load default Admin Mod config file: %s.\n", cfgfile );
-					const int pos = strlen(cfgfile);
+					const size_t pos = strlen(cfgfile);
 					cfgfile[pos] = '\n';
 					cfgfile[pos+1] = '\0';
 					SERVER_COMMAND( cfgfile );

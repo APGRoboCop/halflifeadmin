@@ -60,43 +60,45 @@ typedef unsigned long long uint64_t;
 //#  define snprintf _snprintf
 #endif  // LINUX
 
+#include <cstdint>
 #include <cstdio>  /* snprintf */
 
 namespace nsAuthid {
-
-	const char STATIC_LEN = 40;
-	const uint32_t BOT_ID = 0;
-    const uint32_t LAN_ID = ~0;
-    const uint32_t LOOP_ID = 1;
+	constexpr char STATIC_LEN = 40;
+	constexpr uint32_t BOT_ID = 0;
+	constexpr uint32_t LAN_ID = ~0;
+	constexpr uint32_t LOOP_ID = 1;
 #ifdef LINUX
     const uint32_t INVAL_ID_S = 0xfffffffeU;
 	const uint64_t INVAL_ID_L = 0xfffffffffffffffeULL;
 #else
-    const uint32_t INVAL_ID_S = 0xfffffffe;
-	const uint64_t INVAL_ID_L = 0xfffffffffffffffe;
+	constexpr uint32_t INVAL_ID_S = 0xfffffffe;
+	constexpr uint64_t INVAL_ID_L = 0xfffffffffffffffe;
 #endif
 
-	const char HIGH = 1;
-	const char LOW  = 0;
+	constexpr char HIGH = 1;
+	constexpr char LOW  = 0;
 }
 
 class AMAuthId {
 
  private:
-	enum { undef, steam, steam2, valve, valve2 };
+	enum : std::uint8_t { undef, steam, steam2, valve, valve2 };
 	
  public:
 	// Constructors
-	AMAuthId() : m_bIdIsSet(false), m_bIsWonid(true), m_cAuthidType(undef), m_uiWonid(nsAuthid::INVAL_ID_S), m_uiAuthid64(nsAuthid::INVAL_ID_L)  {};
-	AMAuthId( uint32_t w) : m_bIdIsSet(true), m_bIsWonid(true), m_cAuthidType(undef), m_uiWonid(w), m_uiAuthid64(nsAuthid::INVAL_ID_L)    {};
-	AMAuthId( uint32_t w, uint64_t s) : m_bIdIsSet(true), m_bIsWonid(false), m_cAuthidType(undef), m_uiWonid(w), m_uiAuthid64(s)   {};
+	AMAuthId() : m_bIdIsSet(false), m_bIsWonid(true), m_cAuthidType(undef), m_uiWonid(nsAuthid::INVAL_ID_S), m_uiAuthid64(nsAuthid::INVAL_ID_L)  {}
+	AMAuthId( uint32_t w) : m_bIdIsSet(true), m_bIsWonid(true), m_cAuthidType(undef), m_uiWonid(w), m_uiAuthid64(nsAuthid::INVAL_ID_L)    {}
+	AMAuthId( uint32_t w, uint64_t s) : m_bIdIsSet(true), m_bIsWonid(false), m_cAuthidType(undef), m_uiWonid(w), m_uiAuthid64(s)   {}
+
 	AMAuthId( uint32_t w, uint32_t s1, uint32_t s2) : m_bIdIsSet(true), m_bIsWonid(false), m_cAuthidType(undef), m_uiWonid(w) 
 	{
 		m_uiAuthid32[nsAuthid::HIGH] = s1;
 		m_uiAuthid32[nsAuthid::LOW]  = s2;
-	};
-	AMAuthId( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); };
-	AMAuthId( const char* _pcID )          { f_parse_id( _pcID ); };
+	}
+
+	AMAuthId( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); }
+	AMAuthId( const char* _pcID )          { f_parse_id( _pcID ); }
 
 	// Copy constructor
 	AMAuthId( const AMAuthId& rhs ) {
@@ -108,7 +110,7 @@ class AMAuthId {
 	}
 
 	// Destructor
-	~AMAuthId() = default;;
+	~AMAuthId() = default;
 
 	// Assignment operators
 	AMAuthId& operator=( const AMAuthId& rhs ) {
@@ -159,15 +161,16 @@ class AMAuthId {
 	}
 #endif
 
-	AMAuthId& operator=( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); return *this; };
-	AMAuthId& operator=( const char* _pcID )          { f_parse_id(_pcID ); return *this; };
+	AMAuthId& operator=( const unsigned char* _pcID ) { f_parse_id( reinterpret_cast<const char*>(_pcID) ); return *this; }
+	AMAuthId& operator=( const char* _pcID )          { f_parse_id(_pcID ); return *this; }
 
 
 	// Conversions
-	operator int() const               { return static_cast<int>(m_uiWonid); };
-	operator unsigned int() const      { return m_uiWonid; };
-	operator long int() const          { return static_cast<long int>(m_uiWonid); };
-	operator unsigned long int() const { return m_uiWonid; };
+	operator int() const               { return static_cast<int>(m_uiWonid); }
+	operator unsigned int() const      { return m_uiWonid; }
+	operator long int() const          { return static_cast<long int>(m_uiWonid); }
+	operator unsigned long int() const { return m_uiWonid; }
+
 	operator bool() const { 
 		if ( !m_bIdIsSet ) return false;
 		if ( m_bIsWonid ) return ( m_uiWonid != 0 );
@@ -233,17 +236,17 @@ class AMAuthId {
 	uint32_t authid_y() const { return m_uiAuthid32[nsAuthid::HIGH]; }
 	uint32_t authid_z() const { return m_uiAuthid32[nsAuthid::LOW];  }
 
-	bool is_wonid() const   { return ( m_bIdIsSet &&  m_bIsWonid ); };
-	bool is_authid() const  { return ( m_bIdIsSet && !m_bIsWonid ); };
-	bool is_steamid() const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == steam || m_cAuthidType == steam2) ); };
-	bool is_valveid() const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == valve || m_cAuthidType == valve2) ); };
+	bool is_wonid() const   { return ( m_bIdIsSet &&  m_bIsWonid ); }
+	bool is_authid() const  { return ( m_bIdIsSet && !m_bIsWonid ); }
+	bool is_steamid() const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == steam || m_cAuthidType == steam2) ); }
+	bool is_valveid() const { return ( m_bIdIsSet && !m_bIsWonid && (m_cAuthidType == valve || m_cAuthidType == valve2) ); }
 
-	bool is_set() const    { return m_bIdIsSet; };
-	bool is_botid() const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::BOT_ID  ); };
-	bool is_lanid() const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::LAN_ID  ); };
-	bool is_loopid() const { return ( !m_bIsWonid && m_uiWonid == nsAuthid::LOOP_ID ); };
+	bool is_set() const    { return m_bIdIsSet; }
+	bool is_botid() const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::BOT_ID  ); }
+	bool is_lanid() const  { return (  m_bIsWonid && m_uiWonid == nsAuthid::LAN_ID  ); }
+	bool is_loopid() const { return ( !m_bIsWonid && m_uiWonid == nsAuthid::LOOP_ID ); }
 
-	
+
 	// utility functions
 	static bool is_authid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
@@ -253,72 +256,72 @@ class AMAuthId {
 		          (_pcID[0] == 'V' && _pcID[1] == 'A' && _pcID[2] == 'L' && 
 				   _pcID[3] == 'V' && _pcID[4] == 'E')) 
 				  && _pcID[5] == '_' && _pcID[6] >= 0x30 && _pcID[6] <= 0x39 );
-	};
+	}
 
 	static bool is_steamid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( _pcID[0] == 'S' && _pcID[1] == 'T' && _pcID[2] == 'E' && 
 				 _pcID[3] == 'A' && _pcID[4] == 'M' && _pcID[5] == '_' && 
 				 _pcID[6] >= 0x30 && _pcID[6] <= 0x39 );
-	};
+	}
 
 	static bool is_valveid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( _pcID[0] == 'V' && _pcID[1] == 'A' && _pcID[2] == 'L' && 
 				 _pcID[3] == 'V' && _pcID[4] == 'E' && _pcID[5] == '_' && 
 				 _pcID[6] >= 0x30 && _pcID[6] <= 0x39 );
-	};
+	}
 
 	static bool is_botid( const char* _pcID ) {
-		const int BOT = 0x00544f42;
+		constexpr int BOT = 0x00544f42;
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
 		return ( BOT == *(reinterpret_cast<const int*>(_pcID)) );
-	};
+	}
 
 	// utility functions
 	static bool is_pending( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
-		const int STEA = 0x41455453;
-		const int M_ID = 0x44495f4d;
-		const int VALV = 0x564c4156;
-		const int E_ID = 0x44495f45;
-		const int uPEN = 0x4e45505f;
-		const int DING = 0x474e4944;
-		const int uLAN = 0x4e414c5f;
+		constexpr int STEA = 0x41455453;
+		constexpr int M_ID = 0x44495f4d;
+		constexpr int VALV = 0x564c4156;
+		constexpr int E_ID = 0x44495f45;
+		constexpr int uPEN = 0x4e45505f;
+		constexpr int DING = 0x474e4944;
+		constexpr int uLAN = 0x4e414c5f;
 
 		const int* pcI = reinterpret_cast<const int*>(_pcID);
 		return (   ( (*pcI == VALV && *(pcI+1) == E_ID) || (*pcI == STEA && *(pcI+1) == M_ID)     ) 
 				&& (  *(pcI+2) == uLAN                  || (*(pcI+2) == uPEN && *(pcI+3) == DING) ) );
-	};
+	}
 
 	static bool is_loopid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
-		const int STEA = 0x41455453;
-		const int M_ID = 0x44495f4d;
-		const int VALV = 0x564c4156;
-		const int E_ID = 0x44495f45;
-		const int uLOO = 0x4f4f4c5f;
-		const int PBAC = 0x43414250;
+		constexpr int STEA = 0x41455453;
+		constexpr int M_ID = 0x44495f4d;
+		constexpr int VALV = 0x564c4156;
+		constexpr int E_ID = 0x44495f45;
+		constexpr int uLOO = 0x4f4f4c5f;
+		constexpr int PBAC = 0x43414250;
 
 		const int* pcI = reinterpret_cast<const int*>(_pcID);
 		return (   ( (*pcI == VALV && *(pcI+1) == E_ID) || (*pcI == STEA && *(pcI+1) == M_ID) ) 
 				&& (*(pcI+2) == uLOO) && (*(pcI+3) == PBAC) );
-	};
+	}
 
 	static bool is_lanid( const char* _pcID ) {
 		if ( _pcID == nullptr || *_pcID == '\0' ) return false;
-		const int STEA = 0x41455453;
-		const int M_ID = 0x44495f4d;
-		const int VALV = 0x564c4156;
-		const int E_ID = 0x44495f45;
-		const int uLAN = 0x4e414c5f;
+		constexpr int STEA = 0x41455453;
+		constexpr int M_ID = 0x44495f4d;
+		constexpr int VALV = 0x564c4156;
+		constexpr int E_ID = 0x44495f45;
+		constexpr int uLAN = 0x4e414c5f;
 
 		const int* pcI = reinterpret_cast<const int*>(_pcID);
 		return (   ( (*pcI == VALV && *(pcI+1) == E_ID) || (*pcI == STEA && *(pcI+1) == M_ID) ) 
 				&& (*(pcI+2) == uLAN) );
-	};
+	}
 
- protected:	
+protected:	
 	// utility function
 	static bool same_id_type_class ( const AMAuthId& lhs, const AMAuthId& rhs ) {
 		return (    ( lhs.m_cAuthidType == rhs.m_cAuthidType )
@@ -326,9 +329,9 @@ class AMAuthId {
 				 || ( lhs.m_cAuthidType == steam2 && rhs.m_cAuthidType == steam  )
 				 || ( lhs.m_cAuthidType == valve  && rhs.m_cAuthidType == valve2 )
 				 || ( lhs.m_cAuthidType == valve2 && rhs.m_cAuthidType == valve  ) );
-	};
+	}
 
- private:
+private:
 
 	// members
 	bool     m_bIdIsSet;

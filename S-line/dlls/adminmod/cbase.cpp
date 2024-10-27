@@ -143,7 +143,7 @@ int CBaseEntity :: IsDormant()
 BOOL CBaseEntity :: IsInWorld()
 {
   
-  return TRUE;
+  return 1;
 }
 
 int CBaseEntity::ShouldToggle( USE_TYPE /*useType*/, BOOL /*currentState*/ )
@@ -201,24 +201,24 @@ CBaseEntity *Create( const char *szName, const Vector &vecOrigin, const Vector &
   TraceAttack
   ================
 */
-void CBaseEntity::TraceAttack(entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType)
+void CBaseEntity::TraceAttack(entvars_t* pevAttacker, float flDamage, const Vector& vecDir, TraceResult* ptr, int bitsDamageType)
 {
   
   
 }
 
-void CBaseEntity :: TraceBleed( float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType )
+void CBaseEntity::TraceBleed(float flDamage, const Vector& vecDir, TraceResult* ptr, int bitsDamageType)
 {
   
 }
 
 BOOL CBaseEntity :: FVisible ( CBaseEntity *pEntity ) { 
-  return FALSE;
+  return 0;
 }
 
 BOOL CBaseEntity :: FVisible ( const Vector &vecOrigin ) {
   
-  return FALSE;
+  return 0;
 }
 
 

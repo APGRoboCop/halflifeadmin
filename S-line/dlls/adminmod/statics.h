@@ -55,8 +55,8 @@ struct apat {
   int aiSons[2];
 };
 
-const char PAT_RELBITS = 1;
-const int PAT_KEY_SIZE = 20;
+constexpr char PAT_RELBITS = 1;
+constexpr int PAT_KEY_SIZE = 20;
 
 
 #ifndef DEFECLIST
@@ -64,7 +64,7 @@ extern apat eclist[];
 #endif
 
 inline char pat_bits( char* _pcKey, int _iKeySize, unsigned int _uiPos, unsigned char _ucNum ) {
-	const unsigned int uiNumBits = sizeof(char) * 8;
+	constexpr unsigned int uiNumBits = sizeof(char) * 8;
 	const unsigned int uiOffset = _uiPos / uiNumBits;
   if ( uiOffset >= static_cast<unsigned int>(_iKeySize) ) return 0;
 	const unsigned int uiBitPos = _uiPos % uiNumBits;
@@ -86,8 +86,8 @@ const char* get_am_string( char* Dest, int MaxLength, char* Src, unsigned char T
 extern unsigned char statstr_table[][2];
 extern char* statstr[];
 #endif
-const int STATSTRING_MAXSIZE = 77;
-const int STATSTRING_COUNT = 9;
+constexpr int STATSTRING_MAXSIZE = 77;
+constexpr int STATSTRING_COUNT = 9;
 
 
 #endif

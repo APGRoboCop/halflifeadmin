@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  * ===========================================================================
  *
@@ -111,7 +113,7 @@ char *am_strcasestr(const char *haystack, const char *needle)
   if ( nl > hl ) return 0;
 
 	//for is only compatible with GCC C99 mode, use -std=c99 [APG]RoboCop[CL]
-  for ( int i = hl - nl + 1; i; --i ) {
+  for ( size_t i = hl - nl + 1; i; --i ) {
     if ( am_tolower(*haystack) == am_tolower(*needle) && !am_strcasecmp(haystack,needle)) return (char*)haystack;
 
     ++haystack;

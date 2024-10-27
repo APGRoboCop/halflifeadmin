@@ -24,7 +24,7 @@
 #endif
 
 #ifdef BETA
-#  define BVERSION VERSION "-beta6" //BETA
+#  define BVERSION VERSION "-beta7" //BETA
 #else
 #  define BVERSION VERSION
 #endif
@@ -325,24 +325,24 @@ BOOL IsIPValid(const char* );
 /**************************************************************/
 // UTIL.CPP function prototypes
 /**************************************************************/
-void UTIL_LogPrintf( char *fmt, ... );
-void UTIL_LogPrintfFNL( char *fmt, ... );
+void UTIL_LogPrintf( const char *fmt, ... );
+void UTIL_LogPrintfFNL( const char *fmt, ... );
 //void UTIL_ClientPrintAll( int msg_dest, const char *msg_name);
-char* UTIL_VarArgs( char *format, ... );
+char* UTIL_VarArgs( const char *format, ... );
 CBaseEntity* UTIL_PlayerByIndex( int playerIndex );
 CBaseEntity* UTIL_PlayerByName( const char *name );
 void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg );
-void ClientCommand (edict_t* pEdict, char* szFmt, ...);
+void ClientCommand (edict_t* pEdict, const char* szFmt, ...);
 
 void fix_string(char *str,int len);
 long int get_option_cvar_value( const char* CvarName, const char* Option, long int NumDefault, char* ReturnString, size_t Len, const char* StringDefault = nullptr );
-static inline long int get_option_cvar_value( const char* CvarName, const char* Option, char* ReturnString, size_t Len ) {
+static long int get_option_cvar_value( const char* CvarName, const char* Option, char* ReturnString, size_t Len ) {
 	return get_option_cvar_value( CvarName, Option, 0, ReturnString, Len, nullptr );
 }
-static inline long int get_option_cvar_value( const char* CvarName, const char* Option, long int NumDefault ) {
+static long int get_option_cvar_value( const char* CvarName, const char* Option, long int NumDefault ) {
 	return get_option_cvar_value( CvarName, Option, NumDefault, nullptr, 0, nullptr );
 }
-static inline long int get_option_cvar_value( const char* CvarName, const char* Option ) {
+static long int get_option_cvar_value( const char* CvarName, const char* Option ) {
 	return get_option_cvar_value( CvarName, Option, 0, nullptr, 0, nullptr );
 }
 
@@ -351,7 +351,7 @@ static inline long int get_option_cvar_value( const char* CvarName, const char* 
  * unacceptable performance hit on slower machines. To disable it, set
  * prex0 in amv_anti_cheat_options.
  */  
-static inline void handle_unprintables( char* _pcString ) {  
+static void handle_unprintables( char* _pcString ) {  
 	if ( g_PreventClientExploit != 0 ) {
 		while ( *_pcString != '\0' ) {
    			if ( !isprint(*_pcString) ) *_pcString = '.';
@@ -382,8 +382,8 @@ PGresult *admin_pgsql_query(char *, char *);
 
 
 // Admin Mod base functions prototypes
-const int RESULT_CONTINUE = 0;
-const int RESULT_HANDLED  = 1;
+constexpr int RESULT_CONTINUE = 0;
+constexpr int RESULT_HANDLED  = 1;
 void AM_AdminCommand();
 int AM_ClientCommand( edict_t *pEntity );
 BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ], bool );

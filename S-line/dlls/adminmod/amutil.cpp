@@ -60,7 +60,7 @@
  */
 extern int g_NameCrashAction;
 int make_friendly(char *name, bool check) {
-	const int iLen = strlen(name);
+	const size_t iLen = strlen(name);
 	
 	
 	if(check && (g_NameCrashAction > 0 ) && ( iLen<=0 )  ) return 2; // the name is zero length....  
@@ -82,7 +82,7 @@ int make_friendly(char *name, bool check) {
 // covert a string to lowercase
 //
 void strtolower( char* string ) {
-	const int length = strlen ( string );
+	const size_t length = strlen ( string );
 
 	for ( int i = 0; i < length; i++ ) {
 		const char character = tolower(string[i]);
@@ -100,8 +100,8 @@ void strtolower( char* string ) {
 // must be improved some day.
 //
 char* stristr( const char* haystack, const char* needle ) {
-	const int iLength = strlen( haystack );
-	const int iNeedleLen = strlen( needle );
+	const size_t iLength = strlen( haystack );
+	const size_t iNeedleLen = strlen( needle );
 
 	if ( iNeedleLen > iLength ) return nullptr;
 

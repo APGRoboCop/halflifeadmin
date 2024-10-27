@@ -41,6 +41,7 @@
  *
  */
 
+#include <cstdint>
 #include <cstring>
 
 #ifndef _WIN32
@@ -106,14 +107,14 @@ auth_struct g_AuthArray[MAX_PLAYERS + 1];
 // Second auth struct array to keep a backup of auths. Only needed to overcome
 // the inability of CS to do proper mapchanges
 struct AuthBak {
-	enum { SIZE = MAX_PLAYERS + (MAX_PLAYERS / 2) };
+	enum : std::uint8_t { SIZE = MAX_PLAYERS + (MAX_PLAYERS / 2) };
 
 	auth_struct Array[SIZE];
 
-	AuthBak() : m_head(0) { memset( Array, SIZE, 0 ); };
-    int get_head() { if ( m_head >= SIZE ) m_head = 0; return m_head++; };
-    int head() { if ( m_head >= SIZE ) m_head = 0; return m_head; };
-    void clear() { memset( Array, SIZE, 0 ); };
+	AuthBak() : m_head(0) { memset( Array, SIZE, 0 ); }
+	int get_head() { if ( m_head >= SIZE ) m_head = 0; return m_head++; }
+	int head() { if ( m_head >= SIZE ) m_head = 0; return m_head; }
+	void clear() { memset( Array, SIZE, 0 ); }
 
 private:
 	int m_head;
@@ -244,7 +245,7 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
 			++pIncludeFile;
 
 			// Now make sure by searching for the closing tag.
-			char* pEndTag = pIncludeFile;
+			const char* pEndTag = pIncludeFile;
 			while ( *pEndTag != '"' && pEndTag < sFile+iEnd ) ++pEndTag;
 
 			// If we found an end tag, this is an include directive.
@@ -308,7 +309,7 @@ CLinkList<char, true>* GetFile(char* sFilename, CLinkList<char,true>* _pPreLineL
 	// Don't forget to null-terminate.
 	sLine[iEnd - iBegin] = '\0';
 	// Strip off ending whitespace
-	int iPos = strlen(sLine) - 1;
+	size_t iPos = strlen(sLine) - 1;
 	while (iPos > 0 && isspace(sLine[iPos]))
 	  iPos--;
 	if (iPos >= 0)
@@ -850,7 +851,7 @@ BOOL IsModelReserved(char* sModel) {
 // FALSE otherwise. The format is:
 // <model name>:<password>
 BOOL ParseModel(char* sLine) {
-  char sDelimiter[] = ":";
+	constexpr char sDelimiter[] = ":";
 
   char* sNameToken = strtok(sLine, sDelimiter);
   if (sNameToken == nullptr) {
@@ -978,7 +979,7 @@ void UnloadModels() {
  ***************************/
 // Given an IP string (xxx.xxx.xxx.xxx), returns it in unsigned long (32-bit) format.
 void IPStringToBits(char* sIP, ulong* lIP) {
-	char* sChar = sIP;
+	const char* sChar = sIP;
   
   *lIP = 0x00000000;
   for( int iShift = 24; *sChar && iShift >= 0; iShift -= 8) {
@@ -1052,14 +1053,13 @@ BOOL IsIPReserved(char *sIP) {
     return FALSE;
   
   CLinkItem<ip_struct>* pLink = m_pIPList->FirstLink();
-  ip_struct* tIP = nullptr;
   ulong lIP;
   
   // Convert the IP to bits.
   IPStringToBits(sIP,&lIP);
   // For each record...
   while (pLink != nullptr) {
-    tIP = pLink->Data();
+    const ip_struct* tIP = pLink->Data();
     // If the record's IP and mask equals the given IP and mask, we have a match.
     if ((tIP->lIP & tIP->lMask) == (lIP & tIP->lMask)) {
       return TRUE;
@@ -1074,7 +1074,7 @@ BOOL IsIPReserved(char *sIP) {
 // FALSE otherwise. The format is:
 // <IP address - xxx.xxx.xxx.xxx>[/<mask - xxx.xxx.xxx.xxx>]
 BOOL ParseIP(char* sLine) {
-	char sDelimiter[] = "/";
+	constexpr char sDelimiter[] = "/";
 
 	char* sIPToken = strtok(sLine, sDelimiter);
   if (sIPToken == nullptr) {
@@ -1333,18 +1333,18 @@ edict_t* get_player_edict( uint32_t _uiID, uidt _uidType ) {
 	case uid_index:
 		if ( _uiID < 1 || _uiID > gpGlobals->maxClients ) return nullptr;
 		return g_AuthArray[_uiID].pPlayerEdict;
-		break;
+		//break;
 
 	case uid_sessionID:
 		for ( i = 1; i <= gpGlobals->maxClients; i++ ) {
 			if ( g_AuthArray[i].iSessionID == _uiID ) return g_AuthArray[i].pPlayerEdict;
-		};
+		}
 		break;
 
 	case uid_wonID:
 		for ( i = 1; i <= gpGlobals->maxClients; i++ ) {
 			if ( g_AuthArray[i].oaiAuthID == _uiID ) return g_AuthArray[i].pPlayerEdict;
-		};
+		}
 		break;
 	//case uid_none:
 	//	break;
@@ -1360,7 +1360,7 @@ edict_t* get_player_edict( uint32_t _uiID, uidt _uidType ) {
 edict_t* get_player_edict( const AMAuthId& _oaiID, uidt _uidType ) {
 	for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
 		if ( g_AuthArray[i].oaiAuthID == _oaiID ) return g_AuthArray[i].pPlayerEdict;
-	};
+	}
 
 	return nullptr;
 }  // get_player_edict()
@@ -1482,7 +1482,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 		  // if there was none, check if we have a record with the same AuthID, 
 		  // IP:port and NAME in the AuthArray backup copy
 		  if ( poPrevAuth == nullptr ) {
-			  for ( int i = 0; i < g_AuthBak.SIZE; i++ ) {
+			  for ( int i = 0; i < AuthBak::SIZE; i++ ) {
 				  if ( g_AuthBak.Array[i].oaiAuthID == oaiAuthID
 					   //&& g_AuthBak.Array[i].iPort == iPort
 					   && strcmp(sIP, g_AuthBak.Array[i].sIP) == 0 
@@ -1509,7 +1509,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 
 		// again, if we didn't find it, check the backup copies
 		if ( poPrevAuth == nullptr ) {
-			for ( int i = 0; i < g_AuthBak.SIZE; i++ ) {
+			for ( int i = 0; i < AuthBak::SIZE; i++ ) {
 				if ( strcmp(sIP, g_AuthBak.Array[i].sIP) == 0
 				     &&  g_AuthBak.Array[i].iPort == iPort
 					 && strcmp(sName, g_AuthBak.Array[i].sUserName) == 0) {
@@ -2502,13 +2502,13 @@ BOOL IsNameReserved(const char* sName, const AMAuthId& oaiAuthID, const char* sI
 BOOL ParseUser(char* pcLine) {
 	int iNumColon = -2;
   char* sAccessToken;
-  char sDelimiter[] = ":";
+	constexpr char sDelimiter[] = ":";
 	char* sPasswordToken;
   char* pcDelim = nullptr;
 
 	if ( pcLine == nullptr ) return FALSE;
 
-	const int iLineLength = strlen(pcLine);
+	const size_t iLineLength = strlen(pcLine);
   char* sLine = new char[iLineLength+1];
   memset (sLine, 0, (iLineLength + 1) );
   memcpy( sLine, pcLine, iLineLength );
@@ -2934,14 +2934,13 @@ void InitSpawnEntityList() {
 // Lists the contents of the spawn linked list that match
 // szFindClassname (or all, if szFindClassname is nullptr or empty)
 void ListSpawnEntities(edict_t* pMsg, char* szFindClassname) {
-	const int iLength = strlen(szFindClassname);
-  char szClassname[BUF_SIZE];
-  spawn_struct* tSpawn = nullptr;
-  CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
+	const size_t iLength = strlen(szFindClassname);
+	CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
   System_Response(UTIL_VarArgs("Identity            ClassName         \n"), pMsg);
   while(pLink != nullptr) {
-    tSpawn = pLink->Data();
+	  char szClassname[BUF_SIZE];
+	  const spawn_struct* tSpawn = pLink->Data();
     const int iIdentity = tSpawn->iIdentity;
     strcpy(szClassname, tSpawn->szClassname);
     if(iLength==0 || strnicmp(szFindClassname, szClassname, iLength)==0) {
@@ -2954,7 +2953,7 @@ void ListSpawnEntities(edict_t* pMsg, char* szFindClassname) {
 // Removes a spawn record by identity from the linked list.
 // Returns TRUE if successful, FALSE otherwise.
 BOOL RemoveSpawnEntity(int iIdentity) {
-  spawn_struct* tSpawn = nullptr;
+	const spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
   // Search through the list, like in FindSpawnEntity.
@@ -2962,9 +2961,8 @@ BOOL RemoveSpawnEntity(int iIdentity) {
     tSpawn = pLink->Data();
     if (iIdentity == tSpawn->iIdentity) {
       break;
-    } else {
-      pLink = pLink->NextLink();
     }
+    pLink = pLink->NextLink();
   }
   
   // If we found nothing, we can't remove anything.
@@ -2986,7 +2984,7 @@ BOOL RemoveSpawnEntity(int iIdentity) {
 // Returns TRUE if successful, FALSE otherwise.
 void DeleteSpawnEntityList() 
 {
-  spawn_struct* tSpawn = nullptr;
+	const spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
   
   // Search through the list, like in FindSpawnEntity.
@@ -3211,7 +3209,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   int iLength = 10;
   int iMaxCount = 0;
   int iStart = 1;
-  char sDelimiter = ' ';
+	const char sDelimiter = ' ';
 	char sCommand[COMMAND_SIZE];
   char* sFilter = nullptr;
   char sFilterText[BUF_SIZE];
@@ -3299,8 +3297,8 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
 	  // Show the entry.
 	  if (iFormat == 1) {
 	    // We need to try to break apart the help entry into its various components
-	    char* sColon = strchr(tHelp->sHelp, ':');
-	    char* sSpace = strchr(tHelp->sHelp, ' ');
+	    const char* sColon = strchr(tHelp->sHelp, ':');
+	    const char* sSpace = strchr(tHelp->sHelp, ' ');
 	    if (sColon == nullptr) {
 	      strcpy(sCommand, "Unknown/Bad Format");
 	      strcpy(sParam, "");
@@ -3638,10 +3636,10 @@ char* GetVaultData(char* sKey) {
 // FALSE otherwise. The format is:
 // <key> <data>
 BOOL ParseVault(char* sLine) {
-  char sDelimiter[] = " ";
+	constexpr char sDelimiter[] = " ";
   char* sKeyToken = nullptr;
   char* sDataToken = nullptr;
-  const int iLineLen = strlen( sLine );
+  const size_t iLineLen = strlen( sLine );
 
   sKeyToken = strtok(sLine,sDelimiter);
   if (sKeyToken == nullptr) {
@@ -3651,7 +3649,7 @@ BOOL ParseVault(char* sLine) {
   } else {
 
     //sDataToken = strtok(nullptr,sDelimiter);
-    const int iKeyLen = strlen( sKeyToken );
+    const size_t iKeyLen = strlen( sKeyToken );
     if ( iLineLen > iKeyLen ) {
       sDataToken = sLine + iKeyLen + 1;
       // skip leading whitespace

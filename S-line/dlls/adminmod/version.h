@@ -76,8 +76,8 @@
  * This info gets updated on every link, indicating the
  * latest time and date the dll was compiled and linked.
  */
-extern char* COMPILE_DTTM;
-extern char* COMPILE_DATE;
+extern const char* COMPILE_DTTM;
+extern const char* COMPILE_DATE;
 
 /*
  * We can also provide the timezone. It gets set in the
@@ -90,10 +90,10 @@ extern char* COMPILE_DATE;
 /*
  * This info is used as Plugin info by Metamod
  */
-#define VDATE COMPILE_DATE
+#define VDATE __DATE__
 #define VNAME "Admin Mod"
 #define VAUTHOR "Alfred Reynolds & RoboCop <robocop@lycos.co.uk>"
-#define VURL "www.adminmod.org"
+#define VURL "adminmod.de"
 
 /*
 // Various strings for the Windows DLL Resources in res_meta.rc
