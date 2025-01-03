@@ -130,8 +130,8 @@ elif cxx.like('msvc'):
 	'uuid.lib'
   ]
 
-  if builder.options.opt == '1':
-    cxx.cflags += ['/Ox']
+  if builder.options.opt == '1': # /Ob3 needs to be after /Ox, enables aggressive function inling -caxanga334
+    cxx.cflags += ['/Ox', '/Zo', '/Ob3', '/GF']
     cxx.linkflags += ['/OPT:ICF', '/OPT:REF']
 
   if builder.options.debug == '1':

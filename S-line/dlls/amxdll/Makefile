@@ -17,7 +17,7 @@ CC=gcc
 OBJDIR=obj
 
 BASE_CFLAGS= -DLINUX -m32 -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT \
-	-std=gnu99 -shared-libgcc -Wall
+	-std=gnu17 -shared-libgcc -Wall
 
 #safe optimization
 #CFLAGS=$(BASE_CFLAGS) -m486 -O6 -ffast-math -funroll-loops \
@@ -28,8 +28,7 @@ BASE_CFLAGS= -DLINUX -m32 -Damx_Init=amx_InitAMX -DAMXDLL -DFIXEDPOINT \
 # CFLAGS=$(BASE_CFLAGS) -g3 -ggdb3 -Wconversion
 
 #small optimization flags
-CFLAGS=$(BASE_CFLAGS) -O2 -march=i686 -mtune=generic -mmmx -msse -msse2 \
-	-msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mfpmath=sse -pipe
+CFLAGS=$(BASE_CFLAGS) -O3 -march=i686 -mtune=generic -msse4.2 -mfpmath=sse -pipe
 
 #full optimization (WONT WORK WITH omit-frame-pointer !!!!!)
 #CFLAGS=$(BASE_CFLAGS)  -O3 -ffast-math -funroll-loops \
@@ -55,7 +54,7 @@ SHLIBEXT=so
 SHLIBCFLAGS=-fPIC
 SHLIBLDFLAGS=-shared
 
-DO_CC=$(CC) -w $(CFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $<
+DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $<
 
 #############################################################################
 # SETUP AND BUILD

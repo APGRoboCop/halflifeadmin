@@ -257,7 +257,7 @@ static cell AMX_NATIVE_CALL _getvalue(AMX *amx,cell *params)
 {
   cell value;
   int base,sign,c,d;
-  int chars,n;
+  int chars,n = 0;
 
   base=params[1];
   if (base<2 || base>36)
@@ -285,12 +285,12 @@ static cell AMX_NATIVE_CALL _getvalue(AMX *amx,cell *params)
       if (c=='\n' && inlist(amx,'\r',params+2,(int)(params[0]/sizeof(cell)-1))!=0)
         c='\r';
     #endif
-    if ((chars > 0 && sign > 0 || chars > 1)
-        && (n=inlist(amx,c,params+2,params[0]/sizeof(cell)-1))!=0)
+  	if (((chars > 0 && sign > 0) || (chars > 1
+        && (n = inlist(amx, c, params + 2, params[0] / sizeof(cell) - 1)) != 0)))
     {
-      if (n>0)
-        acceptchar(c,&chars);
-      break;
+        if (n > 0)
+            acceptchar(c, &chars);
+        break;
     } /* if */
 
     /* get value */

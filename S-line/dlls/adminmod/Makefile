@@ -329,9 +329,8 @@ endif
 CFDBG= -g -ggdb3
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
-#full optimization // -O1 works best? [APG]RoboCop[CL]
-CFOPT = -O2 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -pipe \
-	-msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mfpmath=sse -pipe \
+#full optimization
+CFOPT = -O2 -mtune=generic -msse4.2 -mfpmath=sse -pipe \
 #	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 

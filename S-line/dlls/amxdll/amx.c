@@ -334,7 +334,6 @@ static int amx_BrowseRelocate(AMX *amx)
 {
   AMX_HEADER *hdr = 0;
   u_char *code = 0;
-  cell cip = 0;
   long codesize = 0;
   OPCODE op = 0;
   int debug = 0;
@@ -376,7 +375,7 @@ static int amx_BrowseRelocate(AMX *amx)
   #endif
 
   /* start browsing code */
-  for (cip=0; cip<codesize; ) {
+  for (cell cip = 0; cip<codesize; ) {
     op=(OPCODE) *(ucell *)(code+cip);
 //printf( "DBG: the opcode should be %p and we get here %p\n", *(ucell *)(code+(int)cip),op );
     assert(op>0 );
@@ -1117,7 +1116,7 @@ AMX_NATIVE_INFO * AMXAPI amx_NativeInfo(char *name,AMX_NATIVE func)
      * fast "indirect threaded" interpreter.
      */
 
-#define NEXT(cip)       goto **cip++
+#define NEXT(cip)       goto **(void **)cip++
 
 int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
 {
@@ -1159,7 +1158,7 @@ static void *labels[] = {
   AMX_HEADER *hdr;
   AMX_FUNCSTUB *func;
   u_char *code, *data;
-  cell pri,alt,stk,frm,hea;
+  cell pri, alt = 0, stk, frm, hea;
   cell reset_stk, reset_hea, *cip;
   cell offs;
   int num,i;
@@ -1310,15 +1309,15 @@ static void *labels[] = {
     NEXT(cip);
   op_load_i:
     /* verify address */
-    if (pri>=hea && pri<stk || pri>=amx->stp)
-      ABORT(amx,AMX_ERR_MEMACCESS);
+    if ((pri >= hea && pri < stk) || pri >= amx->stp)
+        ABORT(amx, AMX_ERR_MEMACCESS);
     pri= * (cell *)(data+(int)pri);
     NEXT(cip);
   op_lodb_i:
     GETPARAM(offs);
     /* verify address */
-    if (pri>=hea && pri<stk || pri>=amx->stp)
-      ABORT(amx,AMX_ERR_MEMACCESS);
+    if ((pri >= hea && pri < stk) || pri >= amx->stp)
+        ABORT(amx, AMX_ERR_MEMACCESS);
     switch (offs) {
     case 1:
       pri= * (data+(int)pri);
@@ -1383,15 +1382,15 @@ static void *labels[] = {
     NEXT(cip);
   op_stor_i:
     /* verify address */
-    if (alt>=hea && alt<stk || alt>=amx->stp)
-      ABORT(amx,AMX_ERR_MEMACCESS);
+    if ((alt >= hea && alt < stk) || alt >= amx->stp)
+        ABORT(amx, AMX_ERR_MEMACCESS);
     *(cell *)(data+(int)alt)=pri;
     NEXT(cip);
   op_strb_i:
     GETPARAM(offs);
     /* verify address */
-    if (alt>=hea && alt<stk || alt>=amx->stp)
-      ABORT(amx,AMX_ERR_MEMACCESS);
+    if ((alt >= hea && alt < stk) || alt >= amx->stp)
+        ABORT(amx, AMX_ERR_MEMACCESS);
     switch (offs) {
     case 1:
       *(data+(int)alt)=(u_char)pri;
@@ -1407,16 +1406,16 @@ static void *labels[] = {
   op_lidx:
     offs=pri*sizeof(cell)+alt;
     /* verify address */
-    if (offs>=hea && offs<stk || offs>=amx->stp)
-      ABORT(amx,AMX_ERR_MEMACCESS);
+    if ((offs >= hea && offs < stk) || offs >= amx->stp)
+        ABORT(amx, AMX_ERR_MEMACCESS);
     pri= * (cell *)(data+(int)offs);
     NEXT(cip);
   op_lidx_b:
     GETPARAM(offs);
     offs=(pri << (int)offs)+alt;
     /* verify address */
-    if (offs>=hea && offs<stk || offs>=amx->stp)
-      ABORT(amx,AMX_ERR_MEMACCESS);
+    if ((offs >= hea && offs < stk) || offs >= amx->stp)
+        ABORT(amx, AMX_ERR_MEMACCESS);
     pri= * (cell *)(data+(int)offs);
     NEXT(cip);
   op_idxaddr:
@@ -2259,14 +2258,14 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
     case OP_LOAD_I:
       /* verify address */
       if (pri>=hea && pri<stk || pri>=amx->stp)
-        ABORT(amx,AMX_ERR_MEMACCESS);
+	      ABORT(amx,AMX_ERR_MEMACCESS)
       pri= * (cell *)(data+pri);
       break;
     case OP_LODB_I:
       GETPARAM(offs);
       /* verify address */
       if (pri>=hea && pri<stk || pri>=amx->stp)
-        ABORT(amx,AMX_ERR_MEMACCESS);
+	      ABORT(amx,AMX_ERR_MEMACCESS)
       switch (offs) {
       case 1:
         pri= * (data+pri);
@@ -2332,14 +2331,14 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
     case OP_STOR_I:
       /* verify address */
       if (alt>=hea && alt<stk || alt>=amx->stp)
-        ABORT(amx,AMX_ERR_MEMACCESS);
+	      ABORT(amx,AMX_ERR_MEMACCESS)
       *(cell *)(data+alt)=pri;
       break;
     case OP_STRB_I:
       GETPARAM(offs);
       /* verify address */
       if (alt>=hea && alt<stk || alt>=amx->stp)
-        ABORT(amx,AMX_ERR_MEMACCESS);
+	      ABORT(amx,AMX_ERR_MEMACCESS)
       switch (offs) {
       case 1:
         *(data+alt)=(u_char)pri;
@@ -2356,7 +2355,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       offs=pri*sizeof(cell)+alt;
       /* verify address */
       if (offs>=hea && offs<stk || offs>=amx->stp)
-        ABORT(amx,AMX_ERR_MEMACCESS);
+	      ABORT(amx,AMX_ERR_MEMACCESS)
       pri= * (cell *)(data+offs);
       break;
     case OP_LIDX_B:
@@ -2364,7 +2363,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       offs=(pri << offs)+alt;
       /* verify address */
       if (offs>=hea && offs<stk || offs>=amx->stp)
-        ABORT(amx,AMX_ERR_MEMACCESS);
+	      ABORT(amx,AMX_ERR_MEMACCESS)
       pri= * (cell *)(data+offs);
       break;
     case OP_IDXADDR:
@@ -2682,20 +2681,20 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_SDIV:
       if (alt==0)
-        ABORT(amx,AMX_ERR_DIVIDE);
-      /* divide must always round down; this is a bit
-       * involved to do in a machine-independent way.
-       */
+	      ABORT(amx,AMX_ERR_DIVIDE)
+  /* divide must always round down; this is a bit
+   * involved to do in a machine-independent way.
+   */
       offs=(pri % alt + alt) % alt;     /* true modulus */
       pri=(pri - offs) / alt;           /* division result */
       alt=offs;
       break;
     case OP_SDIV_ALT:
       if (pri==0)
-        ABORT(amx,AMX_ERR_DIVIDE);
-      /* divide must always round down; this is a bit
-       * involved to do in a machine-independent way.
-       */
+	      ABORT(amx,AMX_ERR_DIVIDE)
+  /* divide must always round down; this is a bit
+   * involved to do in a machine-independent way.
+   */
       offs=(alt % pri + pri) % pri;     /* true modulus */
       pri=(alt - offs) / pri;           /* division result */
       alt=offs;
@@ -2705,14 +2704,14 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       break;
     case OP_UDIV:
       if (alt==0)
-        ABORT(amx,AMX_ERR_DIVIDE);
+	      ABORT(amx,AMX_ERR_DIVIDE)
       offs=(ucell)pri % (ucell)alt;     /* temporary storage */
       pri=(ucell)pri / (ucell)alt;
       alt=offs;
       break;
     case OP_UDIV_ALT:
       if (pri==0)
-        ABORT(amx,AMX_ERR_DIVIDE);
+	      ABORT(amx,AMX_ERR_DIVIDE)
       offs=(ucell)alt % (ucell)pri;     /* temporary storage */
       pri=(ucell)alt / (ucell)pri;
       alt=offs;
@@ -2881,11 +2880,11 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         amx->reset_hea=reset_hea;
         return offs;
       } /* if */
-      ABORT(amx,offs);
-    case OP_BOUNDS:
+      ABORT(amx,offs)
+  case OP_BOUNDS:
       GETPARAM(offs);
       if (pri>offs || pri<0)
-        ABORT(amx,AMX_ERR_BOUNDS);
+	      ABORT(amx,AMX_ERR_BOUNDS)
       break;
     case OP_SYSREQ_PRI:
       /* save a few registers */
@@ -2895,7 +2894,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       amx->stk=stk;
       num=amx->callback(amx,pri,&pri,(cell *)(data+stk));
       if (num!=AMX_ERR_NONE)
-        ABORT(amx,num);
+	      ABORT(amx,num)
       break;
     case OP_SYSREQ_C:
       GETPARAM(offs);
@@ -2906,7 +2905,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       amx->stk=stk;
       num=amx->callback(amx,offs,&pri,(cell *)(data+stk));
       if (num!=AMX_ERR_NONE)
-        ABORT(amx,num);
+	      ABORT(amx,num)
       break;
     case OP_FILE:
       GETPARAM(offs);
@@ -2924,7 +2923,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         amx->dbgcode=DBG_LINE;
         num=amx->debug(amx);
         if (num!=AMX_ERR_NONE)
-          ABORT(amx,num);
+	        ABORT(amx,num)
       } /* if */
       break;
     case OP_SYMBOL:
@@ -2984,7 +2983,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
       assert(0);                /* should not occur during execution */
       /* drop through to "invalid instruction" */
     default:
-      ABORT(amx,AMX_ERR_INVINSTR);
+      ABORT(amx,AMX_ERR_INVINSTR)
     } /* switch */
   } /* for */
 #endif
@@ -3027,7 +3026,7 @@ int AMXAPI amx_GetAddr(AMX *amx,cell amx_addr,cell **phys_addr)
 {
 	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
 
-  if (amx_addr>=amx->hea && amx_addr<amx->stk || amx_addr<0 || amx_addr>=amx->stp)
+    if ((amx_addr >= amx->hea && amx_addr < amx->stk) || (amx_addr < 0) || (amx_addr >= amx->stp))
     return AMX_ERR_MEMACCESS;
   *phys_addr=(cell *)(amx->base + (hdr->dat + amx_addr));
   return AMX_ERR_NONE;

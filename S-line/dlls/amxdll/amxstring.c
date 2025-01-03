@@ -13,7 +13,7 @@
  *
  ****************************************************************/
 
-//#include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -109,7 +109,6 @@ static struct_Lstring g_sLstring[LOCAL_STRINGS];
 static int get_space( char** _string, size_t _iMinLen, size_t* _piStrLen ) 
 {
   char* pcNewstr = NULL;
-  int i;
   int iLocalFree = 0;
   int iStaticFree = 0;
   int iLsIndex = -1;
@@ -121,7 +120,7 @@ static int get_space( char** _string, size_t _iMinLen, size_t* _piStrLen )
 
 
   /* check if we can get another string */
-  for ( i = 0; i < LOCAL_STRINGS; i++ ) {
+  for ( int i = 0; i < LOCAL_STRINGS; i++ ) {
     if ( g_sLstring[i].pcString != NULL ) {
       if ( g_sLstring[i].cDynamic == 0 ) {
 	iStaticFree++;
