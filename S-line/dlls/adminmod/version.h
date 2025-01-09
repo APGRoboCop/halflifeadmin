@@ -84,7 +84,7 @@ extern const char* COMPILE_DATE;
  * Makefile. If not, we can provide it here.
  */
 #ifndef TZONE
-#define TZONE ""
+#define TZONE "GMT"
 #endif
 
 /*
@@ -93,7 +93,7 @@ extern const char* COMPILE_DATE;
 #define VDATE __DATE__
 #define VNAME "Admin Mod"
 #define VAUTHOR "Alfred Reynolds & RoboCop <robocop@lycos.co.uk>"
-#define VURL "adminmod.de"
+#define VURL "adminmod.org"
 
 /*
 // Various strings for the Windows DLL Resources in res_meta.rc
