@@ -63,10 +63,10 @@ cxx.defines += [
 
 if cxx.like('gcc'):
   cxx.defines += [
-	'stricmp=strcasecmp',
-	'strcmpi=strcasecmp',
-	'_stricmp=strcasecmp',
-	'_strnicmp=strncasecmp'
+    'stricmp=strcasecmp',
+    'strcmpi=strcasecmp',
+    '_stricmp=strcasecmp',
+    '_strnicmp=strncasecmp'
   ]
 
   cxx.c_only_flags += ['-std=gnu99']
@@ -74,14 +74,14 @@ if cxx.like('gcc'):
   cxx.cflags += [
     '-Wall',
     #'-Werror',
-	'-shared-libgcc',
-	'-Wno-write-strings',
+    '-shared-libgcc',
+    '-Wno-write-strings',
     '-Wno-error=unused-result',
     '-Wno-error=unused-variable',
     '-Wno-unused-value',
     '-fno-strict-aliasing',
     '-fPIC',
-	'-msse2',
+    '-msse2',
     '-m32'
   ]
 
@@ -93,7 +93,7 @@ if cxx.like('gcc'):
 
   cxx.linkflags += [
     '-m32',
-	'-static-libstdc++'
+    '-static-libstdc++'
   ]
 
 
@@ -102,7 +102,7 @@ if cxx.like('gcc'):
 
 elif cxx.like('msvc'):
   cxx.defines += [
-	'_CRT_SECURE_NO_WARNINGS'
+    '_CRT_SECURE_NO_WARNINGS'
   ]
   
   cxx.cflags += [
@@ -110,7 +110,7 @@ elif cxx.like('msvc'):
   ]
 
   cxx.cxxflags += [
-	'/arch:SSE2',
+    '/arch:SSE2',
     '/EHsc'
   ]
 
@@ -119,19 +119,19 @@ elif cxx.like('msvc'):
     '/SUBSYSTEM:WINDOWS',
     '/EXPORT:GiveFnptrsToDll=_GiveFnptrsToDll@8,@1',
     'kernel32.lib',
-	'user32.lib',
-	'gdi32.lib',
-	'winspool.lib',
-	'comdlg32.lib',
-	'advapi32.lib',
-	'shell32.lib',
-	'ole32.lib',
-	'oleaut32.lib',
-	'uuid.lib'
+    'user32.lib',
+    'gdi32.lib',
+    'winspool.lib',
+    'comdlg32.lib',
+    'advapi32.lib',
+    'shell32.lib',
+    'ole32.lib',
+    'oleaut32.lib',
+    'uuid.lib'
   ]
 
   if builder.options.opt == '1': # /Ob3 needs to be after /Ox, enables aggressive function inling -caxanga334
-    cxx.cflags += ['/Ox', '/Zo', '/Ob3', '/GF']
+    cxx.cflags += ['/O2', '/Zo', '/Ob3', '/GF']
     cxx.linkflags += ['/OPT:ICF', '/OPT:REF']
 
   if builder.options.debug == '1':
