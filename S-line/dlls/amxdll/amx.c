@@ -168,7 +168,7 @@ static int amx_LittleEndian = -1;   /* set to TRUE for Little Endian, and
 static void init_little_endian(void)
 {
   if (amx_LittleEndian < 0) {       /* initialize this variable only once */
-    u_int16_t val=0x00ff;
+    uint16_t val=0x00ff;
     const u_char *ptr=(u_char *)&val;
 
     /* "ptr" points to the starting address of "val". If that address
@@ -180,26 +180,24 @@ static void init_little_endian(void)
   } /* if */
 }
 
-static void swap16(u_int16_t *v)
+static void swap16(uint16_t *v)
 {
   unsigned char *s = (unsigned char *)v;
-  unsigned char t;
 
   assert(sizeof(*v)==2);
   /* swap two bytes */
-  t=s[0];
+  unsigned char t = s[0];
   s[0]=s[1];
   s[1]=t;
 }
 
-static void swap32(u_int32_t *v)
+static void swap32(uint32_t *v)
 {
   unsigned char *s = (unsigned char *)v;
-  unsigned char t;
 
   assert(sizeof(*v)==4);
   /* swap outer two bytes */
-  t=s[0];
+  unsigned char t = s[0];
   s[0]=s[3];
   s[3]=t;
   /* swap inner two bytes */
@@ -208,14 +206,13 @@ static void swap32(u_int32_t *v)
   s[2]=t;
 }
 
-static void swap64(u_int64_t *v)
+static void swap64(uint64_t *v)
 {
   unsigned char *s = (unsigned char *)v;
-  unsigned char t;
 
   assert(sizeof(*v)==8);
   /* swap outer two bytes */
-  t=s[0];
+  unsigned char t = s[0];
   s[0]=s[7];
   s[7]=t;
   /* swap second outer two bytes */
@@ -232,7 +229,7 @@ static void swap64(u_int64_t *v)
   s[4]=t;
 }
 
-u_int16_t *amx_Align16(u_int16_t *v)
+uint16_t *amx_Align16(uint16_t *v)
 {
   assert(sizeof(*v)==2);
   init_little_endian();
@@ -241,7 +238,7 @@ u_int16_t *amx_Align16(u_int16_t *v)
   return v;
 }
 
-u_int32_t *amx_Align32(u_int32_t *v)
+uint32_t *amx_Align32(uint32_t *v)
 {
   assert(sizeof(cell)==4);
   init_little_endian();
@@ -250,7 +247,7 @@ u_int32_t *amx_Align32(u_int32_t *v)
   return v;
 }
 
-u_int64_t *amx_Align64(u_int64_t *v)
+uint64_t *amx_Align64(uint64_t *v)
 {
   assert(sizeof(cell)==8);
   init_little_endian();
@@ -274,14 +271,12 @@ u_int64_t *amx_Align64(u_int64_t *v)
   #define swapcell  swap32
 #endif
 
-int AMXAPI amx_Flags(AMX *amx,u_int16_t *flags)
+int AMXAPI amx_Flags(AMX *amx, uint16_t *flags)
 {
-  AMX_HEADER *hdr;
-
-  *flags=0;
+	*flags=0;
   if (amx==NULL)
     return AMX_ERR_FORMAT;
-  hdr=(AMX_HEADER *)amx->base;
+  AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
   if (hdr->magic!=AMX_MAGIC)
     return AMX_ERR_FORMAT;
   *flags=hdr->flags;
@@ -580,9 +575,8 @@ static int amx_BrowseRelocate(AMX *amx)
       break;
     case OP_CASETBL: {
       cell num;
-      int i;
       DBGPARAM(num);    /* number of records follows the opcode */
-      for (i=0; i<=num; i++) {
+      for (int i = 0; i<=num; i++) {
 		RELOC_ABS(code, cip+2*i*sizeof(cell));
         #if defined JIT
           reloc_count++;
@@ -608,14 +602,11 @@ static int amx_BrowseRelocate(AMX *amx)
 
 static void expand(unsigned char *code, int32_t codesize, int32_t memsize)
 {
-  ucell c;
-  int shift;
-
-  /* for in-place expansion, move from the end backward */
+	/* for in-place expansion, move from the end backward */
   assert(memsize % sizeof(cell) == 0);
   while (codesize>0) {
-    c=0;
-    shift=0;
+    ucell c = 0;
+    int shift = 0;
     do {
       codesize--;
       /* no input byte should be shifted out completely */
@@ -644,34 +635,32 @@ static void expand(unsigned char *code, int32_t codesize, int32_t memsize)
 
 int AMXAPI amx_Init(AMX *amx,void *program)
 {
-  AMX_HEADER *hdr;
-
-  hdr=(AMX_HEADER *)program;
+	AMX_HEADER* hdr = (AMX_HEADER*)program;
   /* the header is in Little Endian, on a Big Endian machine, swap all
    * multi-byte words
    */
   init_little_endian();
   if (!amx_LittleEndian) {
 //printf( "DBG: changing endianess to little endian\n" );
-    amx_Align32((u_int32_t*)&hdr->size);
+    amx_Align32((uint32_t*)&hdr->size);
     amx_Align16(&hdr->magic);
-    amx_Align16((u_int16_t*)&hdr->flags);
-    amx_Align16((u_int16_t*)&hdr->defsize);
-    amx_Align32((u_int32_t*)&hdr->cod);
-    amx_Align32((u_int32_t*)&hdr->dat);
-    amx_Align32((u_int32_t*)&hdr->hea);
-    amx_Align32((u_int32_t*)&hdr->stp);
-    amx_Align32((u_int32_t*)&hdr->cip);
-    amx_Align16((u_int16_t*)&hdr->num_publics);
-    amx_Align32((u_int32_t*)&hdr->publics);
-    amx_Align16((u_int16_t*)&hdr->num_natives);
-    amx_Align32((u_int32_t*)&hdr->natives);
-    amx_Align16((u_int16_t*)&hdr->num_libraries);
-    amx_Align32((u_int32_t*)&hdr->libraries);
-    amx_Align16((u_int16_t*)&hdr->num_pubvars);
-    amx_Align32((u_int32_t*)&hdr->pubvars);
-    amx_Align16((u_int16_t*)&hdr->num_tags);
-    amx_Align32((u_int32_t*)&hdr->tags);
+    amx_Align16((uint16_t*)&hdr->flags);
+    amx_Align16((uint16_t*)&hdr->defsize);
+    amx_Align32((uint32_t*)&hdr->cod);
+    amx_Align32((uint32_t*)&hdr->dat);
+    amx_Align32((uint32_t*)&hdr->hea);
+    amx_Align32((uint32_t*)&hdr->stp);
+    amx_Align32((uint32_t*)&hdr->cip);
+    amx_Align16((uint16_t*)&hdr->num_publics);
+    amx_Align32((uint32_t*)&hdr->publics);
+    amx_Align16((uint16_t*)&hdr->num_natives);
+    amx_Align32((uint32_t*)&hdr->natives);
+    amx_Align16((uint16_t*)&hdr->num_libraries);
+    amx_Align32((uint32_t*)&hdr->libraries);
+    amx_Align16((uint16_t*)&hdr->num_pubvars);
+    amx_Align32((uint32_t*)&hdr->pubvars);
+    amx_Align16((uint16_t*)&hdr->num_tags);
+    amx_Align32((uint32_t*)&hdr->tags);
   } /* if */
 
 //printf( "DBG: hdr=%p, hdr->natives=%d 0x%x\n", hdr, hdr->natives, hdr->natives );
@@ -718,10 +707,9 @@ int AMXAPI amx_Init(AMX *amx,void *program)
    * public tag tables
    */
   if (!amx_LittleEndian) {
-    AMX_FUNCSTUB *fs;
-    int i;
+	  int i;
 
-    fs=(AMX_FUNCSTUB *)(amx->base + hdr->publics);
+    AMX_FUNCSTUB* fs = (AMX_FUNCSTUB*)(amx->base + hdr->publics);
     for (i=0; i<hdr->num_publics; i++) {
       amx_AlignFP(&fs->address);
       fs++;
@@ -841,7 +829,7 @@ int AMXAPI amx_NameLength(AMX *amx, int *length)
 {
 	const AMX_HEADER *hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
-  *length=hdr->defsize - sizeof(u_int32_t);
+  *length=hdr->defsize - sizeof(uint32_t);
   return AMX_ERR_NONE;
 }
 
@@ -855,32 +843,30 @@ int AMXAPI amx_NumPublics(AMX *amx, int *number)
 
 int AMXAPI amx_GetPublic(AMX *amx, int index, char *funcname)
 {
-  AMX_HEADER *hdr;
-  AMX_FUNCSTUB *func;
-
-  hdr=(AMX_HEADER *)amx->base;
+	const AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
   assert(hdr!=NULL);
   if (index>=hdr->num_publics)
     return AMX_ERR_INDEX;
 
-  func=(AMX_FUNCSTUB *)(amx->base+hdr->publics+index*sizeof(AMX_FUNCSTUB));
-  strcpy(funcname,func->name);
+  const AMX_FUNCSTUB* func = (AMX_FUNCSTUB*)(amx->base + hdr->publics + index * sizeof(AMX_FUNCSTUB));
+  strncpy(funcname, func->name, sEXPMAX);
+  funcname[sEXPMAX] = '\0';
   return AMX_ERR_NONE;
 }
 
 int AMXAPI amx_FindPublic(AMX *amx, char *name, int *index)
 {
-  int first,last,mid,result;
+  int last;
   char pname[sEXPMAX+1];
 
   amx_NumPublics(amx, &last);
   last--;       /* last valid index is 1 less than the number of functions */
-  first=0;
+  int first = 0;
   /* binary search */
   while (first<=last) {
-    mid=(first+last)/2;
+    int mid = (first + last) / 2;
     amx_GetPublic(amx, mid, pname);
-    result=strcmp(pname,name);
+    const int result = strcmp(pname, name);
     if (result>0) {
       last=mid-1;
     } else if (result<0) {
@@ -905,15 +891,12 @@ int AMXAPI amx_NumPubVars(AMX *amx, int *number)
 
 int AMXAPI amx_GetPubVar(AMX *amx, int index, char *varname, cell *amx_addr)
 {
-  AMX_HEADER *hdr;
-  AMX_FUNCSTUB *var;
-
-  hdr=(AMX_HEADER *)amx->base;
+	AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
   assert(hdr!=NULL);
   if (index>=hdr->num_pubvars)
     return AMX_ERR_INDEX;
 
-  var=(AMX_FUNCSTUB *)(amx->base+hdr->pubvars+index*sizeof(AMX_FUNCSTUB));
+  AMX_FUNCSTUB* var = (AMX_FUNCSTUB*)(amx->base + hdr->pubvars + index * sizeof(AMX_FUNCSTUB));
   strcpy(varname,var->name);
   *amx_addr=var->address;
   return AMX_ERR_NONE;
@@ -921,18 +904,18 @@ int AMXAPI amx_GetPubVar(AMX *amx, int index, char *varname, cell *amx_addr)
 
 int AMXAPI amx_FindPubVar(AMX *amx, char *varname, cell *amx_addr)
 {
-  int first,last,mid,result;
+  int last;
   char pname[sEXPMAX+1];
   cell paddr;
 
   amx_NumPubVars(amx, &last);
   last--;       /* last valid index is 1 less than the number of functions */
-  first=0;
+  int first = 0;
   /* binary search */
   while (first<=last) {
-    mid=(first+last)/2;
+    int mid = (first + last) / 2;
     amx_GetPubVar(amx, mid, pname, &paddr);
-    result=strcmp(pname,varname);
+    const int result = strcmp(pname, varname);
     if (result>0) {
       last=mid-1;
     } else if (result<0) {
@@ -961,10 +944,7 @@ int AMXAPI amx_NumTags(AMX *amx, int *number)
 
 int AMXAPI amx_GetTag(AMX *amx, int index, char *tagname, cell *tag_id)
 {
-  AMX_HEADER *hdr;
-  AMX_FUNCSTUB *tag;
-
-  hdr=(AMX_HEADER *)amx->base;
+	AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
   assert(hdr!=NULL);
   if (hdr->file_version<5) {    /* the tagname table appeared in file format 5 */
     *tagname='\0';
@@ -975,7 +955,7 @@ int AMXAPI amx_GetTag(AMX *amx, int index, char *tagname, cell *tag_id)
   if (index>=hdr->num_tags)
     return AMX_ERR_INDEX;
 
-  tag=(AMX_FUNCSTUB *)(amx->base+hdr->tags+index*sizeof(AMX_FUNCSTUB));
+  AMX_FUNCSTUB* tag = (AMX_FUNCSTUB*)(amx->base + hdr->tags + index * sizeof(AMX_FUNCSTUB));
   strcpy(tagname,tag->name);
   *tag_id=tag->address;
   return AMX_ERR_NONE;
@@ -1065,24 +1045,19 @@ static AMX_NATIVE findfunction(char *name, AMX_NATIVE_INFO *list, int number)
 
 int AMXAPI amx_Register(AMX *amx, AMX_NATIVE_INFO *list, int number)
 {
-  AMX_FUNCSTUB *func;
-  AMX_HEADER *hdr;
-  int i,err;
-  AMX_NATIVE funcptr;
-
-  hdr=(AMX_HEADER *)amx->base;
+	AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
   assert(hdr!=NULL);
 
 //printf( "amx_Register( amx=%p, list=%p, number=%d )\n", amx, list, number );
 //printf( "hdr=%p, hdr->natives=%d\n", hdr, hdr->natives );
 
-  err=AMX_ERR_NONE;
-  func=(AMX_FUNCSTUB *)(amx->base+hdr->natives);
+  int err = AMX_ERR_NONE;
+  AMX_FUNCSTUB* func = (AMX_FUNCSTUB*)(amx->base + hdr->natives);
 //printf( "func=%p\n", func );
-  for (i=0; i<hdr->num_natives; i++) {
+  for (int i = 0; i<hdr->num_natives; i++) {
     if (func->address==0) {
       /* this function is not yet located */
-      funcptr=findfunction(func->name,list,number);
+      AMX_NATIVE funcptr = findfunction(func->name, list, number);
       if (funcptr!=NULL)
         func->address=(faddr_t)funcptr;
       else
@@ -2063,12 +2038,10 @@ static void *labels[] = {
 int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
 {
   AMX_HEADER *hdr;
-  AMX_FUNCSTUB *func;
   u_char *code, *data;
   cell pri,alt,stk,frm,hea;
   cell reset_stk, reset_hea, *cip;
   int i;
-  va_list ap;
   int debug;
   #if defined ASM32 || defined JIT
     extern void *amx_opcodelist[];
@@ -2130,7 +2103,8 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
   } else if (index<0) {
     return AMX_ERR_INDEX;
   } else {
-    if (index>=hdr->num_publics)
+	  AMX_FUNCSTUB *func;
+	  if (index>=hdr->num_publics)
       return AMX_ERR_INDEX;
     func=(AMX_FUNCSTUB *)(amx->base + hdr->publics + index*sizeof(AMX_FUNCSTUB));
     cip=(cell *)(code + (int)func->address);
@@ -2164,7 +2138,8 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
   #endif
 
   if (index!=AMX_EXEC_CONT) {
-    /* push the parameters to the stack (in reverse order) */
+	  va_list ap;
+	  /* push the parameters to the stack (in reverse order) */
     if (numparams & 0xFFFF0000) {
       cell *params;
       stk-=(numparams>>=16)*sizeof(cell);
@@ -2271,10 +2246,10 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         pri= * (data+pri);
         break;
       case 2:
-        pri= * (u_int16_t *)(data+pri);
+        pri= * (uint16_t *)(data+pri);
         break;
       case 4:
-        pri= * (u_int32_t *)(data+pri);
+        pri= * (uint32_t *)(data+pri);
         break;
       } /* switch */
       break;
@@ -2344,10 +2319,10 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index, int numparams, ...)
         *(data+alt)=(u_char)pri;
         break;
       case 2:
-        *(u_int16_t *)(data+alt)=(u_int16_t)pri;
+        *(uint16_t *)(data+alt)=(uint16_t)pri;
         break;
       case 4:
-        *(u_int32_t *)(data+alt)=(u_int32_t)pri;
+        *(uint32_t *)(data+alt)=(uint32_t)pri;
         break;
       } /* switch */
       break;
@@ -3064,7 +3039,7 @@ int AMXAPI amx_Release(AMX *amx,cell amx_addr)
 
 int AMXAPI amx_StrLen(cell *cstr, int *length)
 {
-  int len;
+  size_t len;
 
   if ((ucell)*cstr>UCHAR_MAX) {
     /* packed string */
@@ -3104,8 +3079,7 @@ int AMXAPI amx_SetString(cell *dest, const char *source,int pack)
     } /* if */
   } else {
     /* create an unpacked string */
-    size_t i;
-    for (i=0; i<len; i++)
+    for (size_t i = 0; i<len; i++)
       dest[i]=(cell)source[i];
     dest[len]=0;
   } /* if */
@@ -3132,4 +3106,3 @@ int AMXAPI amx_GetString(char *dest,cell *source)
   } /* if */
   return AMX_ERR_NONE;
 }
-

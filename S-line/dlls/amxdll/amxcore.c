@@ -13,6 +13,10 @@
 #include <assert.h>
 #include "amx.h"
 
+#ifdef WIN32
+#define stricmp _stricmp
+#endif
+
 #define CHARBITS        (8*sizeof(char))
 typedef unsigned char   uchar;
 
@@ -95,14 +99,10 @@ static proplist *list_finditem(proplist *root,cell id,char *name,cell value,
 #endif
 static cell AMX_NATIVE_CALL numargs(AMX *amx, cell *params)
 {
-  AMX_HEADER *hdr;
-  uchar *data;
-  cell bytes;
-
-  hdr=(AMX_HEADER *)amx->base;
-  data=amx->base+hdr->dat;
+	AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
+  uchar* data = amx->base + hdr->dat;
   /* the number of bytes is on the stack, at "frm + 2*cell" */
-  bytes= * (cell *)(data+amx->frm+2*sizeof(cell));
+  cell bytes = *(cell*)(data + amx->frm + 2 * sizeof(cell));
   /* the number of arguments is the number of bytes divided
    * by the size of a cell */
   return bytes/sizeof(cell);
@@ -110,14 +110,10 @@ static cell AMX_NATIVE_CALL numargs(AMX *amx, cell *params)
 
 static cell AMX_NATIVE_CALL getarg(AMX *amx, cell *params)
 {
-  AMX_HEADER *hdr;
-  uchar *data;
-  cell value;
-
-  hdr=(AMX_HEADER *)amx->base;
-  data=amx->base+hdr->dat;
+	AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
+  uchar* data = amx->base + hdr->dat;
   /* get the base value */
-  value= * (cell *)(data+amx->frm+(params[1]+3)*sizeof(cell));
+  cell value = *(cell*)(data + amx->frm + (params[1] + 3) * sizeof(cell));
   /* adjust the address in "value" in case of an array access */
   value+=params[2]*sizeof(cell);
   /* get the value indirectly */
@@ -127,14 +123,10 @@ static cell AMX_NATIVE_CALL getarg(AMX *amx, cell *params)
 
 static cell AMX_NATIVE_CALL setarg(AMX *amx, cell *params)
 {
-  AMX_HEADER *hdr;
-  uchar *data;
-  cell value;
-
-  hdr=(AMX_HEADER *)amx->base;
-  data=amx->base+hdr->dat;
+	AMX_HEADER* hdr = (AMX_HEADER*)amx->base;
+  uchar* data = amx->base + hdr->dat;
   /* get the base value */
-  value= * (cell *)(data+amx->frm+(params[1]+3)*sizeof(cell));
+  cell value = *(cell*)(data + amx->frm + (params[1] + 3) * sizeof(cell));
   /* adjust the address in "value" in case of an array access */
   value+=params[2]*sizeof(cell);
   /* verify the address */
@@ -158,7 +150,7 @@ static cell AMX_NATIVE_CALL funcidx(AMX *amx,cell *params)
 {
   char name[64];
   cell *cstr;
-  int index,err,len;
+  int index, len;
 
   amx_GetAddr(amx,params[1],&cstr);
 
@@ -170,7 +162,7 @@ static cell AMX_NATIVE_CALL funcidx(AMX *amx,cell *params)
   } /* if */
 
   amx_GetString(name,cstr);
-  err=amx_FindPublic(amx,name,&index);
+  int err = amx_FindPublic(amx, name, &index);
   if (err!=AMX_ERR_NONE)
     index=-1;   /* this is not considered a fatal error */
   return index;
@@ -211,12 +203,11 @@ int amx_StrUnpack(cell *dest,cell *source)
 {
   if ((ucell)*source>UCHAR_MAX) {
     /* unpack string, from top down (so string can be unpacked in place) */
-    cell c;
-    int i,len;
+    int len;
     amx_StrLen(source,&len);
     dest[len]=0;
-    for (i=len-1; i>=0; i--) {
-      c=source[i/sizeof(cell)] >> (sizeof(cell)-i%sizeof(cell)-1)*CHARBITS;
+    for (int i = len - 1; i>=0; i--) {
+      cell c = source[i / sizeof(cell)] >> (sizeof(cell) - i % sizeof(cell) - 1) * CHARBITS;
       dest[i]=c & UCHAR_MAX;
     } /* for */
   } else {
@@ -229,10 +220,9 @@ int amx_StrUnpack(cell *dest,cell *source)
 
 static int verify_addr(AMX *amx,cell addr)
 {
-  int err;
-  cell *cdest;
+	cell *cdest;
 
-  err=amx_GetAddr(amx,addr,&cdest);
+  int err = amx_GetAddr(amx, addr, &cdest);
   if (err!=AMX_ERR_NONE)
     amx_RaiseError(amx,err);
   return err;
@@ -251,19 +241,19 @@ static cell AMX_NATIVE_CALL core_strlen(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL strpack(AMX *amx,cell *params)
 {
   cell *cdest,*csrc;
-  int len,needed,lastaddr,err;
+  int len;
 
   /* calculate number of cells needed for (packed) destination */
   amx_GetAddr(amx,params[2],&csrc);
   amx_StrLen(csrc,&len);
-  needed=(len+sizeof(cell))/sizeof(cell);     /* # of cells needed */
+  int needed = (len + sizeof(cell)) / sizeof(cell);     /* # of cells needed */
   assert(needed>0);
-  lastaddr=params[1]+sizeof(cell)*needed-1;
+  int lastaddr = params[1] + sizeof(cell) * needed - 1;
   if (verify_addr(amx,lastaddr)!=AMX_ERR_NONE)
     return 0;
 
   amx_GetAddr(amx,params[1],&cdest);
-  err=amx_StrPack(cdest,csrc);
+  int err = amx_StrPack(cdest, csrc);
   if (err!=AMX_ERR_NONE)
     return amx_RaiseError(amx,err);
 
@@ -273,18 +263,18 @@ static cell AMX_NATIVE_CALL strpack(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL strunpack(AMX *amx,cell *params)
 {
   cell *cdest,*csrc;
-  int len,err,lastaddr;
+  int len;
 
   /* calculate number of cells needed for (packed) destination */
   amx_GetAddr(amx,params[2],&csrc);
   amx_StrLen(csrc,&len);
   assert(len>=0);
-  lastaddr=params[1]+sizeof(cell)*(len+1)-1;
+  int lastaddr = params[1] + sizeof(cell) * (len + 1) - 1;
   if (verify_addr(amx,lastaddr)!=AMX_ERR_NONE)
     return 0;
 
   amx_GetAddr(amx,params[1],&cdest);
-  err=amx_StrUnpack(cdest,csrc);
+  int err = amx_StrUnpack(cdest, csrc);
   if (err!=AMX_ERR_NONE)
     return amx_RaiseError(amx,err);
 
@@ -373,10 +363,9 @@ static cell AMX_NATIVE_CALL core_clamp(AMX *amx,cell *params)
 static char *MakePackedString(cell *cptr)
 {
   int len;
-  char *dest;
 
   amx_StrLen(cptr,&len);
-  dest=(char *)malloc(len+sizeof(cell));
+  char* dest = malloc(len + sizeof(cell));
   amx_GetString(dest,cptr);
   return dest;
 }
@@ -384,12 +373,10 @@ static char *MakePackedString(cell *cptr)
 static cell AMX_NATIVE_CALL getproperty(AMX *amx,cell *params)
 {
   cell *cstr;
-  char *name;
-  proplist *item;
 
   amx_GetAddr(amx,params[2],&cstr);
-  name=MakePackedString(cstr);
-  item=list_finditem(&proproot,params[1],name,params[3],NULL);
+  char* name = MakePackedString(cstr);
+  proplist* item = list_finditem(&proproot, params[1], name, params[3],NULL);
   /* if list_finditem() found the value, store the name */
   if (item!=NULL && item->value==params[3] && name[0]=='\0') {
 	  const int needed=(strlen(item->name)+sizeof(cell)-1)/sizeof(cell);     /* # of cells needed */
@@ -408,12 +395,10 @@ static cell AMX_NATIVE_CALL setproperty(AMX *amx,cell *params)
 {
   cell prev=0;
   cell *cstr;
-  char *name;
-  proplist *item;
 
   amx_GetAddr(amx,params[2],&cstr);
-  name=MakePackedString(cstr);
-  item=list_finditem(&proproot,params[1],name,params[3],NULL);
+  char* name = MakePackedString(cstr);
+  proplist* item = list_finditem(&proproot, params[1], name, params[3],NULL);
   if (item==NULL)
     item=list_additem(&proproot);
   if (item==NULL) {
@@ -435,12 +420,11 @@ static cell AMX_NATIVE_CALL delproperty(AMX *amx,cell *params)
 {
   cell prev=0;
   cell *cstr;
-  char *name;
-  proplist *item,*pred;
+  proplist*pred;
 
   amx_GetAddr(amx,params[2],&cstr);
-  name=MakePackedString(cstr);
-  item=list_finditem(&proproot,params[1],name,params[3],&pred);
+  char* name = MakePackedString(cstr);
+  proplist* item = list_finditem(&proproot, params[1], name, params[3], &pred);
   if (item!=NULL) {
     prev=item->value;
     list_delete(pred,item);
@@ -452,12 +436,10 @@ static cell AMX_NATIVE_CALL delproperty(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL existproperty(AMX *amx,cell *params)
 {
   cell *cstr;
-  char *name;
-  proplist *item;
 
   amx_GetAddr(amx,params[2],&cstr);
-  name=MakePackedString(cstr);
-  item=list_finditem(&proproot,params[1],name,params[3],NULL);
+  char* name = MakePackedString(cstr);
+  proplist* item = list_finditem(&proproot, params[1], name, params[3],NULL);
   free(name);
   return (item!=NULL);
 }
@@ -475,21 +457,18 @@ static unsigned long IL_StandardRandom_seed = 0L;
 #endif
 static cell AMX_NATIVE_CALL core_random(AMX *amx,cell *params)
 {
-    unsigned long lo, hi, ll, lh, hh, hl;
-    unsigned long result;
-
-    /* one-time initialization (or, mostly one-time*/
+	/* one-time initialization (or, mostly one-time*/
     if (IL_StandardRandom_seed == 0L)
         IL_StandardRandom_seed=(unsigned long)time(NULL);
 
-    lo = IL_StandardRandom_seed & 0xffff;
-    hi = IL_StandardRandom_seed >> 16;
+    unsigned long lo = IL_StandardRandom_seed & 0xffff;
+    unsigned long hi = IL_StandardRandom_seed >> 16;
     IL_StandardRandom_seed = IL_StandardRandom_seed * IL_RMULT + 12345;
-    ll = lo * (IL_RMULT  & 0xffff);
-    lh = lo * (IL_RMULT >> 16    );
-    hl = hi * (IL_RMULT  & 0xffff);
-    hh = hi * (IL_RMULT >> 16    );
-    result = ((ll + 12345) >> 16) + lh + hl + (hh << 16);
+    unsigned long ll = lo * (IL_RMULT & 0xffff);
+    unsigned long lh = lo * (IL_RMULT >> 16);
+    unsigned long hl = hi * (IL_RMULT & 0xffff);
+    unsigned long hh = hi * (IL_RMULT >> 16);
+    unsigned long result = ((ll + 12345) >> 16) + lh + hl + (hh << 16);
     result &= ~LONG_MIN;        /* remove sign bit */
     if (params[1]!=0)
         result %= params[1];

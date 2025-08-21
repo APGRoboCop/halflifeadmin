@@ -15,6 +15,8 @@
 #ifndef __AMX_H
 #define __AMX_H
 
+#include <stdint.h>
+
 #if !defined __STDC_VERSION__ || __STDC_VERSION__ < 199901L
   /* The ISO C99 defines the int16_t and int_32t types. If the compiler got
    * here, these types are probably undefined.
@@ -23,33 +25,33 @@
     #include <stdint.h>
   #else
     typedef short int           int16_t;
-    typedef unsigned short int  u_int16_t;
+    typedef unsigned short int  uint16_t;
     #if defined SN_TARGET_PS2
       typedef int               int32_t;
-      typedef unsigned int      u_int32_t;
+      typedef unsigned int      uint32_t;
     #elif defined(_MSC_VER)
       typedef __int32 int32_t;
-      typedef unsigned __int32 u_int32_t;
+      typedef unsigned __int32 uint32_t;
       typedef __int64 int64_t;
-      typedef unsigned __int64 u_int64_t;
+      typedef unsigned __int64 uint64_t;
       //#define INT64_MIN _I64_MIN
       //#define INT64_MAX _I64_MAX
     #else
       typedef long int          int32_t;	// Conflicting with HLSDK 2015? [APG]RoboCop[CL]
-      typedef unsigned long int u_int32_t;
+      typedef unsigned long int uint32_t;
       typedef long long          int64_t;
-      typedef unsigned long long u_int64_t;
+      typedef unsigned long long uint64_t;
     #endif
   #endif
 #endif
 
 #if defined TARGET_64BIT
 #   define FADDR_SIZE 8
-    typedef u_int64_t faddr_t;
+    typedef uint64_t faddr_t;
 #   define BIT64
 #else
 #   define FADDR_SIZE 4
-    typedef u_int32_t faddr_t;
+    typedef uint32_t faddr_t;
 #endif
 
 
@@ -81,19 +83,19 @@ extern  "C" {
   #define CELL_TYPE
   #if defined(BIT16)
     #define CELL_SIZE 2
-    typedef u_int16_t  ucell;    /* only for type casting */
+    typedef uint16_t  ucell;    /* only for type casting */
     typedef int16_t   cell;
   #elif defined(BIT32)
     #define CELL_SIZE 4
-    typedef u_int32_t  ucell;
+    typedef uint32_t  ucell;
     typedef int32_t   cell;
   #elif defined(BIT64)
     #define CELL_SIZE 8
-    typedef u_int64_t  ucell;
+    typedef uint64_t  ucell;
     typedef int64_t   cell;
   #else
     #define CELL_SIZE 4
-    typedef u_int32_t  ucell;
+    typedef uint32_t  ucell;
     typedef int32_t   cell;
   #endif
 #endif
@@ -179,7 +181,7 @@ typedef struct __amx {
  */
 typedef struct __amx_header {
   int32_t size;         /* size of the "file" */
-  u_int16_t magic;       /* signature */
+  uint16_t magic;       /* signature */
   char    file_version; /* file format version */
   char    amx_version;  /* required version of the AMX */
   int16_t flags;
@@ -266,9 +268,9 @@ enum {
 
 #define AMX_USERTAG(a,b,c,d)    ((a) | ((b)<<8) | ((int32_t)(c)<<16) | ((int32_t)(d)<<24))
 
-u_int16_t * AMXAPI amx_Align16(u_int16_t *v);
-u_int32_t * AMXAPI amx_Align32(u_int32_t *v);
-u_int64_t * AMXAPI amx_Align64(u_int64_t *v);
+uint16_t * AMXAPI amx_Align16(uint16_t *v);
+uint32_t * AMXAPI amx_Align32(uint32_t *v);
+uint64_t * AMXAPI amx_Align64(uint64_t *v);
 
 #ifdef AMXDLL
 int AMXAPI amx_Allot(AMX *amx, int cells, cell *amx_addr, cell **phys_addr);
@@ -279,7 +281,7 @@ int AMXAPI amx_Execv(AMX *amx, cell *retval, int index, int numparams, cell para
 int AMXAPI amx_FindPublic(AMX *amx, char *funcname, int *index);
 int AMXAPI amx_FindPubVar(AMX *amx, char *varname, cell *amx_addr);
 int AMXAPI amx_FindTagId(AMX *amx, cell tag_id, char *tagname);
-int AMXAPI amx_Flags(AMX *amx,u_int16_t *flags);
+int AMXAPI amx_Flags(AMX *amx,uint16_t *flags);
 int AMXAPI amx_GetAddr(AMX *amx,cell amx_addr,cell **phys_addr);
 int AMXAPI amx_GetPublic(AMX *amx, int index, char *funcname);
 int AMXAPI amx_GetPubVar(AMX *amx, int index, char *varname, cell *amx_addr);

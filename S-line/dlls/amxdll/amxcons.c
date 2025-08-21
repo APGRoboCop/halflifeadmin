@@ -91,11 +91,10 @@ static int printstring(AMX *amx,cell *cstr,cell *params,int num)
   /* check whether this is a packed string */
   if ((ucell)*cstr>UCHAR_MAX) {
     int j=sizeof(cell)-sizeof(char);
-    char c;
     /* the string is packed */
     i=0;
     for ( ; ; ) {
-      c=(char)((ucell)cstr[i] >> 8*j);
+      char c = (char)((ucell)cstr[i] >> 8 * j);
       if (c==0)
         break;
       if (informat) {
@@ -167,9 +166,7 @@ static cell AMX_NATIVE_CALL _printf(AMX *amx,cell *params)
 #endif
 static cell AMX_NATIVE_CALL _getchar(AMX *amx,cell *params)
 {
-  int c;
-
-  c=amx_getch();
+	int c = amx_getch();
   if (params[1]) {
     amx_putchar('\n');
     amx_fflush(stdout);
@@ -179,18 +176,16 @@ static cell AMX_NATIVE_CALL _getchar(AMX *amx,cell *params)
 
 static cell AMX_NATIVE_CALL _getstring(AMX *amx,cell *params)
 {
-  int c,chars;
-  char *str;
-  cell *cptr;
+	cell *cptr;
 
   if (params[2]<=0)
     return 0;
-  str=(char *)malloc(params[2]);
+  char* str = (char*)malloc(params[2]);
   if (str==NULL)
     return 0;
 
-  chars=0;
-  c=amx_getch();
+  int chars = 0;
+  int c = amx_getch();
   while (c!=EOF && c!=EOL_CHAR && chars<params[2]) {
     str[chars]=(char)c;
     amx_putchar(c);
@@ -236,9 +231,9 @@ static void acceptchar(int c,int *num)
 
 static int inlist(AMX *amx,int c,cell *params,int num)
 {
-  int i, key;
+  int key;
 
-  for (i=0; i<num; i++) {
+  for (int i = 0; i<num; i++) {
     if (i==0) {
       /* first key is passed by value, others are passed by reference */
       key = params[i];
@@ -255,19 +250,18 @@ static int inlist(AMX *amx,int c,cell *params,int num)
 
 static cell AMX_NATIVE_CALL _getvalue(AMX *amx,cell *params)
 {
-  cell value;
-  int base,sign,c,d;
+	int d;
   int chars,n = 0;
 
-  base=params[1];
+  int base = params[1];
   if (base<2 || base>36)
     return 0;
 
   chars=0;
-  value=0;
-  sign=1;       /* to avoid a compiler warning (Microsoft Visual C/C++ 6.0) */
+  cell value = 0;
+  int sign = 1;       /* to avoid a compiler warning (Microsoft Visual C/C++ 6.0) */
 
-  c=amx_getch();
+  int c = amx_getch();
   while (c!=EOF) {
     /* check for sign (if any) */
     if (chars==0) {

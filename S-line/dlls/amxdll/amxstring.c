@@ -24,15 +24,18 @@
 #include <malloc.h>
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
-//#define snprintf _snprintf
+#define snprintf _snprintf
 #endif
 
 /************************  SOME CONFIGURATION  ***********************************************************/
 
-#define AMXFAIL (-1)
-#define AMXNULL 0
-#define AMXOK 1
-#define AMXNULLP (-1)
+enum
+{
+	AMXFAIL = (-1),
+	AMXNULL = 0,
+	AMXOK = 1,
+	AMXNULLP = (-1)
+};
 
 // #define DEBUG
 
@@ -181,9 +184,8 @@ static int get_space( char** _string, size_t _iMinLen, size_t* _piStrLen )
 static size_t str_space( const char* _pcPointer ) {
 
   size_t tSpace = 0;
-  int iLoop;
-  
-  for ( iLoop = 0; iLoop < LOCAL_STRINGS; iLoop++ ) {
+
+  for ( int iLoop = 0; iLoop < LOCAL_STRINGS; iLoop++ ) {
     if ( g_sLstring[iLoop].pcString == _pcPointer ) {
       tSpace = g_sLstring[iLoop].tSpace;
       break;
@@ -296,14 +298,14 @@ static int get_string( AMX* _amx, char** _string, cell _cstrAddress, size_t* _pi
    set_string() 
    set a C string to a Small string 
 */
-static int set_string( AMX* _amx, cell _cstrAddress, char* _string, size_t _iMaxLen ) {
+static int set_string( AMX* _amx, cell _cstrAddress, const char* _string, size_t _iMaxLen ) {
 
   int err = AMX_ERR_NONE;
   cell* ptCellString = NULL;
-  const char* pcEmpty = "";
   const char* pcString = NULL;
   
   char cTemp = 0;
+  char* pszString = (char*)_string;
 
   /* get the memory address of the Small string */
   err = amx_GetAddr( _amx, _cstrAddress, &ptCellString );
@@ -312,19 +314,21 @@ static int set_string( AMX* _amx, cell _cstrAddress, char* _string, size_t _iMax
   }  // if
 
 
-  if ( _string != 0 ) {
+  if ( pszString != 0 ) {
 #ifdef DEBUG
-    fprintf( stderr, "String to set: %s\n", _string );
+    fprintf( stderr, "String to set: %s\n", pszString );
 #endif
 
     /* cut the C string to iMaxLen */
-    if ( (_iMaxLen > 0) && (_iMaxLen < strlen(_string)) ) {
-      cTemp = *(_string + _iMaxLen);
-      *(_string + _iMaxLen) = 0;
+    if ( (_iMaxLen > 0) && (_iMaxLen < strlen(pszString)) ) {
+      cTemp = *(pszString + _iMaxLen);
+      *(pszString + _iMaxLen) = 0;
     }  // if
-    pcString = _string;
-  } else {
-    pcString = pcEmpty;
+    pcString = pszString;
+  } else
+  {
+	  const char* pcEmpty = "";
+	  pcString = pcEmpty;
 #ifdef DEBUG
     fprintf( stderr, "Zero string set to empty string:%s.\n", pcString );
 #endif
@@ -334,7 +338,7 @@ static int set_string( AMX* _amx, cell _cstrAddress, char* _string, size_t _iMax
   /* set the Small string */
   err = amx_SetString( ptCellString, pcString, USE_PACKED_STRINGS );
   /* restore our string */
-  if ( cTemp ) *(_string + _iMaxLen) = cTemp;
+  if ( cTemp ) *(pszString + _iMaxLen) = cTemp;
 
   if ( err != AMX_ERR_NONE ) {
     return err;
@@ -380,7 +384,6 @@ static int string_len( AMX* _amx, cell _cstrAddress, size_t* _iStrLen ) {
 static int clear_string( AMX* _amx, cell _cstrAddress, size_t _iStrLen ) {
 
   int err = AMX_ERR_NONE;
-  int i = 0;
   cell* ptCellString = 0;
 
   /* get the memory address of the Small string */
@@ -396,7 +399,7 @@ static int clear_string( AMX* _amx, cell _cstrAddress, size_t _iStrLen ) {
   if ( _iStrLen <= 1 ) {
     *ptCellString = 0;
   } else {
-    for ( i = 0; i < _iStrLen; i++ ) ptCellString[i] = 0;
+	  for ( int i = 0; i < _iStrLen; i++ ) ptCellString[i] = 0;
   }  // if-else
 
   return err;
@@ -411,7 +414,6 @@ static void free_strings( void )
 {
 
   /* free all dynamic strings and clear the local strings set */
-  int index;
 
 #ifdef DEBUG
   int err;
@@ -424,7 +426,7 @@ static void free_strings( void )
   }
 #endif
 
-  for ( index = 0; index < LOCAL_STRINGS; index++ ) {
+  for ( int index = 0; index < LOCAL_STRINGS; index++ ) {
     if ( g_sLstring[index].cDynamic == 1 ) {
       free( g_sLstring[index].pcString ); 
     } else if ( g_sLstring[index].pcString != NULL ) {
@@ -726,7 +728,7 @@ static cell AMX_NATIVE_CALL amx_strncpy( AMX* amx, cell* params )
   /* lets not get things beyond the string boundary */
   iToLength = ( params[3] > iFromLength) ? iFromLength : params[3];
   if ( params[4] ) {
-    iMaxLength = min( (params[4]-1), iFromLength );
+    iMaxLength = min( (size_t)(params[4]-1), iFromLength );
   }  // if
 
   /* allocate memory long enough for the source!! */
@@ -810,7 +812,7 @@ static cell AMX_NATIVE_CALL amx_strcat( AMX* amx, cell* params )
   
   /* respect array boundaries */
   if( params[3] != 0 ) {
-    iMaxLength = min( iNewLength, (params[3]-1) );
+    iMaxLength = min( iNewLength, (size_t)(params[3]-1) );
   }  // if
 
   /* get the destination */
@@ -904,7 +906,7 @@ static cell AMX_NATIVE_CALL amx_strncat( AMX* amx, cell* params )
 
   /* respect array boundaries */
   if( params[4] != 0 ) {
-    iMaxLength = min( iNewLength, (params[4]-1) );
+    iMaxLength = min( iNewLength, (size_t)(params[4]-1) );
   }  // if
 
   /* get the destination */
@@ -1860,7 +1862,7 @@ static cell AMX_NATIVE_CALL amx_strgtok( AMX* amx, cell* params )
   char* pcDelimiters = NULL;
   char* pcGrouping = NULL;
   char* pcTokenString = NULL;
-  char* pcRetVal = NULL;
+  const char* pcRetVal = NULL;
 
 
   const int REQNUMARGS = 5;
@@ -2141,7 +2143,6 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
   char* pcStart = NULL;
   char* pcEndOfString = NULL;
 
-  char  cInGroup = 0;
   char  cLastGrouper = 0;
 
   cell* ptCell = NULL;
@@ -2231,7 +2232,8 @@ static cell AMX_NATIVE_CALL amx_strgsplit( AMX* amx, cell* params )
 
     }
     if ( pcGrouper == pcStart ) {
-      
+	    char cInGroup = 0;
+
 #ifdef DEBUG
       fprintf( stderr, "Start of group\n" );
 #endif
@@ -2416,7 +2418,7 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
     iNextToken += 2;
     iNumTokens++;
     /* subsequent call to strtok */
-    if ( iNextToken < (iNumArgs -2) ) {
+    if ( iNextToken < (iNumArgs - 2) ) {
       pcRetVal = strtok( NULL, pcDelimiters );
     }  // if
 
@@ -2439,7 +2441,6 @@ static cell AMX_NATIVE_CALL amx_strsep( AMX* amx, cell* params )
   return Return(iNumTokens);
 
 }  // amx_strsep()
-
 
 
 
@@ -2475,13 +2476,12 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
   char* pcDelimiters = NULL;
   char* pcGroupingSet = NULL;
   char* pcRest = NULL;
-  char* pcRetVal = NULL;
+  char* pcRetVal;
 
   char* pcGrouper = NULL;
   char* pcStart = NULL;
   char* pcEndOfString = NULL;
 
-  char  cInGroup = 0;
   char  cLastGrouper = 0;
 
   cell* ptCell = NULL;
@@ -2594,7 +2594,8 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 
     }
     if ( pcGrouper == pcStart ) {
-      
+	    char cInGroup = 0;
+
 #ifdef DEBUG
       fprintf( stderr, "Start of group\n" );
 #endif
@@ -2746,8 +2747,6 @@ static cell AMX_NATIVE_CALL amx_strgsep( AMX* amx, cell* params )
 
 
 
-
-
 /* amx_strcount ( string, char ) 
  *
  * Counts how often a character char occurs in a string
@@ -2824,7 +2823,6 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
 
   int err = 0;
   const int iNumArgs = params[0] / sizeof(cell);
-  size_t iRetVal = 0;
   size_t tiCharsTrimmed = 0;
   size_t tiStringLength = 0;
   size_t tiNumTrims = 0;
@@ -2872,7 +2870,7 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
 
   /* trim the front */
   if ( params[3] == 0 || params[3] == 2 ) {
-    iRetVal = strspn( pcString, pcTrim );
+	  const size_t iRetVal = strspn(pcString, pcTrim);
     memmove( pcString, (pcString + iRetVal), (tiStringLength - iRetVal) );
     pcString[tiStringLength-iRetVal] = 0;
     tiCharsTrimmed += iRetVal;
@@ -2896,7 +2894,7 @@ static cell AMX_NATIVE_CALL amx_strtrim( AMX* amx, cell* params )
 
 /* amx_strsubst ( string, subst, with, maxlen ) 
  *
- * Substitues all occurences of substring 'subst' with
+ * Substitutes all occurences of substring 'subst' with
  * substring 'with' in string 'string'. 
  *
  * string : string to undergo substitution
@@ -3077,7 +3075,6 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
   char* pcOutput = NULL;
   char* pcFormat = NULL;
   char* pcStringArg = NULL;
-  const char* pcRetVal = NULL;
 
   cell* ptCell = NULL;
   const cell* vlist = params + 3;
@@ -3130,7 +3127,8 @@ static cell AMX_NATIVE_CALL amx_snprintf( AMX* amx, cell* params )
 #endif
 
     if ( cInFormat == 1 ) {
-      /* we process a format directive */
+	    char* pcRetVal;
+	    /* we process a format directive */
 
 	tSkip = strspn( pcEnd, "#0+-.123456789lh" );
 	pcEnd += tSkip;
