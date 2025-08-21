@@ -29,6 +29,17 @@
 #  define BVERSION VERSION
 #endif
 
+#if !defined(BVERSION)
+#      define BVERSION VERSION " " BETA
+#endif
+#if !defined(USE_METAMOD)
+#      define MOD_VERSION BVERSION
+#else
+#  ifndef MOD_VERSION
+#      define MOD_VERSION BVERSION " (MM)"
+#  endif
+#endif
+
 #ifdef USE_METAMOD
 #  ifdef USE_MYSQL
 #    define MOD_VERSION BVERSION " (MM,mysql)"
@@ -88,6 +99,7 @@
 #pragma warning(disable : 4100)		// unreferenced formal parameter
 #pragma warning(disable : 4018)		// signed/unsigned mismatch
 
+#define NOMINMAX
 
 #ifdef _WIN32
 //#  define snprintf _snprintf
@@ -136,7 +148,7 @@
   //Fix for GCC 7 - [APG]RoboCop[CL]
   #include <algorithm> 
 
-  #ifndef max
+  /*#ifndef max
     #define max(a,b)    (((a) > (b)) ? (a) : (b))
   #endif           
 
@@ -145,7 +157,7 @@
   #endif
   
   #undef max
-  #undef min
+  #undef min*/
 
   #define itoa(a,b,c) sprintf(b, "%d", a)
 

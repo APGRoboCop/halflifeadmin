@@ -450,7 +450,7 @@ endif
 ##############################################################
 
 
-DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu99 -shared-libgcc -o $@ -c $< 
+DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu17 -shared-libgcc -o $@ -c $< 
 DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++17 -static-libstdc++ -o $@ -c $< 
 
 

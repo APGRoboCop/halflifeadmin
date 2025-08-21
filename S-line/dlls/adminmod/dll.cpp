@@ -475,6 +475,10 @@ void OnFreeEntPrivateData( edict_t *pEnt ) {
 void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax ) {
 	const int iResult = AM_Initialize();
 
+	//Fix for avoiding the hassle of having to add this line in server.cfg? [APG]RoboCop[CL]
+    SERVER_COMMAND("exec addons/adminmod/config/adminmod.cfg\n");
+    RETURN_META(MRES_IGNORED);
+
   //TODO: What would be even better, would be to store the first map of the mapcycle and start with
   //TODO: a forced map change since the first map set via +map does is not played in the regular cycle.
 

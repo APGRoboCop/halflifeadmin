@@ -153,7 +153,7 @@ char* INVALID_TIMER_PARAM = nullptr;
 	amx_StrLen(cStr,&iLength); \
 	if (iLength >= (MaxLength)) { \
 		  if ( (Truncate) == 0 ) { \
-		System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too large.  Max size %i, is %i.\n", MaxLength, iLength),pAdminEnt); \
+		System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too large. Max size %i, is %i.\n", MaxLength, iLength),pAdminEnt); \
 		amx_RaiseError(amx,AMX_ERR_NATIVE); \
 		return 0; \
 		  } else { \
@@ -175,7 +175,7 @@ char* INVALID_TIMER_PARAM = nullptr;
 	if ((String) == nullptr) { \
 		amx_SetString(cStr, "", 0); \
 	} else if((int)strlen(String) > (MaxLength)) { \
-		System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too small.  Required size %i, is %i.\n", strlen(String), MaxLength),pAdminEnt); \
+		System_Error(UTIL_VarArgs("[ADMIN] ERROR: AMX string too small. Required size %i, is %i.\n", strlen(String), MaxLength),pAdminEnt); \
 		amx_RaiseError(amx,AMX_ERR_NATIVE); \
 		return 0; \
 	} else { \
