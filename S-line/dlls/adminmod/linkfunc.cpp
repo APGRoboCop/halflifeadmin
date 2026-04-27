@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /* $Id: linkfunc.cpp,v 1.1.1.2 2003/11/07 18:50:39 darope Exp $
  *
  *   This file is part of Admin Mod.

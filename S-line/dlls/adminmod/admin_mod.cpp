@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  * ===========================================================================
  *
@@ -333,28 +335,32 @@ int AM_ClientCommand( edict_t *pEntity ) {
       CLIENT_PRINTF( pEntity, print_console,"Bad admin_password format, try: admin_password <password>\n");
     }
     return RESULT_HANDLED;
-  } else if (g_fRunPlugins && !stricmp(pcmd, "admin_help")) {
-    /* This never gets passed back to the engine,
+  }
+  if (g_fRunPlugins && !stricmp(pcmd, "admin_help")) {
+	  /* This never gets passed back to the engine,
        so ignore the return value. */
-    HandleHelp(pAdminEnt,admin_command,0);
-    return RESULT_HANDLED;
-	/* Thrown in for HLRat.  admin_help, but formatted a bit nicer for machines,
+	  HandleHelp(pAdminEnt,admin_command,0);
+	  return RESULT_HANDLED;
+	  /* Thrown in for HLRat.  admin_help, but formatted a bit nicer for machines,
 	as opposed to humans. */
-  } else if (g_fRunPlugins && !stricmp(pcmd, "admin_help_hlrat")) {
-    /* This never gets passed back to the engine,
+  }
+  if (g_fRunPlugins && !stricmp(pcmd, "admin_help_hlrat")) {
+	  /* This never gets passed back to the engine,
        so ignore the return value. */
-    HandleHelp(pAdminEnt,admin_command,1);
-    return RESULT_HANDLED;
-  } else if ( stricmp(pcmd, "admin_version") == 0) {
-	System_Response(UTIL_VarArgs( "Admin Mod version %s\n",MOD_VERSION), pEntity);
-    /* This never gets passed back to the engine,
+	  HandleHelp(pAdminEnt,admin_command,1);
+	  return RESULT_HANDLED;
+  }
+  if ( stricmp(pcmd, "admin_version") == 0) {
+	  System_Response(UTIL_VarArgs( "Admin Mod version %s\n",MOD_VERSION), pEntity);
+	  /* This never gets passed back to the engine,
        so ignore the return value. */
-    if ( cvar_file_is_set("admin_plugin_file") ) HandleVersion(pAdminEnt);
-	else System_Response( "Admin Mod plugins are disabled.\n", pEntity );
+	  if ( cvar_file_is_set("admin_plugin_file") ) HandleVersion(pAdminEnt);
+	  else System_Response( "Admin Mod plugins are disabled.\n", pEntity );
 
-    return RESULT_HANDLED;
-  } else if ( 0 == stricmp(pcmd, "admin_adm")) {
-    /* This never gets passed back to the engine,
+	  return RESULT_HANDLED;
+  }
+  if ( 0 == stricmp(pcmd, "admin_adm")) {
+	  /* This never gets passed back to the engine,
        so ignore the return value. */
 	  if ( admin_command != nullptr && strcasecmp( admin_command, "mefix") == 0 ) {
 		  const int ret = me_log_fix( false, true );
@@ -364,8 +370,9 @@ int AM_ClientCommand( edict_t *pEntity ) {
 			  System_Response( "No suspicious entities found to be fixed.\n", pAdminEnt );
 		  }  // if
 	  }  // if
-    return RESULT_HANDLED;
-  } else if ( 0 == stricmp(pcmd, "admin_status")) {
+	  return RESULT_HANDLED;
+  }
+  if ( 0 == stricmp(pcmd, "admin_status")) {
 	  // print some information on the requested user
 	  int i_indx;
 	  if ( admin_command == nullptr || pAdminEnt != nullptr || *admin_command == '\0' || !stricmp(admin_command,"am i") ) {
@@ -380,9 +387,9 @@ int AM_ClientCommand( edict_t *pEntity ) {
 		  snprintf( acString, sizeof(acString), "[ADMIN] Status: Name: '%s', Access: %i \n", g_AuthArray[i_indx].sUserName, g_AuthArray[i_indx].iAccess );
 	  }  // if-else
 	  System_Response( acString, pAdminEnt );
-    return RESULT_HANDLED;
+	  return RESULT_HANDLED;
   }
-  
+
   if (g_fRunPlugins) {
     /* A non-zero return indicates that we should stop processing...
        anything else means keep on truckin'. */
@@ -453,9 +460,8 @@ int AM_ClientCommand( edict_t *pEntity ) {
   // If we got this from console (via admin_command), don't send it on anywhere else.
   if (pAdminEnt == nullptr) {
     return RESULT_HANDLED;
-  } else {
-    return RESULT_CONTINUE;
   }
+  return RESULT_CONTINUE;
 }
 
 //
@@ -556,7 +562,7 @@ BOOL AM_ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAdd
 
   AddUserAuth( sName, sIP, pEntity );
 
-  if ( p = strchr(sIP,':') ) {
+  if ( (p = strchr(sIP,':')) ) {
     *p = '\0';
   }  // if
 
@@ -720,7 +726,7 @@ BOOL AM_ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *p
   if ( TRUE == bAM_ClientConnectRetval && static_cast<int>(CVAR_GET_FLOAT("allow_client_exec")) == 1 ) {
 	  //System_Response( "**\n", pAdminEnt );	  
 	  System_Response( "************** NOTICE >>>>>>>>>>>>\n", pAdminEnt );	  
-	  System_Response( const_cast<char*>(get_am_string(nullptr,0,statstr[9],statstr_table)), pAdminEnt );
+	  System_Response( get_am_string(nullptr,0,statstr[9],statstr_table), pAdminEnt );
 	  System_Response( "************** NOTICE <<<<<<<<<<<<\n", pAdminEnt );	  
   }  // if
 
@@ -868,7 +874,7 @@ void AM_ClientStart(edict_t *pEntity) {
   
   DispatchSpawn(pTimerEnt);  
 
-    pTimerEnt->v.origin =  Vector(0,0,0);
+    pTimerEnt->v.origin = Vector(0,0,0);
     pTimerEnt->v.euser1 = nullptr;
     pTimerEnt->v.angles = Vector(0,0,0);
     pTimerEnt->v.velocity = Vector(0,0,0);
@@ -904,7 +910,7 @@ void AM_ClientStart(edict_t *pEntity) {
   // make sure that the password_field cvar is set and is prefixed with an underscore
   const char *passwd_field = get_cvar_string_value( "password_field", true );
 
-  if( passwd_field == nullptr  ) {  // Default value "0", i.e. config file not read.
+  if( passwd_field == nullptr ) {  // Default value "0", i.e. config file not read.
 	UTIL_LogPrintf("\n[ADMIN] ERROR: ********************************************************\nThe configuration file for Admin Mod (default: adminmod.cfg) could not be read.\nMake sure that the Admin Mod configuration file is executed from server.cfg\nwhen you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n");
 #ifdef WIN32
 	MessageBox(nullptr,"[ADMIN] ERROR:\n\nThe configuration file for Admin Mod could not be read.\nMake sure that the Admin Mod configuration file (default: adminmod.cfg) is executed from server.cfg when you use Admin Mod.\nGo to http://www.adminmod.org/manual/ for more details.\n","ERROR",MB_OK | MB_ICONSTOP | MB_DEFBUTTON1 | MB_SYSTEMMODAL);
@@ -1328,7 +1334,7 @@ int AM_GetGameDescription( const char* _pcDescription ) {
 		}  // if-else
 	} else if ( iHideSlots == 0 ) {
 	  // else disable the maxplayers override
-	  CVAR_SET_FLOAT( "sv_visiblemaxplayers", -1.0 );
+	  CVAR_SET_FLOAT( "sv_visiblemaxplayers", -1.0f );
 	  DEBUG_LOG(1, ("Reporting normal maxplayer setting") );
 	}  // if-else
   }  // if

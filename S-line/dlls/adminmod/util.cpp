@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  * ===========================================================================
  *
@@ -665,34 +667,38 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 		mapcycle_item_s *last = nullptr;
 		// the first map name in the file becomes the default
 		while (true) {
-    char szMap[MAP_NAME_LENGTH];
-    char szBuffer[MAX_RULE_BUFFER];
-    memset(szBuffer, 0, MAX_RULE_BUFFER);
-    pFileList = COM_Parse(pFileList);
-    size_t tokenLength = strlen(com_token); // Store the result of strlen in a variable
-    if (tokenLength <= 0) break;
-    am_strncpy(szMap, com_token, sizeof(szMap));
-    // Any more tokens on this line?
-    if (COM_TokenWaiting(pFileList)) {
-        pFileList = COM_Parse(pFileList);
-        if (com_token[0] != '\0') {
-            am_strncpy(szBuffer, com_token, sizeof(szMap));
-        }
-    }
-    // Check map
-    if (IS_MAP_VALID(szMap)) {
-        item = new mapcycle_item_s;
-        // only set when first item
-        if (!last) cycle->items = item;
-        if (!last) last = item;
-        strcpy(item->mapname, szMap);
-        item->next = cycle->items;
-        last->next = item;
-        last = item;
-    } else {
-        ALERT(at_console, "Skipping %s from mapcycle, not a valid map\n", szMap);
-    }
-}
+			char szMap[MAP_NAME_LENGTH];
+			char szBuffer[MAX_RULE_BUFFER];
+			memset(szBuffer, 0, MAX_RULE_BUFFER);
+			pFileList = COM_Parse(pFileList);
+			if (com_token[0] == '\0') break; // Direct empty check - clearer intent
+			am_strncpy(szMap, com_token, sizeof(szMap));
+			// Any more tokens on this line?
+			if (COM_TokenWaiting(pFileList)) {
+				pFileList = COM_Parse(pFileList);
+				if (com_token[0] != '\0') {
+					am_strncpy(szBuffer, com_token, sizeof(szBuffer)); // Bug fix: was sizeof(szMap)
+				}
+			}
+			// Check map
+			if (IS_MAP_VALID(szMap)) {
+				item = new (std::nothrow) mapcycle_item_s;
+				if (!item) {
+					ALERT(at_console, "Memory allocation failed for mapcycle_item_s\n");
+					break;
+				}
+				if (!last) cycle->items = item;
+				if (!last) last = item;
+				strncpy(item->mapname, szMap, sizeof(item->mapname) - 1);
+				item->mapname[sizeof(item->mapname) - 1] = '\0'; // Ensure null termination
+				item->next = cycle->items;
+				last->next = item;
+				last = item;
+			}
+			else {
+				ALERT(at_console, "Skipping %s from mapcycle, not a valid map\n", szMap);
+			}
+		}
   // while
       
 		FREE_FILE( aFileList );

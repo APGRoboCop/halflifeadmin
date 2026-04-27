@@ -43,6 +43,8 @@
  * commands, etc. 
  *
  */
+#ifndef CPLUGIN_H
+#define CPLUGIN_H
 
 #include <cstdint>
 
@@ -158,3 +160,5 @@ public:	//Unstable that ~CPlugin is unwanted? [APG]RoboCop[CL]
 	char* Version();
 	void SetVersion(char* sVersion);
 };
+
+#endif // CPLUGIN_H

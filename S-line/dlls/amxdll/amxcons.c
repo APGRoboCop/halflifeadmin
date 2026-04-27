@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /* Since some of these routines go further than those of standard C,
  * they cannot always be implemented with portable C functions. In
  * other words, these routines must be ported to other environments.

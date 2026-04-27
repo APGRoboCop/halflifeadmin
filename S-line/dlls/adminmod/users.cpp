@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  * ===========================================================================
  *
@@ -1371,7 +1373,7 @@ edict_t* get_player_edict( const AMAuthId& _oaiID, uidt _uidType ) {
 // level.
 void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 	bool bAuthNeeded = true;
-	char cTmpChar;
+	char cTmpChar = 0;
 	char* pcIpPortSep = strchr(sIP,':');
 	const int iIndex = ENTINDEX(pEntity);
   int iPrevIndex = 0;
@@ -3059,7 +3061,7 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
 
 // Finds a CPlugin object based on an AMX pointer.
 CPlugin* GetPlugin(AMX* amx) {
-	CPlugin* pPlugin;
+	CPlugin* pPlugin = nullptr;
   
   // Make sure our list is initialized.
   if (m_pPluginList == nullptr) {

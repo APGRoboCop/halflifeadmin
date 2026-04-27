@@ -330,7 +330,7 @@ CFDBG= -g -ggdb3
 CFDBG+= -fno-defer-pop -fno-omit-frame-pointer
 
 #full optimization
-CFOPT = -O2 -mtune=generic -msse4.2 -mfpmath=sse -pipe \
+CFOPT = -O2 -mtune=generic -msse -msse2 -mfpmath=sse -pipe \
 #	-fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
 
 CFLAGS = $(BASE_CFLAGS) $(CFWARN) 
@@ -450,7 +450,7 @@ endif
 ##############################################################
 
 
-DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu17 -shared-libgcc -o $@ -c $< 
+DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu99 -shared-libgcc -o $@ -c $< 
 DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++17 -static-libstdc++ -o $@ -c $< 
 
 
