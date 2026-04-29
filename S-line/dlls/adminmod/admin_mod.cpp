@@ -92,6 +92,21 @@ void *program=nullptr;
 DLL_GLOBAL edict_t *pAdminEnt;
 DLL_GLOBAL edict_t *pTimerEnt;
 
+// Fallback timer state: used when CREATE_NAMED_ENTITY("adminmod_timer") fails,
+// e.g. on Metamod-R which doesn't expose LINK_ENTITY_TO_PLUGIN. In that mode
+// AM_StartFrame() polls s_fallbackTimer directly instead of relying on the
+// engine to fire the entity's nextthink.
+static entvars_t s_fallbackTimerPev = {};
+static CTimer    s_fallbackTimer;
+static bool      s_bTimerFallbackActive = false;
+
+CTimer *GetAdminTimer() {
+  if (pTimerEnt != nullptr) {
+    return static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
+  }
+  return s_bTimerFallbackActive ? &s_fallbackTimer : nullptr;
+}
+
 extern  AMX_NATIVE_INFO admin_Natives[];
 extern  enginefuncs_t   g_engfuncs;
 extern  globalvars_t*   gpGlobals;
@@ -425,8 +440,8 @@ int AM_ClientCommand( edict_t *pEntity ) {
   }
   
   if  (FStrEq( pcmd, "menuselect") && CMD_ARGC() >= 2) {
-    CTimer *pTimer = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
-    if (pTimer->VoteInProgress()) {
+    CTimer *pTimer = GetAdminTimer();
+    if (pTimer != nullptr && pTimer->VoteInProgress()) {
       int i_index;
       const int iVote = atoi(CMD_ARGV(1));
       
@@ -865,14 +880,21 @@ void AM_ClientStart(edict_t *pEntity) {
     free(program);
 
   const int istr = MAKE_STRING("adminmod_timer");
-  
+
   pTimerEnt = CREATE_NAMED_ENTITY(istr);
   if ( FNullEnt( pTimerEnt ) ) {
-    UTIL_LogPrintf("[ADMIN] ERROR: nullptr Ent for adminmod_timer\n" );
-    am_exit(1);
-  }
-  
-  DispatchSpawn(pTimerEnt);  
+    // Metamod-R (and any engine without LINK_ENTITY_TO_PLUGIN support) cannot
+    // resolve "adminmod_timer" through CREATE_NAMED_ENTITY. Fall back to
+    // driving the timer ourselves from AM_StartFrame().
+    pTimerEnt = nullptr;
+    UTIL_LogPrintf("[ADMIN] WARNING: CREATE_NAMED_ENTITY failed for adminmod_timer; using AM_StartFrame polling fallback (Metamod-R compatibility).\n" );
+
+    memset(&s_fallbackTimerPev, 0, sizeof(s_fallbackTimerPev));
+    s_fallbackTimer.pev = &s_fallbackTimerPev;
+    s_bTimerFallbackActive = true;
+    s_fallbackTimer.Spawn();
+  } else {
+    DispatchSpawn(pTimerEnt);
 
     pTimerEnt->v.origin = Vector(0,0,0);
     pTimerEnt->v.euser1 = nullptr;
@@ -882,16 +904,17 @@ void AM_ClientStart(edict_t *pEntity) {
         pTimerEnt->v.health = 100000;
         pTimerEnt->v.movetype = MOVETYPE_NONE;
         pTimerEnt->v.sequence = 0;
-        pTimerEnt->v.framerate = 1.0;   
-        pTimerEnt->v.solid = SOLID_NOT;  
+        pTimerEnt->v.framerate = 1.0;
+        pTimerEnt->v.solid = SOLID_NOT;
    // SET_MODEL(pMediFlag, "models/??");
     UTIL_SetSize(VARS(pTimerEnt), Vector(0, 0, 0), Vector(0, 0, 0));
     pTimerEnt->v.classname = MAKE_STRING("adminmod_timer");
 
 
-  CBaseEntity *pTimer = static_cast<CBaseEntity *>(GET_PRIVATE(pTimerEnt));
-  if (pTimer) { // run the ptimer spawn
-    pTimer->Spawn();   
+    CBaseEntity *pTimer = static_cast<CBaseEntity *>(GET_PRIVATE(pTimerEnt));
+    if (pTimer) { // run the ptimer spawn
+      pTimer->Spawn();
+    }
   }
   
   //pTimer->edict()->v.owner = nullptr;
@@ -1482,7 +1505,13 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 
 
 int AM_StartFrame() {
-  
+
+	// Fallback timer polling: when the engine couldn't create the
+	// adminmod_timer entity (Metamod-R), the engine never fires its
+	// nextthink, so we drive Think() ourselves here.
+	if ( s_bTimerFallbackActive && gpGlobals->time >= s_fallbackTimerPev.nextthink ) {
+		s_fallbackTimer.Think();
+	}
 
 	++s_uiFCount;
 
@@ -1810,6 +1839,7 @@ int AM_GameDLLInit() {
 
 int AM_Initialize() {
   pTimerEnt = nullptr;
+  s_bTimerFallbackActive = false;  // re-detect on next AM_ClientStart
   s_bMECheck = true;
   s_uiFCount = 0;
 

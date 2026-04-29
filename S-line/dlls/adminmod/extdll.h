@@ -414,6 +414,7 @@ int AM_DispatchThink( edict_t *pent );
 int AM_GameDLLInit();
 int AM_Initialize();
 int AM_OnFreeEntPrivateData( edict_t *pent );
+CTimer *GetAdminTimer();
 void KickHighestPinger( const char *pszName,char *ip,edict_t *pEntity);
 void* LoadScript(AMX *amx, const char *filename);
 

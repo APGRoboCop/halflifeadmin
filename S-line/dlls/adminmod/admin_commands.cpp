@@ -525,7 +525,7 @@ static cell changelevel(AMX *amx, cell *params) {
 
   // if we want to go into intermission first, set the timer to change map
   if ( iIPause > 0 ) {
-	  CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));  
+	  CTimer *pEntity = GetAdminTimer();
 	  if (nullptr == pEntity ) {
 		  UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to set an intermission timer when timer entity is missing.\n");
 		  amx_RaiseError( amx,AMX_ERR_NATIVE );
@@ -1013,7 +1013,7 @@ static cell kill_timer(AMX *amx, cell *params) {
 	// set_timer gives us an off by one index, so compensate
 	const int iTimer = params[1] - 1;
   
-  CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
+  CTimer *pEntity = GetAdminTimer();
   if (pEntity== nullptr) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to kill a timer when no map is loaded.\n");
 	amx_RaiseError( amx,AMX_ERR_NATIVE );
@@ -1046,7 +1046,7 @@ static cell get_timer(AMX *amx, cell *params) {
 	// set_timer gives us an off by one index, so compensate
 	const int iTimer = params[1] - 1;
 
-	const CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
+	const CTimer *pEntity = GetAdminTimer();
   if (pEntity== nullptr) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to get a timer when no map is loaded.\n");
 	amx_RaiseError( amx,AMX_ERR_NATIVE );
@@ -1739,7 +1739,7 @@ static cell set_timer(AMX *amx, cell *params) {
   
   // Update the timer to make sure it calls the correct 
   // timer next
-  CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));  
+  CTimer *pEntity = GetAdminTimer();
   if (pEntity== nullptr) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to set a timer when no map is loaded.\n");
 	amx_RaiseError( amx,AMX_ERR_NATIVE );
@@ -2026,7 +2026,7 @@ static cell vote_multiple(AMX *amx, cell *params) {
   
   DEVEL_LOG( 3, ("Vote called: \"%s\"", sText) );
   // Add a new timer for this vote
-  CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));  
+  CTimer *pEntity = GetAdminTimer();
   if (pEntity== nullptr) {
 	UTIL_LogPrintf( "[ADMIN] ERROR: Attempt to start a vote when no map is loaded.\n");
 	amx_RaiseError( amx,AMX_ERR_NATIVE );
@@ -2046,9 +2046,9 @@ static cell vote_multiple(AMX *amx, cell *params) {
 static cell vote_allowed(AMX *amx, cell *params) {
 	const int iVoteFreq = static_cast<int>(CVAR_GET_FLOAT("vote_freq"));
   
-  if (iVoteFreq <= 0) 
+  if (iVoteFreq <= 0)
 	return 0;
-  const CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
+  const CTimer *pEntity = GetAdminTimer();
   if (pEntity== nullptr) {
 	return 0;
   }

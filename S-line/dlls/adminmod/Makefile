@@ -84,9 +84,13 @@ SDKSRC= ../../../../hlsdk-2.3-p4/multiplayer
 METADIR= ../../../../metamod-p
 METASRC= $(METADIR)/metamod
 
-# The standard C++ library for static linking
+# The standard C++ library for static linking.
+# Left empty intentionally: -static-libstdc++ in SHLIBLDFLAGS now embeds
+# libstdc++.a, so we don't feed a host-specific .so path to the linker.
+# Keeps the resulting .so loadable on legacy (pre-SteamPipe) gamemod hosts
+# whose libstdc++.so.6 is older than the build machine's.
 #STDCPPLIB=/usr/lib/libstdc++-libc6.2-2.so.3 # Old dir [APG]RoboCop[CL]
-STDCPPLIB=-L/usr/lib/i386-linux-gnu/libstdc++.so.6
+STDCPPLIB=
 
 # The directory of the MySQL include files
 MYSQLINCDIR= /usr/include/mysql
@@ -347,7 +351,12 @@ else
 endif
 
 SHLIBCFLAGS=-fPIC
-SHLIBLDFLAGS=-shared -nodefaultlibs -lc -lgcc
+# Embed libstdc++ and libgcc statically so the resulting .so runs against
+# pre-SteamPipe gamemod hosts (TS3, AHL, FA3) whose runtime is older than
+# the build host. --no-as-needed prevents ld from dropping libs that are
+# only referenced via weak symbols. Dropped -nodefaultlibs because it was
+# stripping libstdc++ before -static-libstdc++ could re-add it.
+SHLIBLDFLAGS=-shared -static-libstdc++ -static-libgcc -Wl,--no-as-needed
 
 ###############################################################
 # DIRECTORY SETUP
@@ -450,8 +459,8 @@ endif
 ##############################################################
 
 
-DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu99 -shared-libgcc -o $@ -c $< 
-DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++17 -static-libstdc++ -o $@ -c $< 
+DO_CC=$(CC) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu99 -o $@ -c $<
+DO_CXX=$(CXX) -Wall $(CFLAGS) $(XTFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -std=gnu++17 -o $@ -c $<
 
 
 
