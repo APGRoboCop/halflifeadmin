@@ -322,20 +322,22 @@ void am_AlertMessage(ALERT_TYPE atype, char* szFmt, ...)
 
 edict_t* am_FindEntityInSphere(edict_t* pEdictStartSearchAfter, const float* org, float rad)
 {
-    edict_t* ent;
-/* When using metamod, this function should be passed as a "_Post"
- * function, and metamod handles the initial engine call. */
-
-#ifdef USE_METAMOD
-    ent = META_RESULT_ORIG_RET(edict_t*);
-#else
-    ent = FIND_ENTITY_IN_SPHERE(pEdictStartSearchAfter, org, rad);
-#endif
+    /* Call the engine function directly rather than reading
+     * META_RESULT_ORIG_RET. The macro reads gpMetaGlobals->orig_ret which is
+     * not reliably populated for engine-function Post hooks under legacy
+     * Metamod variants (e.g. the one shipped with FireArms 3.0) -- the struct
+     * layout differs from metamod-p and the dereference segfaults. The engine
+     * call below is safe inside a plugin hook (no recursion) because Metamod
+     * hands plugins direct engine pointers, not its own dispatchers; the
+     * pTimer-ent re-search a few lines down has been doing the same thing
+     * for years without recursing. */
+    edict_t* ent = FIND_ENTITY_IN_SPHERE(pEdictStartSearchAfter, org, rad);
 
     /* If this found the timer ent, don't let game DLL have this; find the
-     * next ent. */
-
-    if(ent == pTimerEnt) {
+     * next ent. Skip when pTimerEnt is null (Metamod-R fallback mode), since
+     * `ent == nullptr` would otherwise false-trigger whenever the sphere is
+     * empty. */
+    if(pTimerEnt != nullptr && ent == pTimerEnt) {
         DEBUG_LOG(5, ("Hiding timer entity from FindEntityInSphere."));
         ent = FIND_ENTITY_IN_SPHERE(ent, org, rad);
         DEBUG_LOG(5, ("Returning next entity: %s.", ent ? STRING(ent->v.classname) : "nil"));
@@ -353,20 +355,14 @@ edict_t* am_FindEntityInSphere(edict_t* pEdictStartSearchAfter, const float* org
 /* Engine functions we need to catch */
 edict_t* am_EntitiesInPVS(edict_t* pplayer)
 {
-    edict_t* ent;
-/* When using metamod, this function should be passed as a "_Post"
- * function, and metamod handles the initial engine call. */
-
-#ifdef USE_METAMOD
-    ent = META_RESULT_ORIG_RET(edict_t*);
-#else
-    ent = UTIL_EntitiesInPVS(pplayer);
-#endif
+    /* See am_FindEntityInSphere for the rationale on calling the engine
+     * directly instead of reading META_RESULT_ORIG_RET. */
+    edict_t* ent = UTIL_EntitiesInPVS(pplayer);
 
     /* If this found the timer ent, don't let game DLL have this; find the
      * next ent. */
 
-    if(ent == pTimerEnt) {
+    if(pTimerEnt != nullptr && ent == pTimerEnt) {
 
         DEBUG_LOG(5, ("Hiding timer entity from FindEntityInPVS."));
         ent = UTIL_EntitiesInPVS(ent);
@@ -385,20 +381,14 @@ edict_t* am_EntitiesInPVS(edict_t* pplayer)
 /* Engine functions we need to catch */
 edict_t* am_FindEntityByVars(struct entvars_s* pvars)
 {
-    edict_t* ent;
-/* When using metamod, this function should be passed as a "_Post"
- * function, and metamod handles the initial engine call. */
-
-#ifdef USE_METAMOD
-    ent = META_RESULT_ORIG_RET(edict_t*);
-#else
-    ent = (*g_engfuncs.pfnFindEntityByVars)(pvars);
-#endif
+    /* See am_FindEntityInSphere for the rationale on calling the engine
+     * directly instead of reading META_RESULT_ORIG_RET. */
+    edict_t* ent = (*g_engfuncs.pfnFindEntityByVars)(pvars);
 
     /* If this found the timer ent, don't let game DLL have this; find the
      * next ent. */
 
-    if(ent == pTimerEnt) {
+    if(pTimerEnt != nullptr && ent == pTimerEnt) {
         DEBUG_LOG(5, ("Hiding timer entity from FindEntityByVars."));
         ent = nullptr;
         DEBUG_LOG(5, ("Returning next entity: %s.", ent ? STRING(ent->v.classname) : "nil"));

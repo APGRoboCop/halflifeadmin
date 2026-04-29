@@ -413,13 +413,20 @@ BOOL ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddres
 
 #ifdef USE_METAMOD
 BOOL ClientConnect_Post( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ] ) {
-	const BOOL ret=META_RESULT_ORIG_RET( BOOL );
-	const BOOL iResult = AM_ClientConnect_Post( pEntity, pszName, pszAddress, szRejectReason );
-  if (iResult == ret) {
-    RETURN_META_VALUE(MRES_IGNORED,ret);
-  } else {
-    RETURN_META_VALUE(MRES_OVERRIDE,iResult);
-  }
+  // AM_ClientConnect_Post is purely informational (always returns TRUE,
+  // only sends a notice message when allow_client_exec=1). Connection
+  // rejection happens in the Pre hook. So we never need to override the
+  // gamemod's verdict here -- MRES_IGNORED lets it stand untouched.
+  //
+  // Removed the prior META_RESULT_ORIG_RET( BOOL ) read for two reasons:
+  //   1. Reading gpMetaGlobals->orig_ret segfaults on legacy Metamod
+  //      variants (struct layout / orig_ret population differs from what
+  //      our header expects), as observed on FireArms 3.0.
+  //   2. The original IGNORED-vs-OVERRIDE branching had a latent bug:
+  //      iResult is always TRUE, so when the gamemod rejected (ret=FALSE)
+  //      the OVERRIDE path silently flipped the rejection to acceptance.
+  AM_ClientConnect_Post( pEntity, pszName, pszAddress, szRejectReason );
+  RETURN_META_VALUE(MRES_IGNORED, TRUE);
 }
 #endif
 
