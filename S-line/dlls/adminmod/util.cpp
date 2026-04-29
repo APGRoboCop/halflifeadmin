@@ -842,10 +842,15 @@ static short FixedSigned16( float value, float scale )
 
 
 int ClientCheck(CBaseEntity *pPlayer) {
-	if ( !pPlayer  
+	// Guard pPlayer->pev before calling edict(): on legacy gamemods (FireArms 3.0
+	// etc.) UTIL_PlayerByIndex can return a non-null CBaseEntity for an empty
+	// slot whose pev has been zeroed out, and edict()/ENT(pev) would segfault.
+	// Same defensive check IsPlayerValid uses.
+	if ( !pPlayer
+		 || FNullEnt(pPlayer->pev)
 		 || (static_cast<int>(GETPLAYERWONID(pPlayer->edict())) == 0)
 		 //||  (pPlayer->pev->flags&FL_SPECTATOR)
-		 //||  (pPlayer->pev->flags&FL_PROXY) 
+		 //||  (pPlayer->pev->flags&FL_PROXY)
 		 )
 		return 0;
 	else
