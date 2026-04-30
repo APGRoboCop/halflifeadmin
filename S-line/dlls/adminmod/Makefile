@@ -356,7 +356,16 @@ SHLIBCFLAGS=-fPIC
 # the build host. --no-as-needed prevents ld from dropping libs that are
 # only referenced via weak symbols. Dropped -nodefaultlibs because it was
 # stripping libstdc++ before -static-libstdc++ could re-add it.
-SHLIBLDFLAGS=-shared -static-libstdc++ -static-libgcc -Wl,--no-as-needed
+#
+# --exclude-libs,ALL hides ALL symbols brought in from static archives
+# (libstdc++.a, libgcc.a, etc.). Without this, our embedded C++ runtime
+# leaks into the global symbol table and the dynamic linker can resolve
+# the gamemod's libstdc++ calls against *our* embedded copy instead of
+# the system libstdc++.so.6 it was built against. That mismatches struct
+# layouts (std::string SSO, locale state, unwind tables) between the
+# gamemod and our .so and crashes the gamemod inside libc on innocuous
+# string/allocator calls. AMXX uses the same mitigation.
+SHLIBLDFLAGS=-shared -static-libstdc++ -static-libgcc -Wl,--no-as-needed -Wl,--exclude-libs,ALL
 
 ###############################################################
 # DIRECTORY SETUP

@@ -92,10 +92,11 @@ void *program=nullptr;
 DLL_GLOBAL edict_t *pAdminEnt;
 DLL_GLOBAL edict_t *pTimerEnt;
 
-// Fallback timer state: used when CREATE_NAMED_ENTITY("adminmod_timer") fails,
-// e.g. on Metamod-R which doesn't expose LINK_ENTITY_TO_PLUGIN. In that mode
-// AM_StartFrame() polls s_fallbackTimer directly instead of relying on the
-// engine to fire the entity's nextthink.
+// Polling timer state. AdminMod no longer registers "adminmod_timer" as an
+// engine entity (see AM_ClientStart for rationale). s_fallbackTimer is a
+// static CTimer instance polled from AM_StartFrame() once per server tick.
+// pTimerEnt remains in the codebase as a null sentinel so existing
+// pent==pTimerEnt guards short-circuit cleanly.
 static entvars_t s_fallbackTimerPev = {};
 static CTimer    s_fallbackTimer;
 static bool      s_bTimerFallbackActive = false;
@@ -879,43 +880,31 @@ void AM_ClientStart(edict_t *pEntity) {
   if(program!=nullptr)
     free(program);
 
-  const int istr = MAKE_STRING("adminmod_timer");
-
-  pTimerEnt = CREATE_NAMED_ENTITY(istr);
-  if ( FNullEnt( pTimerEnt ) ) {
-    // Metamod-R (and any engine without LINK_ENTITY_TO_PLUGIN support) cannot
-    // resolve "adminmod_timer" through CREATE_NAMED_ENTITY. Fall back to
-    // driving the timer ourselves from AM_StartFrame().
-    pTimerEnt = nullptr;
-    UTIL_LogPrintf("[ADMIN] WARNING: CREATE_NAMED_ENTITY failed for adminmod_timer; using AM_StartFrame polling fallback (Metamod-R compatibility).\n" );
-
-    memset(&s_fallbackTimerPev, 0, sizeof(s_fallbackTimerPev));
-    s_fallbackTimer.pev = &s_fallbackTimerPev;
-    s_bTimerFallbackActive = true;
-    s_fallbackTimer.Spawn();
-  } else {
-    DispatchSpawn(pTimerEnt);
-
-    pTimerEnt->v.origin = Vector(0,0,0);
-    pTimerEnt->v.euser1 = nullptr;
-    pTimerEnt->v.angles = Vector(0,0,0);
-    pTimerEnt->v.velocity = Vector(0,0,0);
-        pTimerEnt->v.takedamage = DAMAGE_NO;
-        pTimerEnt->v.health = 100000;
-        pTimerEnt->v.movetype = MOVETYPE_NONE;
-        pTimerEnt->v.sequence = 0;
-        pTimerEnt->v.framerate = 1.0;
-        pTimerEnt->v.solid = SOLID_NOT;
-   // SET_MODEL(pMediFlag, "models/??");
-    UTIL_SetSize(VARS(pTimerEnt), Vector(0, 0, 0), Vector(0, 0, 0));
-    pTimerEnt->v.classname = MAKE_STRING("adminmod_timer");
-
-
-    CBaseEntity *pTimer = static_cast<CBaseEntity *>(GET_PRIVATE(pTimerEnt));
-    if (pTimer) { // run the ptimer spawn
-      pTimer->Spawn();
-    }
-  }
+  // The timer is always driven by polling from AM_StartFrame() rather than
+  // by registering an "adminmod_timer" entity with the engine. Reasons:
+  //
+  //  1. Metamod-R doesn't expose LINK_ENTITY_TO_PLUGIN, so on that variant
+  //     CREATE_NAMED_ENTITY would fail anyway and the fallback was already
+  //     required.
+  //
+  //  2. On legacy gamemods that walk the entity list and dispatch virtual
+  //     methods polymorphically (AHL teamplay-with-rounds observed,
+  //     CGameRules::SetupRound), our CTimer's vtable -- laid out for the
+  //     HLSDK 2.3p4 headers AdminMod is built against -- doesn't match the
+  //     gamemod's older CBaseEntity vtable. The dispatched call lands at
+  //     the wrong slot and crashes the gamemod inside libc on a bad
+  //     pointer. Removing the entity from the engine's list eliminates
+  //     this hazard.
+  //
+  //  3. The polling cost is one float comparison per server tick.
+  //
+  // The CTimer instance is a static C++ object in our .so; the engine
+  // never sees it.
+  pTimerEnt = nullptr;
+  memset(&s_fallbackTimerPev, 0, sizeof(s_fallbackTimerPev));
+  s_fallbackTimer.pev = &s_fallbackTimerPev;
+  s_bTimerFallbackActive = true;
+  s_fallbackTimer.Spawn();
   
   //pTimer->edict()->v.owner = nullptr;
   //pTimerEnt->v.origin.x = 9000;
@@ -1506,9 +1495,10 @@ unsigned int me_log_fix( bool _bLog, bool _bFix ) {
 
 int AM_StartFrame() {
 
-	// Fallback timer polling: when the engine couldn't create the
-	// adminmod_timer entity (Metamod-R), the engine never fires its
-	// nextthink, so we drive Think() ourselves here.
+	// Drive the timer's Think() from here once per server tick. AdminMod no
+	// longer registers an engine entity for the timer (it caused vtable
+	// mismatches on legacy gamemods that walk the entity list); the timer
+	// is just a static C++ instance and we tick it directly.
 	if ( s_bTimerFallbackActive && gpGlobals->time >= s_fallbackTimerPev.nextthink ) {
 		s_fallbackTimer.Think();
 	}

@@ -320,8 +320,31 @@ void am_AlertMessage(ALERT_TYPE atype, char* szFmt, ...)
 }
 #endif
 
+/* DIAGNOSTIC: check ADMINMOD_BYPASS_ENGINE_HOOKS env var once, cache result.
+ * When set, the three engine-func Post hooks (FindEntityInSphere, EntitiesInPVS,
+ * FindEntityByVars) become unconditional MRES_IGNORED no-ops. Used to bisect
+ * whether our changes to those hooks affect a gamemod's internal state during
+ * round transitions (observed on AHL DC). Remove once diagnosed. */
+static bool s_bBypassEngineHooks_init = false;
+static bool s_bBypassEngineHooks = false;
+static inline bool BypassEngineHooks() {
+    if ( !s_bBypassEngineHooks_init ) {
+        s_bBypassEngineHooks = (getenv("ADMINMOD_BYPASS_ENGINE_HOOKS") != nullptr);
+        if ( s_bBypassEngineHooks ) {
+            UTIL_LogPrintf("[ADMIN] DIAGNOSTIC: ADMINMOD_BYPASS_ENGINE_HOOKS set; engine-func Post hooks are no-ops.\n");
+        }
+        s_bBypassEngineHooks_init = true;
+    }
+    return s_bBypassEngineHooks;
+}
+
 edict_t* am_FindEntityInSphere(edict_t* pEdictStartSearchAfter, const float* org, float rad)
 {
+#ifdef USE_METAMOD
+    if ( BypassEngineHooks() ) {
+        RETURN_META_VALUE(MRES_IGNORED, nullptr);
+    }
+#endif
     /* Call the engine function directly rather than reading
      * META_RESULT_ORIG_RET. The macro reads gpMetaGlobals->orig_ret which is
      * not reliably populated for engine-function Post hooks under legacy

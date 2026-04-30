@@ -376,15 +376,25 @@ edict_t* UTIL_EntityByIndex( int playerIndex ){
 
 CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
   CBaseEntity* pPlayer = nullptr;
-  
+
   if ( playerIndex > 0 && playerIndex <= gpGlobals->maxClients ) {
     edict_t* pPlayerEdict = INDEXENT( playerIndex );
     if ( pPlayerEdict && !pPlayerEdict->free ) {
       pPlayer = CBaseEntity::Instance( pPlayerEdict );
+      // On legacy gamemods (FA3, AHL DC, TS3) the engine sometimes leaves
+      // pvPrivateData allocated for a vacated slot but the gamemod has
+      // zeroed pev. Modern engines null pvPrivateData on disconnect, so
+      // this only matters on legacy hosts. Filter here so every caller's
+      // `if (pPlayer)` check stays safe and we don't have to whack-a-mole
+      // pev guards into every consumer (typesay/ClientCheck, userlist,
+      // GetPlayerIndex, ...).
+      if ( pPlayer != nullptr && FNullEnt(pPlayer->pev) ) {
+        pPlayer = nullptr;
+      }
     }
   }
   return pPlayer;
-}      
+}
 
 
 CBaseEntity* UTIL_PlayerByName( const char *name ) {
