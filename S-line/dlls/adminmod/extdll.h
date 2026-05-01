@@ -341,7 +341,7 @@ void UTIL_LogPrintf( const char *fmt, ... );
 void UTIL_LogPrintfFNL( const char *fmt, ... );
 //void UTIL_ClientPrintAll( int msg_dest, const char *msg_name);
 char* UTIL_VarArgs( const char *format, ... );
-CBaseEntity* UTIL_PlayerByIndex( int playerIndex );
+CBaseEntity* UTIL_PlayerByIndex( const int playerIndex );
 CBaseEntity* UTIL_PlayerByName( const char *name );
 void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg );
 void ClientCommand (edict_t* pEdict, const char* szFmt, ...);

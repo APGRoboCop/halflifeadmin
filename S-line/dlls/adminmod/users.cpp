@@ -688,7 +688,7 @@ int match(const char *string, char *pattern) {
 const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 
 	static char acEncryptPw[PASSWORD_SIZE];
-	const char* pcEncryptPw = nullptr;
+	const char* pcEncryptPw;
 
 	const int iEncryptMethod = static_cast<int>(CVAR_GET_FLOAT("encrypt_password"));
  
@@ -745,18 +745,16 @@ const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 // sPlayerPassword is the password the player has (via admin_password, or whatever).
 //
 int pass_compare( const char* sServerPassword, const char* sPlayerPassword) {
-	const char *sEncrypt = nullptr;
-	
 	if ( sServerPassword == nullptr || sPlayerPassword == nullptr ) {
 		UTIL_LogPrintf( "[ADMIN] ERROR: pass_compare called with nullptr pointer\n" );
 		return 0;
 	}  // if
-	
+
 	// if the server password is empty, we don't need one.
 	if ( sServerPassword[0] == '\0' ) return 1;
-	
-	// Encrypt the password 
-	sEncrypt = pass_encrypt( sPlayerPassword, sServerPassword );
+
+	// Encrypt the password
+	const char* sEncrypt = pass_encrypt(sPlayerPassword, sServerPassword);
 
     if (nullptr == sEncrypt ) {
     	UTIL_LogPrintf ( "[ADMIN] ERROR: pass_compare: encryption returned an error\n" );
@@ -1379,8 +1377,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
   int iPrevIndex = 0;
   int iPort = 0;
   AMAuthId oaiAuthID;
-  int iReconnTime = 300;
-  int iReconnectWindow = static_cast<int>(CVAR_GET_FLOAT("amv_reconnect_time"));
+	int iReconnectWindow = static_cast<int>(CVAR_GET_FLOAT("amv_reconnect_time"));
   auth_struct* poPrevAuth = nullptr;
   auth_struct* poPrevAuthBak = nullptr;
 	const time_t ttiNow = time(nullptr);
@@ -1401,7 +1398,7 @@ void AddUserAuth(char* sName, char* sIP, edict_t* pEntity) {
 
 	const int iSessionID = GETPLAYERUSERID(pEntity); 
   
-  iReconnTime = static_cast<int>(CVAR_GET_FLOAT("admin_reconnect_timeout"));
+  int iReconnTime = static_cast<int>(CVAR_GET_FLOAT("admin_reconnect_timeout"));
 
 
   DEVEL_LOG(2, ("Prv(idx:%i): Index: %i, SessionID: %i, AuthID: %s, Time: %i, IP: '%s:%i', Name: '%s', Access: %i", 
@@ -2506,7 +2503,6 @@ BOOL ParseUser(char* pcLine) {
   char* sAccessToken;
 	constexpr char sDelimiter[] = ":";
 	char* sPasswordToken;
-  char* pcDelim = nullptr;
 
 	if ( pcLine == nullptr ) return FALSE;
 
@@ -2516,7 +2512,7 @@ BOOL ParseUser(char* pcLine) {
   memcpy( sLine, pcLine, iLineLength );
 
   // Count the number of colons in the line
-  pcDelim = sLine + iLineLength;
+  char* pcDelim = sLine + iLineLength;
   while ( pcDelim > sLine ) {
 	  if ( *pcDelim == ':' && *(pcDelim-1) != '\\' ) ++iNumColon;
 	  --pcDelim;
@@ -2730,8 +2726,7 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
   char sPassword[PASSWORD_SIZE];
   char* sPasswordField = const_cast<char*>(get_cvar_string_value( "password_field" ));
   char* infobuffer=g_engfuncs.pfnGetInfoKeyBuffer(pEntity);
-  char* pcClientPwBufferCopy = nullptr;
-  char szCommand[128];
+	char szCommand[128];
   
   if (iIndex < 1 || iIndex > gpGlobals->maxClients) {
     UTIL_LogPrintf("[ADMIN] ERROR: SetUserPassword: User '%s' has out of bounds entity index %i.\n", sName, iIndex);
@@ -2748,7 +2743,7 @@ void SetUserPassword(const char* sName, char* sSetPassword, edict_t* pEntity) {
     iSetPassword = 1;
 
   } else if ( sPasswordField != nullptr ) {
-    pcClientPwBufferCopy = g_engfuncs.pfnInfoKeyValue(infobuffer,sPasswordField);
+	  const char* pcClientPwBufferCopy = g_engfuncs.pfnInfoKeyValue(infobuffer, sPasswordField);
 
     // If we got a password from their setinfo buffer, use it and clear it.
     if ( pcClientPwBufferCopy != nullptr && !FStrEq(pcClientPwBufferCopy,"")) {
@@ -2832,7 +2827,7 @@ void UpdateUserAuth(edict_t* pEntity) {
 
 // Attempts to find a matching user record for this player.  
 BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
-  BOOL fResult = FALSE;
+  BOOL fResult;
   const int iIndex = ENTINDEX(pEntity);
   const char* pcIP = nullptr;
   user_struct tUser;
@@ -2884,11 +2879,10 @@ BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
 // Adds a new spawn record to the linked list.  Returns
 // the identity if successful, 0 otherwise.
 int AddSpawnEntity(const char* szClassname, CBaseEntity* pEntity) {
-  spawn_struct* tSpawn = nullptr;
-  CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
+	CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
 
   // Make a new link
-  tSpawn = new spawn_struct;
+  spawn_struct* tSpawn = new spawn_struct;
   // Make sure the link is a valid address
   if(tSpawn == nullptr) {
     UTIL_LogPrintf("[ADMIN] AddSpawnEntity: 'new' failed for tSpawn record.\n");
@@ -2984,14 +2978,13 @@ BOOL RemoveSpawnEntity(int iIdentity) {
 
 // Removes a spawn record by identity from the linked list.
 // Returns TRUE if successful, FALSE otherwise.
-void DeleteSpawnEntityList() 
+void DeleteSpawnEntityList()
 {
-	const spawn_struct* tSpawn = nullptr;
-  CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
-  
+	CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
+
   // Search through the list, like in FindSpawnEntity.
   while(pLink != nullptr) {
-    tSpawn = pLink->Data();
+    const spawn_struct* tSpawn = pLink->Data();
     // Remove the entity and free the link.
     REMOVE_ENTITY(tSpawn->pEntity->edict());
     delete(tSpawn);
@@ -3013,9 +3006,8 @@ void DeleteSpawnEntityList()
 // if successful, FALSE otherwise.
 BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
 	help_struct* tHelp;
-	CLinkItem<help_struct>* pOldLink = nullptr;
-  
-  // Make sure our help list is initialized
+
+	// Make sure our help list is initialized
   if (m_pHelpList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: AddHelpEntry called when help list not initialized.\n");
     return FALSE;
@@ -3024,7 +3016,7 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
   // avoid duplicates.
   CLinkItem<help_struct>* pLink = m_pHelpList->FirstLink();
   while (pLink != nullptr) {
-    tHelp = pLink->Data();
+	  tHelp = pLink->Data();
     const int iCompare = stricmp(sCmd, tHelp->sCmd);
     // If iCompare < 0, then this entry belongs in front of the one
     // we're currently at, so we can break and insert it.
@@ -3041,7 +3033,7 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
 	return TRUE;
       }
     }
-    pOldLink = pLink;
+    const CLinkItem<help_struct>* pOldLink = pLink; // pOldLink unused? [APG]RoboCop[CL]
     pLink = pLink->NextLink();
   }
   
@@ -3139,8 +3131,7 @@ int CheckCommand( edict_t* _pEntity, const char* _pcCommand, unsigned int& _uiAc
 // For each plugin, call it's HandleCommand method.  Break if
 // any of them return PLUGIN_HANDLED.
 plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
-  plugin_result iResult = PLUGIN_INVAL_CMD;
-  plugin_result iReturn = PLUGIN_INVAL_CMD;
+	plugin_result iReturn = PLUGIN_INVAL_CMD;
 
   if (m_pPluginList == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: HandleCommand called when plugin list not initialized.\n");
@@ -3149,7 +3140,7 @@ plugin_result HandleCommand(edict_t* pEntity, char* sCmd, char* sData) {
   CLinkItem<CPlugin>* pLink = m_pPluginList->FirstLink();
   while (pLink != nullptr) {
     CPlugin* pPlugin = pLink->Data();
-    iResult = pPlugin->HandleCommand(pEntity, sCmd, sData);
+    const plugin_result iResult = pPlugin->HandleCommand(pEntity, sCmd, sData);
 	if ( iResult != PLUGIN_INVAL_CMD ) iReturn = iResult;
     if (iResult == PLUGIN_HANDLED) {
       break;
@@ -3217,7 +3208,6 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   char sFilterText[BUF_SIZE];
   char sHelp[BUF_SIZE];
   char sParam[BUF_SIZE];
-	char* sToken = nullptr;
 
 	// Verify our list is initialized.
   if (m_pHelpList == nullptr) {
@@ -3244,7 +3234,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   // case, it's length. 
   // Confused?
   if (pcData != nullptr) {
-    sToken = strtok(pcData, &sDelimiter);
+	  char* sToken = strtok(pcData, &sDelimiter);
     if (sToken != nullptr) {
       // If the first token is alphabetic, it's the search string.
       if (atoi(sToken) == 0 && *sToken != '0') {
@@ -3639,18 +3629,16 @@ char* GetVaultData(char* sKey) {
 // <key> <data>
 BOOL ParseVault(char* sLine) {
 	constexpr char sDelimiter[] = " ";
-  char* sKeyToken = nullptr;
-  char* sDataToken = nullptr;
-  const size_t iLineLen = strlen( sLine );
+	const size_t iLineLen = strlen( sLine );
 
-  sKeyToken = strtok(sLine,sDelimiter);
+  char* sKeyToken = strtok(sLine, sDelimiter);
   if (sKeyToken == nullptr) {
     UTIL_LogPrintf("[ADMIN] ERROR: No vault key found: '%s'\n", sLine);
   } else if (static_cast<int>(strlen(sKeyToken)) > BUF_SIZE) {
     UTIL_LogPrintf("[ADMIN] ERROR: Vault key too long: '%s'\n", sKeyToken);
   } else {
-
-    //sDataToken = strtok(nullptr,sDelimiter);
+	  char* sDataToken = nullptr;
+	  //sDataToken = strtok(nullptr,sDelimiter);
     const size_t iKeyLen = strlen( sKeyToken );
     if ( iLineLen > iKeyLen ) {
       sDataToken = sLine + iKeyLen + 1;

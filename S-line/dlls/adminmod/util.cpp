@@ -374,7 +374,7 @@ edict_t* UTIL_EntityByIndex( int playerIndex ){
 }      
 
 
-CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
+CBaseEntity* UTIL_PlayerByIndex( const int playerIndex ){
   CBaseEntity* pPlayer = nullptr;
 
   if ( playerIndex > 0 && playerIndex <= gpGlobals->maxClients ) {
@@ -398,9 +398,8 @@ CBaseEntity* UTIL_PlayerByIndex( int playerIndex ){
 
 
 CBaseEntity* UTIL_PlayerByName( const char *name ) {
-	CBaseEntity *pPlayer = nullptr;
-  for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
-    pPlayer = UTIL_PlayerByIndex(i);
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ ) {
+    CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
     if (pPlayer) {
       if(FStrEq(STRING(pPlayer->pev->netname),name))
 	return pPlayer;
@@ -1092,7 +1091,6 @@ extern DLL_GLOBAL  edict_t *pAdminEnt;
 
 // CEM - Rope's version of my GetPlayerIndex, for partial name matching. 
 int GetPlayerIndex(char *PlayerText) {
-  int PlayerNumber = 0;
   int i;
   int found = 0;
   bool bVerbatim = false;
@@ -1118,7 +1116,7 @@ int GetPlayerIndex(char *PlayerText) {
   const AMAuthId oaiAuthID = PlayerText;
   //-- Set up a numeric id in case we got a SessionID.
   char* pcEndptr = nullptr;
-  PlayerNumber = strtol( PlayerText, &pcEndptr, 10);
+  int PlayerNumber = strtol(PlayerText, &pcEndptr, 10);
   //-- Check if we had a valid number or a string starting with a number.
   //-- Following whitespaces do not count as a string, ie. "123  " is 123.
   for ( ; *pcEndptr != '\0'; ++pcEndptr ) {
@@ -1143,24 +1141,54 @@ int GetPlayerIndex(char *PlayerText) {
 				  index = i;
 				  found++;
 			  }  // if
-		  } else {  
-			  DEBUG_LOG(5, ("GetPlayerIndex: player from index %d lookup failed.", i) );
+		  } else {
+			  // DIAGNOSTIC: granular IsPlayerValid failure-reason logging.
+			  // Used to investigate the "Unable to find player" cascade where
+			  // every slot (including the requesting user's own) fails the
+			  // four-condition gate in extdll.h IsPlayerValid. Once the cause
+			  // is understood, revert this to the original single-line log.
+			  const char* reason;
+			  if ( !pPlayer ) {
+				  reason = "pPlayer==NULL (zombie slot, out-of-range, or rejected by UTIL_PlayerByIndex pev filter)";
+			  } else if ( FNullEnt(pPlayer->pev) ) {
+				  reason = "FNullEnt(pev) -- pev is NULL or pev->pContainingEntity is NULL/zero-offset";
+			  } else if ( GETPLAYERUSERID(pPlayer->edict()) <= 0 ) {
+				  reason = "GETPLAYERUSERID<=0 -- engine reports unconnected/transient slot";
+			  } else if ( FStrEq(STRING(pPlayer->pev->netname), "") ) {
+				  reason = "netname empty -- name not yet stamped or in mid-change window";
+			  } else {
+				  reason = "<unknown -- IsPlayerValid macro disagrees with this fallback chain>";
+			  }
+			  DEBUG_LOG(5, ("GetPlayerIndex: slot %d failed: %s (pPlayer=%p)", i, reason, pPlayer) );
 		  }  // if-else
 	  }  // for
-	  
+
 	  if ( found == 1 ) return index;
 
   }  // if
 
 
-  if ( bIsId ) {  // We only need to check for Wonid or Sessionid if it actually is an ID. 
+  if ( bIsId ) {  // We only need to check for Wonid or Sessionid if it actually is an ID.
 	  for (i = 1; i <= gpGlobals->maxClients; i++) {
 		  CBaseEntity *pPlayer = UTIL_PlayerByIndex(i);
 		  if ( IsPlayerValid(pPlayer) ) {
 			  if ( oaiAuthID.is_set() && (oaiAuthID == GETPLAYERAUTHID(pPlayer->edict())) ) { return i;}
 			  if ( PlayerNumber != 0 && (PlayerNumber == GETPLAYERUSERID(pPlayer->edict())) ) { return i;}
-		  } else {  
-			  DEBUG_LOG(5, ("GetPlayerIndex: player from index %d lookup failed.", i) );
+		  } else {
+			  // DIAGNOSTIC: same granular failure-reason logging as above; revert when diagnosed.
+			  const char* reason;
+			  if ( !pPlayer ) {
+				  reason = "pPlayer==NULL (zombie slot, out-of-range, or rejected by UTIL_PlayerByIndex pev filter)";
+			  } else if ( FNullEnt(pPlayer->pev) ) {
+				  reason = "FNullEnt(pev) -- pev is NULL or pev->pContainingEntity is NULL/zero-offset";
+			  } else if ( GETPLAYERUSERID(pPlayer->edict()) <= 0 ) {
+				  reason = "GETPLAYERUSERID<=0 -- engine reports unconnected/transient slot";
+			  } else if ( FStrEq(STRING(pPlayer->pev->netname), "") ) {
+				  reason = "netname empty -- name not yet stamped or in mid-change window";
+			  } else {
+				  reason = "<unknown -- IsPlayerValid macro disagrees with this fallback chain>";
+			  }
+			  DEBUG_LOG(5, ("GetPlayerIndex: slot %d failed (id-loop): %s (pPlayer=%p)", i, reason, pPlayer) );
 		  }  // if-else
 	  }  // for
   }  // if

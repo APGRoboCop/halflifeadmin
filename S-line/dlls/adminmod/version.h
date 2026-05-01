@@ -92,7 +92,7 @@ extern const char* COMPILE_DATE;
  */
 #define VDATE __DATE__
 #define VNAME "Admin Mod"
-#define VAUTHOR "Alfred Reynolds & RoboCop <robocop@lycos.co.uk>"
+#define VAUTHOR "Alfred Reynolds & RoboCop <apg-clan.org>"
 #define VURL "adminmod.org"
 
 /*

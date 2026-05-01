@@ -1327,7 +1327,7 @@ static cell nextmap(AMX *amx, cell *params) {
 	CHECK_AMX_PARAMS(2)
 	const int iMaxLength = params[2];
   
-  char * pcNextMap = nullptr;
+  char * pcNextMap;
 
   if ( g_pcNextMap == nullptr ) {
 	  //TODO: we need a better function for getting the mapcycle, which will read 
@@ -2724,8 +2724,8 @@ static cell execclient(AMX *amx, cell *params) {
 
   // prepare the command to be executed
   BOOL bMoreCmds = FALSE;
-  const apat* pCmd = nullptr;
-  char* pcEnd = nullptr;
+  const apat* pCmd;
+  char* pcEnd;
   memcpy( CmdBuf, CmdText, BUF_SIZE );
   const char* pcEOB = CmdBuf + strlen(CmdBuf);
   char* pcStart = CmdBuf;
@@ -3070,7 +3070,7 @@ static cell readfile(AMX *amx, cell *params) {
   char acFilePath[PATH_MAX];
 
   if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_read") > 0 ) {
-	  char * pcLine = nullptr;
+	  char * pcLine;
 	  FILE * fFile;
 
 	  if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
