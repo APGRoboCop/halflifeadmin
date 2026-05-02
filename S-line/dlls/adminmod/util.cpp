@@ -272,7 +272,7 @@ long int get_option_cvar_value( const char* _pcCvarName, const char* _pcOption, 
 }  // get_option_cvar_value()
 
 
-void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMore, char pszText[1024]) {
+void ShowMenu (edict_t* pev, const int bitsValidSlots, const int nDisplayTime, BOOL fNeedMore, char pszText[1024]) {
 
   int msgShowMenu;
   if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", nullptr)) == 0 ) {
@@ -291,7 +291,7 @@ void ShowMenu (edict_t* pev, int bitsValidSlots, int nDisplayTime, BOOL fNeedMor
 
 
 // Send menu in chunks (max. 512 chars for menu and 176 for one chunk)
-void ShowMenu_Large (edict_t* pev, int bitsValidSlots, int nDisplayTime, char pszText[]) {
+void ShowMenu_Large (edict_t* pev, const int bitsValidSlots, const int nDisplayTime, char pszText[]) {
   
   int msgShowMenu;
   if ( (msgShowMenu = GET_USER_MSG_ID(PLID, "ShowMenu", nullptr)) == 0 ) {
@@ -361,7 +361,7 @@ void ShowMOTD( edict_t* pev, const char *msg )
 }
 
 
-edict_t* UTIL_EntityByIndex( int playerIndex ){
+edict_t* UTIL_EntityByIndex( const int playerIndex ){
 	edict_t* pPlayerEdict = nullptr;
 
 	if ( playerIndex > 0 && playerIndex <= gpGlobals->maxClients ) {
@@ -512,7 +512,7 @@ CBaseEntity *UTIL_FindEntityByClassname( CBaseEntity *pStartEntity, const
   return UTIL_FindEntityByString( pStartEntity, "classname", szName);    
 }      
 
-void fix_string(char *str,int len)
+void fix_string(char *str, const int len)
 {
   
   for(int i=0;i<len;i++) {
@@ -641,7 +641,7 @@ char *COM_Parse (char *data)
   Returns 1 if additional data is waiting to be processed on this line
   ==============
 */
-int COM_TokenWaiting( char *buffer )
+int COM_TokenWaiting( const char *buffer )
 {
 	const char* p = buffer;
   while ( *p && *p!='\n')
@@ -739,7 +739,7 @@ mapcycle_item_s *CurrentMap(mapcycle_t *cycle) //Unstable when mapcycle.txt is e
  * check_map - check if we are allowed to vote for that map
  *
  **********************************************************************************************/
-int allowed_map(char *map) { //is this map in maps.ini ? 1=yes, 0=no
+int allowed_map(const char *map) { //is this map in maps.ini ? 1=yes, 0=no
   
   char *mapcfile = const_cast<char*>(get_cvar_file_value( "maps_file" ));
   if ( mapcfile == nullptr ) return 0;
@@ -792,7 +792,7 @@ int listmaps(edict_t *pAdminEnt) {
 }
 
 
-int check_map(char *map, int bypass_allowed_map)
+int check_map(char *map, const int bypass_allowed_map)
 {
   
   if ( FStrEq(map,"next_map")) { // next map in the cycle
@@ -824,7 +824,7 @@ int check_map(char *map, int bypass_allowed_map)
 }
 
 
-static unsigned short FixedUnsigned16( float value, float scale )
+static unsigned short FixedUnsigned16( const float value, const float scale )
 {
 	int output = static_cast<int>(value * scale);
   if ( output < 0 )
@@ -836,7 +836,7 @@ static unsigned short FixedUnsigned16( float value, float scale )
 }
 
 
-static short FixedSigned16( float value, float scale )
+static short FixedSigned16( const float value, const float scale )
 {
 	int output = static_cast<int>(value * scale);
   
@@ -975,7 +975,7 @@ char* GetModDir() {
 
 
 /* Rope's stuff */
-void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name, 
+void ClientPrint( entvars_t *client, const int msg_dest, const char *msg_name, 
 		  const char *param1, const char *param2, const char *param3, 
 		  const char *param4 ) {
 
@@ -1021,7 +1021,7 @@ void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name,
 }*/
 
 
-void UTIL_ClientPrint_UR( entvars_t *client, int msg_dest, const char *msg_name, 
+void UTIL_ClientPrint_UR( entvars_t *client, const int msg_dest, const char *msg_name, 
 			  const char *param1, const char *param2, const char *param3, 
 			  const char *param4 )
 {
@@ -1131,35 +1131,26 @@ int GetPlayerIndex(char *PlayerText) {
   if ( !bVerbatim ) {
 	  int index = 0;
 	  // Verbatim means a number is a number. Don't match it on a name.
+	  // Use the edict_t* path (INDEXENT + IsPlayerValid(edict_t*)) instead of
+	  // the CBaseEntity* path. The CBaseEntity path goes through pev and ENT(pev)
+	  // which dereferences pev->pContainingEntity -- that back-pointer isn't
+	  // reliably populated by legacy gamemods (TS3, AHL, FA3, FA2.5), which
+	  // makes IsPlayerValid(CBaseEntity*) wrongly reject every connected
+	  // player on those mods. The edict_t* overload of IsPlayerValid uses
+	  // FNullEnt(edict_t*) which checks the engine-reported ent offset,
+	  // independent of pContainingEntity, so it works on every gamemod.
 	  for (i = 1; i <= gpGlobals->maxClients; i++) {
-		  CBaseEntity *pPlayer = UTIL_PlayerByIndex(i);
-		  if ( IsPlayerValid(pPlayer) ) {
-			  // This is only enabled in verbatim mode. 
-			  if ( stricmp(STRING(pPlayer->pev->netname), PlayerText) == 0) { return i;}
-			  
-			  if ( stristr(STRING(pPlayer->pev->netname), PlayerText) != nullptr ) {
+		  edict_t* pPlayerEdict = INDEXENT(i);
+		  if ( pPlayerEdict && !pPlayerEdict->free && IsPlayerValid(pPlayerEdict) ) {
+			  if ( stricmp(STRING(pPlayerEdict->v.netname), PlayerText) == 0) { return i;}
+
+			  if ( stristr(STRING(pPlayerEdict->v.netname), PlayerText) != nullptr ) {
 				  index = i;
 				  found++;
 			  }  // if
 		  } else {
-			  // DIAGNOSTIC: granular IsPlayerValid failure-reason logging.
-			  // Used to investigate the "Unable to find player" cascade where
-			  // every slot (including the requesting user's own) fails the
-			  // four-condition gate in extdll.h IsPlayerValid. Once the cause
-			  // is understood, revert this to the original single-line log.
-			  const char* reason;
-			  if ( !pPlayer ) {
-				  reason = "pPlayer==NULL (zombie slot, out-of-range, or rejected by UTIL_PlayerByIndex pev filter)";
-			  } else if ( FNullEnt(pPlayer->pev) ) {
-				  reason = "FNullEnt(pev) -- pev is NULL or pev->pContainingEntity is NULL/zero-offset";
-			  } else if ( GETPLAYERUSERID(pPlayer->edict()) <= 0 ) {
-				  reason = "GETPLAYERUSERID<=0 -- engine reports unconnected/transient slot";
-			  } else if ( FStrEq(STRING(pPlayer->pev->netname), "") ) {
-				  reason = "netname empty -- name not yet stamped or in mid-change window";
-			  } else {
-				  reason = "<unknown -- IsPlayerValid macro disagrees with this fallback chain>";
-			  }
-			  DEBUG_LOG(5, ("GetPlayerIndex: slot %d failed: %s (pPlayer=%p)", i, reason, pPlayer) );
+			  DEBUG_LOG(5, ("GetPlayerIndex: slot %d failed (name-loop): edict=%p free=%d",
+				  i, pPlayerEdict, pPlayerEdict ? pPlayerEdict->free : -1) );
 		  }  // if-else
 	  }  // for
 
@@ -1170,25 +1161,13 @@ int GetPlayerIndex(char *PlayerText) {
 
   if ( bIsId ) {  // We only need to check for Wonid or Sessionid if it actually is an ID.
 	  for (i = 1; i <= gpGlobals->maxClients; i++) {
-		  CBaseEntity *pPlayer = UTIL_PlayerByIndex(i);
-		  if ( IsPlayerValid(pPlayer) ) {
-			  if ( oaiAuthID.is_set() && (oaiAuthID == GETPLAYERAUTHID(pPlayer->edict())) ) { return i;}
-			  if ( PlayerNumber != 0 && (PlayerNumber == GETPLAYERUSERID(pPlayer->edict())) ) { return i;}
+		  edict_t* pPlayerEdict = INDEXENT(i);
+		  if ( pPlayerEdict && !pPlayerEdict->free && IsPlayerValid(pPlayerEdict) ) {
+			  if ( oaiAuthID.is_set() && (oaiAuthID == GETPLAYERAUTHID(pPlayerEdict)) ) { return i;}
+			  if ( PlayerNumber != 0 && (PlayerNumber == GETPLAYERUSERID(pPlayerEdict)) ) { return i;}
 		  } else {
-			  // DIAGNOSTIC: same granular failure-reason logging as above; revert when diagnosed.
-			  const char* reason;
-			  if ( !pPlayer ) {
-				  reason = "pPlayer==NULL (zombie slot, out-of-range, or rejected by UTIL_PlayerByIndex pev filter)";
-			  } else if ( FNullEnt(pPlayer->pev) ) {
-				  reason = "FNullEnt(pev) -- pev is NULL or pev->pContainingEntity is NULL/zero-offset";
-			  } else if ( GETPLAYERUSERID(pPlayer->edict()) <= 0 ) {
-				  reason = "GETPLAYERUSERID<=0 -- engine reports unconnected/transient slot";
-			  } else if ( FStrEq(STRING(pPlayer->pev->netname), "") ) {
-				  reason = "netname empty -- name not yet stamped or in mid-change window";
-			  } else {
-				  reason = "<unknown -- IsPlayerValid macro disagrees with this fallback chain>";
-			  }
-			  DEBUG_LOG(5, ("GetPlayerIndex: slot %d failed (id-loop): %s (pPlayer=%p)", i, reason, pPlayer) );
+			  DEBUG_LOG(5, ("GetPlayerIndex: slot %d failed (id-loop): edict=%p free=%d",
+				  i, pPlayerEdict, pPlayerEdict ? pPlayerEdict->free : -1) );
 		  }  // if-else
 	  }  // for
   }  // if
@@ -1228,7 +1207,7 @@ int GetPlayerCount( edict_t* peIgnorePlayer ) {
  * Returns 1 if path was created, -1 on error or 0 if access denied.
  *
  */
-int get_file_path( char* pcPath, char* pcFilename, int iMaxLen, const char* pcAccessCvar ) {
+int get_file_path( char* pcPath, const char* pcFilename, int iMaxLen, const char* pcAccessCvar ) {
 #ifdef WIN32
   const char c_acDirSep[] = "\\";
   const char c_cDirSep = '\\'; //c_cDirSep not used? [APG]RoboCop[CL]
@@ -1335,7 +1314,7 @@ int get_player_team( CBaseEntity* poPlayer ) {
 }  // get_player_team()
 
 
-int util_kick_player( int _iSessionId, const char* _pcKickMsg )
+int util_kick_player( const int _iSessionId, const char* _pcKickMsg )
 {
 	if (nullptr == _pcKickMsg ) {
 		DEBUG_LOG(2, ("Running server command 'kick # %i'", _iSessionId) );

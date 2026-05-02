@@ -372,7 +372,7 @@ static void handle_unprintables( char* _pcString ) {
 	}  // if  
 }  // handle_unprintables() 
 
-int get_file_path( char* Path, char* Filename, int MaxLen, const char* AccessCvarName );
+int get_file_path( char* Path, const char* Filename, int MaxLen, const char* AccessCvarName );
 int GetPlayerIndex(char* PlayerText);
 char* GetModDir();
 int GetPlayerCount( edict_t* pIgnorePlayer = nullptr );
@@ -448,7 +448,7 @@ typedef struct mapcycle_s
 
 void DestroyMapCycle( mapcycle_t *cycle );
 int ReloadMapCycleFile( char *filename, mapcycle_t *cycle );
-int allowed_map(char *map);
+int allowed_map(const char *map);
 int check_map(char *map,int bypass_allowed_map);
 int listmaps(edict_t *);
 mapcycle_item_s *CurrentMap(mapcycle_t *cycle);

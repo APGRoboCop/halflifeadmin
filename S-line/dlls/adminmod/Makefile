@@ -204,7 +204,7 @@ OstandalonePgSQL:
 omm: Ometamod
 
 Ometamod:
-	$(MAKE) am_metamod MM=mm SQL=$(SQL) OPT=opt REL=APG
+	$(MAKE) am_metamod MM=mm SQL=$(SQL) OPT=opt REL=beta7
 
 ommms: OmetamodMySQL
 

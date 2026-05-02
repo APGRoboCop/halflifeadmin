@@ -49,7 +49,7 @@
  *
  */
 #ifndef OPT_TYPE
-#if defined(_DEBUG)
+#ifdef _DEBUG
 #define OPT_TYPE "debugging"
 #elif defined(_NDEBUG)
 #define OPT_TYPE "optimized"
