@@ -381,15 +381,27 @@ CBaseEntity* UTIL_PlayerByIndex( const int playerIndex ){
     edict_t* pPlayerEdict = INDEXENT( playerIndex );
     if ( pPlayerEdict && !pPlayerEdict->free ) {
       pPlayer = CBaseEntity::Instance( pPlayerEdict );
-      // On legacy gamemods (FA3, AHL DC, TS3) the engine sometimes leaves
-      // pvPrivateData allocated for a vacated slot but the gamemod has
-      // zeroed pev. Modern engines null pvPrivateData on disconnect, so
-      // this only matters on legacy hosts. Filter here so every caller's
-      // `if (pPlayer)` check stays safe and we don't have to whack-a-mole
-      // pev guards into every consumer (typesay/ClientCheck, userlist,
-      // GetPlayerIndex, ...).
-      if ( pPlayer != nullptr && FNullEnt(pPlayer->pev) ) {
-        pPlayer = nullptr;
+      if ( pPlayer != nullptr ) {
+        if ( pPlayer->pev == nullptr ) {
+          // True zombie slot: pvPrivateData is allocated but pev is NULL.
+          // Observed on legacy gamemods (FA3, AHL DC, TS3, FA2.5) for slots
+          // that were vacated but whose private data wasn't cleared. Filter
+          // here so callers' `if (pPlayer)` check stays safe and we don't
+          // have to whack-a-mole pev guards into every consumer.
+          pPlayer = nullptr;
+        } else {
+          // Repair pev->pContainingEntity. On legacy gamemods (AHL, TS3,
+          // FA3, FA2.5) the gamemod's CBasePlayer-equivalent doesn't keep
+          // this back-pointer in sync with the edict, even for fully
+          // connected and actively playing entities. That breaks every
+          // downstream consumer that goes through pPlayer->edict() / ENT(pev)
+          // -- IsPlayerValid(CBaseEntity*), get_username, kick, slap,
+          // messageex, etc. -- because they receive a NULL/stale edict.
+          // Since we just got the authoritative edict from INDEXENT(slot),
+          // we know what pContainingEntity *should* be. Stamping it here
+          // is a no-op on modern gamemods (same value) and a fix on legacy.
+          pPlayer->pev->pContainingEntity = pPlayerEdict;
+        }
       }
     }
   }
