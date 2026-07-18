@@ -49,7 +49,7 @@
  *
  */
 #ifndef OPT_TYPE
-#if defined(_DEBUG)
+#ifdef _DEBUG
 #define OPT_TYPE "debugging"
 #elif defined(_NDEBUG)
 #define OPT_TYPE "optimized"
@@ -92,7 +92,7 @@ extern const char* COMPILE_DATE;
  */
 #define VDATE __DATE__
 #define VNAME "Admin Mod"
-#define VAUTHOR "Alfred Reynolds & RoboCop <robocop@lycos.co.uk>"
+#define VAUTHOR "Alfred Reynolds & RoboCop <apg-clan.org>"
 #define VURL "adminmod.org"
 
 /*
