@@ -1327,7 +1327,7 @@ static cell nextmap(AMX *amx, cell *params) {
 	CHECK_AMX_PARAMS(2)
 	const int iMaxLength = params[2];
   
-  char * pcNextMap = nullptr;
+  char * pcNextMap;
 
   if ( g_pcNextMap == nullptr ) {
 	  //TODO: we need a better function for getting the mapcycle, which will read 
@@ -2046,7 +2046,7 @@ static cell vote_multiple(AMX *amx, cell *params) {
 static cell vote_allowed(AMX *amx, cell *params) {
 	const int iVoteFreq = static_cast<int>(CVAR_GET_FLOAT("vote_freq"));
   
-  if (iVoteFreq <= 0) 
+  if (iVoteFreq <= 0)
 	return 0;
   const CTimer *pEntity = static_cast<CTimer *>(GET_PRIVATE(pTimerEnt));
   if (pEntity== nullptr) {
@@ -2724,8 +2724,8 @@ static cell execclient(AMX *amx, cell *params) {
 
   // prepare the command to be executed
   BOOL bMoreCmds = FALSE;
-  const apat* pCmd = nullptr;
-  char* pcEnd = nullptr;
+  const apat* pCmd;
+  char* pcEnd;
   memcpy( CmdBuf, CmdText, BUF_SIZE );
   const char* pcEOB = CmdBuf + strlen(CmdBuf);
   char* pcStart = CmdBuf;
@@ -3070,7 +3070,7 @@ static cell readfile(AMX *amx, cell *params) {
   char acFilePath[PATH_MAX];
 
   if ( get_file_path(acFilePath, acFilename, PATH_MAX, "file_access_read") > 0 ) {
-	  char * pcLine = nullptr;
+	  char * pcLine;
 	  FILE * fFile;
 
 	  if( (fFile = fopen(acFilePath,"r")) == nullptr ) {
@@ -4287,7 +4287,7 @@ static cell gettarget(AMX *amx, cell *params) {
   Vector vecEnd = vecSrc + (gpGlobals->v_forward * params[4]);
   TRACE_LINE( vecSrc, vecEnd, dont_ignore_monsters, pPlayer->edict(), &tr);
   
-  if (tr.flFraction != 1.0 && !FNullEnt( tr.pHit ) ) {
+  if (tr.flFraction != 1.0f && !FNullEnt( tr.pHit ) ) {
 	  CBaseEntity *pEntity = CBaseEntity::Instance( tr.pHit );
 
 	  if ( params[3] > 0 ) {
@@ -4358,7 +4358,7 @@ static cell pointto(AMX *amx, cell *params) {
   gpGlobals->trace_flags = traceflags;
 
 
-  if (tr.flFraction != 1.0 && !FNullEnt( tr.pHit ) ) { 
+  if (tr.flFraction != 1.0f && !FNullEnt( tr.pHit ) ) { 
 	CBaseEntity *pEntity = CBaseEntity::Instance( tr.pHit ); 
 	return GETPLAYERUSERID(pEntity->edict());
   } else {

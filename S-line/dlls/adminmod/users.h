@@ -209,7 +209,7 @@ BOOL RemoveSpawnEntity(int iIdentity);
 
 
 // CEM - 02/03/01
-BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess = ACCESS_ALL);
+BOOL AddHelpEntry(char* sCmd, const char* sHelp, int iAccess = ACCESS_ALL);
 BOOL LoadPlugins();
 void UnloadPlugins();
 int CheckCommand( edict_t* Entity, const char* Command, unsigned int& Access, BOOL _bCheckUserAcc = FALSE, BOOL PrintOut = FALSE );

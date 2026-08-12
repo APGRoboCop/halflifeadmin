@@ -341,7 +341,7 @@ void UTIL_LogPrintf( const char *fmt, ... );
 void UTIL_LogPrintfFNL( const char *fmt, ... );
 //void UTIL_ClientPrintAll( int msg_dest, const char *msg_name);
 char* UTIL_VarArgs( const char *format, ... );
-CBaseEntity* UTIL_PlayerByIndex( int playerIndex );
+CBaseEntity* UTIL_PlayerByIndex( const int playerIndex );
 CBaseEntity* UTIL_PlayerByName( const char *name );
 void ClientPrintf ( edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg );
 void ClientCommand (edict_t* pEdict, const char* szFmt, ...);
@@ -372,7 +372,7 @@ static void handle_unprintables( char* _pcString ) {
 	}  // if  
 }  // handle_unprintables() 
 
-int get_file_path( char* Path, char* Filename, int MaxLen, const char* AccessCvarName );
+int get_file_path( char* Path, const char* Filename, int MaxLen, const char* AccessCvarName );
 int GetPlayerIndex(char* PlayerText);
 char* GetModDir();
 int GetPlayerCount( edict_t* pIgnorePlayer = nullptr );
@@ -447,7 +447,7 @@ typedef struct mapcycle_s
 
 void DestroyMapCycle( mapcycle_t *cycle );
 int ReloadMapCycleFile( char *filename, mapcycle_t *cycle );
-int allowed_map(char *map);
+int allowed_map(const char *map);
 int check_map(char *map,int bypass_allowed_map);
 int listmaps(edict_t *);
 mapcycle_item_s *CurrentMap(mapcycle_t *cycle);

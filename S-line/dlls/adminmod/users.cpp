@@ -688,7 +688,7 @@ int match(const char *string, char *pattern) {
 const char* pass_encrypt( const char* _pcPassword, const char* _pcRefPassword) {
 
 	static char acEncryptPw[PASSWORD_SIZE];
-	const char* pcEncryptPw = nullptr;
+	const char* pcEncryptPw;
 
 	const int iEncryptMethod = static_cast<int>(CVAR_GET_FLOAT("encrypt_password"));
  
@@ -2832,7 +2832,7 @@ void UpdateUserAuth(edict_t* pEntity) {
 
 // Attempts to find a matching user record for this player.  
 BOOL VerifyUserAuth(const char* sName, edict_t* pEntity) {
-  BOOL fResult = FALSE;
+  BOOL fResult;
   const int iIndex = ENTINDEX(pEntity);
   const char* pcIP = nullptr;
   user_struct tUser;
@@ -2984,7 +2984,7 @@ BOOL RemoveSpawnEntity(int iIdentity) {
 
 // Removes a spawn record by identity from the linked list.
 // Returns TRUE if successful, FALSE otherwise.
-void DeleteSpawnEntityList() 
+void DeleteSpawnEntityList()
 {
 	const spawn_struct* tSpawn = nullptr;
   CLinkItem<spawn_struct>* pLink = m_pSpawnList->FirstLink();
@@ -3011,7 +3011,7 @@ void DeleteSpawnEntityList()
  ***************************/
 // Adds an entry to the help linked list.  Returns TRUE
 // if successful, FALSE otherwise.
-BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
+BOOL AddHelpEntry(char* sCmd, const char* sHelp, const int iAccess) {
 	help_struct* tHelp;
 	CLinkItem<help_struct>* pOldLink = nullptr;
   
@@ -3024,7 +3024,7 @@ BOOL AddHelpEntry(char* sCmd, char* sHelp, int iAccess) {
   // avoid duplicates.
   CLinkItem<help_struct>* pLink = m_pHelpList->FirstLink();
   while (pLink != nullptr) {
-    tHelp = pLink->Data();
+	tHelp = pLink->Data();
     const int iCompare = stricmp(sCmd, tHelp->sCmd);
     // If iCompare < 0, then this entry belongs in front of the one
     // we're currently at, so we can break and insert it.
@@ -3217,7 +3217,6 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   char sFilterText[BUF_SIZE];
   char sHelp[BUF_SIZE];
   char sParam[BUF_SIZE];
-	char* sToken = nullptr;
 
 	// Verify our list is initialized.
   if (m_pHelpList == nullptr) {
@@ -3244,7 +3243,7 @@ plugin_result HandleHelp(edict_t* pEntity, char* sData, int iFormat = 0) {
   // case, it's length. 
   // Confused?
   if (pcData != nullptr) {
-    sToken = strtok(pcData, &sDelimiter);
+	char* sToken = strtok(pcData, &sDelimiter);
     if (sToken != nullptr) {
       // If the first token is alphabetic, it's the search string.
       if (atoi(sToken) == 0 && *sToken != '0') {
